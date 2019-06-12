@@ -1,7 +1,7 @@
 HttpRepl
 =======
 
-Repo for HttpRepl tool.
+Repo for HttpRepl tool. Formerly part of the [AspLabs repo](https://github.com/aspnet/AspLabs).
 
 ## Building
 
