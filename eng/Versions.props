@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Opt out of certain Arcade features -->
+  <PropertyGroup>
+    <UsingToolXliff>false</UsingToolXliff>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MajorVersion>0</MajorVersion>
+    <MinorVersion>1</MinorVersion>
+    <PreReleaseVersionLabel>preview</PreReleaseVersionLabel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreSources>
+      $(RestoreSources);
+      https://www.myget.org/F/anurse-clrmd/api/v3/index.json;
+      <!-- aspnetcore-dev feed for internal packages like Microsoft.Extensions.Logging.Testing -->
+      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
+      https://dotnet.myget.org/F/dotnet-core/api/v3/index.json;
+    </RestoreSources>
+  </PropertyGroup>
+</Project>
