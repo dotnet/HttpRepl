@@ -3,6 +3,10 @@ HttpRepl
 
 Repo for HttpRepl tool. Formerly part of the [AspLabs repo](https://github.com/aspnet/AspLabs).
 
+## Contributing
+
+See the [Contributing Guide](/CONTRIBUTING.md) for details on what it means to contribute and how to do so.
+
 ## Building
 
 To build this repo, run the `build.cmd` or `build.sh` in the root of this repo. This repo uses the .NET [Arcade toolset](https://github.com/dotnet/arcade).
@@ -49,3 +53,11 @@ ui             Displays the swagger UI page, if available, in the default browse
 
 Use help <COMMAND> to learn more details about individual commands. e.g. `help get`
 ```
+
+## Reporting security issues and bugs
+
+Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC)  secure@microsoft.com. You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the MSRC PGP key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/ff852094.aspx).
+
+## Code of conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).  For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
