@@ -71,9 +71,6 @@ jobs:
       steps:
       - checkout: self
         clean: true
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '10.x'
       - task: NuGetCommand@2
         displayName: 'Clear NuGet caches'
         condition: succeeded()
