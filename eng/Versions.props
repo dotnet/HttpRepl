@@ -5,8 +5,8 @@
     <UsingToolXliff>false</UsingToolXliff>
   </PropertyGroup>
   <PropertyGroup>
-    <MajorVersion>0</MajorVersion>
-    <MinorVersion>1</MinorVersion>
+    <MajorVersion>3</MajorVersion>
+    <MinorVersion>0</MinorVersion>
     <PreReleaseVersionLabel>preview</PreReleaseVersionLabel>
   </PropertyGroup>
   <PropertyGroup>
