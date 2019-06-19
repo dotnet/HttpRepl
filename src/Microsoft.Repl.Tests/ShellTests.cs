@@ -171,15 +171,15 @@ namespace Microsoft.Repl.Tests
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', consoleKey, false, false, false);
             mockConsoleManager.SetupSequence(s => s.ReadKey(cancellationToken))
-                        .Returns(consoleKeyInfo);
+                .Returns(consoleKeyInfo);
             mockConsoleManager.Setup(s => s.CaretPosition)
-                        .Returns(caretPosition);
+                .Returns(caretPosition);
 
             Mock<ICommandHistory> mockCommandHistory = new Mock<ICommandHistory>();
             mockCommandHistory.Setup(s => s.GetPreviousCommand())
-                        .Returns(previousCommand);
+                .Returns(previousCommand);
             mockCommandHistory.Setup(s => s.GetNextCommand())
-            .Returns(nextCommand);
+                .Returns(nextCommand);
 
             ShellState shellState = new ShellState(defaultCommandDispatcher,
                 consoleManager: mockConsoleManager.Object,
