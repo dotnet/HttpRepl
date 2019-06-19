@@ -63,12 +63,12 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
-            // Verify the input buffer contents before delete key press
+            // Verify the input buffer contents before Delete key press event
             Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify the input buffer contents after delete key press
+            // Verify the input buffer contents after Delete key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
@@ -87,12 +87,12 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
-            // Verify the input buffer contents before backspace key press
+            // Verify the input buffer contents before Backspace key press event
             Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify the input buffer contents after backspace key press
+            // Verify the input buffer contents after Backspace key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
@@ -111,12 +111,12 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
-            // Verify the input buffer contents before escape key press
+            // Verify the input buffer contents before Escape key press event
             Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify the input buffer contents after escape key press
+            // Verify the input buffer contents after Escape key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
@@ -129,12 +129,12 @@ namespace Microsoft.Repl.Tests
                 null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            // Verify IsOverwriteMode flag in input manager is set to true
+            // Verify IsOverwriteMode flag in input manager is set to true before Insert key press event
             Assert.False(shell.ShellState.InputManager.IsOverwriteMode);
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify IsOverwriteMode flag in input manager is set to false
+            // Verify IsOverwriteMode flag in input manager is set to false after Insert key press event
             Assert.True(shell.ShellState.InputManager.IsOverwriteMode);
         }
 
@@ -152,12 +152,12 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferText);
 
-            // Verify the input buffer contents before F1 key press
+            // Verify the input buffer contents before F1 key press event
             Assert.Equal(inputBufferText, shell.ShellState.InputManager.GetCurrentBuffer());
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify the input buffer contents after F1 key press
+            // Verify the input buffer contents after F1 key press event
             Assert.Equal(inputBufferText, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
