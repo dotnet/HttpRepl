@@ -14,10 +14,10 @@ namespace Microsoft.Repl.Tests
         public void RunAsync_WithUpArrowKeyPress_UpdatesCurrentBufferWithPreviousCommand()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
-            Shell shell = CreateShell(ConsoleKey.UpArrow,
-                0,
-                previousCommand,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.UpArrow,
+                caretPosition: 0,
+                previousCommand: previousCommand,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             // Verify the input buffer is empty before the UpArrow key press event
@@ -33,10 +33,10 @@ namespace Microsoft.Repl.Tests
         public void RunAsync_WithDownArrowKeyPress_UpdatesCurrentBufferWithNextCommand()
         {
             string nextCommand = "get";
-            Shell shell = CreateShell(ConsoleKey.DownArrow,
-                0,
-                null,
-                nextCommand,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.DownArrow,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: nextCommand,
                 out CancellationTokenSource cancellationTokenSource);
 
             // Verify the input buffer is empty before the DownArrow key press event
@@ -51,10 +51,10 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public void RunAsync_WithDeleteKeyPress_DeletesCurrentCharacterInTheInputBuffer()
         {
-            Shell shell = CreateShell(ConsoleKey.Delete,
-                2,
-                null,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Delete,
+                caretPosition: 2,
+                previousCommand: null,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "get";
@@ -75,10 +75,10 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public void RunAsync_WithBackspaceKeyPress_DeletesPreviousCharacterInTheInputBuffer()
         {
-            Shell shell = CreateShell(ConsoleKey.Backspace,
-                2,
-                null,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Backspace,
+                caretPosition: 2,
+                previousCommand: null,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "get";
@@ -99,10 +99,10 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public void RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            Shell shell = CreateShell(ConsoleKey.Escape,
-                0,
-                null,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Escape,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "get";
@@ -123,10 +123,10 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public void RunAsync_WithInsertKeyPress_FlipsIsOverwriteModeInInputManager()
         {
-            Shell shell = CreateShell(ConsoleKey.Insert,
-                0,
-                null,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Insert,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             // Verify IsOverwriteMode flag in input manager is set to true before Insert key press event
@@ -141,10 +141,10 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public void RunAsync_WithUnhandledKeyPress_DoesNothing()
         {
-            Shell shell = CreateShell(ConsoleKey.F1,
-                0,
-                null,
-                null,
+            Shell shell = CreateShell(consoleKey: ConsoleKey.F1,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferText = "get";
