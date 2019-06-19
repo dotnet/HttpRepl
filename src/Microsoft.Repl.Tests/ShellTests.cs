@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Tests.Mocks;
 using Moq;
 using Xunit;
 
@@ -162,8 +162,8 @@ namespace Microsoft.Repl.Tests
 
         private Shell CreateShell(ConsoleKey consoleKey, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
-            HttpState httpState = new HttpState();
-            var defaultCommandDispatcher = DefaultCommandDispatcher.Create(httpState.GetPrompt, httpState);
+            MockHttpState mockHttpState = new MockHttpState();
+            var defaultCommandDispatcher = DefaultCommandDispatcher.Create(mockHttpState.GetPrompt, mockHttpState);
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
             cancellationTokenSource = new CancellationTokenSource();
