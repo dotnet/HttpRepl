@@ -5,6 +5,6 @@
     it is a .targets file and imported via Directory.Build.targets.
   -->
   <ItemGroup>
-  <PackageReference Update="Moq" Version="4.10.1" PrivateAssets="All" />
+    <PackageReference Update="Moq" Version="4.10.1" PrivateAssets="All" />
   </ItemGroup>
 </Project>
