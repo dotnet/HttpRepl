@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    This file updates all of the metadata for PackageReferences used throughout the repo.
+    Because it updates items, it must be imported at the end.  While this file only contains properties,
+    it is a .targets file and imported via Directory.Build.targets.
+  -->
+  <ItemGroup>
+  <PackageReference Update="Moq" Version="4.10.1" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
