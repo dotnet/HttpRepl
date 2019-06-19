@@ -21,6 +21,22 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer has previous command after the UpArrow key press event
+            Assert.Equal(previousCommand, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithUpArrowKeyPress_VerifyInputBufferContentsBeforeAndAfterKeyPressEvent()
+        {
+            string previousCommand = "set base \"https://localhost:44366/\"";
+            Shell shell = CreateShell(consoleKey: ConsoleKey.UpArrow,
+                caretPosition: 0,
+                previousCommand: previousCommand,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
             // Verify the input buffer is empty before the UpArrow key press event
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
 
@@ -39,9 +55,6 @@ namespace Microsoft.Repl.Tests
                 previousCommand: null,
                 nextCommand: nextCommand,
                 out CancellationTokenSource cancellationTokenSource);
-
-            // Verify the input buffer is empty before the DownArrow key press event
-            Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -64,9 +77,6 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
-            // Verify the input buffer contents before Delete key press event
-            Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
-
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
             // Verify the input buffer contents after Delete key press event
@@ -87,9 +97,6 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
-
-            // Verify the input buffer contents before Backspace key press event
-            Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -112,9 +119,6 @@ namespace Microsoft.Repl.Tests
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
-            // Verify the input buffer contents before Escape key press event
-            Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
-
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
             // Verify the input buffer contents after Escape key press event
@@ -129,9 +133,6 @@ namespace Microsoft.Repl.Tests
                 previousCommand: null,
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
-
-            // Verify IsOverwriteMode flag in input manager is set to true before Insert key press event
-            Assert.False(shell.ShellState.InputManager.IsOverwriteMode);
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -152,9 +153,6 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferText);
-
-            // Verify the input buffer contents before F1 key press event
-            Assert.Equal(inputBufferText, shell.ShellState.InputManager.GetCurrentBuffer());
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
