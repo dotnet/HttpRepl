@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.HttpRepl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -11,7 +12,7 @@ namespace Microsoft.Repl.Tests
     public class ShellTests
     {
         [Fact]
-        public async void RunAsync_WithUpArrowKeyPress_UpdatesCurrentBufferWithPreviousCommand()
+        public async Task RunAsync_WithUpArrowKeyPress_UpdatesCurrentBufferWithPreviousCommand()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
             Shell shell = CreateShell(consoleKey: ConsoleKey.UpArrow,
@@ -30,7 +31,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithDownArrowKeyPress_UpdatesCurrentBufferWithNextCommand()
+        public async Task RunAsync_WithDownArrowKeyPress_UpdatesCurrentBufferWithNextCommand()
         {
             string nextCommand = "get";
             Shell shell = CreateShell(consoleKey: ConsoleKey.DownArrow,
@@ -49,7 +50,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithDeleteKeyPress_DeletesCurrentCharacterInTheInputBuffer()
+        public async Task RunAsync_WithDeleteKeyPress_DeletesCurrentCharacterInTheInputBuffer()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.Delete,
                 caretPosition: 2,
@@ -73,7 +74,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithBackspaceKeyPress_DeletesPreviousCharacterInTheInputBuffer()
+        public async Task RunAsync_WithBackspaceKeyPress_DeletesPreviousCharacterInTheInputBuffer()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.Backspace,
                 caretPosition: 2,
@@ -97,7 +98,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
+        public async Task RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.Escape,
                 caretPosition: 0,
@@ -121,7 +122,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithInsertKeyPress_FlipsIsOverwriteModeInInputManager()
+        public async Task RunAsync_WithInsertKeyPress_FlipsIsOverwriteModeInInputManager()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.Insert,
                 caretPosition: 0,
@@ -139,7 +140,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async void RunAsync_WithUnhandledKeyPress_DoesNothing()
+        public async Task RunAsync_WithUnhandledKeyPress_DoesNothing()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.F1,
                 caretPosition: 0,
