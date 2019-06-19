@@ -44,7 +44,7 @@ namespace Microsoft.Repl.Tests
 
             shell.RunAsync(cancellationTokenSource.Token);
 
-            // Verify the input buffer has previous command after the DownArrow key press event
+            // Verify the input buffer has next command after the DownArrow key press event
             Assert.Equal(nextCommand, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
@@ -97,7 +97,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public void RunAsync_WithEscapeKeyPress_DeletesPreviousCharacterInTheInputBuffer()
+        public void RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
         {
             Shell shell = CreateShell(ConsoleKey.Escape,
                 0,
