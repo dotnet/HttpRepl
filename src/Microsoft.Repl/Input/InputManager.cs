@@ -201,11 +201,6 @@ namespace Microsoft.Repl.Input
                 {
                     ConsoleKeyInfo keyPress = state.ConsoleManager.ReadKey(cancellationToken);
 
-                    if (keyPress.Key == 0 && keyPress.KeyChar == '\0')
-                    {
-                        return;
-                    }
-
                     if (_handlers.TryGetValue(keyPress.Key, out Dictionary<ConsoleModifiers, AsyncKeyPressHandler> handlerLookup) && handlerLookup.TryGetValue(keyPress.Modifiers, out AsyncKeyPressHandler handler))
                     {
                         using (CancellationTokenSource source = new CancellationTokenSource())

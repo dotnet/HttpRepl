@@ -164,10 +164,11 @@ namespace Microsoft.Repl.Tests
             var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
-            cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            var cts = new CancellationTokenSource();
+            CancellationToken cancellationToken = cts.Token;
             ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', consoleKey, false, false, false);
-            mockConsoleManager.SetupSequence(s => s.ReadKey(cancellationToken))
+            mockConsoleManager.Setup(s => s.ReadKey(cancellationToken))
+                .Callback(() => cts.Cancel())
                 .Returns(consoleKeyInfo);
             mockConsoleManager.Setup(s => s.CaretPosition)
                 .Returns(caretPosition);
@@ -181,6 +182,8 @@ namespace Microsoft.Repl.Tests
             ShellState shellState = new ShellState(defaultCommandDispatcher,
                 consoleManager: mockConsoleManager.Object,
                 commandHistory: mockCommandHistory.Object);
+
+            cancellationTokenSource = cts;
 
             return new Shell(shellState);
         }
