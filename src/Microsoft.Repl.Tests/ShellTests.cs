@@ -168,7 +168,7 @@ namespace Microsoft.Repl.Tests
             CancellationToken cancellationToken = cts.Token;
             ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', consoleKey, false, false, false);
             mockConsoleManager.Setup(s => s.ReadKey(cancellationToken))
-                .Callback(() => cts.Cancel())
+                .Callback(() => cts.Cancel()) // This is required as we want to break the loop in StartAsync(..) in InputManager after intended key press event, so that Shell.RunAsync() returns
                 .Returns(consoleKeyInfo);
             mockConsoleManager.Setup(s => s.CaretPosition)
                 .Returns(caretPosition);
