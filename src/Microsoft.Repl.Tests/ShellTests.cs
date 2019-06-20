@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
-using Microsoft.Repl.Tests.Mocks;
 using Moq;
 using Xunit;
 
@@ -162,8 +161,7 @@ namespace Microsoft.Repl.Tests
 
         private Shell CreateShell(ConsoleKey consoleKey, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
-            MockHttpState mockHttpState = new MockHttpState();
-            var defaultCommandDispatcher = DefaultCommandDispatcher.Create(mockHttpState.GetPrompt, mockHttpState);
+            var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
             cancellationTokenSource = new CancellationTokenSource();
