@@ -206,7 +206,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async Task RunAsync_WithEnterKeyPress_VerifyInputBufferContentsBeforeAndAfterKeyPressEvent()
+        public async Task RunAsync_WithEnterKeyPress_UpdatesInputBufferWithEmptyString()
         {
             Shell shell = CreateShell(consoleKey: ConsoleKey.Enter,
                 caretPosition: 0,
@@ -221,7 +221,6 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            // Verify the input buffer has previous command after the UpArrow key press event
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
