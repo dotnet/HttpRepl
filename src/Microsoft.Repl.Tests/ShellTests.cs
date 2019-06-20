@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Tests.Mocks;
 using Moq;
 using Xunit;
 
@@ -159,6 +160,71 @@ namespace Microsoft.Repl.Tests
             Assert.Equal(inputBufferText, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
+        [Fact]
+        public async Task RunAsync_WithTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
+        {
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Tab,
+                 caretPosition: 0,
+                 previousCommand: null,
+                 nextCommand: null,
+                 out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferTextBeforeKeyPress = "g";
+            string inputBufferTextAfterKeyPress = "get";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
+
+            DefaultCommandDispatcher<object> defaultCommandDispatcher = shellState.CommandDispatcher as DefaultCommandDispatcher<object>;
+            string commandName = "get";
+            defaultCommandDispatcher.AddCommand(new MockCommand(commandName));
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer contents after tab key press event
+            Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithTabKeyPressAndNoSuggestions_DoesNothing()
+        {
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Tab,
+                 caretPosition: 0,
+                 previousCommand: null,
+                 nextCommand: null,
+                 out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferTextBeforeKeyPress = "z";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer contents after tab key press event
+            Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithEnterKeyPress_VerifyInputBufferContentsBeforeAndAfterKeyPressEvent()
+        {
+            Shell shell = CreateShell(consoleKey: ConsoleKey.Enter,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer has previous command after the UpArrow key press event
+            Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
         private Shell CreateShell(ConsoleKey consoleKey, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
             var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
@@ -172,6 +238,7 @@ namespace Microsoft.Repl.Tests
                 .Returns(consoleKeyInfo);
             mockConsoleManager.Setup(s => s.CaretPosition)
                 .Returns(caretPosition);
+            mockConsoleManager.Setup(s => s.Error.Write(It.IsAny<char>()));
 
             Mock<ICommandHistory> mockCommandHistory = new Mock<ICommandHistory>();
             mockCommandHistory.Setup(s => s.GetPreviousCommand())
