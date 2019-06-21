@@ -10,10 +10,10 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class PutCommandTests : IClassFixture<PostCommandsFixture>
+    public class PostCommandTests : IClassFixture<PostCommandsFixture>
     {
         private readonly PostCommandsConfig _config;
-        public PutCommandTests(PostCommandsFixture postCommandsFixture)
+        public PostCommandTests(PostCommandsFixture postCommandsFixture)
         {
             _config = postCommandsFixture.Config;
         }
