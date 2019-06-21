@@ -304,6 +304,168 @@ namespace Microsoft.Repl.Tests
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
+        [Fact]
+        public async Task RunAsync_WithLeftArrowKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, -1, Times.Once());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithControlLeftArrowKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, false, true);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 7,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Once());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithRightArrowKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, 1, Times.Once());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithControlRightArrowKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, true);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 4,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, 5, Times.Once());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithHomeKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Home, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // The first method call is from SetInput(..) and the second one is from End key press event
+            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task RunAsync_WithCtrlAKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.A, false, false, true);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // The first method call is from SetInput(..) and the second one is from End key press event
+            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Exactly(2));
+        }
+
+        [Fact]
+        public async Task RunAsync_WithEndKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, 32, Times.Once());
+        }
+
+        [Fact]
+        public async Task RunAsync_WithCtrlEKeyPress_VerifyMoveCaretWasCalled()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.E, false, false, true);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 3,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferContents = "set base \"https://localhost:44366/\"";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferContents);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            VerifyMoveCaretMethodWasCalledOnce(shellState, 32, Times.Once());
+        }
+
         private Shell CreateShell(ConsoleKeyInfo consoleKeyInfo, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
             var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
@@ -331,6 +493,13 @@ namespace Microsoft.Repl.Tests
             cancellationTokenSource = cts;
 
             return new Shell(shellState);
+        }
+
+        private void VerifyMoveCaretMethodWasCalledOnce(IShellState shellState, int caretPosition, Times times)
+        {
+            Mock<IConsoleManager> consoleMananger = Mock.Get(shellState.ConsoleManager);
+
+            consoleMananger.Verify(s => s.MoveCaret(caretPosition), times);
         }
     }
 }
