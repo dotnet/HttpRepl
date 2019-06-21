@@ -19,11 +19,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task NoBasePath_ReturnsMessage()
+        public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
             HttpState httpState = new HttpState();
 
-            string expectedErrorMessage = StringResources.Error_NoBasePath.SetColor(httpState.ErrorColor);
+            string expectedErrorMessage = Resources.Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
             string actualErrorMessage = null;
 
             IShellState shellState = MockHelpers.GetMockedShellState(errorMessageCallback: (s) => actualErrorMessage = s);

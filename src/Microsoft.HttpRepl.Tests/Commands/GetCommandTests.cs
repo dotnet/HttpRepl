@@ -22,11 +22,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task NoBasePath_ReturnsMessage()
+        public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
             HttpState httpState = new HttpState();
 
-            string expectedErrorMessage = StringResources.Error_NoBasePath.SetColor(httpState.ErrorColor);
+            string expectedErrorMessage = Resources.Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
             string actualErrorMessage = null;
 
             IShellState shellState = MockHelpers.GetMockedShellState(errorMessageCallback: (s) => actualErrorMessage = s);
@@ -41,7 +41,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task MultipartRoute()
+        public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
             int expectedResponseLines = 5; // The path, three headers and the response.
             string expectedResponseContent = "This is a test response.";
@@ -59,11 +59,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Equal(expectedResponseLines, actual.Count); 
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);
-
         }
 
         [Fact]
-        public async Task BaseAddressRoute()
+        public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
             int expectedResponseLines = 5; // The path, three headers and the response.
             string expectedResponseContent = "This is a response from the root.";
@@ -81,7 +80,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Equal(expectedResponseLines, actual.Count);
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);
-
         }
     }
 
