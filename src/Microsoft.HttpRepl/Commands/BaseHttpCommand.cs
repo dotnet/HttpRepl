@@ -77,7 +77,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (programState.BaseAddress == null && (commandInput.Arguments.Count == 0 || !Uri.TryCreate(commandInput.Arguments[0].Text, UriKind.Absolute, out Uri _)))
             {
-                shellState.ConsoleManager.Error.WriteLine("'set base {url}' must be called before issuing requests to a relative path".SetColor(programState.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(StringResources.Error_NoBasePath.SetColor(programState.ErrorColor));
                 return;
             }
 
