@@ -15,7 +15,8 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithUpArrowKeyPress_UpdatesCurrentBufferWithPreviousCommand()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
-            Shell shell = CreateShell(consoleKey: ConsoleKey.UpArrow,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: previousCommand,
                 nextCommand: null,
@@ -31,7 +32,8 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithUpArrowKeyPress_VerifyInputBufferContentsBeforeAndAfterKeyPressEvent()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
-            Shell shell = CreateShell(consoleKey: ConsoleKey.UpArrow,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: previousCommand,
                 nextCommand: null,
@@ -50,7 +52,8 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithDownArrowKeyPress_UpdatesCurrentBufferWithNextCommand()
         {
             string nextCommand = "get";
-            Shell shell = CreateShell(consoleKey: ConsoleKey.DownArrow,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
                 nextCommand: nextCommand,
@@ -65,7 +68,8 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithDeleteKeyPress_DeletesCurrentCharacterInTheInputBuffer()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Delete,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Delete, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 2,
                 previousCommand: null,
                 nextCommand: null,
@@ -86,7 +90,8 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithBackspaceKeyPress_DeletesPreviousCharacterInTheInputBuffer()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Backspace,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Backspace, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 2,
                 previousCommand: null,
                 nextCommand: null,
@@ -107,7 +112,8 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Escape,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Escape, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
                 nextCommand: null,
@@ -126,9 +132,32 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
+        public async Task RunAsync_WithCtrlUKeyPress_UpdatesInputBufferWithEmptyString()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.U, false, false, true);
+            Shell shell = CreateShell(consoleKeyInfo,
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferTextBeforeKeyPress = "get";
+            string inputBufferTextAfterKeyPress = string.Empty;
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer contents after Ctrl + U key press event
+            Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
         public async Task RunAsync_WithInsertKeyPress_FlipsIsOverwriteModeInInputManager()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Insert,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Insert, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
                 nextCommand: null,
@@ -143,7 +172,8 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithUnhandledKeyPress_DoesNothing()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.F1,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.F1, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
                 nextCommand: null,
@@ -163,7 +193,8 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Tab,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                  caretPosition: 0,
                  previousCommand: null,
                  nextCommand: null,
@@ -186,9 +217,36 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
+        public async Task RunAsync_WithShiftTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, true, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                 caretPosition: 0,
+                 previousCommand: null,
+                 nextCommand: null,
+                 out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferTextBeforeKeyPress = "g";
+            string inputBufferTextAfterKeyPress = "get";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
+
+            DefaultCommandDispatcher<object> defaultCommandDispatcher = shellState.CommandDispatcher as DefaultCommandDispatcher<object>;
+            string commandName = "get";
+            defaultCommandDispatcher.AddCommand(new MockCommand(commandName));
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer contents after Shift + Tab key press event
+            Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
         public async Task RunAsync_WithTabKeyPressAndNoSuggestions_DoesNothing()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Tab,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                  caretPosition: 0,
                  previousCommand: null,
                  nextCommand: null,
@@ -206,9 +264,31 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
+        public async Task RunAsync_WithShiftTabKeyPressAndNoSuggestions_DoesNothing()
+        {
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, true, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
+                 caretPosition: 0,
+                 previousCommand: null,
+                 nextCommand: null,
+                 out CancellationTokenSource cancellationTokenSource);
+
+            string inputBufferTextBeforeKeyPress = "z";
+
+            IShellState shellState = shell.ShellState;
+            shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Verify the input buffer contents after Shift + Tab key press event
+            Assert.Equal(inputBufferTextBeforeKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
+        }
+
+        [Fact]
         public async Task RunAsync_WithEnterKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            Shell shell = CreateShell(consoleKey: ConsoleKey.Enter,
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Enter, false, false, false);
+            Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
                 nextCommand: null,
@@ -224,14 +304,13 @@ namespace Microsoft.Repl.Tests
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
         }
 
-        private Shell CreateShell(ConsoleKey consoleKey, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
+        private Shell CreateShell(ConsoleKeyInfo consoleKeyInfo, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
             var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
             var cts = new CancellationTokenSource();
             CancellationToken cancellationToken = cts.Token;
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', consoleKey, false, false, false);
             mockConsoleManager.Setup(s => s.ReadKey(cancellationToken))
                 .Callback(() => cts.Cancel()) // This is required as we want to break the loop in StartAsync(..) in InputManager after intended key press event, so that Shell.RunAsync() returns
                 .Returns(consoleKeyInfo);
