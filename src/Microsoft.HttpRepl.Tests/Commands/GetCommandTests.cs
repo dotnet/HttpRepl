@@ -33,9 +33,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             GetCommand command = new GetCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("GET");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, actualErrorMessage);
         }
@@ -53,9 +52,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             GetCommand command = new GetCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("GET");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, actual.Count); 
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);
@@ -74,9 +72,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             
             GetCommand command = new GetCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("GET");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, actual.Count);
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);

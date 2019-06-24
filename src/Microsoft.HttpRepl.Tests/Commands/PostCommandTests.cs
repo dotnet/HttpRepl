@@ -30,9 +30,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             PostCommand command = new PostCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("POST");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, actualErrorMessage);
         }

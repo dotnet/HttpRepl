@@ -31,9 +31,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             DeleteCommand command = new DeleteCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("DELETE");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, actualErrorMessage);
         }
@@ -51,9 +50,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             DeleteCommand command = new DeleteCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("DELETE");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, actual.Count);
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);
@@ -72,9 +70,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             DeleteCommand command = new DeleteCommand();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("DELETE");
-            CancellationTokenSource cts = new CancellationTokenSource();
 
-            await command.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, actual.Count);
             Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 1]);
