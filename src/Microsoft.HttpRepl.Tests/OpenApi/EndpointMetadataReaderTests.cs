@@ -11,8 +11,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [Fact]
         public void Read_WithInvalidJson_ReturnsNull()
         {
-            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
-
             string json = @"{
   ""info"": {
     ""version"": ""v1"",
@@ -21,15 +19,46 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 }";
 
             JObject jobject = JObject.Parse(json);
+            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
 
             Assert.Null(endpointMetadataReader.Read(jobject));
         }
 
         [Fact]
-        public void Read_WithSwagger2KeyInInput_ReturnsEndpointMetadata()
+        public void Read_WithSwaggerV2KeyInInputAndNoPaths_ReturnsEmptyListOfEndPointMetaData()
         {
+            string json = @"{
+  ""swagger"": ""2.0"",
+  ""info"": {
+    ""version"": ""v1""
+  }
+}";
+            JObject jobject = JObject.Parse(json);
             EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
 
+            Assert.Empty(endpointMetadataReader.Read(jobject));
+        }
+
+        [Fact]
+        public void Read_WithSwaggerV2KeyInInputAndNoProperties_ReturnsEmptyListOfEndPointMetaData()
+        {
+            string json = @"{
+  ""swagger"": ""2.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
+
+            Assert.Empty(endpointMetadataReader.Read(jobject));
+        }
+
+        [Fact]
+        public void Read_WithSwaggerV2KeyInInput_ReturnsEndpointMetadata()
+        {
             string json = @"{
   ""swagger"": ""2.0"",
   ""info"": {
@@ -53,7 +82,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
           }
         }
       },
-      ""put"": {
+      ""post"": {
         ""tags"": [
           ""Employees""
         ],
@@ -90,6 +119,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 }";
 
             JObject jobject = JObject.Parse(json);
+            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
             List<EndpointMetadata> endpointMetadata = endpointMetadataReader.Read(jobject).ToList();
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
             KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>>  firstRequest = availableRequests.First();
@@ -100,7 +130,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             Assert.Equal(2, availableRequests.Count);
             Assert.Equal("get", firstRequest.Key);
-            Assert.Equal("put", secondRequest.Key);
+            Assert.Equal("post", secondRequest.Key);
         }
     }
 }
