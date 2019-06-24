@@ -54,6 +54,15 @@ namespace Microsoft.HttpRepl.Tests.SampleApi
                     case "POST":
                         routeBuilder.MapPost(route.Route, context => route.Execute(context));
                         break;
+                    case "DELETE":
+                        routeBuilder.MapDelete(route.Route, context => route.Execute(context));
+                        break;
+                    case "HEAD":
+                        routeBuilder.MapVerb("HEAD", route.Route, context => route.Execute(context));
+                        break;
+                    case "OPTIONS":
+                        routeBuilder.MapVerb("OPTIONS", route.Route, context => route.Execute(context));
+                        break;
                 }
             }
         }
