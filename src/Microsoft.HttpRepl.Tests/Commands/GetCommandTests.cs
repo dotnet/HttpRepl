@@ -101,6 +101,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
     {
         public GetCommandsConfig()
         {
+            Port = SampleApiServerPorts.GetCommandTests;
             Routes.Add(new StaticSampleApiServerRoute("GET", "", "This is a response from the root."));
             Routes.Add(new StaticSampleApiServerRoute("GET", "this/is/a/test/route", "This is a test response."));
             Routes.Add(new DynamicSampleApiServerRoute("GET", "this/is/a/test/route/with/{value}", async (context) =>

@@ -99,7 +99,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
     {
         public OptionsCommandsConfig()
         {
-            Port = 5053;
+            Port = SampleApiServerPorts.OptionsCommandTests;
             Routes.Add(new DynamicSampleApiServerRoute("OPTIONS", "", context =>
             {
                 context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for root OPTIONS request.");

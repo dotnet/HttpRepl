@@ -58,7 +58,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
     {
         public PostCommandsConfig()
         {
-            Port = 5051;
+            Port = SampleApiServerPorts.PostCommandTests;
             Routes.Add(new StaticSampleApiServerRoute("POST", "this/is/a/test/route", "This is a test response from a POST."));
         }
     }
