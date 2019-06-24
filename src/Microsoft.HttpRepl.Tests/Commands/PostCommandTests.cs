@@ -10,10 +10,10 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class PostCommandTests : IClassFixture<PostCommandsFixture>
+    public class PostCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<PostCommandsConfig>>
     {
         private readonly PostCommandsConfig _config;
-        public PostCommandTests(PostCommandsFixture postCommandsFixture)
+        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
         {
             _config = postCommandsFixture.Config;
         }
@@ -21,36 +21,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            HttpState httpState = new HttpState();
-
-            string expectedErrorMessage = Resources.Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
-            string actualErrorMessage = null;
-
-            IShellState shellState = MockHelpers.GetMockedShellState(errorMessageCallback: (s) => actualErrorMessage = s);
-
-            PostCommand command = new PostCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("POST");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedErrorMessage, actualErrorMessage);
-        }
-    }
-
-    public class PostCommandsFixture : IDisposable
-    {
-        private readonly SampleApiServer _testWebServer;
-        public PostCommandsConfig Config { get; } = new PostCommandsConfig();
-
-        public PostCommandsFixture()
-        {
-            _testWebServer = new SampleApiServer(Config);
-            _testWebServer.Start();
-        }
-
-        public void Dispose()
-        {
-            _testWebServer.Stop();
+            await VerifyErrorMessage(command: new PostCommand(),
+                                     commandText: "POST",
+                                     baseAddress: null,
+                                     path: null,
+                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
         }
     }
 

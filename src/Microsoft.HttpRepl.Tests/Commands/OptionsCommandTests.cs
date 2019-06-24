@@ -11,87 +11,44 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class OptionsCommandTests : IClassFixture<OptionsCommandsFixture>
+    public class OptionsCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
     {
         private readonly OptionsCommandsConfig _config;
-        public OptionsCommandTests(OptionsCommandsFixture OptionsCommandsFixture)
+        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture)
         {
-            _config = OptionsCommandsFixture.Config;
+            _config = optionsCommandsFixture.Config;
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            HttpState httpState = new HttpState();
-
-            string expectedErrorMessage = Resources.Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
-            string actualErrorMessage = null;
-
-            IShellState shellState = MockHelpers.GetMockedShellState(errorMessageCallback: (s) => actualErrorMessage = s);
-
-            OptionsCommand command = new OptionsCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("OPTIONS");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedErrorMessage, actualErrorMessage);
+            await VerifyErrorMessage(command: new OptionsCommand(),
+                                     commandText: "OPTIONS",
+                                     baseAddress: null,
+                                     path: null,
+                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            int expectedResponseLines = 6; // The path, four headers and a blank response.
-            string expectedResponseContent = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
-            List<string> actual = new List<string>();
-
-            IShellState shellState = MockHelpers.GetMockedShellState(writeLineCallback: (s) => actual.Add(s));
-
-            HttpState httpState = HttpStateHelpers.Create(_config.BaseAddress, "this/is/a/test/route");
-
-            OptionsCommand command = new OptionsCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("OPTIONS");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedResponseLines, actual.Count);
-            Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 2]);
+            await VerifyHeaders(command: new OptionsCommand(),
+                                commandText: "OPTIONS",
+                                baseAddress: _config.BaseAddress,
+                                path: "this/is/a/test/route",
+                                expectedResponseLines: 6,
+                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.");
         }
 
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            int expectedResponseLines = 6; // The path, four headers and a blank response.
-            string expectedResponseContent = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";
-            List<string> actual = new List<string>();
-
-            IShellState shellState = MockHelpers.GetMockedShellState(writeLineCallback: (s) => actual.Add(s));
-
-            HttpState httpState = HttpStateHelpers.Create(_config.BaseAddress);
-
-            OptionsCommand command = new OptionsCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("OPTIONS");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedResponseLines, actual.Count);
-            Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 2]);
-        }
-    }
-
-    public class OptionsCommandsFixture : IDisposable
-    {
-        private readonly SampleApiServer _testWebServer;
-        public OptionsCommandsConfig Config { get; } = new OptionsCommandsConfig();
-
-        public OptionsCommandsFixture()
-        {
-            _testWebServer = new SampleApiServer(Config);
-            _testWebServer.Start();
-        }
-
-        public void Dispose()
-        {
-            _testWebServer.Stop();
+            await VerifyHeaders(command: new OptionsCommand(),
+                                commandText: "OPTIONS",
+                                baseAddress: _config.BaseAddress,
+                                path: null,
+                                expectedResponseLines: 6,
+                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.");
         }
     }
 

@@ -11,87 +11,44 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class HeadCommandTests : IClassFixture<HeadCommandsFixture>
+    public class HeadCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<HeadCommandsConfig>>
     {
         private readonly HeadCommandsConfig _config;
-        public HeadCommandTests(HeadCommandsFixture HeadCommandsFixture)
+        public HeadCommandTests(HttpCommandsFixture<HeadCommandsConfig> headCommandsFixture)
         {
-            _config = HeadCommandsFixture.Config;
+            _config = headCommandsFixture.Config;
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            HttpState httpState = new HttpState();
-
-            string expectedErrorMessage = Resources.Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
-            string actualErrorMessage = null;
-
-            IShellState shellState = MockHelpers.GetMockedShellState(errorMessageCallback: (s) => actualErrorMessage = s);
-
-            HeadCommand command = new HeadCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("HEAD");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedErrorMessage, actualErrorMessage);
+            await VerifyErrorMessage(command: new HeadCommand(),
+                                     commandText: "HEAD",
+                                     baseAddress: null,
+                                     path: null,
+                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
+        public async Task ExecuteAsync_WithMultipartRoute_VerifyHeaders()
         {
-            int expectedResponseLines = 5; // The path, three headers and a blank response.
-            string expectedResponseContent = "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.";
-            List<string> actual = new List<string>();
-
-            IShellState shellState = MockHelpers.GetMockedShellState(writeLineCallback: (s) => actual.Add(s));
-
-            HttpState httpState = HttpStateHelpers.Create(_config.BaseAddress, "this/is/a/test/route");
-
-            HeadCommand command = new HeadCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("HEAD");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedResponseLines, actual.Count);
-            Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 2]);
+            await VerifyHeaders(command: new HeadCommand(),
+                                commandText: "HEAD",
+                                baseAddress: _config.BaseAddress,
+                                path: "this/is/a/test/route",
+                                expectedResponseLines: 5,
+                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.");
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
+        public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyHeaders()
         {
-            int expectedResponseLines = 5; // The path, three headers and a blank response.
-            string expectedResponseContent = "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.";
-            List<string> actual = new List<string>();
-
-            IShellState shellState = MockHelpers.GetMockedShellState(writeLineCallback: (s) => actual.Add(s));
-
-            HttpState httpState = HttpStateHelpers.Create(_config.BaseAddress);
-
-            HeadCommand command = new HeadCommand();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("HEAD");
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Equal(expectedResponseLines, actual.Count);
-            Assert.Equal(expectedResponseContent, actual[expectedResponseLines - 2]);
-        }
-    }
-
-    public class HeadCommandsFixture : IDisposable
-    {
-        private readonly SampleApiServer _testWebServer;
-        public HeadCommandsConfig Config { get; } = new HeadCommandsConfig();
-
-        public HeadCommandsFixture()
-        {
-            _testWebServer = new SampleApiServer(Config);
-            _testWebServer.Start();
-        }
-
-        public void Dispose()
-        {
-            _testWebServer.Stop();
+            await VerifyHeaders(command: new HeadCommand(),
+                                commandText: "HEAD",
+                                baseAddress: _config.BaseAddress,
+                                path: null,
+                                expectedResponseLines: 5,
+                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.");
         }
     }
 
