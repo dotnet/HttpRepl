@@ -1,6 +1,6 @@
 using System;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     internal class HttpStateHelpers
     {

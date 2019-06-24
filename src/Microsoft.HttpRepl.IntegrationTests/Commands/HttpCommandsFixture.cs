@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.HttpRepl.Tests.SampleApi;
+using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class HttpCommandsFixture<T> : IDisposable where T : SampleApiServerConfig, new()
     {

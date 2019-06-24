@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.HttpRepl.Commands;
-using Microsoft.HttpRepl.Tests.SampleApi;
+using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Microsoft.Repl;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class GetCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<GetCommandsConfig>>
     {

@@ -6,7 +6,7 @@ using Microsoft.Repl.Input;
 using Microsoft.Repl.Suggestions;
 using Moq;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     internal class MockHelpers
     {

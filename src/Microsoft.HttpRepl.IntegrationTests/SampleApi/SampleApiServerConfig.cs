@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Microsoft.HttpRepl.Tests.SampleApi
+namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
     public class SampleApiServerConfig
     {

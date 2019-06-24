@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.HttpRepl.Tests.SampleApi
+namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
     internal static class SampleApiServerPorts
     {

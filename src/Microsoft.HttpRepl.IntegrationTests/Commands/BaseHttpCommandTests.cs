@@ -9,7 +9,7 @@ using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public abstract class BaseHttpCommandTests
     {

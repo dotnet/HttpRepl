@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Repl.Parsing;
 
-namespace Microsoft.HttpRepl.Tests.Commands
+namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     internal static class CoreParseResultHelper
     {
