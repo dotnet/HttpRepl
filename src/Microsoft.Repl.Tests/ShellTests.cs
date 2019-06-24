@@ -15,7 +15,11 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithUpArrowKeyPress_UpdatesCurrentBufferWithPreviousCommand()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.UpArrow,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: previousCommand,
@@ -32,7 +36,11 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithUpArrowKeyPress_VerifyInputBufferContentsBeforeAndAfterKeyPressEvent()
         {
             string previousCommand = "set base \"https://localhost:44366/\"";
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.UpArrow,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: previousCommand,
@@ -52,7 +60,11 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithDownArrowKeyPress_UpdatesCurrentBufferWithNextCommand()
         {
             string nextCommand = "get";
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.DownArrow,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -68,7 +80,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithDeleteKeyPress_DeletesCurrentCharacterInTheInputBuffer()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Delete, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Delete,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 2,
                 previousCommand: null,
@@ -90,7 +106,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithBackspaceKeyPress_DeletesPreviousCharacterInTheInputBuffer()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Backspace, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Backspace,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 2,
                 previousCommand: null,
@@ -112,7 +132,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithEscapeKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Escape, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Escape,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -134,7 +158,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithCtrlUKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.U, false, false, true);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.U,
+                shift: false,
+                alt: false,
+                control: true);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -156,7 +184,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithInsertKeyPress_FlipsIsOverwriteModeInInputManager()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Insert, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Insert,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -172,7 +204,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithUnhandledKeyPress_DoesNothing()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.F1, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.F1,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -193,12 +229,16 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Tab,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
-                 caretPosition: 0,
-                 previousCommand: null,
-                 nextCommand: null,
-                 out CancellationTokenSource cancellationTokenSource);
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "g";
             string inputBufferTextAfterKeyPress = "get";
@@ -219,12 +259,16 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithShiftTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, true, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Tab,
+                shift: true,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
-                 caretPosition: 0,
-                 previousCommand: null,
-                 nextCommand: null,
-                 out CancellationTokenSource cancellationTokenSource);
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "g";
             string inputBufferTextAfterKeyPress = "get";
@@ -245,12 +289,16 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithTabKeyPressAndNoSuggestions_DoesNothing()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Tab,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
-                 caretPosition: 0,
-                 previousCommand: null,
-                 nextCommand: null,
-                 out CancellationTokenSource cancellationTokenSource);
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "z";
 
@@ -266,12 +314,16 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithShiftTabKeyPressAndNoSuggestions_DoesNothing()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Tab, true, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Tab,
+                shift: true,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
-                 caretPosition: 0,
-                 previousCommand: null,
-                 nextCommand: null,
-                 out CancellationTokenSource cancellationTokenSource);
+                caretPosition: 0,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
 
             string inputBufferTextBeforeKeyPress = "z";
 
@@ -287,7 +339,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithEnterKeyPress_UpdatesInputBufferWithEmptyString()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Enter, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Enter,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 0,
                 previousCommand: null,
@@ -307,7 +363,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithLeftArrowKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.LeftArrow,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
@@ -327,7 +387,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithControlLeftArrowKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, false, true);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.LeftArrow,
+                shift: false,
+                alt: false,
+                control: true);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 7,
                 previousCommand: null,
@@ -347,7 +411,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithRightArrowKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.RightArrow,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
@@ -367,7 +435,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithControlRightArrowKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, true);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.RightArrow,
+                shift: false,
+                alt: false,
+                control: true);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 4,
                 previousCommand: null,
@@ -387,7 +459,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithHomeKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.Home, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.Home,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
@@ -408,7 +484,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithCtrlAKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.A, false, false, true);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.A,
+                shift: false,
+                alt: false,
+                control: true);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
@@ -429,7 +509,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithEndKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, false);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.End,
+                shift: false,
+                alt: false,
+                control: false);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
@@ -449,7 +533,11 @@ namespace Microsoft.Repl.Tests
         [Fact]
         public async Task RunAsync_WithCtrlEKeyPress_VerifyMoveCaretWasCalled()
         {
-            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo('\0', ConsoleKey.E, false, false, true);
+            ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
+                key: ConsoleKey.E,
+                shift: false,
+                alt: false,
+                control: true);
             Shell shell = CreateShell(consoleKeyInfo,
                 caretPosition: 3,
                 previousCommand: null,
