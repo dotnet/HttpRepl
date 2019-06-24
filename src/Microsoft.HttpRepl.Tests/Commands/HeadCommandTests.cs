@@ -103,13 +103,15 @@ namespace Microsoft.HttpRepl.Tests.Commands
         public HeadCommandsConfig()
         {
             Port = 5053;
-            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "", async context =>
+            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "", context =>
             {
                 context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for root HEAD request.");
+                return Task.CompletedTask;
             }));
-            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "this/is/a/test/route", async context =>
+            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "this/is/a/test/route", context =>
             {
                 context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for HEAD request with route.");
+                return Task.CompletedTask;
             }));
         }
     }
