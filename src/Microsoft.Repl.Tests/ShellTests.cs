@@ -321,7 +321,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, -1, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, -1, Times.Once());
         }
 
         [Fact]
@@ -341,7 +341,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, -3, Times.Once());
         }
 
         [Fact]
@@ -361,7 +361,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, 1, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, 1, Times.Once());
         }
 
         [Fact]
@@ -381,7 +381,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, 5, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, 5, Times.Once());
         }
 
         [Fact]
@@ -402,7 +402,7 @@ namespace Microsoft.Repl.Tests
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
             // The first method call is from SetInput(..) and the second one is from End key press event
-            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Exactly(2));
+            VerifyMoveCaretMethodWasCalled(shellState, -3, Times.Exactly(2));
         }
 
         [Fact]
@@ -423,7 +423,7 @@ namespace Microsoft.Repl.Tests
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
             // The first method call is from SetInput(..) and the second one is from End key press event
-            VerifyMoveCaretMethodWasCalledOnce(shellState, -3, Times.Exactly(2));
+            VerifyMoveCaretMethodWasCalled(shellState, -3, Times.Exactly(2));
         }
 
         [Fact]
@@ -443,7 +443,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, 32, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, 32, Times.Once());
         }
 
         [Fact]
@@ -463,7 +463,7 @@ namespace Microsoft.Repl.Tests
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            VerifyMoveCaretMethodWasCalledOnce(shellState, 32, Times.Once());
+            VerifyMoveCaretMethodWasCalled(shellState, 32, Times.Once());
         }
 
         private Shell CreateShell(ConsoleKeyInfo consoleKeyInfo, int caretPosition, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
@@ -495,7 +495,7 @@ namespace Microsoft.Repl.Tests
             return new Shell(shellState);
         }
 
-        private void VerifyMoveCaretMethodWasCalledOnce(IShellState shellState, int caretPosition, Times times)
+        private void VerifyMoveCaretMethodWasCalled(IShellState shellState, int caretPosition, Times times)
         {
             Mock<IConsoleManager> consoleMananger = Mock.Get(shellState.ConsoleManager);
 
