@@ -43,7 +43,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             Assert.Equal(expectedResponseLines, actualResponseContent.Count);
             Assert.Equal(expectedResponseContent, actualResponseContent[expectedResponseLines - 1]);
-
         }
 
         protected async Task VerifyHeaders(BaseHttpCommand command, string commandText, string baseAddress, string path, int expectedResponseLines, string expectedHeader)

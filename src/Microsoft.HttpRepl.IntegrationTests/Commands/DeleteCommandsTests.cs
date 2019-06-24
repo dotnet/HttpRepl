@@ -43,13 +43,12 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-
             await VerifyResponse(command: new DeleteCommand(),
-                     commandText: "DELETE",
-                     baseAddress: _config.BaseAddress,
-                     path: null,
-                     expectedResponseLines: 5,
-                     expectedResponseContent: "Root delete received successfully.");
+                                 commandText: "DELETE",
+                                 baseAddress: _config.BaseAddress,
+                                 path: null,
+                                 expectedResponseLines: 5,
+                                 expectedResponseContent: "Root delete received successfully.");
         }
     }
 
