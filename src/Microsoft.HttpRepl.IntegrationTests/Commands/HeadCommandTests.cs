@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
-using Microsoft.Repl;
-using Microsoft.Repl.ConsoleHandling;
-using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
