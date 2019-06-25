@@ -54,6 +54,27 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
+        public void Read_WithSwaggerV2InputAndNoRequestMethods_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        {
+            string json = @"{
+  ""swagger"": ""2.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/api/Employees"": {
+    }
+  }
+}";
+            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/api/Employees", endpointMetadata[0].Path);
+            Assert.Empty(availableRequests);
+        }
+
+        [Fact]
         public void Read_WithSwaggerV2Input_ReturnsEndpointMetadata()
         {
             string json = @"{
@@ -98,17 +119,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
           ""200"": {
             ""description"": ""Success""
           }
-        }
-      }
-    }
-  },
-  ""definitions"": {
-    ""Employee"": {
-      ""type"": ""object"",
-      ""properties"": {
-        ""id"": {
-          ""format"": ""int32"",
-          ""type"": ""integer""
         }
       }
     }
@@ -158,7 +168,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void Read_WithOpenApiV3InputWithNoRequestBody_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void Read_WithOpenApiV3InputAndNoRequestBody_ReturnsEndpointMetadataWithEmptyAvailableRequests()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -184,7 +194,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void Read_WithOpenApiV3InputWithNoContent_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void Read_WithOpenApiV3InputAndNoContent_ReturnsEndpointMetadataWithEmptyAvailableRequests()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -286,7 +296,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void Read_WithSwaggerV1InputAndNoPaths_ReturnsEmptyListOfEndPointMetaData()
+        public void Read_WithSwaggerV1InputAndNoPath_ReturnsEmptyListOfEndPointMetaData()
         {
             string json = @"{
   ""swaggerVersion"": ""1.0.0"",
@@ -298,6 +308,48 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
 
             Assert.Empty(endpointMetadata);
+        }
+
+        [Fact]
+        public void Read_WithSwaggerV1InputAndNoMethods_ReturnsEndPointMetadataWithNoAvailableRequests()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+      ""operations"": [
+        {
+        }
+      ]
+    }
+  ]
+}";
+            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/user/logout", endpointMetadata[0].Path);
+            Assert.Empty(availableRequests);
+        }
+
+        [Fact]
+        public void Read_WithSwaggerV1InputAndNoOperations_ReturnsEndPointMetadataWithNoAvailableRequests()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+    }
+  ]
+}";
+            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/user/logout", endpointMetadata[0].Path);
+            Assert.Empty(availableRequests);
         }
 
         [Fact]

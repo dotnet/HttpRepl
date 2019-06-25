@@ -97,7 +97,10 @@ namespace Microsoft.HttpRepl.OpenApi
                                 parametersByContentType[value.ToString()] = parameters;
                             }
 
-                            requestMethods[method] = parametersByContentType;
+                            if (method != null)
+                            {
+                                requestMethods[method] = parametersByContentType;
+                            }
                         }
                     }
 
