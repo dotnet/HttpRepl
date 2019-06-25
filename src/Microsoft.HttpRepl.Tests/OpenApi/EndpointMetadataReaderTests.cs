@@ -17,7 +17,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     ""title"": ""My API""
   }
 }";
-
             JObject jobject = JObject.Parse(json);
             EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
 
@@ -115,7 +114,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
             KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> firstRequest = availableRequests.First();
@@ -178,7 +176,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
 
             Assert.Single(endpointMetadata);
@@ -207,7 +204,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
 
             Assert.Single(endpointMetadata);
@@ -262,7 +258,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
             KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> firstRequest = availableRequests.First();
@@ -360,7 +355,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
             KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> firstRequest = availableRequests.First();
@@ -422,7 +416,6 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
 
             EndpointMetadata endpointMetadata1 = endpointMetadata[0];
