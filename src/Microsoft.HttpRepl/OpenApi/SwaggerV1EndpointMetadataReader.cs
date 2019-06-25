@@ -24,9 +24,9 @@ namespace Microsoft.HttpRepl.OpenApi
                 globalConsumes = new JArray();
             }
 
-            if (document["apis"] is JObject obj)
+            if (document["apis"] is JArray jArray)
             {
-                foreach (JProperty property in obj.Properties())
+                foreach (JObject obj in jArray)
                 {
                     string path = obj["path"]?.ToString();
 
@@ -96,6 +96,8 @@ namespace Microsoft.HttpRepl.OpenApi
                             {
                                 parametersByContentType[value.ToString()] = parameters;
                             }
+
+                            requestMethods[method] = parametersByContentType;
                         }
                     }
 
