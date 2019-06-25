@@ -240,15 +240,17 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            string inputBufferTextBeforeKeyPress = "g";
-            string inputBufferTextAfterKeyPress = "get";
+            string inputBufferTextBeforeKeyPress = "c";
+            string inputBufferTextAfterKeyPress = "cd";
 
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
             DefaultCommandDispatcher<object> defaultCommandDispatcher = shellState.CommandDispatcher as DefaultCommandDispatcher<object>;
-            string commandName = "get";
-            defaultCommandDispatcher.AddCommand(new MockCommand(commandName));
+            string cdCommandName = "cd";
+            defaultCommandDispatcher.AddCommand(new MockCommand(cdCommandName));
+            string clearCommandName = "clear";
+            defaultCommandDispatcher.AddCommand(new MockCommand(clearCommandName));
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -257,7 +259,7 @@ namespace Microsoft.Repl.Tests
         }
 
         [Fact]
-        public async Task RunAsync_WithShiftTabKeyPress_UpdatesInputBufferWithFirstEntryFromSuggestionList()
+        public async Task RunAsync_WithShiftTabKeyPress_UpdatesInputBufferWithLastEntryFromSuggestionList()
         {
             ConsoleKeyInfo consoleKeyInfo = new ConsoleKeyInfo(keyChar: '\0',
                 key: ConsoleKey.Tab,
@@ -270,15 +272,17 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            string inputBufferTextBeforeKeyPress = "g";
-            string inputBufferTextAfterKeyPress = "get";
+            string inputBufferTextBeforeKeyPress = "c";
+            string inputBufferTextAfterKeyPress = "clear";
 
             IShellState shellState = shell.ShellState;
             shellState.InputManager.SetInput(shellState, inputBufferTextBeforeKeyPress);
 
             DefaultCommandDispatcher<object> defaultCommandDispatcher = shellState.CommandDispatcher as DefaultCommandDispatcher<object>;
-            string commandName = "get";
-            defaultCommandDispatcher.AddCommand(new MockCommand(commandName));
+            string cdCommandName = "cd";
+            defaultCommandDispatcher.AddCommand(new MockCommand(cdCommandName));
+            string clearCommandName = "clear";
+            defaultCommandDispatcher.AddCommand(new MockCommand(clearCommandName));
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
