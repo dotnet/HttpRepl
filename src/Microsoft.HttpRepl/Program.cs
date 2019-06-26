@@ -14,7 +14,6 @@ using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Microsoft.HttpRepl.Commands;
-using System.Net.Http;
 
 namespace Microsoft.HttpRepl
 {
