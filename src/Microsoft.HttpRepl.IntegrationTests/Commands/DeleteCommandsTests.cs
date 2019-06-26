@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class DeleteCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<DeleteCommandsConfig>>
+    public class DeleteCommandTests : HttpCommandTests<DeleteCommand>, IClassFixture<HttpCommandsFixture<DeleteCommandsConfig>>
     {
         private readonly DeleteCommandsConfig _config;
         public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture)
@@ -16,8 +16,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(command: new DeleteCommand(),
-                                     commandText: "DELETE",
+            await VerifyErrorMessage(commandText: "DELETE",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -26,8 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            await VerifyResponse(command: new DeleteCommand(),
-                                 commandText: "DELETE",
+            await VerifyResponse(commandText: "DELETE",
                                  baseAddress: _config.BaseAddress,
                                  path: "a/file/path.txt",
                                  expectedResponseLines: 5,
@@ -37,8 +35,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            await VerifyResponse(command: new DeleteCommand(),
-                                 commandText: "DELETE",
+            await VerifyResponse(commandText: "DELETE",
                                  baseAddress: _config.BaseAddress,
                                  path: null,
                                  expectedResponseLines: 5,

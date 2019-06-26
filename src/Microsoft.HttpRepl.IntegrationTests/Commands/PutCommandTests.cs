@@ -7,18 +7,18 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class PostCommandTests : HttpCommandTests<PostCommand>, IClassFixture<HttpCommandsFixture<PostCommandsConfig>>
+    public class PutCommandTests : HttpCommandTests<PutCommand>, IClassFixture<HttpCommandsFixture<PutCommandsConfig>>
     {
-        private readonly PostCommandsConfig _config;
-        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
+        private readonly PutCommandsConfig _config;
+        public PutCommandTests(HttpCommandsFixture<PutCommandsConfig> PutCommandsFixture)
         {
-            _config = postCommandsFixture.Config;
+            _config = PutCommandsFixture.Config;
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "POST",
+            await VerifyErrorMessage(commandText: "PUT",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -27,52 +27,52 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_OnlyBaseAddressWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --content \"Test Post Body\"",
+            await VerifyResponse(commandText: "PUT --content \"Test Put Body\"",
                                  baseAddress: _config.BaseAddress,
                                  path: null,
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body\"");
+                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --content \"Test Post Body\"",
+            await VerifyResponse(commandText: "PUT --content \"Test Put Body\"",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body\"");
+                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithNoBodyRequired_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --no-body",
+            await VerifyResponse(commandText: "PUT --no-body",
                                  baseAddress: _config.BaseAddress,
                                  path: "no/body/required",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"\"");
+                                 expectedResponseContent: "This is a test response from a PUT: \"\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse()
         {
-            await VerifyResponse(commandText: $"POST --file \"{nameof(PostCommandTests)}-{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
+            await VerifyResponse(commandText: $"PUT --file \"{nameof(PutCommandTests)}-{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body From File\"");
+                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body From File\"");
         }
     }
 
-    public class PostCommandsConfig : SampleApiServerConfig
+    public class PutCommandsConfig : SampleApiServerConfig
     {
-        public PostCommandsConfig()
+        public PutCommandsConfig()
         {
-            Port = SampleApiServerPorts.PostCommandTests;
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "this/is/a/test/route", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "no/body/required", RespondWithBody));
+            Port = SampleApiServerPorts.PutCommandTests;
+            Routes.Add(new DynamicSampleApiServerRoute("PUT", "", RespondWithBody));
+            Routes.Add(new DynamicSampleApiServerRoute("PUT", "this/is/a/test/route", RespondWithBody));
+            Routes.Add(new DynamicSampleApiServerRoute("PUT", "no/body/required", RespondWithBody));
         }
 
         private async Task RespondWithBody(HttpContext context)
@@ -80,7 +80,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             byte[] buffer = new byte[64];
             int bytesRead = await context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
             string body = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            await context.Response.WriteAsync($"This is a test response from a POST: \"{body}\"");
+            await context.Response.WriteAsync($"This is a test response from a PUT: \"{body}\"");
         }
     }
 }

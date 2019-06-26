@@ -5,6 +5,9 @@
     it is a .targets file and imported via Directory.Build.targets.
   -->
   <ItemGroup>
+    <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.6" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Update="Moq" Version="4.10.1" PrivateAssets="All" />
     <PackageReference Update="Newtonsoft.Json" Version="11.0.2" PrivateAssets="All" />
   </ItemGroup>

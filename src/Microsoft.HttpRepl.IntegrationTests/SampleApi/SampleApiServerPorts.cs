@@ -11,5 +11,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
         public const int DeleteCommandTests = 5052;
         public const int HeadCommandTests = 5053;
         public const int OptionsCommandTests = 5054;
+        public const int PutCommandTests = 5055;
+        public const int PatchCommandTests = 5056;
     }
 }

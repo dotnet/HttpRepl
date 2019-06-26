@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Formatting;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Suggestions;
@@ -39,9 +41,16 @@ namespace Microsoft.HttpRepl.Commands
 
         private CommandInputSpecification _inputSpec;
 
+        private readonly IFileSystem _fileSystem;
+
         protected abstract string Verb { get; }
 
         protected abstract bool RequiresBody { get; }
+
+        public BaseHttpCommand(IServiceProvider serviceProvider)
+        {
+            _fileSystem = serviceProvider.GetService<IFileSystem>();
+        }
 
         public override CommandInputSpecification InputSpec
         {
@@ -133,7 +142,7 @@ namespace Microsoft.HttpRepl.Commands
                     {
                         filePath = commandInput.Options[BodyFileOption][0].Text;
 
-                        if (!File.Exists(filePath))
+                        if (!_fileSystem.Exists(filePath))
                         {
                             shellState.ConsoleManager.Error.WriteLine($"Content file {filePath} does not exist".SetColor(programState.ErrorColor));
                             return;
@@ -153,13 +162,13 @@ namespace Microsoft.HttpRepl.Commands
                         }
 
                         deleteFile = true;
-                        filePath = Path.GetTempFileName();
+                        filePath = _fileSystem.GetTempFileName();
 
                         string exampleBody = programState.GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb);
 
                         if (!string.IsNullOrEmpty(exampleBody))
                         {
-                            File.WriteAllText(filePath, exampleBody);
+                            _fileSystem.WriteAllText(filePath, exampleBody);
                         }
 
                         string defaultEditorArguments = programState.GetStringPreference(WellKnownPreference.DefaultEditorArguments) ?? "";
@@ -187,7 +196,7 @@ namespace Microsoft.HttpRepl.Commands
                 byte[] data = noBody 
                     ? new byte[0] 
                     : string.IsNullOrEmpty(bodyContent) 
-                        ? File.ReadAllBytes(filePath) 
+                        ? _fileSystem.ReadAllBytes(filePath) 
                         : Encoding.UTF8.GetBytes(bodyContent);
 
                 HttpContent content = new ByteArrayContent(data);
@@ -196,7 +205,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (deleteFile)
                 {
-                    File.Delete(filePath);
+                    _fileSystem.Delete(filePath);
                 }
 
                 foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
@@ -224,10 +233,10 @@ namespace Microsoft.HttpRepl.Commands
             string bodyTarget = commandInput.Options[ResponseBodyFileOption].FirstOrDefault()?.Text ?? commandInput.Options[ResponseFileOption].FirstOrDefault()?.Text;
 
             HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-            await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
+            await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, _fileSystem, cancellationToken).ConfigureAwait(false);
         }
 
-        private static async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
+        private static async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, IFileSystem fileSystem, CancellationToken cancellationToken)
         {
             RequestConfig requestConfig = new RequestConfig(programState);
             ResponseConfig responseConfig = new ResponseConfig(programState);
@@ -290,7 +299,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (headersTargetFile != null)
             {
-                headerFileWriter = new StreamWriter(File.Create(headersTargetFile));
+                headerFileWriter = new StreamWriter(fileSystem.Create(headersTargetFile));
             }
             else
             {
@@ -315,7 +324,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (bodyTargetFile != null)
                 {
-                    bodyFileWriter = new StreamWriter(File.Create(bodyTargetFile));
+                    bodyFileWriter = new StreamWriter(fileSystem.Create(bodyTargetFile));
                 }
                 else
                 {

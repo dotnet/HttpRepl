@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class HeadCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<HeadCommandsConfig>>
+    public class HeadCommandTests : HttpCommandTests<HeadCommand>, IClassFixture<HttpCommandsFixture<HeadCommandsConfig>>
     {
         private readonly HeadCommandsConfig _config;
         public HeadCommandTests(HttpCommandsFixture<HeadCommandsConfig> headCommandsFixture)
@@ -16,8 +16,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(command: new HeadCommand(),
-                                     commandText: "HEAD",
+            await VerifyErrorMessage(commandText: "HEAD",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -26,8 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyHeaders()
         {
-            await VerifyHeaders(command: new HeadCommand(),
-                                commandText: "HEAD",
+            await VerifyHeaders(commandText: "HEAD",
                                 baseAddress: _config.BaseAddress,
                                 path: "this/is/a/test/route",
                                 expectedResponseLines: 5,
@@ -37,8 +35,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyHeaders()
         {
-            await VerifyHeaders(command: new HeadCommand(),
-                                commandText: "HEAD",
+            await VerifyHeaders(commandText: "HEAD",
                                 baseAddress: _config.BaseAddress,
                                 path: null,
                                 expectedResponseLines: 5,
