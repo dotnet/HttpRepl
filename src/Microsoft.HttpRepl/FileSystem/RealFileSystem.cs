@@ -12,6 +12,7 @@ namespace Microsoft.HttpRepl.FileSystem
 
         public void WriteAllTextToFile(string path, string contents)
         {
+            VerifyDirectoryExists(path);
             File.WriteAllText(path, contents);
         }
 
@@ -27,6 +28,7 @@ namespace Microsoft.HttpRepl.FileSystem
 
         public void WriteAllLinesToFile(string path, IEnumerable<string> contents)
         {
+            VerifyDirectoryExists(path);
             File.WriteAllLines(path, contents);
         }
 
@@ -38,6 +40,15 @@ namespace Microsoft.HttpRepl.FileSystem
         public string GetTempFileName()
         {
             return Path.GetTempFileName();
+        }
+
+        private void VerifyDirectoryExists(string path)
+        {
+            string directoryName = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
         }
     }
 }
