@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -70,6 +73,56 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithValidInput_SetsHttpStateSwaggerStructure()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api/Employees"": {
+      ""get"": {
+        ""tags"": [ ""Employees"" ],
+        ""operationId"": ""GetEmployee"",
+        ""consumes"": [],
+        ""produces"": [ ""text/plain"", ""application/json"", ""text/json"" ],
+        ""parameters"": [],
+        ""responses"": {
+          ""200"": {
+            ""description"": ""Success"",
+            ""schema"": {
+              ""uniqueItems"": false,
+              ""type"": ""array""
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+
+            MockedShellState shellState = new MockedShellState();
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response).ConfigureAwait(false);
+            List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
+
+            Assert.Single(directoryNames);
+            Assert.Equal("api", directoryNames.First());
+        }
+
+        private async Task<IDirectoryStructure> GetDirectoryStructure(MockedShellState shellState, string response)
+        {
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            responseMessage.Content = new MockHttpContent(response);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(responseMessage);
+            HttpClient client = new HttpClient(messageHandler);
+            HttpState httpState = new HttpState(client);
+            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1 http://localhost:5050/somePath");
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            return httpState.SwaggerStructure;
         }
 
         private void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
