@@ -44,11 +44,7 @@ namespace Microsoft.HttpRepl.FileSystem
 
         private void VerifyDirectoryExists(string path)
         {
-            string directoryName = Path.GetDirectoryName(path);
-            if (!Directory.Exists(directoryName))
-            {
-                Directory.CreateDirectory(directoryName);
-            }
+            Directory.CreateDirectory(Path.GetDirectoryName(path));   
         }
     }
 }
