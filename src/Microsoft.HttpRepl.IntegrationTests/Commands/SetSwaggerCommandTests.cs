@@ -94,7 +94,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     }
   }
 }";
-
             MockedShellState shellState = new MockedShellState();
             IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
@@ -151,7 +150,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     }
   }
 }";
-
             MockedShellState shellState = new MockedShellState();
             IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
