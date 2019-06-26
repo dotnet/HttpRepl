@@ -43,11 +43,11 @@ namespace Microsoft.HttpRepl
 
         public Uri SwaggerEndpoint { get; set; }
 
-        public HttpState(IFileSystem fileSystem, IPreferences preferences)
+        public HttpState(IFileSystem fileSystem, IPreferences preferences, HttpClient httpClient)
         {
             _fileSystem = fileSystem;
             _preferences = preferences;
-            Client = new HttpClient();
+            Client = httpClient;
             PathSections = new Stack<string>();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
