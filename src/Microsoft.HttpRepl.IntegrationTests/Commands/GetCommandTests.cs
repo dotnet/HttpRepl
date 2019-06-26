@@ -1,15 +1,15 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
-
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class GetCommandTests : HttpCommandTests<GetCommand>, IClassFixture<HttpCommandsFixture<GetCommandsConfig>>
     {
         private readonly GetCommandsConfig _config;
-        public GetCommandTests(HttpCommandsFixture<GetCommandsConfig> getCommandsFixture)
+        public GetCommandTests(HttpCommandsFixture<GetCommandsConfig> getCommandsFixture) : base(new GetCommand(new MockedFileSystem()))
         {
             _config = getCommandsFixture.Config;
         }

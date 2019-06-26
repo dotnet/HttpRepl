@@ -5,37 +5,37 @@ namespace Microsoft.HttpRepl.FileSystem
 {
     internal class RealFileSystem : IFileSystem
     {
-        public bool Exists(string path)
+        public bool FileExists(string path)
         {
             return File.Exists(path);
         }
 
-        public void WriteAllText(string path, string contents)
+        public void WriteAllTextToFile(string path, string contents)
         {
             File.WriteAllText(path, contents);
         }
 
-        public byte[] ReadAllBytes(string path)
+        public byte[] ReadAllBytesFromFile(string path)
         {
             return File.ReadAllBytes(path);
         }
 
-        public string[] ReadAllLines(string path)
+        public string[] ReadAllLinesFromFile(string path)
         {
             return File.ReadAllLines(path);
         }
 
-        public void WriteAllLines(string path, IEnumerable<string> contents)
+        public void WriteAllLinesToFile(string path, IEnumerable<string> contents)
         {
             File.WriteAllLines(path, contents);
         }
 
-        public void Delete(string path)
+        public void DeleteFile(string path)
         {
             File.Delete(path);
         }
 
-        public Stream Create(string path)
+        public Stream CreateFile(string path)
         {
             return File.Create(path);
         }

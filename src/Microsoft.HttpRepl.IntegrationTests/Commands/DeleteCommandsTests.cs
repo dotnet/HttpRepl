@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
 
@@ -7,8 +9,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class DeleteCommandTests : HttpCommandTests<DeleteCommand>, IClassFixture<HttpCommandsFixture<DeleteCommandsConfig>>
     {
+        private static readonly IFileSystem _fileSystem = new MockedFileSystem();
+
         private readonly DeleteCommandsConfig _config;
-        public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture)
+        
+        public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture) : base(new DeleteCommand(_fileSystem))
         {
             _config = deleteCommandsFixture.Config;
         }

@@ -2,10 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.Repl;
@@ -19,32 +17,8 @@ namespace Microsoft.HttpRepl
     {
         static async Task Main(string[] args)
         {
-            var serviceProvider = new ServiceCollection()
-                .AddSingleton<IFileSystem, RealFileSystem>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, ChangeDirectoryCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, ClearCommand>()
-                //.AddSingleton<ICommand<HttpState, ICoreParseResult>, ConfigCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, DeleteCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, EchoCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, ExitCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, HeadCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, HelpCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, GetCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, ListCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, OptionsCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, PatchCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, PrefCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, PostCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, PutCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, RunCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, SetBaseCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, SetDiagCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, SetHeaderCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, SetSwaggerCommand>()
-                .AddSingleton<ICommand<HttpState, ICoreParseResult>, UICommand>()
-                .BuildServiceProvider();
-
-            HttpState state = new HttpState(serviceProvider.GetService<IFileSystem>());
+            IFileSystem fileSystem = new RealFileSystem();
+            HttpState state = new HttpState(fileSystem);
 
             if (Console.IsOutputRedirected)
             {
@@ -53,13 +27,27 @@ namespace Microsoft.HttpRepl
             }
 
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
-
-            IEnumerable<ICommand<HttpState, ICoreParseResult>> commands = serviceProvider.GetServices<ICommand<HttpState, ICoreParseResult>>();
-
-            foreach (ICommand<HttpState, ICoreParseResult> command in commands)
-            {
-                dispatcher.AddCommand(command);
-            }
+            dispatcher.AddCommand(new ChangeDirectoryCommand());
+            dispatcher.AddCommand(new ClearCommand());
+            //dispatcher.AddCommand(new ConfigCommand());
+            dispatcher.AddCommand(new DeleteCommand(fileSystem));
+            dispatcher.AddCommand(new EchoCommand());
+            dispatcher.AddCommand(new ExitCommand());
+            dispatcher.AddCommand(new HeadCommand(fileSystem));
+            dispatcher.AddCommand(new HelpCommand());
+            dispatcher.AddCommand(new GetCommand(fileSystem));
+            dispatcher.AddCommand(new ListCommand());
+            dispatcher.AddCommand(new OptionsCommand(fileSystem));
+            dispatcher.AddCommand(new PatchCommand(fileSystem));
+            dispatcher.AddCommand(new PrefCommand());
+            dispatcher.AddCommand(new PostCommand(fileSystem));
+            dispatcher.AddCommand(new PutCommand(fileSystem));
+            dispatcher.AddCommand(new RunCommand(fileSystem));
+            dispatcher.AddCommand(new SetBaseCommand());
+            dispatcher.AddCommand(new SetDiagCommand());
+            dispatcher.AddCommand(new SetHeaderCommand());
+            dispatcher.AddCommand(new SetSwaggerCommand());
+            dispatcher.AddCommand(new UICommand());
 
             CancellationTokenSource source = new CancellationTokenSource();
             Shell shell = new Shell(dispatcher);

@@ -4,37 +4,31 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.HttpRepl.FileSystem;
-using Microsoft.HttpRepl.IntegrationTests.Commands;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 {
     internal class MockedFileSystem : IFileSystem
     {
-        private readonly Dictionary<string, MockedFile> _files = new Dictionary<string, MockedFile>()
-        {
-            // Setup the "files" that should exist in the file system for the various tests here.
-            { $"{nameof(PostCommandTests)}-{nameof(PostCommandTests.ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", new MockedFile("Test Post Body From File") },
-            { $"{nameof(PutCommandTests)}-{nameof(PutCommandTests.ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", new MockedFile("Test Put Body From File") },
-            { $"{nameof(PatchCommandTests)}-{nameof(PatchCommandTests.ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", new MockedFile("Test Patch Body From File") }
-        };
+        private readonly Dictionary<string, MockedFile> _files = new Dictionary<string, MockedFile>();
 
         internal string GetFile(string path)
         {
             return _files[path].Content;
         }
 
-        internal void SetFile(string path, string contents)
+        internal MockedFileSystem AddFile(string path, string contents)
         {
-            _files[path].Content = contents;
+            _files[path] = new MockedFile(contents);
+            return this;
         }
 
-        public Stream Create(string path)
+        public Stream CreateFile(string path)
         {
             _files[path] = new MockedFile("");
             return _files[path].Stream;
         }
 
-        public void Delete(string path)
+        public void DeleteFile(string path)
         {
             if (_files.ContainsKey(path))
             {
@@ -42,7 +36,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             }
         }
 
-        public bool Exists(string path)
+        public bool FileExists(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -52,14 +46,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             return _files.ContainsKey(path);
         }
 
-        public byte[] ReadAllBytes(string path)
+        public byte[] ReadAllBytesFromFile(string path)
         {
             if (path == null)
             {
                 throw new ArgumentNullException(path);
             }
 
-            if (!Exists(path))
+            if (!FileExists(path))
             {
                 throw new FileNotFoundException();
             }
@@ -67,18 +61,18 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             return _files[path].Stream.ToArray();
         }
 
-        public string[] ReadAllLines(string path)
+        public string[] ReadAllLinesFromFile(string path)
         {
             string alltext = _files[path].Content;
             return alltext.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
 
-        public void WriteAllLines(string path, IEnumerable<string> contents)
+        public void WriteAllLinesToFile(string path, IEnumerable<string> contents)
         {
             _files[path] = new MockedFile(string.Join(Environment.NewLine, contents));
         }
 
-        public void WriteAllText(string path, string contents)
+        public void WriteAllTextToFile(string path, string contents)
         {
             _files[path].Content = contents;
         }
@@ -115,13 +109,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             {
                 var bytes = Encoding.UTF8.GetBytes(value);
                 Stream.SetLength(bytes.Length);
+                Stream.Position = 0;
                 Stream.Write(bytes, 0, bytes.Length);
             }
         }
 
         public MockedFile(string content)
         {
-            Stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            Stream = new MemoryStream();
+            Content = content;
         }
     }
 }

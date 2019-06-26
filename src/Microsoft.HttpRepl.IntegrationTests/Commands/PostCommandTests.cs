@@ -2,6 +2,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
 
@@ -9,8 +11,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class PostCommandTests : HttpCommandTests<PostCommand>, IClassFixture<HttpCommandsFixture<PostCommandsConfig>>
     {
+        private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Post Body From File");
+
         private readonly PostCommandsConfig _config;
-        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
+        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture) : base(new PostCommand(_fileSystem))
         {
             _config = postCommandsFixture.Config;
         }
@@ -57,7 +61,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse()
         {
-            await VerifyResponse(commandText: $"POST --file \"{nameof(PostCommandTests)}-{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
+            await VerifyResponse(commandText: $"POST --file \"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,

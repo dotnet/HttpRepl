@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public class OptionsCommandTests : HttpCommandTests<OptionsCommand>, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
     {
         private readonly OptionsCommandsConfig _config;
-        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture)
+        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture) : base(new OptionsCommand(new MockedFileSystem()))
         {
             _config = optionsCommandsFixture.Config;
         }

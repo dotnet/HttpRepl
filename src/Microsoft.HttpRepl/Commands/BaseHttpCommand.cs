@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Formatting;
 using Microsoft.HttpRepl.Preferences;
@@ -47,9 +46,9 @@ namespace Microsoft.HttpRepl.Commands
 
         protected abstract bool RequiresBody { get; }
 
-        public BaseHttpCommand(IServiceProvider serviceProvider)
+        public BaseHttpCommand(IFileSystem fileSystem)
         {
-            _fileSystem = serviceProvider.GetService<IFileSystem>();
+            _fileSystem = fileSystem;
         }
 
         public override CommandInputSpecification InputSpec
@@ -142,7 +141,7 @@ namespace Microsoft.HttpRepl.Commands
                     {
                         filePath = commandInput.Options[BodyFileOption][0].Text;
 
-                        if (!_fileSystem.Exists(filePath))
+                        if (!_fileSystem.FileExists(filePath))
                         {
                             shellState.ConsoleManager.Error.WriteLine($"Content file {filePath} does not exist".SetColor(programState.ErrorColor));
                             return;
@@ -168,7 +167,7 @@ namespace Microsoft.HttpRepl.Commands
 
                         if (!string.IsNullOrEmpty(exampleBody))
                         {
-                            _fileSystem.WriteAllText(filePath, exampleBody);
+                            _fileSystem.WriteAllTextToFile(filePath, exampleBody);
                         }
 
                         string defaultEditorArguments = programState.GetStringPreference(WellKnownPreference.DefaultEditorArguments) ?? "";
@@ -196,7 +195,7 @@ namespace Microsoft.HttpRepl.Commands
                 byte[] data = noBody 
                     ? new byte[0] 
                     : string.IsNullOrEmpty(bodyContent) 
-                        ? _fileSystem.ReadAllBytes(filePath) 
+                        ? _fileSystem.ReadAllBytesFromFile(filePath) 
                         : Encoding.UTF8.GetBytes(bodyContent);
 
                 HttpContent content = new ByteArrayContent(data);
@@ -205,7 +204,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (deleteFile)
                 {
-                    _fileSystem.Delete(filePath);
+                    _fileSystem.DeleteFile(filePath);
                 }
 
                 foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
@@ -299,7 +298,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (headersTargetFile != null)
             {
-                headerFileWriter = new StreamWriter(fileSystem.Create(headersTargetFile));
+                headerFileWriter = new StreamWriter(fileSystem.CreateFile(headersTargetFile));
             }
             else
             {
@@ -324,7 +323,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (bodyTargetFile != null)
                 {
-                    bodyFileWriter = new StreamWriter(fileSystem.Create(bodyTargetFile));
+                    bodyFileWriter = new StreamWriter(fileSystem.CreateFile(bodyTargetFile));
                 }
                 else
                 {

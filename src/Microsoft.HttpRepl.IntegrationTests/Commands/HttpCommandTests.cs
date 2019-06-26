@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
@@ -13,16 +12,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public abstract class HttpCommandTests<T> where T : BaseHttpCommand
     {
-        public IServiceProvider ServiceProvider { get; }
+        public IFileSystem FileSystem { get; } = new MockedFileSystem();
 
-        public T Command => ServiceProvider.GetService<T>();
+        private readonly T _command;
 
-        public HttpCommandTests()
+        public HttpCommandTests(T command)
         {
-            ServiceProvider = new ServiceCollection()
-                .AddSingleton<IFileSystem, MockedFileSystem>()
-                .AddSingleton<T>()
-                .BuildServiceProvider();
+            _command = command;
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)
@@ -35,7 +31,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
 
-            await Command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
         }
@@ -48,7 +44,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
 
-            await Command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, shellState.Output.Count);
             Assert.Equal(expectedResponseContent, shellState.Output[expectedResponseLines - 1]);
@@ -62,7 +58,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
 
-            await Command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedResponseLines, shellState.Output.Count);
             Assert.Equal(expectedHeader, shellState.Output[expectedResponseLines - 2]);
@@ -70,7 +66,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private HttpState GetHttpState(string baseAddress, string path)
         {
-            HttpState httpState = new HttpState(ServiceProvider.GetService<IFileSystem>());
+            HttpState httpState = new HttpState(FileSystem);
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {

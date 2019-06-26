@@ -94,9 +94,9 @@ namespace Microsoft.HttpRepl
 
         private void LoadPreferences()
         {
-            if (_fileSystem.Exists(PrefsFilePath))
+            if (_fileSystem.FileExists(PrefsFilePath))
             {
-                string[] prefsFile = _fileSystem.ReadAllLines(PrefsFilePath);
+                string[] prefsFile = _fileSystem.ReadAllLinesFromFile(PrefsFilePath);
 
                 foreach (string line in prefsFile)
                 {
@@ -142,7 +142,7 @@ namespace Microsoft.HttpRepl
 
             try
             {
-                _fileSystem.WriteAllLines(PrefsFilePath, lines);
+                _fileSystem.WriteAllLinesToFile(PrefsFilePath, lines);
                 return true;
             }
             catch
@@ -301,7 +301,7 @@ namespace Microsoft.HttpRepl
 
             if (sections.Count > 1)
             {
-                if (!requiresBody || !_fileSystem.Exists(sections[1]))
+                if (!requiresBody || !_fileSystem.FileExists(sections[1]))
                 {
                     if (sections[1].Length > 0)
                     {

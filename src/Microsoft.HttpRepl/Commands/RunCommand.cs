@@ -35,7 +35,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (!_fileSystem.Exists(parseResult.Sections[1]))
+            if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
                 shellState.ConsoleManager.Error.WriteLine($"Could not file script file {parseResult.Sections[1]}");
                 return;
@@ -47,7 +47,7 @@ namespace Microsoft.HttpRepl.Commands
                 suppressScriptLinesInHistory = !string.Equals(parseResult.Sections[2], "+history");
             }
 
-            string[] lines = _fileSystem.ReadAllLines(parseResult.Sections[1]);
+            string[] lines = _fileSystem.ReadAllLinesFromFile(parseResult.Sections[1]);
             IScriptExecutor scriptExecutor = new ScriptExecutor<HttpState, ICoreParseResult>(suppressScriptLinesInHistory);
             await scriptExecutor.ExecuteScriptAsync(shellState, lines, cancellationToken).ConfigureAwait(false);
         }
