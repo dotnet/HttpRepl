@@ -35,7 +35,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 sections2");
             HttpState httpState = new HttpState(null);
-
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -49,7 +48,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1  ");
             HttpState httpState = new HttpState(null);
-
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -63,7 +61,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1 section3");
             HttpState httpState = new HttpState(null);
-
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
