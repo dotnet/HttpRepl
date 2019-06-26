@@ -269,17 +269,23 @@ namespace Microsoft.HttpRepl.Commands
 
                 consoleManager.WriteLine();
 
+                List<string> responseOutput = new List<string>();
+
                 if (response.RequestMessage.Content != null)
                 {
-                    using (StreamWriter writer = new StreamWriter(new MemoryStream()))
-                    {
-                        await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, writer, cancellationToken).ConfigureAwait(false);
-                    }
+                    
+
+                    await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, cancellationToken).ConfigureAwait(false);
+                    
                 }
 
                 consoleManager.WriteLine();
                 consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
                 consoleManager.WriteLine();
+                foreach (string responseLine in responseOutput)
+                {
+                    consoleManager.WriteLine(responseLine);
+                }
             }
 
             protocolInfo = $"{"HTTP".SetColor(responseConfig.ProtocolNameColor)}{"/".SetColor(responseConfig.ProtocolSeparatorColor)}{response.Version.ToString().SetColor(responseConfig.ProtocolVersionColor)}";
@@ -294,15 +300,12 @@ namespace Microsoft.HttpRepl.Commands
                 responseHeaders = responseHeaders.Union(response.Content.Headers);
             }
 
-            StreamWriter headerFileWriter;
+            List<string> headerFileOutput = null;
+            List<string> bodyFileOutput = null;
 
             if (headersTargetFile != null)
             {
-                headerFileWriter = new StreamWriter(_fileSystem.CreateFile(headersTargetFile));
-            }
-            else
-            {
-                headerFileWriter = new StreamWriter(new MemoryStream());
+                headerFileOutput = new List<string>();
             }
 
             foreach (KeyValuePair<string, IEnumerable<string>> header in responseHeaders.OrderBy(x => x.Key))
@@ -311,46 +314,44 @@ namespace Microsoft.HttpRepl.Commands
                 string headerSep = ":".SetColor(responseConfig.HeaderSeparatorColor);
                 string headerValue = string.Join(";".SetColor(responseConfig.HeaderValueSeparatorColor), header.Value.Select(x => x.Trim().SetColor(responseConfig.HeaderValueColor)));
                 consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
-                headerFileWriter.WriteLine($"{header.Key}: {string.Join(";", header.Value.Select(x => x.Trim()))}");
+                headerFileOutput?.Add($"{header.Key}: {string.Join(";", header.Value.Select(x => x.Trim()))}");
             }
 
-            StreamWriter bodyFileWriter;
-            if (!string.Equals(headersTargetFile, bodyTargetFile, StringComparison.Ordinal))
+            if (bodyTargetFile != null)
             {
-                headerFileWriter.Flush();
-                headerFileWriter.Close();
-                headerFileWriter.Dispose();
-
-                if (bodyTargetFile != null)
-                {
-                    bodyFileWriter = new StreamWriter(_fileSystem.CreateFile(bodyTargetFile));
-                }
-                else
-                {
-                    bodyFileWriter = new StreamWriter(new MemoryStream());
-                }
-            }
-            else
-            {
-                headerFileWriter.WriteLine();
-                bodyFileWriter = headerFileWriter;
+                bodyFileOutput = new List<string>();
             }
 
             consoleManager.WriteLine();
 
             if (response.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileWriter, cancellationToken).ConfigureAwait(false);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, cancellationToken).ConfigureAwait(false);
             }
 
-            bodyFileWriter.Flush();
-            bodyFileWriter.Close();
-            bodyFileWriter.Dispose();
+            if (headersTargetFile != null && !string.Equals(headersTargetFile, bodyTargetFile, StringComparison.Ordinal))
+            {
+                headerFileOutput.Add("");
+                IEnumerable<string> allOutput = headerFileOutput.Concat(bodyFileOutput);
+                _fileSystem.WriteAllLinesToFile(headersTargetFile, allOutput);
+            }
+            else
+            {
+                if (headersTargetFile != null && headerFileOutput != null)
+                {
+                    _fileSystem.WriteAllLinesToFile(headersTargetFile, headerFileOutput);
+                }
+
+                if (bodyTargetFile != null && bodyFileOutput != null)
+                {
+                    _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
+                }
+            }
 
             consoleManager.WriteLine();
         }
 
-        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, StreamWriter bodyFileWriter, CancellationToken cancellationToken)
+        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, CancellationToken cancellationToken)
         {
             if (commandInput.Options[StreamingOption].Count > 0)
             {
@@ -373,7 +374,7 @@ namespace Microsoft.HttpRepl.Commands
 
                             string str = new string(buffer.Span.Slice(0, readTask.Result));
                             consoleManager.Write(str);
-                            bodyFileWriter.Write(str);
+                            bodyFileOutput.Add(str);
                         }
                         else
                         {
@@ -405,7 +406,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-JAVASCRIPT", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+JAVASCRIPT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatJsonAsync(programState, consoleManager, content, bodyFileWriter))
+                    if (await FormatJsonAsync(programState, consoleManager, content, bodyFileOutput))
                     {
                         return;
                     }
@@ -417,7 +418,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-XML", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+XML", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatXmlAsync(consoleManager, content, bodyFileWriter))
+                    if (await FormatXmlAsync(consoleManager, content, bodyFileOutput))
                     {
                         return;
                     }
@@ -425,7 +426,7 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
-            bodyFileWriter.WriteLine(responseContent);
+            bodyFileOutput?.Add(responseContent);
             consoleManager.WriteLine(responseContent);
         }
 
@@ -445,14 +446,14 @@ namespace Microsoft.HttpRepl.Commands
             return readTask.IsCompleted;
         }
 
-        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, StreamWriter bodyFileWriter)
+        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, List<string> bodyFileOutput)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
             try
             {
                 XDocument body = XDocument.Parse(responseContent);
                 consoleManager.WriteLine(body.ToString());
-                bodyFileWriter.WriteLine(body.ToString());
+                bodyFileOutput?.Add(body.ToString());
                 return true;
             }
             catch
@@ -462,7 +463,7 @@ namespace Microsoft.HttpRepl.Commands
             return false;
         }
 
-        private static async Task<bool> FormatJsonAsync(HttpState programState, IWritable outputSink, HttpContent content, StreamWriter bodyFileWriter)
+        private static async Task<bool> FormatJsonAsync(HttpState programState, IWritable outputSink, HttpContent content, List<string> bodyFileOutput)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -471,7 +472,7 @@ namespace Microsoft.HttpRepl.Commands
                 JsonConfig config = new JsonConfig(programState);
                 string formatted = JsonVisitor.FormatAndColorize(config, responseContent);
                 outputSink.WriteLine(formatted);
-                bodyFileWriter.WriteLine(JToken.Parse(responseContent).ToString());
+                bodyFileOutput?.Add(JToken.Parse(responseContent).ToString());
                 return true;
             }
             catch

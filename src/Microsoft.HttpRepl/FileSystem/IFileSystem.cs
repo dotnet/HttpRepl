@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.IO;
 
 namespace Microsoft.HttpRepl.FileSystem
 {
     public interface IFileSystem
     {
-        Stream CreateFile(string path);
         void DeleteFile(string path);
         bool FileExists(string path);
         string GetTempFileName();

@@ -9,23 +9,12 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 {
     internal class MockedFileSystem : IFileSystem
     {
-        private readonly Dictionary<string, MockedFile> _files = new Dictionary<string, MockedFile>();
-
-        internal string GetFile(string path)
-        {
-            return _files[path].Content;
-        }
+        private readonly Dictionary<string, string> _files = new Dictionary<string, string>();
 
         internal MockedFileSystem AddFile(string path, string contents)
         {
-            _files[path] = new MockedFile(contents);
+            _files[path] = contents;
             return this;
-        }
-
-        public Stream CreateFile(string path)
-        {
-            _files[path] = new MockedFile("");
-            return _files[path].Stream;
         }
 
         public void DeleteFile(string path)
@@ -58,29 +47,29 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
                 throw new FileNotFoundException();
             }
 
-            return _files[path].Stream.ToArray();
+            return Encoding.UTF8.GetBytes(_files[path]);
         }
 
         public string[] ReadAllLinesFromFile(string path)
         {
-            string alltext = _files[path].Content;
+            string alltext = _files[path];
             return alltext.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
 
         public void WriteAllLinesToFile(string path, IEnumerable<string> contents)
         {
-            _files[path] = new MockedFile(string.Join(Environment.NewLine, contents));
+            _files[path] = string.Join(Environment.NewLine, contents);
         }
 
         public void WriteAllTextToFile(string path, string contents)
         {
-            _files[path].Content = contents;
+            _files[path] = contents;
         }
 
         public string GetTempFileName()
         {
             string path = GetRandomFileName();
-            _files[path].Content = "";
+            _files[path] = "";
             return path;
         }
 
@@ -91,33 +80,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             rng.GetBytes(bytes);
             string path = Convert.ToBase64String(bytes);
             return path;
-        }
-    }
-
-    internal class MockedFile
-    {
-        public MemoryStream Stream { get; private set; }
-
-        public string Content
-        {
-            get
-            {
-                var bytes = Stream.ToArray();
-                return Encoding.UTF8.GetString(bytes);
-            }
-            set
-            {
-                var bytes = Encoding.UTF8.GetBytes(value);
-                Stream.SetLength(bytes.Length);
-                Stream.Position = 0;
-                Stream.Write(bytes, 0, bytes.Length);
-            }
-        }
-
-        public MockedFile(string content)
-        {
-            Stream = new MemoryStream();
-            Content = content;
         }
     }
 }

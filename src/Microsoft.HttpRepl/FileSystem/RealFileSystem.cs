@@ -35,11 +35,6 @@ namespace Microsoft.HttpRepl.FileSystem
             File.Delete(path);
         }
 
-        public Stream CreateFile(string path)
-        {
-            return File.Create(path);
-        }
-
         public string GetTempFileName()
         {
             return Path.GetTempFileName();
