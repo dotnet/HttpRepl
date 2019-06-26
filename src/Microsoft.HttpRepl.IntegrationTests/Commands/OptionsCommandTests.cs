@@ -9,7 +9,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public class OptionsCommandTests : HttpCommandTests<OptionsCommand>, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
     {
         private readonly OptionsCommandsConfig _config;
-        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture) : base(new OptionsCommand(new MockedFileSystem()))
+        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture)
+            : base(new OptionsCommand(new MockedFileSystem()))
         {
             _config = optionsCommandsFixture.Config;
         }

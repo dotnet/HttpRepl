@@ -13,7 +13,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private readonly DeleteCommandsConfig _config;
         
-        public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture) : base(new DeleteCommand(_fileSystem))
+        public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture)
+            : base(new DeleteCommand(_fileSystem))
         {
             _config = deleteCommandsFixture.Config;
         }

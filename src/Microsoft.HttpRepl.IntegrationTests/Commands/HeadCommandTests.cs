@@ -9,7 +9,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public class HeadCommandTests : HttpCommandTests<HeadCommand>, IClassFixture<HttpCommandsFixture<HeadCommandsConfig>>
     {
         private readonly HeadCommandsConfig _config;
-        public HeadCommandTests(HttpCommandsFixture<HeadCommandsConfig> headCommandsFixture) :  base(new HeadCommand(new MockedFileSystem()))
+        public HeadCommandTests(HttpCommandsFixture<HeadCommandsConfig> headCommandsFixture)
+            :  base(new HeadCommand(new MockedFileSystem()))
         {
             _config = headCommandsFixture.Config;
         }

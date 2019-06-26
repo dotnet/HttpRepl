@@ -14,7 +14,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Post Body From File");
 
         private readonly PostCommandsConfig _config;
-        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture) : base(new PostCommand(_fileSystem))
+        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
+            : base(new PostCommand(_fileSystem))
         {
             _config = postCommandsFixture.Config;
         }

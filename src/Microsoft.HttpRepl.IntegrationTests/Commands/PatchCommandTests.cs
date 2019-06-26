@@ -14,7 +14,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Patch Body From File");
 
         private readonly PatchCommandsConfig _config;
-        public PatchCommandTests(HttpCommandsFixture<PatchCommandsConfig> PatchCommandsFixture) : base(new PatchCommand(_fileSystem))
+        public PatchCommandTests(HttpCommandsFixture<PatchCommandsConfig> PatchCommandsFixture)
+            : base(new PatchCommand(_fileSystem))
         {
             _config = PatchCommandsFixture.Config;
         }

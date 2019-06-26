@@ -9,7 +9,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public class GetCommandTests : HttpCommandTests<GetCommand>, IClassFixture<HttpCommandsFixture<GetCommandsConfig>>
     {
         private readonly GetCommandsConfig _config;
-        public GetCommandTests(HttpCommandsFixture<GetCommandsConfig> getCommandsFixture) : base(new GetCommand(new MockedFileSystem()))
+        public GetCommandTests(HttpCommandsFixture<GetCommandsConfig> getCommandsFixture)
+            : base(new GetCommand(new MockedFileSystem()))
         {
             _config = getCommandsFixture.Config;
         }
