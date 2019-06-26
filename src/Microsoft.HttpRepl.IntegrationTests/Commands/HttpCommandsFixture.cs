@@ -9,7 +9,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         public T Config { get; } = new T();
         
-
         public HttpCommandsFixture()
         {
             _testWebServer = new SampleApiServer(Config);
