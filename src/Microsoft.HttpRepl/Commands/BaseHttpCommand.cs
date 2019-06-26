@@ -232,10 +232,10 @@ namespace Microsoft.HttpRepl.Commands
             string bodyTarget = commandInput.Options[ResponseBodyFileOption].FirstOrDefault()?.Text ?? commandInput.Options[ResponseFileOption].FirstOrDefault()?.Text;
 
             HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-            await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, _fileSystem, cancellationToken).ConfigureAwait(false);
+            await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
         }
 
-        private static async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, IFileSystem fileSystem, CancellationToken cancellationToken)
+        private async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
         {
             RequestConfig requestConfig = new RequestConfig(programState);
             ResponseConfig responseConfig = new ResponseConfig(programState);
@@ -298,7 +298,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (headersTargetFile != null)
             {
-                headerFileWriter = new StreamWriter(fileSystem.CreateFile(headersTargetFile));
+                headerFileWriter = new StreamWriter(_fileSystem.CreateFile(headersTargetFile));
             }
             else
             {
@@ -323,7 +323,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (bodyTargetFile != null)
                 {
-                    bodyFileWriter = new StreamWriter(fileSystem.CreateFile(bodyTargetFile));
+                    bodyFileWriter = new StreamWriter(_fileSystem.CreateFile(bodyTargetFile));
                 }
                 else
                 {
