@@ -222,4 +222,14 @@
   <data name="SetSwaggerCommand_SpecifySwaggerDocument" xml:space="preserve">
     <value>Must specify a swagger document</value>
   </data>
+  <data name="UICommand_Description" xml:space="preserve">
+    <value>ui - Launches the Swagger UI page (if available) in the default browser</value>
+  </data>
+  <data name="UICommand_NotConnectedToServerError" xml:space="preserve">
+    <value>Must be connected to a server to launch Swagger UI</value>
+  </data>
+  <data name="UICommand_UnableToLaunchUriError" xml:space="preserve">
+    <value>Unable to launch {0}</value>
+    <comment>{0} indicates a uri</comment>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
@@ -13,18 +14,104 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class SetSwaggerCommandTests
+    public class SetSwaggerCommandTests : ICommandTestHelper<SetSwaggerCommand>
     {
+        public SetSwaggerCommandTests()
+          : base(new SetSwaggerCommand())
+        {
+        }
+
+        [Fact]
+        public void GetHelpDetails_WithInvalidParseResultSection_ReturnsNull()
+        {
+            string result = GetHelpDetails(parseResultSections: "section1");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetHelpDetails_WithFirstParseResultSectionNotEqualToName_ReturnsNull()
+        {
+            string result = GetHelpDetails(parseResultSections: "section1 section2 section3");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetHelpDetails_WithValidInput_ReturnsDescription()
+        {
+            string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
+            string result = GetHelpDetails(parseResultSections);
+
+            Assert.Equal(Strings.SetSwaggerCommand_Description, result);
+        }
+
+        [Fact]
+        public void GetHelpSummary_ReturnsDescription()
+        {
+            string result = GetHelpSummary();
+
+            Assert.Equal(Strings.SetSwaggerCommand_Description, result);
+        }
+
+        [Fact]
+        public void CanHandle_WithNoParseResultSections_ReturnsNull()
+        {
+            bool? result = CanHandle(parseResultSections: string.Empty);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CanHandle_WithFirstSectionNotEqualToName_ReturnsNull()
+        {
+            bool? result = CanHandle(parseResultSections: "section1 section2 section3");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CanHandle_WithSecondSectionNotEqualToSubCommand_ReturnsNull()
+        {
+            bool? result = CanHandle(parseResultSections: "set section2 section3");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CanHandle_WithValidInput_ReturnsTrue()
+        {
+            string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
+            bool? result = CanHandle(parseResultSections);
+
+            Assert.True(result.Value);
+        }
+
+        [Fact]
+        public void Suggest_WithNoParseResultSections_ReturnsName()
+        {
+            IEnumerable<string> suggestions = GetSuggestions(parseResultSections: string.Empty);
+            string expected = "set";
+
+            Assert.Single(suggestions);
+            Assert.Equal(expected, suggestions.First());
+        }
+
+        [Fact]
+        public void Suggest_WithSelectedSectionAtOne_ReturnsSubCommand()
+        {
+            IEnumerable<string> suggestions = GetSuggestions(parseResultSections: "set swagger");
+            string expected = "swagger";
+
+            Assert.Single(suggestions);
+            Assert.Equal(expected, suggestions.First());
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithExactlyOneParseResultSection_WritesToConsoleManagerError()
         {
             MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1");
-            HttpState httpState = new HttpState(null);
-
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections: "section1", shellState);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
@@ -46,11 +133,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public async Task ExecuteAsync_WithEmptyThirdParseResultSection_WritesToConsoleManagerError()
         {
             MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1  ");
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+            string parseResultSections = "section1 sections2  ";
 
-            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
@@ -59,11 +144,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public async Task ExecuteAsync_WhenThirdSectionIsNotAValidUri_WritesToConsoleManagerError()
         {
             MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1 section3");
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+            string parseResultSections = "section1 sections2 section3";
 
-            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
@@ -166,139 +249,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Assert.Equal("Values", childDirectoryNames.ElementAt(1));
         }
 
-        [Fact]
-        public void GetHelpDetails_WithInvalidParseResultSection_ReturnsNull()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void GetHelpDetails_WithFirstParseResultSectionNotEqualToName_ReturnsNull()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section2 section3");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void GetHelpDetails_WithValidInput_ReturnsDescription()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("set swagger https://localhost:44366/swagger/v1/swagger.json");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
-
-            Assert.Equal(setSwaggerCommand.Description, result);
-        }
-
-        [Fact]
-        public void GetHelpSummary_ReturnsDescription()
-        {
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            string result = setSwaggerCommand.GetHelpSummary(shellState, httpState);
-
-            Assert.Equal(setSwaggerCommand.Description, result);
-        }
-
-        [Fact]
-        public void CanHandle_WithNoParseResultSections_ReturnsNull()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create(string.Empty);
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void CanHandle_WithFirstSectionNotEqualToName_ReturnsNull()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section2 section3");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void CanHandle_WithSecondSectionNotEqualToSubCommand_ReturnsNull()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("set section2 section3");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public void CanHandle_WithValidInput_ReturnsTrue()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("set swagger https://localhost:44366/swagger/v1/swagger.json");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
-
-            Assert.True(result.Value);
-        }
-
-        [Fact]
-        public void Suggest_WithNoParseResultSections_ReturnsName()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create(string.Empty);
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            IEnumerable<string> suggestions = setSwaggerCommand.Suggest(shellState, httpState, parseResult);
-            string expected = "set";
-
-            Assert.Single(suggestions);
-            Assert.Equal(expected, suggestions.First());
-        }
-
-        [Fact]
-        public void Suggest_WithSelectedSectionAtOne_ReturnsSubCommand()
-        {
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("set swagger");
-            MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
-            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
-
-            IEnumerable<string> suggestions = setSwaggerCommand.Suggest(shellState, httpState, parseResult);
-            string expected = "swagger";
-
-            Assert.Single(suggestions);
-            Assert.Equal(expected, suggestions.First());
-        }
-
         private async Task<IDirectoryStructure> GetDirectoryStructure(MockedShellState shellState, string response)
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
@@ -312,13 +262,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             return httpState.SwaggerStructure;
-        }
-
-        private void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
-        {
-            Mock<IWritable> error = Mock.Get(shellState.ConsoleManager.Error);
-
-            error.Verify(s => s.WriteLine(It.IsAny<string>()), Times.Once);
         }
     }
 }
