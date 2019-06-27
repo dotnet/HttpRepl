@@ -320,5 +320,23 @@ namespace Microsoft.HttpRepl.Resources {
                 return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
+        /// </summary>
+        internal static string SetSwaggerCommand_Description {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must specify a swagger document.
+        /// </summary>
+        internal static string SetSwaggerCommand_SpecifySwaggerDocument {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_SpecifySwaggerDocument", resourceCulture);
+            }
+        }
     }
 }

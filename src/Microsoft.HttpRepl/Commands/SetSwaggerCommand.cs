@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.OpenApi;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -23,7 +24,7 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly string Name = "set";
         private static readonly string SubCommand = "swagger";
 
-        public string Description => Resources.Strings.SetSwaggerCommand_HelpSummary;
+        public string Description => Strings.SetSwaggerCommand_Description;
 
         private static void FillDirectoryInfo(DirectoryStructure parent, EndpointMetadata entry)
         {
@@ -243,7 +244,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(parseResult.Sections[2], UriKind.Absolute, out Uri serverUri))
             {
-                shellState.ConsoleManager.Error.WriteLine("Must specify a swagger document".SetColor(programState.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Strings.SetSwaggerCommand_SpecifySwaggerDocument.SetColor(programState.ErrorColor));
             }
             else
             {
