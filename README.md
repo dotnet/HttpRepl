@@ -46,7 +46,7 @@ echo [on/off]  Turns request echoing on or off, show the request that was made w
 exit           Exit the shell.
 
 REPL Customization Commands:
-Use these commands to customize the REPL behavior..
+Use these commands to customize the REPL behavior.
 
 pref [get/set] Allows viewing or changing preferences, e.g. 'pref set editor.command.default 'C:\Program Files\Microsoft VS Code\Code.exe'`
 run            Runs the script at the given path. A script is a set of commands that can be typed with one command per line.

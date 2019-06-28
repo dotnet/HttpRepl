@@ -253,7 +253,7 @@ namespace Microsoft.HttpRepl.Commands
 
             output.AppendLine();
             output.AppendLine("REPL Customization Commands:".Bold().Cyan());
-            output.AppendLine("Use these commands to customize the REPL behavior..");
+            output.AppendLine("Use these commands to customize the REPL behavior.");
             output.AppendLine();
 
             output.AppendLine($"{"pref [get/set]",navCommandColumn}{"Allows viewing or changing preferences, e.g. 'pref set editor.command.default 'C:\\Program Files\\Microsoft VS Code\\Code.exe'`"}");
