@@ -174,9 +174,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     }
   }
 }";
-            MockedShellState shellState = new MockedShellState();
             string parseResultSections = "set swagger http://localhost:5050/somePath";
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response, parseResultSections).ConfigureAwait(false);
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -231,9 +230,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     }
   }
 }";
-            MockedShellState shellState = new MockedShellState();
             string parseResultSections = "set swagger http://localhost:5050/somePath";
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response, parseResultSections).ConfigureAwait(false);
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -248,8 +246,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Assert.Equal("Values", childDirectoryNames.ElementAt(1));
         }
 
-        private async Task<IDirectoryStructure> GetDirectoryStructure(MockedShellState shellState, string response, string parseResultSections)
+        private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections)
         {
+            MockedShellState shellState = new MockedShellState();
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(response);
             MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(responseMessage);
