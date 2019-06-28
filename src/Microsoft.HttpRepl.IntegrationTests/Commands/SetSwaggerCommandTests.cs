@@ -178,7 +178,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
   }
 }";
             MockedShellState shellState = new MockedShellState();
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response).ConfigureAwait(false);
+            string parseResultSections = "set swagger http://localhost:5050/somePath";
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response, parseResultSections).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -234,7 +235,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
   }
 }";
             MockedShellState shellState = new MockedShellState();
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response).ConfigureAwait(false);
+            string parseResultSections = "set swagger http://localhost:5050/somePath";
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(shellState, response, parseResultSections).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -249,14 +251,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Assert.Equal("Values", childDirectoryNames.ElementAt(1));
         }
 
-        private async Task<IDirectoryStructure> GetDirectoryStructure(MockedShellState shellState, string response)
+        private async Task<IDirectoryStructure> GetDirectoryStructure(MockedShellState shellState, string response, string parseResultSections)
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(response);
             MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(responseMessage);
             HttpClient client = new HttpClient(messageHandler);
             HttpState httpState = new HttpState(client);
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 section1 http://localhost:5050/somePath");
+            ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
