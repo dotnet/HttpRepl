@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Resources;
-using Microsoft.Repl;
-using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
-using Moq;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
