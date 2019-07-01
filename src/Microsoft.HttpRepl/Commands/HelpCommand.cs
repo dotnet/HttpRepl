@@ -234,7 +234,7 @@ namespace Microsoft.HttpRepl.Commands
 
             output.AppendLine();
             output.AppendLine("Navigation Commands:".Bold().Cyan());
-            output.AppendLine("The REPL allows you to navigate your URL space and focus on specific APIS that you are working on.");
+            output.AppendLine("The REPL allows you to navigate your URL space and focus on specific APIs that you are working on.");
             output.AppendLine();
 
             output.AppendLine($"{"set base",navCommandColumn}{"Set the base URI. e.g. `set base http://locahost:5000`"}");
@@ -248,17 +248,17 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine();
 
             output.AppendLine($"{"clear",navCommandColumn}{"Removes all text from the shell."}");
-            output.AppendLine($"{"echo [on/off]",navCommandColumn}{"Turns request echoing on or off, show the request that was mode when using request commands."}");
+            output.AppendLine($"{"echo [on/off]",navCommandColumn}{"Turns request echoing on or off, show the request that was made when using request commands."}");
             output.AppendLine($"{"exit",navCommandColumn}{"Exit the shell."}");
 
             output.AppendLine();
             output.AppendLine("REPL Customization Commands:".Bold().Cyan());
-            output.AppendLine("Use these commands to customize the REPL behavior..");
+            output.AppendLine("Use these commands to customize the REPL behavior.");
             output.AppendLine();
 
             output.AppendLine($"{"pref [get/set]",navCommandColumn}{"Allows viewing or changing preferences, e.g. 'pref set editor.command.default 'C:\\Program Files\\Microsoft VS Code\\Code.exe'`"}");
             output.AppendLine($"{"run",navCommandColumn}{"Runs the script at the given path. A script is a set of commands that can be typed with one command per line."}");
-            output.AppendLine($"{"ui",navCommandColumn}{"Displays the swagger UI page, if available, in the default browser."}");
+            output.AppendLine($"{"ui",navCommandColumn}{"Displays the Swagger UI page, if available, in the default browser."}");
             output.AppendLine();
             output.AppendLine("Use help <COMMAND> to learn more details about individual commands. e.g. `help get`".Bold().Cyan());
             output.AppendLine();
