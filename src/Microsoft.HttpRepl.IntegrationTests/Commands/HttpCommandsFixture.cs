@@ -8,7 +8,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         private readonly SampleApiServer _testWebServer;
 
         public T Config { get; } = new T();
-        
+
         public HttpCommandsFixture()
         {
             _testWebServer = new SampleApiServer(Config);
