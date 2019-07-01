@@ -118,7 +118,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 sections2");
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);

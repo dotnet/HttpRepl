@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
@@ -24,7 +25,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
 
             return _command.CanHandle(shellState, httpState, parseResult);
         }
@@ -33,7 +35,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
 
             return _command.GetHelpDetails(shellState, httpState, parseResult);
         }
@@ -41,7 +44,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         protected string GetHelpSummary()
         {
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
 
             return _command.GetHelpSummary(shellState, httpState);
         }
@@ -49,7 +53,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         protected async Task ExecuteAsyncWithInvalidParseResultSections(string parseResultSections, IShellState shellState, string baseAddress = null)
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
             httpState.BaseAddress = null;
 
             await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -59,7 +64,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = new HttpState(null);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
             return _command.Suggest(shellState, httpState, parseResult);
         }
 
