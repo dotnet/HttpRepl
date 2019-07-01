@@ -12,7 +12,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public class UICommandTests : CommandHelper<UICommand>
     {
         public UICommandTests()
-            : base(new UICommand())
+            : base(new UICommand(new UriLauncher()))
         {
         }
 
