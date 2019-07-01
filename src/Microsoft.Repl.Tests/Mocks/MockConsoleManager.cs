@@ -29,9 +29,9 @@ namespace Microsoft.Repl.Tests.Mocks
         {
         }
 
-        public void MoveCaret(int position)
+        public void MoveCaret(int offset)
         {
-            CaretPosition += position;
+            CaretPosition += offset;
         }
 
         public ConsoleKeyInfo ReadKey(CancellationToken cancellationToken)
