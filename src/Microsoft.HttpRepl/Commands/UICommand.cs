@@ -18,9 +18,9 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly string Name = "ui";
         private IUriLauncher UriLauncher;
 
-        public UICommand(IUriLauncher uriLauncher = null)
+        public UICommand(IUriLauncher uriLauncher)
         {
-            UriLauncher = uriLauncher ?? new UriLauncher();
+            UriLauncher = uriLauncher;
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
