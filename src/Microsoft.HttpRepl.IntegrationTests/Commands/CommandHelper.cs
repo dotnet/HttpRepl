@@ -10,12 +10,12 @@ using Moq;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class ICommandTestHelper<T>
+    public class CommandHelper<T>
         where T : ICommand<HttpState, ICoreParseResult>
     {
         private readonly T _command;
 
-        public ICommandTestHelper(T command)
+        public CommandHelper(T command)
         {
             _command = command;
         }

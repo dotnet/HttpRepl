@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class SetSwaggerCommandTests : ICommandTestHelper<SetSwaggerCommand>
+    public class SetSwaggerCommandTests : CommandHelper<SetSwaggerCommand>
     {
         public SetSwaggerCommandTests()
           : base(new SetSwaggerCommand())

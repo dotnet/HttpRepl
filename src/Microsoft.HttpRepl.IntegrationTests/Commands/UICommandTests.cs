@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class UICommandTests : ICommandTestHelper<UICommand>
+    public class UICommandTests : CommandHelper<UICommand>
     {
         public UICommandTests()
             : base(new UICommand())
