@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using Microsoft.HttpRepl.Diagnostics;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
 
@@ -17,6 +18,7 @@ namespace Microsoft.HttpRepl
     {
         private string _userProfileDir;
         private string _prefsFilePath;
+        private readonly IFileSystem _fileSystem;
 
         public HttpClient Client { get; }
 
@@ -69,8 +71,9 @@ namespace Microsoft.HttpRepl
 
         public Uri SwaggerEndpoint { get; set; }
 
-        public HttpState()
+        public HttpState(IFileSystem fileSystem)
         {
+            _fileSystem = fileSystem;
             Client = new HttpClient();
             PathSections = new Stack<string>();
             Preferences = new Dictionary<string, string>();
@@ -91,9 +94,9 @@ namespace Microsoft.HttpRepl
 
         private void LoadPreferences()
         {
-            if (File.Exists(PrefsFilePath))
+            if (_fileSystem.FileExists(PrefsFilePath))
             {
-                string[] prefsFile = File.ReadAllLines(PrefsFilePath);
+                string[] prefsFile = _fileSystem.ReadAllLinesFromFile(PrefsFilePath);
 
                 foreach (string line in prefsFile)
                 {
@@ -139,7 +142,7 @@ namespace Microsoft.HttpRepl
 
             try
             {
-                File.WriteAllLines(PrefsFilePath, lines);
+                _fileSystem.WriteAllLinesToFile(PrefsFilePath, lines);
                 return true;
             }
             catch
@@ -298,7 +301,7 @@ namespace Microsoft.HttpRepl
 
             if (sections.Count > 1)
             {
-                if (!requiresBody || !File.Exists(sections[1]))
+                if (!requiresBody || !_fileSystem.FileExists(sections[1]))
                 {
                     if (sections[1].Length > 0)
                     {

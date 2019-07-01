@@ -1,14 +1,16 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class OptionsCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
+    public class OptionsCommandTests : HttpCommandTests<OptionsCommand>, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
     {
         private readonly OptionsCommandsConfig _config;
         public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture)
+            : base(new OptionsCommand(new MockedFileSystem()))
         {
             _config = optionsCommandsFixture.Config;
         }
@@ -16,8 +18,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(command: new OptionsCommand(),
-                                     commandText: "OPTIONS",
+            await VerifyErrorMessage(commandText: "OPTIONS",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -26,8 +27,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            await VerifyHeaders(command: new OptionsCommand(),
-                                commandText: "OPTIONS",
+            await VerifyHeaders(commandText: "OPTIONS",
                                 baseAddress: _config.BaseAddress,
                                 path: "this/is/a/test/route",
                                 expectedResponseLines: 6,
@@ -37,8 +37,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            await VerifyHeaders(command: new OptionsCommand(),
-                                commandText: "OPTIONS",
+            await VerifyHeaders(commandText: "OPTIONS",
                                 baseAddress: _config.BaseAddress,
                                 path: null,
                                 expectedResponseLines: 6,

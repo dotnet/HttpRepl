@@ -9,21 +9,21 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class PostCommandTests : HttpCommandTests<PostCommand>, IClassFixture<HttpCommandsFixture<PostCommandsConfig>>
+    public class PatchCommandTests : HttpCommandTests<PatchCommand>, IClassFixture<HttpCommandsFixture<PatchCommandsConfig>>
     {
-        private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Post Body From File");
+        private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Patch Body From File");
 
-        private readonly PostCommandsConfig _config;
-        public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
-            : base(new PostCommand(_fileSystem))
+        private readonly PatchCommandsConfig _config;
+        public PatchCommandTests(HttpCommandsFixture<PatchCommandsConfig> PatchCommandsFixture)
+            : base(new PatchCommand(_fileSystem))
         {
-            _config = postCommandsFixture.Config;
+            _config = PatchCommandsFixture.Config;
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "POST",
+            await VerifyErrorMessage(commandText: "PATCH",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -32,52 +32,52 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_OnlyBaseAddressWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --content \"Test Post Body\"",
+            await VerifyResponse(commandText: "PATCH --content \"Test Patch Body\"",
                                  baseAddress: _config.BaseAddress,
                                  path: null,
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body\"");
+                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --content \"Test Post Body\"",
+            await VerifyResponse(commandText: "PATCH --content \"Test Patch Body\"",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body\"");
+                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithNoBodyRequired_VerifyResponse()
         {
-            await VerifyResponse(commandText: "POST --no-body",
+            await VerifyResponse(commandText: "PATCH --no-body",
                                  baseAddress: _config.BaseAddress,
                                  path: "no/body/required",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"\"");
+                                 expectedResponseContent: "This is a test response from a PATCH: \"\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse()
         {
-            await VerifyResponse(commandText: $"POST --file \"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
+            await VerifyResponse(commandText: $"PATCH --file \"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a POST: \"Test Post Body From File\"");
+                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body From File\"");
         }
     }
 
-    public class PostCommandsConfig : SampleApiServerConfig
+    public class PatchCommandsConfig : SampleApiServerConfig
     {
-        public PostCommandsConfig()
+        public PatchCommandsConfig()
         {
-            Port = SampleApiServerPorts.PostCommandTests;
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "this/is/a/test/route", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("POST", "no/body/required", RespondWithBody));
+            Port = SampleApiServerPorts.PatchCommandTests;
+            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "", RespondWithBody));
+            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "this/is/a/test/route", RespondWithBody));
+            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "no/body/required", RespondWithBody));
         }
 
         private async Task RespondWithBody(HttpContext context)
@@ -85,7 +85,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             byte[] buffer = new byte[64];
             int bytesRead = await context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
             string body = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            await context.Response.WriteAsync($"This is a test response from a POST: \"{body}\"");
+            await context.Response.WriteAsync($"This is a test response from a PATCH: \"{body}\"");
         }
     }
 }

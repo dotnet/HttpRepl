@@ -4,11 +4,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
-using Microsoft.HttpRepl.Commands;
 
 namespace Microsoft.HttpRepl
 {
@@ -16,7 +17,8 @@ namespace Microsoft.HttpRepl
     {
         static async Task Main(string[] args)
         {
-            var state = new HttpState();
+            IFileSystem fileSystem = new RealFileSystem();
+            HttpState state = new HttpState(fileSystem);
 
             if (Console.IsOutputRedirected)
             {
@@ -28,19 +30,19 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new ChangeDirectoryCommand());
             dispatcher.AddCommand(new ClearCommand());
             //dispatcher.AddCommand(new ConfigCommand());
-            dispatcher.AddCommand(new DeleteCommand());
+            dispatcher.AddCommand(new DeleteCommand(fileSystem));
             dispatcher.AddCommand(new EchoCommand());
             dispatcher.AddCommand(new ExitCommand());
-            dispatcher.AddCommand(new HeadCommand());
+            dispatcher.AddCommand(new HeadCommand(fileSystem));
             dispatcher.AddCommand(new HelpCommand());
-            dispatcher.AddCommand(new GetCommand());
+            dispatcher.AddCommand(new GetCommand(fileSystem));
             dispatcher.AddCommand(new ListCommand());
-            dispatcher.AddCommand(new OptionsCommand());
-            dispatcher.AddCommand(new PatchCommand());
+            dispatcher.AddCommand(new OptionsCommand(fileSystem));
+            dispatcher.AddCommand(new PatchCommand(fileSystem));
             dispatcher.AddCommand(new PrefCommand());
-            dispatcher.AddCommand(new PostCommand());
-            dispatcher.AddCommand(new PutCommand());
-            dispatcher.AddCommand(new RunCommand());
+            dispatcher.AddCommand(new PostCommand(fileSystem));
+            dispatcher.AddCommand(new PutCommand(fileSystem));
+            dispatcher.AddCommand(new RunCommand(fileSystem));
             dispatcher.AddCommand(new SetBaseCommand());
             dispatcher.AddCommand(new SetDiagCommand());
             dispatcher.AddCommand(new SetHeaderCommand());
@@ -48,7 +50,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new UICommand());
 
             CancellationTokenSource source = new CancellationTokenSource();
-            var shell = new Shell(dispatcher);
+            Shell shell = new Shell(dispatcher);
             shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
             if (args.Length > 0)
             {

@@ -1,14 +1,16 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class GetCommandTests : BaseHttpCommandTests, IClassFixture<HttpCommandsFixture<GetCommandsConfig>>
+    public class GetCommandTests : HttpCommandTests<GetCommand>, IClassFixture<HttpCommandsFixture<GetCommandsConfig>>
     {
         private readonly GetCommandsConfig _config;
         public GetCommandTests(HttpCommandsFixture<GetCommandsConfig> getCommandsFixture)
+            : base(new GetCommand(new MockedFileSystem()))
         {
             _config = getCommandsFixture.Config;
         }
@@ -16,8 +18,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(command: new GetCommand(),
-                                     commandText: "GET",
+            await VerifyErrorMessage(commandText: "GET",
                                      baseAddress: null,
                                      path: null,
                                      expectedErrorMessage: Resources.Strings.Error_NoBasePath);
@@ -26,8 +27,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            await VerifyResponse(command: new GetCommand(),
-                                 commandText: "GET",
+            await VerifyResponse(commandText: "GET",
                                  baseAddress: _config.BaseAddress,
                                  path: "this/is/a/test/route",
                                  expectedResponseLines: 5,
@@ -37,8 +37,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            await VerifyResponse(command: new GetCommand(),
-                                 commandText: "GET",
+            await VerifyResponse(commandText: "GET",
                                  baseAddress: _config.BaseAddress,
                                  path: null,
                                  expectedResponseLines: 5,

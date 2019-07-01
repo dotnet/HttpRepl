@@ -20,9 +20,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                                 app.UseDeveloperExceptionPage();
                             
                                 app.UseRouting();
-                                var routeBuilder = new RouteBuilder(app);
+                                RouteBuilder routeBuilder = new RouteBuilder(app);
                                 SetupRoutes(routeBuilder, config);
-                                var routes = routeBuilder.Build();
+                                IRouter routes = routeBuilder.Build();
                                 app.UseRouter(routes);
                             });
                         })
@@ -41,28 +41,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 
         private static void SetupRoutes(RouteBuilder routeBuilder, SampleApiServerConfig config)
         {
-            foreach (var route in config.Routes)
+            foreach (SampleApiServerRoute route in config.Routes)
             {
-                switch (route.Verb)
+                if (route.Verb == "*")
                 {
-                    case "*":
-                        routeBuilder.MapRoute(route.Route, context => route.Execute(context));
-                        break;
-                    case "GET":
-                        routeBuilder.MapGet(route.Route, context => route.Execute(context));
-                        break;
-                    case "POST":
-                        routeBuilder.MapPost(route.Route, context => route.Execute(context));
-                        break;
-                    case "DELETE":
-                        routeBuilder.MapDelete(route.Route, context => route.Execute(context));
-                        break;
-                    case "HEAD":
-                        routeBuilder.MapVerb("HEAD", route.Route, context => route.Execute(context));
-                        break;
-                    case "OPTIONS":
-                        routeBuilder.MapVerb("OPTIONS", route.Route, context => route.Execute(context));
-                        break;
+                    routeBuilder.MapRoute(route.Route, context => route.Execute(context));
+                }
+                else
+                {
+                    routeBuilder.MapVerb(route.Verb, route.Route, context => route.Execute(context));
                 }
             }
         }
