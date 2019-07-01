@@ -13,7 +13,6 @@ using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
-using Microsoft.HttpRepl.Commands;
 
 namespace Microsoft.HttpRepl
 {

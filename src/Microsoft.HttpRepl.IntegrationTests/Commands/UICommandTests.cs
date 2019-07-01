@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -88,7 +89,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpState httpState = new HttpState();
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
@@ -105,7 +107,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpState httpState = new HttpState();
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
