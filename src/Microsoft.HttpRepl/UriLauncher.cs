@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl
                 agent = "cmd";
                 agentParam = $"/c start {uri.AbsoluteUri}";
             }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 agent = "open";
                 agentParam = uri.AbsoluteUri;
