@@ -10,15 +10,20 @@ namespace Microsoft.HttpRepl
     {
         public Task LaunchUriAsync(Uri uri)
         {
-            string agent = "cmd";
-            string agentParam = $"/c start {uri.AbsoluteUri}";
+            string agent;
+            string agentParam;
 
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                agent = "cmd";
+                agentParam = $"/c start {uri.AbsoluteUri}";
+            }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 agent = "open";
                 agentParam = uri.AbsoluteUri;
             }
-            else if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            else // Linux
             {
                 agent = "xdg-open";
                 agentParam = uri.AbsoluteUri;
