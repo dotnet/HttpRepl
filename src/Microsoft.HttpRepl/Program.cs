@@ -20,13 +20,11 @@ namespace Microsoft.HttpRepl
         static async Task Main(string[] args)
         {
             IFileSystem fileSystem = new RealFileSystem();
-            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferencesProvider preferencesProvider = new PreferencesProvider(fileSystem, userProfileDirectoryProvider);
-            HttpState state = new HttpState(fileSystem, preferencesProvider);
+            HttpState state = CreateHttpState(fileSystem);
 
             if (Console.IsOutputRedirected)
             {
-                Reporter.Error.WriteLine("Cannot start the REPL when output is being redirected".SetColor(state.ErrorColor));
+                Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(state.ErrorColor));
                 return;
             }
 
@@ -60,16 +58,17 @@ namespace Microsoft.HttpRepl
             {
                 if (string.Equals(args[0], "--help", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "-h", StringComparison.OrdinalIgnoreCase))
                 {
-                    shell.ShellState.ConsoleManager.WriteLine("Usage: dotnet httprepl [<BASE_ADDRESS>] [options]");
+                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Usage);
+                    shell.ShellState.ConsoleManager.WriteLine("  dotnet httprepl [<BASE_ADDRESS>] [options]");
                     shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine("Arguments:");
-                    shell.ShellState.ConsoleManager.WriteLine("  <BASE_ADDRESS> - The initial base address for the REPL.");
+                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Arguments);
+                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_BaseAddress, "<BASE_ADDRESS>"));
                     shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine("Options:");
-                    shell.ShellState.ConsoleManager.WriteLine("  --help - Show help information.");
+                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Options);
+                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_Help, "--help"));
 
                     shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine("REPL Commands:");
+                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
                     new HelpCommand().CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
                     return;
                 }
@@ -80,6 +79,15 @@ namespace Microsoft.HttpRepl
             }
             Task result = shell.RunAsync(source.Token);
             await result.ConfigureAwait(false);
+        }
+
+        private static HttpState CreateHttpState(IFileSystem fileSystem)
+        {
+            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            IPreferencesProvider preferencesProvider = new PreferencesProvider(fileSystem, userProfileDirectoryProvider);
+            HttpState state = new HttpState(fileSystem, preferencesProvider);
+
+            return state;
         }
     }
 }

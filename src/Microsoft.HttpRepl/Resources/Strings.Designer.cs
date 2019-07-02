@@ -70,6 +70,69 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot start the REPL when output is being redirected.
+        /// </summary>
+        internal static string Error_OutputRedirected {
+            get {
+                return ResourceManager.GetString("Error_OutputRedirected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arguments:.
+        /// </summary>
+        internal static string Help_Arguments {
+            get {
+                return ResourceManager.GetString("Help_Arguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   {0} - The initial base address for the REPL..
+        /// </summary>
+        internal static string Help_BaseAddress {
+            get {
+                return ResourceManager.GetString("Help_BaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   {0} - Show help information..
+        /// </summary>
+        internal static string Help_Help {
+            get {
+                return ResourceManager.GetString("Help_Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options:.
+        /// </summary>
+        internal static string Help_Options {
+            get {
+                return ResourceManager.GetString("Help_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REPL Commands:.
+        /// </summary>
+        internal static string Help_REPLCommands {
+            get {
+                return ResourceManager.GetString("Help_REPLCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: .
+        /// </summary>
+        internal static string Help_Usage {
+            get {
+                return ResourceManager.GetString("Help_Usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} does not have a configured value.
         /// </summary>
         internal static string PrefCommand_Error_NoConfiguredValue {
@@ -165,15 +228,6 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string PrefCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("PrefCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Usage: .
-        /// </summary>
-        internal static string Usage {
-            get {
-                return ResourceManager.GetString("Usage", resourceCulture);
             }
         }
     }

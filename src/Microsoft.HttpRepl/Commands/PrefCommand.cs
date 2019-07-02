@@ -47,7 +47,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append(Resources.Strings.Usage.Bold());
+            helpText.Append(Resources.Strings.Help_Usage.Bold());
 
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
