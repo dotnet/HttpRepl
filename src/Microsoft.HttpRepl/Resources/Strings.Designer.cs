@@ -68,5 +68,113 @@ namespace Microsoft.HttpRepl.Resources {
                 return ResourceManager.GetString("Error_NoBasePath", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} does not have a configured value.
+        /// </summary>
+        internal static string PrefCommand_Error_NoConfiguredValue {
+            get {
+                return ResourceManager.GetString("PrefCommand_Error_NoConfiguredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to get or set a preference must be specified.
+        /// </summary>
+        internal static string PrefCommand_Error_NoGetOrSet {
+            get {
+                return ResourceManager.GetString("PrefCommand_Error_NoGetOrSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The preference to set must be specified.
+        /// </summary>
+        internal static string PrefCommand_Error_NoPreferenceName {
+            get {
+                return ResourceManager.GetString("PrefCommand_Error_NoPreferenceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error saving preferences.
+        /// </summary>
+        internal static string PrefCommand_Error_Saving {
+            get {
+                return ResourceManager.GetString("PrefCommand_Error_Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configured value: {0}.
+        /// </summary>
+        internal static string PrefCommand_Get_ConfiguredValue {
+            get {
+                return ResourceManager.GetString("PrefCommand_Get_ConfiguredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Preferences:.
+        /// </summary>
+        internal static string PrefCommand_HelpDetails_CurrentPreferences {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpDetails_CurrentPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Default Preferences:.
+        /// </summary>
+        internal static string PrefCommand_HelpDetails_DefaultPreferences {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpDetails_DefaultPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Gets the value of the specified preference or lists all preferences if no preference is specified.
+        /// </summary>
+        internal static string PrefCommand_HelpDetails_GetSyntax {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpDetails_GetSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Sets (or clears if value is not specified) the value of the specified preference.
+        /// </summary>
+        internal static string PrefCommand_HelpDetails_SetSyntax {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpDetails_SetSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Get or sets a preference to a particular value.
+        /// </summary>
+        internal static string PrefCommand_HelpDetails_Syntax {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpDetails_Syntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Allows viewing or changing preferences.
+        /// </summary>
+        internal static string PrefCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("PrefCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: .
+        /// </summary>
+        internal static string Usage {
+            get {
+                return ResourceManager.GetString("Usage", resourceCulture);
+            }
+        }
     }
 }
