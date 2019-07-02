@@ -84,8 +84,8 @@ namespace Microsoft.HttpRepl
         private static HttpState CreateHttpState(IFileSystem fileSystem)
         {
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferencesProvider = new Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
-            HttpState state = new HttpState(fileSystem, preferencesProvider);
+            IPreferences preferences = new Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
+            HttpState state = new HttpState(fileSystem, preferences);
 
             return state;
         }

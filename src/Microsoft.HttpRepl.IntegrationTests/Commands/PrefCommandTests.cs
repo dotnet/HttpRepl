@@ -6,9 +6,9 @@ using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
-using Microsoft.Repl;
 using Microsoft.Repl.Parsing;
 using Xunit;
+using Prefs = Microsoft.HttpRepl.Preferences.Preferences;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
@@ -70,8 +70,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferencesProvider = new HttpRepl.Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
-            HttpState httpState = new HttpState(fileSystem, preferencesProvider);
+            IPreferences preferences = new Prefs(fileSystem, userProfileDirectoryProvider);
+            HttpState httpState = new HttpState(fileSystem, preferences);
             MockedShellState shellState = new MockedShellState();
             PrefCommand command = new PrefCommand();
 
@@ -206,8 +206,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferencesProvider = new HttpRepl.Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
-            httpState = new HttpState(fileSystem, preferencesProvider);
+            IPreferences preferences = new Prefs(fileSystem, userProfileDirectoryProvider);
+            httpState = new HttpState(fileSystem, preferences);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
             command = new PrefCommand();

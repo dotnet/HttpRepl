@@ -15,13 +15,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public abstract class HttpCommandTests<T> where T : BaseHttpCommand
     {
         public IFileSystem FileSystem { get; } = new MockedFileSystem();
-        private readonly IPreferences _preferencesProvider;
+        private readonly IPreferences _preferences;
         private readonly T _command;
 
         public HttpCommandTests(T command)
         {
             _command = command;
-            _preferencesProvider = new HttpRepl.Preferences.Preferences(FileSystem, new UserProfileDirectoryProvider());
+            _preferences = new HttpRepl.Preferences.Preferences(FileSystem, new UserProfileDirectoryProvider());
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)
@@ -69,7 +69,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private HttpState GetHttpState(string baseAddress, string path)
         {
-            HttpState httpState = new HttpState(FileSystem, _preferencesProvider);
+            HttpState httpState = new HttpState(FileSystem, _preferences);
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {

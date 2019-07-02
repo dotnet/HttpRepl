@@ -3,51 +3,52 @@ using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Xunit;
+using Prefs = Microsoft.HttpRepl.Preferences.Preferences;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Preferences
 {
-    public class PreferencesProviderTests
+    public class PreferencesTests
     {
         [Fact]
         public void ReadPreferences_NoPreferencesFile_AllDefaults()
         {
-            SetupPreferencesProvider(out IPreferences preferencesProvider, out _);
+            SetupPreferences(out Prefs preferences, out _);
 
-            ConfirmAllPreferencesAreDefaults(preferencesProvider);
+            ConfirmAllPreferencesAreDefaults(preferences);
         }
 
         [Fact]
         public void ReadPreferences_BlankPreferencesFile_AllDefaults()
         {
-            SetupPreferencesProvider(out IPreferences preferencesProvider, out MockedFileSystem fileSystem);
-            fileSystem.AddFile(preferencesProvider.PreferencesFilePath, "");
+            SetupPreferences(out Prefs preferences, out MockedFileSystem fileSystem);
+            fileSystem.AddFile(preferences.PreferencesFilePath, "");
 
-            ConfirmAllPreferencesAreDefaults(preferencesProvider);
+            ConfirmAllPreferencesAreDefaults(preferences);
         }
 
         [Fact]
         public void ReadPreferences_InvalidPreferencesFile_AllDefaults()
         {
-            SetupPreferencesProvider(out IPreferences preferencesProvider, out MockedFileSystem fileSystem);
-            fileSystem.AddFile(preferencesProvider.PreferencesFilePath, "This is not a valid preferences file.");
+            SetupPreferences(out Prefs preferences, out MockedFileSystem fileSystem);
+            fileSystem.AddFile(preferences.PreferencesFilePath, "This is not a valid preferences file.");
 
-            ConfirmAllPreferencesAreDefaults(preferencesProvider);
+            ConfirmAllPreferencesAreDefaults(preferences);
         }
 
         [Fact]
         public void ReadPreferences_PartiallyInvalidPreferencesFile_ValidPrefsAreSet()
         {
-            SetupPreferencesProvider(out IPreferences preferencesProvider, out MockedFileSystem fileSystem);
+            SetupPreferences(out Prefs preferences, out MockedFileSystem fileSystem);
             string settingName = WellKnownPreference.DefaultEditorCommand;
             string expectedValue = "Code.exe";
             string prefsFileContent = $@"This first line is invalid for a prefs file.
 {settingName}={expectedValue}
 This third line is invalid as well";
-            fileSystem.AddFile(preferencesProvider.PreferencesFilePath, prefsFileContent);
+            fileSystem.AddFile(preferences.PreferencesFilePath, prefsFileContent);
 
-            Dictionary<string, string> preferences = preferencesProvider.ReadPreferences();
+            Dictionary<string, string> preferencesDictionary = preferences.ReadPreferences();
 
-            Assert.Equal(expectedValue, preferences[settingName]);
+            Assert.Equal(expectedValue, preferencesDictionary[settingName]);
         }
 
         [Fact]
@@ -58,32 +59,32 @@ This third line is invalid as well";
             string expected = $@"{WellKnownPreference.ErrorColor}={errorColor}
 {WellKnownPreference.DefaultEditorCommand}={defaultEditor}";
 
-            SetupPreferencesProvider(out IPreferences preferencesProvider, out MockedFileSystem fileSystem);
+            SetupPreferences(out Prefs preferences, out MockedFileSystem fileSystem);
 
             // Setup the preferences dictionary to have the default preferences, except for one that was modified
             // and one that was added. Only the modified and the added preferences should be written to the file system
-            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(preferencesProvider.GetDefaultPreferences());
+            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(preferences.GetDefaultPreferences());
             preferencesToWrite[WellKnownPreference.DefaultEditorCommand] = defaultEditor;
             preferencesToWrite[WellKnownPreference.ErrorColor] = errorColor;
 
-            bool succeeded = preferencesProvider.WritePreferences(preferencesToWrite);
+            bool succeeded = preferences.WritePreferences(preferencesToWrite);
 
             Assert.True(succeeded);
 
-            Assert.Equal(expected, fileSystem.ReadFile(preferencesProvider.PreferencesFilePath));
+            Assert.Equal(expected, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
-        private void SetupPreferencesProvider(out IPreferences preferencesProvider, out MockedFileSystem fileSystem)
+        private void SetupPreferences(out Prefs preferences, out MockedFileSystem fileSystem)
         {
             fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            preferencesProvider = new HttpRepl.Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
+            preferences = new Prefs(fileSystem, userProfileDirectoryProvider);
         }
 
-        private void ConfirmAllPreferencesAreDefaults(IPreferences preferencesProvider)
+        private void ConfirmAllPreferencesAreDefaults(IPreferences preferences)
         {
-            var defaultPreferences = preferencesProvider.GetDefaultPreferences();
-            var currentPreferences = preferencesProvider.ReadPreferences();
+            var defaultPreferences = preferences.GetDefaultPreferences();
+            var currentPreferences = preferences.ReadPreferences();
             Assert.Equal(defaultPreferences.Count, currentPreferences.Count);
             foreach (KeyValuePair<string, string> kvp in defaultPreferences)
             {
