@@ -18,6 +18,11 @@ namespace Microsoft.HttpRepl.Commands
     {
         private static readonly string Name = "ui";
 
+        public UICommand()
+        {
+
+        }
+
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             return parseResult.Sections.Count == 1 && string.Equals(parseResult.Sections[0], Name)

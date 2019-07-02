@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -18,7 +20,9 @@ namespace Microsoft.HttpRepl
         static async Task Main(string[] args)
         {
             IFileSystem fileSystem = new RealFileSystem();
-            HttpState state = new HttpState(fileSystem);
+            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            IPreferencesProvider preferencesProvider = new PreferencesProvider(fileSystem, userProfileDirectoryProvider);
+            HttpState state = new HttpState(fileSystem, preferencesProvider);
 
             if (Console.IsOutputRedirected)
             {

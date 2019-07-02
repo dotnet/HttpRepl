@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using Microsoft.HttpRepl.Diagnostics;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
@@ -16,9 +14,8 @@ namespace Microsoft.HttpRepl
 {
     public class HttpState
     {
-        private string _userProfileDir;
-        private string _prefsFilePath;
         private readonly IFileSystem _fileSystem;
+        private readonly IPreferencesProvider _preferencesProvider;
 
         public HttpClient Client { get; }
 
@@ -44,36 +41,16 @@ namespace Microsoft.HttpRepl
 
         public IReadOnlyDictionary<string, string> DefaultPreferences { get; }
 
-        public string UserProfileDir
-        {
-            get
-            {
-                if (_userProfileDir == null)
-                {
-                    bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-                    string profileDir = Environment.GetEnvironmentVariable(isWindows
-                        ? "USERPROFILE"
-                        : "HOME");
-
-                    _userProfileDir = profileDir;
-                }
-
-                return _userProfileDir;
-            }
-        }
-
-        public string PrefsFilePath => _prefsFilePath ?? (_prefsFilePath = Path.Combine(UserProfileDir, ".httpreplprefs"));
-
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 
         public DiagnosticsState DiagnosticsState { get; }
 
         public Uri SwaggerEndpoint { get; set; }
 
-        public HttpState(IFileSystem fileSystem)
+        public HttpState(IFileSystem fileSystem, IPreferencesProvider preferencesProvider)
         {
             _fileSystem = fileSystem;
+            _preferencesProvider = preferencesProvider;
             Client = new HttpClient();
             PathSections = new Stack<string>();
             Preferences = new Dictionary<string, string>();
@@ -82,34 +59,13 @@ namespace Microsoft.HttpRepl
             {
                 { "User-Agent", new[] { "HTTP-REPL" } }
             };
-            Preferences = new Dictionary<string, string>(DefaultPreferences);
-            LoadPreferences();
+            Preferences = _preferencesProvider.ReadPreferences();
             DiagnosticsState = new DiagnosticsState();
         }
 
         public string GetPrompt()
         {
             return $"{GetEffectivePath(new string[0], false, out int _)?.ToString() ?? "(Disconnected)"}~ ";
-        }
-
-        private void LoadPreferences()
-        {
-            if (_fileSystem.FileExists(PrefsFilePath))
-            {
-                string[] prefsFile = _fileSystem.ReadAllLinesFromFile(PrefsFilePath);
-
-                foreach (string line in prefsFile)
-                {
-                    int equalsIndex = line.IndexOf('=');
-
-                    if (equalsIndex < 0)
-                    {
-                        continue;
-                    }
-
-                    Preferences[line.Substring(0, equalsIndex)] = line.Substring(equalsIndex + 1);
-                }
-            }
         }
 
         private IReadOnlyDictionary<string, string> CreateDefaultPreferencs()
@@ -130,25 +86,7 @@ namespace Microsoft.HttpRepl
 
         public bool SavePreferences()
         {
-            List<string> lines = new List<string>();
-            foreach (KeyValuePair<string, string> entry in Preferences.OrderBy(x => x.Key))
-            {
-                //If the value didn't exist in the defaults or the value's different, include it in the user's preferences file
-                if (!DefaultPreferences.TryGetValue(entry.Key, out string value) || !string.Equals(value, entry.Value, StringComparison.Ordinal))
-                {
-                    lines.Add($"{entry.Key}={entry.Value}");
-                }
-            }
-
-            try
-            {
-                _fileSystem.WriteAllLinesToFile(PrefsFilePath, lines);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return _preferencesProvider.WritePreferences(Preferences);
         }
 
         public string GetExampleBody(string path, ref string contentType, string method)

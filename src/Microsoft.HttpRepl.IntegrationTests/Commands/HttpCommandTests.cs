@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
@@ -13,12 +15,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public abstract class HttpCommandTests<T> where T : BaseHttpCommand
     {
         public IFileSystem FileSystem { get; } = new MockedFileSystem();
-
+        private readonly IPreferencesProvider _preferencesProvider;
         private readonly T _command;
 
         public HttpCommandTests(T command)
         {
             _command = command;
+            _preferencesProvider = new PreferencesProvider(FileSystem, new UserProfileDirectoryProvider());
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)
@@ -66,7 +69,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private HttpState GetHttpState(string baseAddress, string path)
         {
-            HttpState httpState = new HttpState(FileSystem);
+            HttpState httpState = new HttpState(FileSystem, _preferencesProvider);
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {
