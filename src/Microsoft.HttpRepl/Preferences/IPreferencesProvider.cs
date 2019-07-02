@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.HttpRepl.Preferences
 {
-    public interface IPreferencesProvider
+    public interface IPreferences
     {
         string PreferencesFilePath { get; }
         IReadOnlyDictionary<string, string> GetDefaultPreferences();

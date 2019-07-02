@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferencesProvider preferencesProvider = new PreferencesProvider(fileSystem, userProfileDirectoryProvider);
+            IPreferences preferencesProvider = new HttpRepl.Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
             HttpState httpState = new HttpState(fileSystem, preferencesProvider);
             MockedShellState shellState = new MockedShellState();
             PrefCommand command = new PrefCommand();
@@ -206,7 +206,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferencesProvider preferencesProvider = new PreferencesProvider(fileSystem, userProfileDirectoryProvider);
+            IPreferences preferencesProvider = new HttpRepl.Preferences.Preferences(fileSystem, userProfileDirectoryProvider);
             httpState = new HttpState(fileSystem, preferencesProvider);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);

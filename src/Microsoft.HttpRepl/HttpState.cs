@@ -15,7 +15,7 @@ namespace Microsoft.HttpRepl
     public class HttpState
     {
         private readonly IFileSystem _fileSystem;
-        private readonly IPreferencesProvider _preferencesProvider;
+        private readonly IPreferences _preferences;
 
         public HttpClient Client { get; }
 
@@ -47,19 +47,18 @@ namespace Microsoft.HttpRepl
 
         public Uri SwaggerEndpoint { get; set; }
 
-        public HttpState(IFileSystem fileSystem, IPreferencesProvider preferencesProvider)
+        public HttpState(IFileSystem fileSystem, IPreferences preferences)
         {
             _fileSystem = fileSystem;
-            _preferencesProvider = preferencesProvider;
+            _preferences = preferences;
             Client = new HttpClient();
             PathSections = new Stack<string>();
-            Preferences = new Dictionary<string, string>();
-            DefaultPreferences = CreateDefaultPreferencs();
+            DefaultPreferences = _preferences.GetDefaultPreferences();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
                 { "User-Agent", new[] { "HTTP-REPL" } }
             };
-            Preferences = _preferencesProvider.ReadPreferences();
+            Preferences = _preferences.ReadPreferences();
             DiagnosticsState = new DiagnosticsState();
         }
 
@@ -86,7 +85,7 @@ namespace Microsoft.HttpRepl
 
         public bool SavePreferences()
         {
-            return _preferencesProvider.WritePreferences(Preferences);
+            return _preferences.WritePreferences(Preferences);
         }
 
         public string GetExampleBody(string path, ref string contentType, string method)

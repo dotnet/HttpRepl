@@ -15,13 +15,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     public abstract class HttpCommandTests<T> where T : BaseHttpCommand
     {
         public IFileSystem FileSystem { get; } = new MockedFileSystem();
-        private readonly IPreferencesProvider _preferencesProvider;
+        private readonly IPreferences _preferencesProvider;
         private readonly T _command;
 
         public HttpCommandTests(T command)
         {
             _command = command;
-            _preferencesProvider = new PreferencesProvider(FileSystem, new UserProfileDirectoryProvider());
+            _preferencesProvider = new HttpRepl.Preferences.Preferences(FileSystem, new UserProfileDirectoryProvider());
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)

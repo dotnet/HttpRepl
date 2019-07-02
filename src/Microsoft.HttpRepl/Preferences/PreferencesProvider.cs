@@ -7,7 +7,7 @@ using Microsoft.HttpRepl.UserProfile;
 
 namespace Microsoft.HttpRepl.Preferences
 {
-    public class PreferencesProvider : IPreferencesProvider
+    public class Preferences : IPreferences
     {
         private string _prefsFilePath;
         private readonly IFileSystem _fileSystem;
@@ -38,7 +38,7 @@ namespace Microsoft.HttpRepl.Preferences
             }
         }         
 
-        public PreferencesProvider(IFileSystem fileSystem, IUserProfileDirectoryProvider userProfileDirectoryProvider)
+        public Preferences(IFileSystem fileSystem, IUserProfileDirectoryProvider userProfileDirectoryProvider)
         {
             _fileSystem = fileSystem;
             _userProfileDirectoryProvider = userProfileDirectoryProvider;
