@@ -47,7 +47,9 @@ namespace Microsoft.HttpRepl.Preferences
                 {
                     int equalsIndex = line.IndexOf('=');
 
-                    if (equalsIndex < 0)
+                    // If there's no = or = is the first character on the line
+                    // (meaning no preference name), move to the next line
+                    if (equalsIndex <= 0) 
                     {
                         continue;
                     }
