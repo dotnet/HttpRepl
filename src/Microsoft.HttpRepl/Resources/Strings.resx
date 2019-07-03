@@ -121,4 +121,66 @@
     <value>'set base {url}' must be called before issuing requests to a relative path</value>
     <comment>Error shown in console when issuing an HTTP command without first setting the base url</comment>
   </data>
+  <data name="Error_OutputRedirected" xml:space="preserve">
+    <value>Cannot start the REPL when output is being redirected</value>
+  </data>
+  <data name="Help_Arguments" xml:space="preserve">
+    <value>Arguments:</value>
+  </data>
+  <data name="Help_BaseAddress" xml:space="preserve">
+    <value>  {0} - The initial base address for the REPL.</value>
+    <comment>{0} is the &lt;BASE_ADDRESS&gt; syntax specifier</comment>
+  </data>
+  <data name="Help_Help" xml:space="preserve">
+    <value>  {0} - Show help information.</value>
+    <comment>{0} is the --help syntax specifier</comment>
+  </data>
+  <data name="Help_Options" xml:space="preserve">
+    <value>Options:</value>
+  </data>
+  <data name="Help_REPLCommands" xml:space="preserve">
+    <value>REPL Commands:</value>
+  </data>
+  <data name="Help_Usage" xml:space="preserve">
+    <value>Usage: </value>
+  </data>
+  <data name="PrefCommand_Error_NoConfiguredValue" xml:space="preserve">
+    <value>{0} does not have a configured value</value>
+    <comment>{0} is the name of the requested preference</comment>
+  </data>
+  <data name="PrefCommand_Error_NoGetOrSet" xml:space="preserve">
+    <value>Whether to get or set a preference must be specified</value>
+  </data>
+  <data name="PrefCommand_Error_NoPreferenceName" xml:space="preserve">
+    <value>The preference to set must be specified</value>
+  </data>
+  <data name="PrefCommand_Error_Saving" xml:space="preserve">
+    <value>Error saving preferences</value>
+  </data>
+  <data name="PrefCommand_Get_ConfiguredValue" xml:space="preserve">
+    <value>Configured value: {0}</value>
+    <comment>{0} is the value of the specified preference</comment>
+  </data>
+  <data name="PrefCommand_HelpDetails_CurrentPreferences" xml:space="preserve">
+    <value>Current Preferences:</value>
+  </data>
+  <data name="PrefCommand_HelpDetails_DefaultPreferences" xml:space="preserve">
+    <value>Current Default Preferences:</value>
+  </data>
+  <data name="PrefCommand_HelpDetails_GetSyntax" xml:space="preserve">
+    <value>{0} - Gets the value of the specified preference or lists all preferences if no preference is specified</value>
+    <comment>{0} is the get command syntax</comment>
+  </data>
+  <data name="PrefCommand_HelpDetails_SetSyntax" xml:space="preserve">
+    <value>{0} - Sets (or clears if value is not specified) the value of the specified preference</value>
+    <comment>{0} is the set command syntax</comment>
+  </data>
+  <data name="PrefCommand_HelpDetails_Syntax" xml:space="preserve">
+    <value>{0} - Get or sets a preference to a particular value</value>
+    <comment>{0} is the overall command syntax</comment>
+  </data>
+  <data name="PrefCommand_HelpSummary" xml:space="preserve">
+    <value>{0} - Allows viewing or changing preferences</value>
+    <comment>{0} is the command text</comment>
+  </data>
 </root>

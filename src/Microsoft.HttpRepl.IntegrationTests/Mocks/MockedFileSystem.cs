@@ -17,6 +17,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
             return this;
         }
 
+        internal string ReadFile(string path)
+        {
+            return _files[path];
+        }
+
         public void DeleteFile(string path)
         {
             if (_files.ContainsKey(path))

@@ -17,24 +17,27 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class PrefCommand : CommandWithStructuredInputBase<HttpState, ICoreParseResult>
     {
+        private const string _CommandSyntax = "pref [get/set] {setting} [{value}]";
+        private const string _GetCommandSyntax = "pref get [{setting}]";
+        private const string _SetCommandSyntax = "pref set {setting} [{value}]";
         private readonly HashSet<string> _allowedSubcommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {"get", "set"};
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
         {
-            return "pref [get/set] {setting} [{value}] - Allows viewing or changing preferences";
+            return string.Format(Resources.Strings.PrefCommand_HelpSummary, _CommandSyntax);
         }
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
-                shellState.ConsoleManager.Error.WriteLine("Whether get or set settings must be specified");
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_NoGetOrSet);
                 return false;
             }
 
             if (!string.Equals("get", commandInput.Arguments[0].Text) && (commandInput.Arguments.Count < 2 || string.IsNullOrEmpty(commandInput.Arguments[1]?.Text)))
             {
-                shellState.ConsoleManager.Error.WriteLine("The preference to set must be specified");
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_NoPreferenceName);
                 return false;
             }
 
@@ -44,23 +47,23 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Help_Usage.Bold());
 
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
-                helpText.AppendLine("pref [get/set] {setting} [{value}] - Get or sets a preference to a particular value");
+                helpText.AppendFormat(Resources.Strings.PrefCommand_HelpDetails_Syntax, _CommandSyntax);
             }
             else if (string.Equals(commandInput.Arguments[0].Text, "get", StringComparison.OrdinalIgnoreCase))
             {
-                helpText.AppendLine("pref get [{setting}] - Gets the value of the specified preference or lists all preferences if no preference is specified");
+                helpText.AppendFormat(Resources.Strings.PrefCommand_HelpDetails_GetSyntax, _GetCommandSyntax);
             }
             else
             {
-                helpText.AppendLine("pref set {setting} [{value}] - Sets (or clears if value is not specified) the value of the specified preference");
+                helpText.AppendFormat(Resources.Strings.PrefCommand_HelpDetails_SetSyntax, _SetCommandSyntax);
             }
 
             helpText.AppendLine();
-            helpText.AppendLine("Current Default Preferences:");
+            helpText.AppendLine(Resources.Strings.PrefCommand_HelpDetails_DefaultPreferences);
             foreach (var pref in programState.DefaultPreferences)
             {
                 var val = pref.Value;
@@ -71,7 +74,7 @@ namespace Microsoft.HttpRepl.Commands
                 helpText.AppendLine($"{pref.Key,-50}{val}");
             }
             helpText.AppendLine();
-            helpText.AppendLine("Current Preferences:");
+            helpText.AppendLine(Resources.Strings.PrefCommand_HelpDetails_CurrentPreferences);
             foreach (var pref in programState.Preferences)
             {
                 var val = pref.Value;
@@ -158,7 +161,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (!programState.SavePreferences())
             {
-                shellState.ConsoleManager.Error.WriteLine("Error saving preferences".SetColor(programState.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_Saving.SetColor(programState.ErrorColor));
             }
 
             return Task.CompletedTask;
@@ -173,11 +176,11 @@ namespace Microsoft.HttpRepl.Commands
             {
                 if (programState.Preferences.TryGetValue(preferenceName, out string value))
                 {
-                    shellState.ConsoleManager.WriteLine("Configured value: " + value);
+                    shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.PrefCommand_Get_ConfiguredValue, value));
                 }
                 else
                 {
-                    shellState.ConsoleManager.Error.WriteLine((commandInput.Arguments[1].Text + " does not have a configured value").SetColor(programState.ErrorColor));
+                    shellState.ConsoleManager.Error.WriteLine(string.Format(Resources.Strings.PrefCommand_Error_NoConfiguredValue, commandInput.Arguments[1].Text).SetColor(programState.ErrorColor));
                 }
             }
             else
