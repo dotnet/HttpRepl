@@ -49,7 +49,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     {
         public HeadCommandsConfig()
         {
-            Port = SampleApiServerPorts.HeadCommandTests;
             Routes.Add(new DynamicSampleApiServerRoute("HEAD", "", context =>
             {
                 context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for root HEAD request.");

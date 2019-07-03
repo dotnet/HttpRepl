@@ -74,7 +74,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     {
         public PostCommandsConfig()
         {
-            Port = SampleApiServerPorts.PostCommandTests;
             Routes.Add(new DynamicSampleApiServerRoute("POST", "", RespondWithBody));
             Routes.Add(new DynamicSampleApiServerRoute("POST", "this/is/a/test/route", RespondWithBody));
             Routes.Add(new DynamicSampleApiServerRoute("POST", "no/body/required", RespondWithBody));

@@ -1,3 +1,7 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -9,36 +13,32 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
     public class SampleApiServer
     {
-        private readonly IHost _Host;
+        private readonly IWebHost _Host;
         public SampleApiServer(SampleApiServerConfig config)
         {
-            _Host = Host.CreateDefaultBuilder()
-                        .ConfigureWebHostDefaults(webBuilder =>
-                        {
-                            webBuilder.UseUrls(config.BaseAddress);
-                            webBuilder.ConfigureServices(services =>
-                            {
-                                services.AddControllers();
-                                services.AddSwaggerGen(c =>
-                                {
-                                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-                                });
+            _Host = WebHost.CreateDefaultBuilder()
+                           .UseKestrel(options => options.ListenLocalhost(config.Port.Value))
+                           .ConfigureServices(services =>
+                           {
+                               services.AddControllers();
+                               services.AddSwaggerGen(c =>
+                               {
+                                   c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                               });
+                           })
+                           .Configure(app =>
+                           {
+                               app.UseDeveloperExceptionPage();
 
-                            });
-                            webBuilder.Configure(app =>
-                            {
-                                app.UseDeveloperExceptionPage();
-                            
-                                app.UseRouting();
-                                RouteBuilder routeBuilder = new RouteBuilder(app);
-                                SetupRoutes(routeBuilder, config);
-                                IRouter routes = routeBuilder.Build();
-                                app.UseRouter(routes);
+                               app.UseRouting();
+                               RouteBuilder routeBuilder = new RouteBuilder(app);
+                               SetupRoutes(routeBuilder, config);
+                               IRouter routes = routeBuilder.Build();
+                               app.UseRouter(routes);
 
-                                app.UseSwagger();
-                            });
-                        })
-                        .Build();
+                               app.UseSwagger();
+                           })
+                           .Build();
         }
 
         public void Start()

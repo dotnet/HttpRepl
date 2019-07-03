@@ -1,5 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -8,9 +10,18 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
     public class SampleApiServerConfig
     {
         public string BaseAddress => $"http://localhost:{Port}";
-        public int Port { get; protected set; } = 5050;
+        public Lazy<int> Port { get; set; } = new Lazy<int>(() => FindFreeTcpPort());
 
         public Collection<SampleApiServerRoute> Routes { get; } = new Collection<SampleApiServerRoute>();
+
+        private static int FindFreeTcpPort()
+        {
+            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            l.Start();
+            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            l.Stop();
+            return port;
+        }
     }
 
     public abstract class SampleApiServerRoute
