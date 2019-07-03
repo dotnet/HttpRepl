@@ -53,12 +53,12 @@ namespace Microsoft.HttpRepl
             _preferences = preferences;
             Client = new HttpClient();
             PathSections = new Stack<string>();
-            DefaultPreferences = _preferences.GetDefaultPreferences();
+            DefaultPreferences = CreateDefaultPreferences();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
                 { "User-Agent", new[] { "HTTP-REPL" } }
             };
-            Preferences = _preferences.ReadPreferences();
+            Preferences = _preferences.ReadPreferences(DefaultPreferences);
             DiagnosticsState = new DiagnosticsState();
         }
 
@@ -67,7 +67,7 @@ namespace Microsoft.HttpRepl
             return $"{GetEffectivePath(new string[0], false, out int _)?.ToString() ?? "(Disconnected)"}~ ";
         }
 
-        private IReadOnlyDictionary<string, string> CreateDefaultPreferencs()
+        internal static IReadOnlyDictionary<string, string> CreateDefaultPreferences()
         {
             return new Dictionary<string, string>
             {
@@ -85,7 +85,7 @@ namespace Microsoft.HttpRepl
 
         public bool SavePreferences()
         {
-            return _preferences.WritePreferences(Preferences);
+            return _preferences.WritePreferences(Preferences, DefaultPreferences);
         }
 
         public string GetExampleBody(string path, ref string contentType, string method)

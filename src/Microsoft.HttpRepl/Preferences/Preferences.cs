@@ -12,18 +12,6 @@ namespace Microsoft.HttpRepl.Preferences
         private string _prefsFilePath;
         private readonly IFileSystem _fileSystem;
         private readonly IUserProfileDirectoryProvider _userProfileDirectoryProvider;
-        private readonly Dictionary<string, string> _defaultPreferences = new Dictionary<string, string>()
-        {
-            { WellKnownPreference.ProtocolColor, "BoldGreen" },
-            { WellKnownPreference.StatusColor, "BoldYellow" },
-
-            { WellKnownPreference.JsonArrayBraceColor, "BoldCyan" },
-            { WellKnownPreference.JsonCommaColor, "BoldYellow" },
-            { WellKnownPreference.JsonNameColor, "BoldMagenta" },
-            { WellKnownPreference.JsonNameSeparatorColor, "BoldWhite" },
-            { WellKnownPreference.JsonObjectBraceColor, "Cyan" },
-            { WellKnownPreference.JsonColor, "Green" }
-        };
 
         public string PreferencesFilePath
         {
@@ -44,14 +32,9 @@ namespace Microsoft.HttpRepl.Preferences
             _userProfileDirectoryProvider = userProfileDirectoryProvider;
         }
 
-        public IReadOnlyDictionary<string, string> GetDefaultPreferences()
+        public Dictionary<string, string> ReadPreferences(IReadOnlyDictionary<string, string> defaultPreferences)
         {
-            return _defaultPreferences;
-        }
-
-        public Dictionary<string, string> ReadPreferences()
-        {
-            var preferences = new Dictionary<string, string>(_defaultPreferences);
+            var preferences = new Dictionary<string, string>(defaultPreferences);
 
             if (_fileSystem.FileExists(PreferencesFilePath))
             {
@@ -73,13 +56,13 @@ namespace Microsoft.HttpRepl.Preferences
             return preferences;
         }
 
-        public bool WritePreferences(Dictionary<string, string> preferences)
+        public bool WritePreferences(Dictionary<string, string> preferences, IReadOnlyDictionary<string, string> defaultPreferences)
         {
             List<string> lines = new List<string>();
             foreach (KeyValuePair<string, string> entry in preferences.OrderBy(x => x.Key))
             {
                 //If the value didn't exist in the defaults or the value's different, include it in the user's preferences file
-                if (!_defaultPreferences.TryGetValue(entry.Key, out string value) || !string.Equals(value, entry.Value, StringComparison.Ordinal))
+                if (!defaultPreferences.TryGetValue(entry.Key, out string value) || !string.Equals(value, entry.Value, StringComparison.Ordinal))
                 {
                     lines.Add($"{entry.Key}={entry.Value}");
                 }

@@ -4,8 +4,7 @@ namespace Microsoft.HttpRepl.Preferences
 {
     public interface IPreferences
     {
-        IReadOnlyDictionary<string, string> GetDefaultPreferences();
-        Dictionary<string, string> ReadPreferences();
-        bool WritePreferences(Dictionary<string, string> preferences);
+        Dictionary<string, string> ReadPreferences(IReadOnlyDictionary<string, string> defaultPreferences);
+        bool WritePreferences(Dictionary<string, string> preferences, IReadOnlyDictionary<string, string> defaultPreferences);
     }
 }

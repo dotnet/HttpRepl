@@ -46,7 +46,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Preferences
 This third line is invalid as well";
             fileSystem.AddFile(preferences.PreferencesFilePath, prefsFileContent);
 
-            Dictionary<string, string> preferencesDictionary = preferences.ReadPreferences();
+            Dictionary<string, string> preferencesDictionary = preferences.ReadPreferences(HttpState.CreateDefaultPreferences());
 
             Assert.Equal(expectedValue, preferencesDictionary[settingName]);
         }
@@ -63,11 +63,12 @@ This third line is invalid as well";
 
             // Setup the preferences dictionary to have the default preferences, except for one that was modified
             // and one that was added. Only the modified and the added preferences should be written to the file system
-            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(preferences.GetDefaultPreferences());
+            IReadOnlyDictionary<string, string> defaultPreferences = HttpState.CreateDefaultPreferences();
+            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(defaultPreferences);
             preferencesToWrite[WellKnownPreference.DefaultEditorCommand] = defaultEditor;
             preferencesToWrite[WellKnownPreference.ErrorColor] = errorColor;
 
-            bool succeeded = preferences.WritePreferences(preferencesToWrite);
+            bool succeeded = preferences.WritePreferences(preferencesToWrite, defaultPreferences);
 
             Assert.True(succeeded);
 
@@ -83,8 +84,8 @@ This third line is invalid as well";
 
         private void ConfirmAllPreferencesAreDefaults(IPreferences preferences)
         {
-            var defaultPreferences = preferences.GetDefaultPreferences();
-            var currentPreferences = preferences.ReadPreferences();
+            var defaultPreferences = HttpState.CreateDefaultPreferences();
+            var currentPreferences = preferences.ReadPreferences(defaultPreferences);
             Assert.Equal(defaultPreferences.Count, currentPreferences.Count);
             foreach (KeyValuePair<string, string> kvp in defaultPreferences)
             {
