@@ -217,5 +217,7 @@ namespace Microsoft.Repl.ConsoleHandling
         }
 
         public IWritable Error { get; }
+
+        public bool AllowOutputRedirection => false;
     }
 }

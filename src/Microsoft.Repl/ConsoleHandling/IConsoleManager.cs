@@ -27,5 +27,7 @@ namespace Microsoft.Repl.ConsoleHandling
         void ResetCommandStart();
 
         IDisposable AddBreakHandler(Action onBreak);
+
+        bool AllowOutputRedirection { get; }
     }
 }

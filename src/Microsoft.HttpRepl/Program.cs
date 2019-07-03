@@ -15,14 +15,19 @@ using Microsoft.Repl.Parsing;
 
 namespace Microsoft.HttpRepl
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            await new Program().Start(args, new ConsoleManager());
+        }
+
+        public async Task Start(string[] args, IConsoleManager console)
+        { 
             IFileSystem fileSystem = new RealFileSystem();
             HttpState state = CreateHttpState(fileSystem);
 
-            if (Console.IsOutputRedirected)
+            if (Console.IsOutputRedirected && !console.AllowOutputRedirection)
             {
                 Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(state.ErrorColor));
                 return;
@@ -52,7 +57,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new UICommand());
 
             CancellationTokenSource source = new CancellationTokenSource();
-            Shell shell = new Shell(dispatcher);
+            Shell shell = new Shell(dispatcher, consoleManager: console);
             shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
             if (args.Length > 0)
             {

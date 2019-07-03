@@ -4,6 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Repl.Commanding;
+using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Input;
 using Microsoft.Repl.Suggestions;
 
@@ -17,8 +18,8 @@ namespace Microsoft.Repl
             ShellState = shellState;
         }
 
-        public Shell(ICommandDispatcher dispatcher, ISuggestionManager suggestionManager = null)
-            : this(new ShellState(dispatcher, suggestionManager))
+        public Shell(ICommandDispatcher dispatcher, ISuggestionManager suggestionManager = null, IConsoleManager consoleManager = null)
+            : this(new ShellState(dispatcher, suggestionManager, consoleManager: consoleManager))
         {
         }
 

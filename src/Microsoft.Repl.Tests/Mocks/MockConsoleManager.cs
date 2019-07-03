@@ -68,5 +68,7 @@ namespace Microsoft.Repl.Tests.Mocks
         public bool IsCaretVisible { get => true; }
 
         bool IWritable.IsCaretVisible { get => true; set => value = true; }
+
+        public bool AllowOutputRedirection => true;
     }
 }
