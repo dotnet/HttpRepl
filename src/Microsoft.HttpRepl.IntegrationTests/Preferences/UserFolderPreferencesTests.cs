@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Preferences
 {
-    public class PreferencesTests
+    public class UserFolderPreferencesTests
     {
         [Fact]
         public void ReadPreferences_NoPreferencesFile_AllDefaults()
