@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

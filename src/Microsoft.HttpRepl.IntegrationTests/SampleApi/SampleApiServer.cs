@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
@@ -15,6 +16,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                         .ConfigureWebHostDefaults(webBuilder =>
                         {
                             webBuilder.UseUrls(config.BaseAddress);
+                            webBuilder.ConfigureServices(services =>
+                            {
+                                services.AddControllers();
+                                services.AddSwaggerGen(c =>
+                                {
+                                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                                });
+
+                            });
                             webBuilder.Configure(app =>
                             {
                                 app.UseDeveloperExceptionPage();
@@ -24,6 +34,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                                 SetupRoutes(routeBuilder, config);
                                 IRouter routes = routeBuilder.Build();
                                 app.UseRouter(routes);
+
+                                app.UseSwagger();
                             });
                         })
                         .Build();
