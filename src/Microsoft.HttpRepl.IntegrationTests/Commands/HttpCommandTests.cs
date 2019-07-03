@@ -21,7 +21,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public HttpCommandTests(T command)
         {
             _command = command;
-            _preferences = new HttpRepl.Preferences.Preferences(FileSystem, new UserProfileDirectoryProvider());
+            _preferences = new HttpRepl.Preferences.UserFolderPreferences(FileSystem, new UserProfileDirectoryProvider());
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)
