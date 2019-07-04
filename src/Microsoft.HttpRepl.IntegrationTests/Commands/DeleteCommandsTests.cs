@@ -53,7 +53,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     {
         public DeleteCommandsConfig()
         {
-            Port = SampleApiServerPorts.DeleteCommandTests;
             Routes.Add(new StaticSampleApiServerRoute("DELETE", "", "Root delete received successfully."));
             Routes.Add(new StaticSampleApiServerRoute("DELETE", "a/file/path.txt", "File path delete received successfully."));
         }

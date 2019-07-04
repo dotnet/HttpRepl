@@ -15,14 +15,19 @@ using Microsoft.Repl.Parsing;
 
 namespace Microsoft.HttpRepl
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            await new Program().Start(args, new ConsoleManager());
+        }
+
+        public async Task Start(string[] args, IConsoleManager console)
+        { 
             IFileSystem fileSystem = new RealFileSystem();
             HttpState state = CreateHttpState(fileSystem);
 
-            if (Console.IsOutputRedirected)
+            if (Console.IsOutputRedirected && !console.AllowOutputRedirection)
             {
                 Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(state.ErrorColor));
                 return;
@@ -52,7 +57,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new UICommand());
 
             CancellationTokenSource source = new CancellationTokenSource();
-            Shell shell = new Shell(dispatcher);
+            Shell shell = new Shell(dispatcher, consoleManager: console);
             shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
             if (args.Length > 0)
             {
@@ -70,6 +75,15 @@ namespace Microsoft.HttpRepl
                     shell.ShellState.ConsoleManager.WriteLine();
                     shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
                     new HelpCommand().CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
+                    return;
+                }
+
+                // allow running a script file directly.
+                if (string.Equals(args[0], "run"))
+                {
+                    shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
+                    shell.ShellState.InputManager.SetInput(shell.ShellState, string.Join(' ', args));
+                    await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
                     return;
                 }
 

@@ -74,7 +74,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
     {
         public PatchCommandsConfig()
         {
-            Port = SampleApiServerPorts.PatchCommandTests;
             Routes.Add(new DynamicSampleApiServerRoute("PATCH", "", RespondWithBody));
             Routes.Add(new DynamicSampleApiServerRoute("PATCH", "this/is/a/test/route", RespondWithBody));
             Routes.Add(new DynamicSampleApiServerRoute("PATCH", "no/body/required", RespondWithBody));
