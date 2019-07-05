@@ -20,12 +20,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public UICommand(IUriLauncher uriLauncher)
         {
-            if (uriLauncher == null)
-            {
-                throw new ArgumentNullException(nameof(uriLauncher));
-            }
-
-            UriLauncher = uriLauncher;
+            UriLauncher = uriLauncher ?? throw new ArgumentNullException(nameof(uriLauncher));
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
