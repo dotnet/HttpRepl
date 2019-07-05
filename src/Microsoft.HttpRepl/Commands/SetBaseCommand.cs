@@ -107,11 +107,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return Description;
-        }
-
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.Sections.Count == 0)

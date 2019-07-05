@@ -163,11 +163,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return "help - Gets help";
-        }
-
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.SelectedSection == 0 &&

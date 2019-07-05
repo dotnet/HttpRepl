@@ -22,11 +22,6 @@ namespace Microsoft.HttpRepl.Commands
         private const string _SetCommandSyntax = "pref set {setting} [{value}]";
         private readonly HashSet<string> _allowedSubcommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {"get", "set"};
 
-        public override string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return string.Format(Resources.Strings.PrefCommand_HelpSummary, _CommandSyntax);
-        }
-
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))

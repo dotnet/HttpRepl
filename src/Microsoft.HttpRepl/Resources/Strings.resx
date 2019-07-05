@@ -179,8 +179,4 @@
     <value>{0} - Get or sets a preference to a particular value</value>
     <comment>{0} is the overall command syntax</comment>
   </data>
-  <data name="PrefCommand_HelpSummary" xml:space="preserve">
-    <value>{0} - Allows viewing or changing preferences</value>
-    <comment>{0} is the command text</comment>
-  </data>
 </root>

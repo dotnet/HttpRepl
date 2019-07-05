@@ -13,8 +13,6 @@ namespace Microsoft.Repl.Commanding
     public abstract class CommandWithStructuredInputBase<TProgramState, TParseResult> : ICommand<TProgramState, TParseResult>
         where TParseResult : ICoreParseResult
     {
-        public abstract string GetHelpSummary(IShellState shellState, TProgramState programState);
-
         public string GetHelpDetails(IShellState shellState, TProgramState programState, TParseResult parseResult)
         {
             if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues) 

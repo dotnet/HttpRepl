@@ -68,11 +68,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return "run {path to script} - Runs a script";
-        }
-
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.SelectedSection == 0 &&

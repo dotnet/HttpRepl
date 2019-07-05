@@ -40,11 +40,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, object programState)
-        {
-            return "clear - Clears the shell";
-        }
-
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
             if (parseResult.SelectedSection == 0 && 

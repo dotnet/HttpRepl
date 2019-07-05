@@ -61,10 +61,5 @@ namespace Microsoft.HttpRepl.Commands
         {
             return "config - Gets configuration information for the site if connected to a diagnostics endpoint";
         }
-
-        public override string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return "config - Gets configuration information for the site if connected to a diagnostics endpoint";
-        }
     }
 }

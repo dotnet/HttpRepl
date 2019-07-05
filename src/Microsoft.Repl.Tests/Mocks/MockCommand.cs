@@ -30,11 +30,6 @@ namespace Microsoft.Repl.Tests.Mocks
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, object programState)
-        {
-            return null;
-        }
-
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
             return new[] { _commandName };

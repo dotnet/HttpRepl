@@ -77,11 +77,6 @@ namespace Microsoft.HttpRepl.Commands
             return help.ToString();
         }
 
-        public override string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return "cd [directory name] - Prints the current directory if no argument is specified, otherwise changes to the specified directory";
-        }
-
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
             return ServerPathCompletion.GetCompletions(programState, normalCompletionString);

@@ -103,11 +103,6 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        public string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return Description;
-        }
-
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))

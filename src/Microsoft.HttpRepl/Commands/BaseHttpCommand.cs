@@ -498,11 +498,6 @@ namespace Microsoft.HttpRepl.Commands
             return helpText.ToString();
         }
 
-        public override string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return $"{Verb.ToLowerInvariant()} - Issues a {Verb.ToUpperInvariant()} request";
-        }
-
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
             List<string> results = new List<string>();

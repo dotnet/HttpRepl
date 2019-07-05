@@ -221,14 +221,5 @@ namespace Microsoft.HttpRepl.Resources {
                 return ResourceManager.GetString("PrefCommand_HelpDetails_Syntax", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} - Allows viewing or changing preferences.
-        /// </summary>
-        internal static string PrefCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("PrefCommand_HelpSummary", resourceCulture);
-            }
-        }
     }
 }

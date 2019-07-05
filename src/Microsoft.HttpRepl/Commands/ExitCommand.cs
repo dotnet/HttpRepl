@@ -30,10 +30,5 @@ namespace Microsoft.HttpRepl.Commands
             helpText.AppendLine($"Exits the shell");
             return helpText.ToString();
         }
-
-        public override string GetHelpSummary(IShellState shellState, object programState)
-        {
-            return "exit - Exits the shell";
-        }
     }
 }

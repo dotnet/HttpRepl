@@ -50,11 +50,6 @@ namespace Microsoft.HttpRepl.Commands
             return helpText.ToString();
         }
 
-        public override string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return "echo [on/off] - Turns request echoing on or off";
-        }
-
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
             List<string> result = _allowedModes.Where(x => x.StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase)).ToList();
