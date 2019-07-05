@@ -15,10 +15,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var responseTask = new TaskCompletionSource<HttpResponseMessage>();
-            responseTask.SetResult(response);
-
-            return responseTask.Task;
+            return Task.FromResult(response);
         }
     }
 }
