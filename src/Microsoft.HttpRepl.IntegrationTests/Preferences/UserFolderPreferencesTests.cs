@@ -63,9 +63,13 @@ This third line is invalid as well";
 
             // Add one and change one
             // Only the changes should be written, not any of the defaults.
-            preferences.SetValue(WellKnownPreference.DefaultEditorCommand, defaultEditor);
-            preferences.SetValue(WellKnownPreference.ErrorColor, errorColor);
+            bool succeeded = preferences.SetValue(WellKnownPreference.DefaultEditorCommand, defaultEditor);
 
+            Assert.True(succeeded);
+
+            succeeded = preferences.SetValue(WellKnownPreference.ErrorColor, errorColor);
+
+            Assert.True(succeeded);
             Assert.Equal(expected, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
@@ -88,8 +92,9 @@ This third line is invalid as well";
 
             // Now change it to the default value, write it back to the file system and
             // validate that it was removed from the file
-            preferences.SetValue(WellKnownPreference.ProtocolColor, defaultPreferences[WellKnownPreference.ProtocolColor]);
-            
+            bool succeeded = preferences.SetValue(WellKnownPreference.ProtocolColor, defaultPreferences[WellKnownPreference.ProtocolColor]);
+
+            Assert.True(succeeded);
             Assert.Equal(string.Empty, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
