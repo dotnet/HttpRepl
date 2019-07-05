@@ -42,7 +42,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void CanHandle_WithValidName_ReturnsNull()
+        public void CanHandle_WithValidName_ReturnsTrue()
         {
             bool? result = CanHandle(parseResultSections: "ui");
 
