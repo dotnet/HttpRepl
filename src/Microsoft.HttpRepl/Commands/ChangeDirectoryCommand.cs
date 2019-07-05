@@ -50,13 +50,20 @@ namespace Microsoft.HttpRepl.Commands
                     }
                 }
 
-                IDirectoryStructure s = programState.Structure.TraverseTo(programState.PathSections.Reverse());
+                // If there's no directory structure, we can't traverse it to find the relevant
+                // metadata and display it. The command still succeeded as far as its impact on
+                // future commands, so we can safely just skip this part.
+                if (programState.Structure != null)
+                {
+                    IDirectoryStructure s = programState.Structure.TraverseTo(programState.PathSections.Reverse());
 
-                string thisDirMethod = s.RequestInfo != null && s.RequestInfo.Methods.Count > 0
-                    ? "[" + string.Join("|", s.RequestInfo.Methods) + "]"
-                    : "[]";
+                    string thisDirMethod = s.RequestInfo != null && s.RequestInfo.Methods.Count > 0
+                        ? "[" + string.Join("|", s.RequestInfo.Methods) + "]"
+                        : "[]";
 
-                shellState.ConsoleManager.WriteLine($"/{string.Join("/", programState.PathSections.Reverse())}    {thisDirMethod}");
+
+                    shellState.ConsoleManager.WriteLine($"/{string.Join("/", programState.PathSections.Reverse())}    {thisDirMethod}");
+                }
             }
 
             return Task.CompletedTask;
