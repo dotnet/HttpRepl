@@ -1,10 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl.Preferences
 {
@@ -173,34 +171,34 @@ namespace Microsoft.HttpRepl.Preferences
         public static string SwaggerRequeryBehavior { get; } = "swagger.requery";
 
 
-        public static AllowedColors GetColorPreference(this HttpState programState, string preference, AllowedColors defaultvalue = AllowedColors.None)
-        {
-            if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !Enum.TryParse(preferenceValueString, true, out AllowedColors result))
-            {
-                result = defaultvalue;
-            }
+        //public static AllowedColors GetColorPreference(this HttpState programState, string preference, AllowedColors defaultvalue = AllowedColors.None)
+        //{
+        //    if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !Enum.TryParse(preferenceValueString, true, out AllowedColors result))
+        //    {
+        //        result = defaultvalue;
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public static int GetIntPreference(this HttpState programState, string preference, int defaultValue = 0)
-        {
-            if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !int.TryParse(preferenceValueString, out int result))
-            {
-                result = defaultValue;
-            }
+        //public static int GetIntPreference(this HttpState programState, string preference, int defaultValue = 0)
+        //{
+        //    if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !int.TryParse(preferenceValueString, out int result))
+        //    {
+        //        result = defaultValue;
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public static string GetStringPreference(this HttpState programState, string preference, string defaultValue = null)
-        {
-            if (!programState.Preferences.TryGetValue(preference, out string result))
-            {
-                result = defaultValue;
-            }
+        //public static string GetStringPreference(this HttpState programState, string preference, string defaultValue = null)
+        //{
+        //    if (!programState.Preferences.TryGetValue(preference, out string result))
+        //    {
+        //        result = defaultValue;
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }

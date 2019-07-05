@@ -20,6 +20,13 @@ namespace Microsoft.HttpRepl.Commands
     {
         private static readonly string Name = "help";
 
+        private readonly IPreferences _preferences;
+
+        public HelpCommand(IPreferences preferences)
+        {
+            _preferences = preferences;
+        }
+
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             return parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name)
@@ -85,7 +92,7 @@ namespace Microsoft.HttpRepl.Commands
 
                             if (programState.SwaggerEndpoint != null)
                             {
-                                string swaggerRequeryBehaviorSetting = programState.GetStringPreference(WellKnownPreference.SwaggerRequeryBehavior, "auto");
+                                string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
 
                                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                                 {

@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
@@ -14,7 +17,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         private readonly DeleteCommandsConfig _config;
         
         public DeleteCommandTests(HttpCommandsFixture<DeleteCommandsConfig> deleteCommandsFixture)
-            : base(new DeleteCommand(_fileSystem))
+            : base(new DeleteCommand(_fileSystem, new NullPreferences()))
         {
             _config = deleteCommandsFixture.Config;
         }

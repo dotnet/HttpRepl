@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +18,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private readonly PostCommandsConfig _config;
         public PostCommandTests(HttpCommandsFixture<PostCommandsConfig> postCommandsFixture)
-            : base(new PostCommand(_fileSystem))
+            : base(new PostCommand(_fileSystem, new NullPreferences()))
         {
             _config = postCommandsFixture.Config;
         }

@@ -19,9 +19,9 @@ namespace Microsoft.HttpRepl
 
         public HttpClient Client { get; }
 
-        public AllowedColors ErrorColor => this.GetColorPreference(WellKnownPreference.ErrorColor, AllowedColors.BoldRed);
+        public AllowedColors ErrorColor => _preferences.GetColorValue(WellKnownPreference.ErrorColor, AllowedColors.BoldRed);
 
-        public AllowedColors WarningColor => this.GetColorPreference(WellKnownPreference.WarningColor, AllowedColors.BoldYellow);
+        public AllowedColors WarningColor => _preferences.GetColorValue(WellKnownPreference.WarningColor, AllowedColors.BoldYellow);
 
         public Stack<string> PathSections { get; }
 
@@ -37,10 +37,6 @@ namespace Microsoft.HttpRepl
 
         public bool EchoRequest { get; set; }
 
-        public Dictionary<string, string> Preferences { get; }
-
-        public IReadOnlyDictionary<string, string> DefaultPreferences { get; }
-
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 
         public DiagnosticsState DiagnosticsState { get; }
@@ -53,39 +49,16 @@ namespace Microsoft.HttpRepl
             _preferences = preferences;
             Client = new HttpClient();
             PathSections = new Stack<string>();
-            DefaultPreferences = CreateDefaultPreferences();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
                 { "User-Agent", new[] { "HTTP-REPL" } }
             };
-            Preferences = _preferences.ReadPreferences(DefaultPreferences);
             DiagnosticsState = new DiagnosticsState();
         }
 
         public string GetPrompt()
         {
             return $"{GetEffectivePath(new string[0], false, out int _)?.ToString() ?? "(Disconnected)"}~ ";
-        }
-
-        internal static IReadOnlyDictionary<string, string> CreateDefaultPreferences()
-        {
-            return new Dictionary<string, string>
-            {
-                { WellKnownPreference.ProtocolColor, "BoldGreen" },
-                { WellKnownPreference.StatusColor, "BoldYellow" },
-
-                { WellKnownPreference.JsonArrayBraceColor, "BoldCyan" },
-                { WellKnownPreference.JsonCommaColor, "BoldYellow" },
-                { WellKnownPreference.JsonNameColor, "BoldMagenta" },
-                { WellKnownPreference.JsonNameSeparatorColor, "BoldWhite" },
-                { WellKnownPreference.JsonObjectBraceColor, "Cyan" },
-                { WellKnownPreference.JsonColor, "Green" }
-            };
-        }
-
-        public bool SavePreferences()
-        {
-            return _preferences.WritePreferences(Preferences, DefaultPreferences);
         }
 
         public string GetExampleBody(string path, ref string contentType, string method)

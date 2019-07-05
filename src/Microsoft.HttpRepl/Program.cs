@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -23,9 +24,8 @@ namespace Microsoft.HttpRepl
         }
 
         public async Task Start(string[] args, IConsoleManager console)
-        { 
-            IFileSystem fileSystem = new RealFileSystem();
-            HttpState state = CreateHttpState(fileSystem);
+        {           
+            HttpState state = CreateHttpState(out IFileSystem fileSystem, out IPreferences preferences);
 
             if (Console.IsOutputRedirected && !console.AllowOutputRedirection)
             {
@@ -37,18 +37,18 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new ChangeDirectoryCommand());
             dispatcher.AddCommand(new ClearCommand());
             //dispatcher.AddCommand(new ConfigCommand());
-            dispatcher.AddCommand(new DeleteCommand(fileSystem));
+            dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
             dispatcher.AddCommand(new EchoCommand());
             dispatcher.AddCommand(new ExitCommand());
-            dispatcher.AddCommand(new HeadCommand(fileSystem));
-            dispatcher.AddCommand(new HelpCommand());
-            dispatcher.AddCommand(new GetCommand(fileSystem));
-            dispatcher.AddCommand(new ListCommand());
-            dispatcher.AddCommand(new OptionsCommand(fileSystem));
-            dispatcher.AddCommand(new PatchCommand(fileSystem));
-            dispatcher.AddCommand(new PrefCommand());
-            dispatcher.AddCommand(new PostCommand(fileSystem));
-            dispatcher.AddCommand(new PutCommand(fileSystem));
+            dispatcher.AddCommand(new HeadCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new HelpCommand(preferences));
+            dispatcher.AddCommand(new GetCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new ListCommand(preferences));
+            dispatcher.AddCommand(new OptionsCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PatchCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PrefCommand(preferences));
+            dispatcher.AddCommand(new PostCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PutCommand(fileSystem, preferences));
             dispatcher.AddCommand(new RunCommand(fileSystem));
             dispatcher.AddCommand(new SetBaseCommand());
             dispatcher.AddCommand(new SetDiagCommand());
@@ -74,7 +74,7 @@ namespace Microsoft.HttpRepl
 
                     shell.ShellState.ConsoleManager.WriteLine();
                     shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
-                    new HelpCommand().CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
+                    new HelpCommand(preferences).CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
                     return;
                 }
 
@@ -95,13 +95,30 @@ namespace Microsoft.HttpRepl
             await result.ConfigureAwait(false);
         }
 
-        private static HttpState CreateHttpState(IFileSystem fileSystem)
+        private static HttpState CreateHttpState(out IFileSystem fileSystem, out IPreferences preferences)
         {
+            fileSystem = new RealFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferences = new Preferences.UserFolderPreferences(fileSystem, userProfileDirectoryProvider);
+            preferences = new Preferences.UserFolderPreferences(fileSystem, userProfileDirectoryProvider, CreateDefaultPreferences());
             HttpState state = new HttpState(fileSystem, preferences);
 
             return state;
+        }
+
+        internal static Dictionary<string, string> CreateDefaultPreferences()
+        {
+            return new Dictionary<string, string>
+            {
+                { WellKnownPreference.ProtocolColor, "BoldGreen" },
+                { WellKnownPreference.StatusColor, "BoldYellow" },
+
+                { WellKnownPreference.JsonArrayBraceColor, "BoldCyan" },
+                { WellKnownPreference.JsonCommaColor, "BoldYellow" },
+                { WellKnownPreference.JsonNameColor, "BoldMagenta" },
+                { WellKnownPreference.JsonNameSeparatorColor, "BoldWhite" },
+                { WellKnownPreference.JsonObjectBraceColor, "Cyan" },
+                { WellKnownPreference.JsonColor, "Green" }
+            };
         }
     }
 }

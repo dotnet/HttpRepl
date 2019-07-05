@@ -41,14 +41,16 @@ namespace Microsoft.HttpRepl.Commands
         private CommandInputSpecification _inputSpec;
 
         private readonly IFileSystem _fileSystem;
+        private readonly IPreferences _preferences;
 
         protected abstract string Verb { get; }
 
         protected abstract bool RequiresBody { get; }
 
-        public BaseHttpCommand(IFileSystem fileSystem)
+        public BaseHttpCommand(IFileSystem fileSystem, IPreferences preferences)
         {
             _fileSystem = fileSystem;
+            _preferences = preferences;
         }
 
         public override CommandInputSpecification InputSpec
@@ -91,7 +93,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (programState.SwaggerEndpoint != null)
             {
-                string swaggerRequeryBehaviorSetting = programState.GetStringPreference(WellKnownPreference.SwaggerRequeryBehavior, "auto");
+                string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
 
                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                 {
@@ -153,7 +155,7 @@ namespace Microsoft.HttpRepl.Commands
                     }
                     else
                     {
-                        string defaultEditorCommand = programState.GetStringPreference(WellKnownPreference.DefaultEditorCommand);
+                        string defaultEditorCommand = _preferences.GetValue(WellKnownPreference.DefaultEditorCommand, null);
                         if (defaultEditorCommand == null)
                         {
                             shellState.ConsoleManager.Error.WriteLine($"The default editor must be configured using the command `pref set {WellKnownPreference.DefaultEditorCommand} \"{{commandline}}\"`".SetColor(programState.ErrorColor));
@@ -170,7 +172,7 @@ namespace Microsoft.HttpRepl.Commands
                             _fileSystem.WriteAllTextToFile(filePath, exampleBody);
                         }
 
-                        string defaultEditorArguments = programState.GetStringPreference(WellKnownPreference.DefaultEditorArguments) ?? "";
+                        string defaultEditorArguments = _preferences.GetValue(WellKnownPreference.DefaultEditorArguments, null) ?? "";
                         string original = defaultEditorArguments;
                         string pathString = $"\"{filePath}\"";
 
@@ -237,8 +239,8 @@ namespace Microsoft.HttpRepl.Commands
 
         private async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
         {
-            RequestConfig requestConfig = new RequestConfig(programState);
-            ResponseConfig responseConfig = new ResponseConfig(programState);
+            RequestConfig requestConfig = new RequestConfig(_preferences);
+            ResponseConfig responseConfig = new ResponseConfig(_preferences);
             string protocolInfo;
 
             if (echoRequest)
@@ -275,7 +277,7 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     
 
-                    await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, cancellationToken).ConfigureAwait(false);
+                    await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
                     
                 }
 
@@ -326,7 +328,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (response.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, cancellationToken).ConfigureAwait(false);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, cancellationToken).ConfigureAwait(false);
             }
 
             if (headersTargetFile != null && !string.Equals(headersTargetFile, bodyTargetFile, StringComparison.Ordinal))
@@ -351,7 +353,7 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine();
         }
 
-        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, CancellationToken cancellationToken)
+        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
         {
             if (commandInput.Options[StreamingOption].Count > 0)
             {
@@ -406,7 +408,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-JAVASCRIPT", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+JAVASCRIPT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatJsonAsync(programState, consoleManager, content, bodyFileOutput))
+                    if (await FormatJsonAsync(programState, consoleManager, content, bodyFileOutput, preferences))
                     {
                         return;
                     }
@@ -463,13 +465,13 @@ namespace Microsoft.HttpRepl.Commands
             return false;
         }
 
-        private static async Task<bool> FormatJsonAsync(HttpState programState, IWritable outputSink, HttpContent content, List<string> bodyFileOutput)
+        private static async Task<bool> FormatJsonAsync(HttpState programState, IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
 
             try
             {
-                JsonConfig config = new JsonConfig(programState);
+                JsonConfig config = new JsonConfig(preferences);
                 string formatted = JsonVisitor.FormatAndColorize(config, responseContent);
                 outputSink.WriteLine(formatted);
                 bodyFileOutput?.Add(JToken.Parse(responseContent).ToString());

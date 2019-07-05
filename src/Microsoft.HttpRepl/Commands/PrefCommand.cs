@@ -21,6 +21,12 @@ namespace Microsoft.HttpRepl.Commands
         private const string _GetCommandSyntax = "pref get [{setting}]";
         private const string _SetCommandSyntax = "pref set {setting} [{value}]";
         private readonly HashSet<string> _allowedSubcommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {"get", "set"};
+        private readonly IPreferences _preferences;
+
+        public PrefCommand(IPreferences preferences)
+        {
+            _preferences = preferences;
+        }
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
         {
@@ -64,7 +70,7 @@ namespace Microsoft.HttpRepl.Commands
 
             helpText.AppendLine();
             helpText.AppendLine(Resources.Strings.PrefCommand_HelpDetails_DefaultPreferences);
-            foreach (var pref in programState.DefaultPreferences)
+            foreach (var pref in _preferences.DefaultPreferences)
             {
                 var val = pref.Value;
                 if (pref.Key.Contains("colors"))
@@ -75,7 +81,7 @@ namespace Microsoft.HttpRepl.Commands
             }
             helpText.AppendLine();
             helpText.AppendLine(Resources.Strings.PrefCommand_HelpDetails_CurrentPreferences);
-            foreach (var pref in programState.Preferences)
+            foreach (var pref in _preferences.CurrentPreferences)
             {
                 var val = pref.Value;
                 if (pref.Key.Contains("colors"))
@@ -132,49 +138,35 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (string.Equals(commandInput.Arguments[0].Text, "get", StringComparison.OrdinalIgnoreCase))
             {
-                return GetSetting(shellState, programState, commandInput);
-            }
-
-            return SetSetting(shellState, programState, commandInput);
-        }
-
-        private static Task SetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
-        {
-            string prefName = commandInput.Arguments[1].Text;
-            string prefValue = commandInput.Arguments.Count > 2 ? commandInput.Arguments[2]?.Text : null;
-
-            if (string.IsNullOrEmpty(prefValue))
-            {
-                if (!programState.DefaultPreferences.TryGetValue(prefName, out string defaultValue))
-                {
-                    programState.Preferences.Remove(prefName);
-                }
-                else
-                {
-                    programState.Preferences[prefName] = defaultValue;
-                }
+                GetSetting(shellState, programState, commandInput);
             }
             else
             {
-                programState.Preferences[prefName] = prefValue;
-            }
-
-            if (!programState.SavePreferences())
-            {
-                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_Saving.SetColor(programState.ErrorColor));
+                SetSetting(shellState, programState, commandInput);
             }
 
             return Task.CompletedTask;
         }
 
-        private static Task GetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
+        private void SetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
+        {
+            string prefName = commandInput.Arguments[1].Text;
+            string prefValue = commandInput.Arguments.Count > 2 ? commandInput.Arguments[2]?.Text : null;
+
+            if (!_preferences.SetValue(prefName, prefValue))
+            {
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_Saving.SetColor(programState.ErrorColor));
+            }
+        }
+
+        private void GetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
             string preferenceName = commandInput.Arguments.Count > 1 ? commandInput.Arguments[1]?.Text : null;
             
             //If there's a particular setting to get the value of
             if (!string.IsNullOrEmpty(preferenceName))
             {
-                if (programState.Preferences.TryGetValue(preferenceName, out string value))
+                if (_preferences.TryGetValue(preferenceName, out string value))
                 {
                     shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.PrefCommand_Get_ConfiguredValue, value));
                 }
@@ -185,13 +177,12 @@ namespace Microsoft.HttpRepl.Commands
             }
             else
             {
-                foreach (KeyValuePair<string, string> entry in programState.Preferences.OrderBy(x => x.Key))
+                foreach (KeyValuePair<string, string> entry in _preferences.CurrentPreferences.OrderBy(x => x.Key))
                 {
                     shellState.ConsoleManager.WriteLine($"{entry.Key}={entry.Value}");
                 }
             }
 
-            return Task.CompletedTask;
         }
 
         public override CommandInputSpecification InputSpec { get; } = CommandInputSpecification.Create("pref")

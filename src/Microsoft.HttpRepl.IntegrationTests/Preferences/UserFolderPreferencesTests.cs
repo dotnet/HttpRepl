@@ -48,9 +48,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Preferences
 This third line is invalid as well";
             fileSystem.AddFile(preferences.PreferencesFilePath, prefsFileContent);
 
-            Dictionary<string, string> preferencesDictionary = preferences.ReadPreferences(HttpState.CreateDefaultPreferences());
-
-            Assert.Equal(expectedValue, preferencesDictionary[settingName]);
+            Assert.Equal(expectedValue, preferences.CurrentPreferences[settingName]);
         }
 
         [Fact]
@@ -63,16 +61,10 @@ This third line is invalid as well";
 
             SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem);
 
-            // Setup the preferences dictionary to have the default preferences, except for one that was modified
-            // and one that was added. Only the modified and the added preferences should be written to the file system
-            IReadOnlyDictionary<string, string> defaultPreferences = HttpState.CreateDefaultPreferences();
-            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(defaultPreferences);
-            preferencesToWrite[WellKnownPreference.DefaultEditorCommand] = defaultEditor;
-            preferencesToWrite[WellKnownPreference.ErrorColor] = errorColor;
-
-            bool succeeded = preferences.WritePreferences(preferencesToWrite, defaultPreferences);
-
-            Assert.True(succeeded);
+            // Add one and change one
+            // Only the changes should be written, not any of the defaults.
+            preferences.SetValue(WellKnownPreference.DefaultEditorCommand, defaultEditor);
+            preferences.SetValue(WellKnownPreference.ErrorColor, errorColor);
 
             Assert.Equal(expected, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
@@ -82,23 +74,22 @@ This third line is invalid as well";
         {
             string originalValue = "BoldMagenta";
             string defaultValue = "Red";
-            IReadOnlyDictionary<string, string> defaultPreferences = new Dictionary<string, string> { { WellKnownPreference.ProtocolColor, defaultValue } };
+            IDictionary<string, string> defaultPreferences = new Dictionary<string, string> { { WellKnownPreference.ProtocolColor, defaultValue } };
 
-            SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem);
+            MockedFileSystem fileSystem = new MockedFileSystem();
+            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, defaultPreferences);           
 
             // Create a file with a non-default value, read it from the file system and
             // validate that it was read correctly
             fileSystem.AddFile(preferences.PreferencesFilePath, $"{WellKnownPreference.ProtocolColor}={originalValue}");
-            Dictionary<string, string> preferencesFromFile = preferences.ReadPreferences(defaultPreferences);
 
-            Assert.Equal(originalValue, preferencesFromFile[WellKnownPreference.ProtocolColor]);
+            Assert.Equal(originalValue, preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]);
 
             // Now change it to the default value, write it back to the file system and
             // validate that it was removed from the file
-            preferencesFromFile[WellKnownPreference.ProtocolColor] = defaultPreferences[WellKnownPreference.ProtocolColor];
-            bool succeeded = preferences.WritePreferences(preferencesFromFile, defaultPreferences);
-
-            Assert.True(succeeded);
+            preferences.SetValue(WellKnownPreference.ProtocolColor, defaultPreferences[WellKnownPreference.ProtocolColor]);
+            
             Assert.Equal(string.Empty, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
@@ -106,13 +97,13 @@ This third line is invalid as well";
         {
             fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider);
+            preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
         }
 
         private void ConfirmAllPreferencesAreDefaults(IPreferences preferences)
         {
-            var defaultPreferences = HttpState.CreateDefaultPreferences();
-            var currentPreferences = preferences.ReadPreferences(defaultPreferences);
+            var defaultPreferences = TestDefaultPreferences.GetDefaultPreferences();
+            var currentPreferences = preferences.CurrentPreferences;
             Assert.Equal(defaultPreferences.Count, currentPreferences.Count);
             foreach (KeyValuePair<string, string> kvp in defaultPreferences)
             {

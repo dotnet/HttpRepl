@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +18,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private readonly PutCommandsConfig _config;
         public PutCommandTests(HttpCommandsFixture<PutCommandsConfig> PutCommandsFixture)
-            : base(new PutCommand(_fileSystem))
+            : base(new PutCommand(_fileSystem, new NullPreferences()))
         {
             _config = PutCommandsFixture.Config;
         }
