@@ -45,12 +45,17 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
-            helpText.AppendLine("set header {name} [value]");
-            helpText.AppendLine();
-            helpText.AppendLine("Sets or clears a header. When [value] is empty the header is cleared.");
-            return Description;
+            if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.Ordinal) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))
+            {
+                var helpText = new StringBuilder();
+                helpText.Append("Usage: ".Bold());
+                helpText.AppendLine("set header {name} [value]");
+                helpText.AppendLine();
+                helpText.AppendLine("Sets or clears a header. When [value] is empty the header is cleared.");
+                return Description;
+            }
+
+            return null;
         }
 
         public string GetHelpSummary(IShellState shellState, HttpState programState)
