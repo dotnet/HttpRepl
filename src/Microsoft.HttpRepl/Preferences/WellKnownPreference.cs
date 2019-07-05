@@ -169,36 +169,5 @@ namespace Microsoft.HttpRepl.Preferences
         public static string DefaultEditorArguments { get; } = "editor.command.default.arguments";
 
         public static string SwaggerRequeryBehavior { get; } = "swagger.requery";
-
-
-        //public static AllowedColors GetColorPreference(this HttpState programState, string preference, AllowedColors defaultvalue = AllowedColors.None)
-        //{
-        //    if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !Enum.TryParse(preferenceValueString, true, out AllowedColors result))
-        //    {
-        //        result = defaultvalue;
-        //    }
-
-        //    return result;
-        //}
-
-        //public static int GetIntPreference(this HttpState programState, string preference, int defaultValue = 0)
-        //{
-        //    if (!programState.Preferences.TryGetValue(preference, out string preferenceValueString) || !int.TryParse(preferenceValueString, out int result))
-        //    {
-        //        result = defaultValue;
-        //    }
-
-        //    return result;
-        //}
-
-        //public static string GetStringPreference(this HttpState programState, string preference, string defaultValue = null)
-        //{
-        //    if (!programState.Preferences.TryGetValue(preference, out string result))
-        //    {
-        //        result = defaultValue;
-        //    }
-
-        //    return result;
-        //}
     }
 }
