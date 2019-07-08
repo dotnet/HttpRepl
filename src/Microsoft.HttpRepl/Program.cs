@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl
                     shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_BaseAddress, "<BASE_ADDRESS>"));
                     shell.ShellState.ConsoleManager.WriteLine();
                     shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Options);
-                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_Help, "--help"));
+                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_Help, "-h|--help"));
 
                     shell.ShellState.ConsoleManager.WriteLine();
                     shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
