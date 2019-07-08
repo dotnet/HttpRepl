@@ -64,7 +64,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpSummary(IShellState shellState, HttpState programState)
         {
-            return "ui - Launches the Swagger UI page (if available) in the default browser";
+            return Resources.Strings.UICommand_HelpSummary;
         }
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)

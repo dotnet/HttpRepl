@@ -117,12 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChangeDirectoryCommand_HelpSummary" xml:space="preserve">
+    <value>Append the given directory to the currently selected path, or move up a path when using `cd ..`</value>
+  </data>
+  <data name="ClearCommand_HelpSummary" xml:space="preserve">
+    <value>Removes all text from the shell</value>
+  </data>
+  <data name="EchoCommand_HelpSummary" xml:space="preserve">
+    <value>Turns request echoing on or off, show the request that was made when using request commands</value>
+  </data>
   <data name="Error_NoBasePath" xml:space="preserve">
     <value>'set base {url}' must be called before issuing requests to a relative path</value>
     <comment>Error shown in console when issuing an HTTP command without first setting the base url</comment>
   </data>
   <data name="Error_OutputRedirected" xml:space="preserve">
     <value>Cannot start the REPL when output is being redirected</value>
+  </data>
+  <data name="ExitCommand_HelpSummary" xml:space="preserve">
+    <value>Exit the shell</value>
   </data>
   <data name="Help_Arguments" xml:space="preserve">
     <value>Arguments:</value>
@@ -143,6 +155,9 @@
   </data>
   <data name="Help_Usage" xml:space="preserve">
     <value>Usage: </value>
+  </data>
+  <data name="ListCommand_HelpSummary" xml:space="preserve">
+    <value>Show all endpoints for the current path</value>
   </data>
   <data name="PrefCommand_Error_NoConfiguredValue" xml:space="preserve">
     <value>{0} does not have a configured value</value>
@@ -180,7 +195,21 @@
     <comment>{0} is the overall command syntax</comment>
   </data>
   <data name="PrefCommand_HelpSummary" xml:space="preserve">
-    <value>{0} - Allows viewing or changing preferences</value>
-    <comment>{0} is the command text</comment>
+    <value>Allows viewing or changing preferences, e.g. 'pref set editor.command.default 'C:\\Program Files\\Microsoft VS Code\\Code.exe'`</value>
+  </data>
+  <data name="RunCommand_HelpSummary" xml:space="preserve">
+    <value>Runs the script at the given path. A script is a set of commands that can be typed with one command per line</value>
+  </data>
+  <data name="SetBaseCommand_HelpSummary" xml:space="preserve">
+    <value>Set the base URI. e.g. `set base http://locahost:5000`</value>
+  </data>
+  <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
+    <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
+  </data>
+  <data name="SetSwaggerCommand_HelpSummary" xml:space="preserve">
+    <value>Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`</value>
+  </data>
+  <data name="UICommand_HelpSummary" xml:space="preserve">
+    <value>Displays the Swagger UI page, if available, in the default browser</value>
   </data>
 </root>

@@ -20,7 +20,7 @@ namespace Microsoft.HttpRepl.Commands
         private const string Name = "set";
         private const string SubCommand = "base";
 
-        public string Description => "Sets the base address to direct requests to.";
+        public string Description => Resources.Strings.SetBaseCommand_HelpSummary;
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {

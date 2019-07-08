@@ -137,7 +137,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
         {
-            return "ls - List known routes for the current location";
+            return Resources.Strings.ListCommand_HelpSummary;
         }
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)

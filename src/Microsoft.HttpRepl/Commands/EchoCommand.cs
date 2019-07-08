@@ -52,7 +52,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
         {
-            return "echo [on/off] - Turns request echoing on or off";
+            return Resources.Strings.EchoCommand_HelpSummary;
         }
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)

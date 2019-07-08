@@ -42,7 +42,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpSummary(IShellState shellState, object programState)
         {
-            return "clear - Clears the shell";
+            return Resources.Strings.ClearCommand_HelpSummary;
         }
 
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
