@@ -79,7 +79,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             MockedShellState shellState = new MockedShellState();
             string parseResultSections = "ui";
 
-            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState, baseAddress: null);
+            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
