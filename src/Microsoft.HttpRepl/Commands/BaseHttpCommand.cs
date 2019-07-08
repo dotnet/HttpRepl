@@ -99,7 +99,7 @@ namespace Microsoft.HttpRepl.Commands
                 }
             }
 
-            Dictionary<string, string> thisRequestHeaders = new Dictionary<string, string>();
+            Dictionary<string, string> thisRequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (InputElement header in commandInput.Options[HeaderOption])
             {
