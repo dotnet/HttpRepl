@@ -1,10 +1,13 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
+using Microsoft.Repl.ConsoleHandling;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Preferences
@@ -98,11 +101,133 @@ This third line is invalid as well";
             Assert.Equal(string.Empty, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
+        [Fact]
+        public void GetColorValue_DoesNotExist_ReturnsDefault()
+        {
+            ConfirmColorValue(expected: AllowedColors.Magenta,
+                              fileContent: $"",
+                              preferenceName: WellKnownPreference.ErrorColor,
+                              defaultValue: AllowedColors.Magenta);
+        }
+
+        [Fact]
+        public void GetColorValue_NotAColorValue_ReturnsDefault()
+        {
+            ConfirmColorValue(expected: AllowedColors.Magenta,
+                              fileContent: $"{WellKnownPreference.ErrorColor}=ThisIsGibberish",
+                              preferenceName: WellKnownPreference.ErrorColor,
+                              defaultValue: AllowedColors.Magenta);
+        }
+
+        [Fact]
+        public void GetColorValue_Exists_ReturnsValue()
+        {
+            ConfirmColorValue(expected: AllowedColors.BoldRed,
+                              fileContent: $"{WellKnownPreference.ErrorColor}=BoldRed",
+                              preferenceName: WellKnownPreference.ErrorColor,
+                              defaultValue: AllowedColors.Cyan);
+        }
+
+        [Fact]
+        public void GetIntValue_DoesNotExist_ReturnsDefault()
+        {
+            ConfirmIntValue(expected: 5,
+                            fileContent: $"",
+                            preferenceName: WellKnownPreference.JsonIndentSize,
+                            defaultValue: 5);
+        }
+
+        [Fact]
+        public void GetIntValue_NotAnIntValue_ReturnsDefault()
+        {
+            ConfirmIntValue(expected: 5,
+                            fileContent: $"{WellKnownPreference.JsonIndentSize}=NotAnInt",
+                            preferenceName: WellKnownPreference.JsonIndentSize,
+                            defaultValue: 5);
+        }
+
+        [Fact]
+        public void GetIntValue_Exists_ReturnsValue()
+        {
+            ConfirmIntValue(expected: 5,
+                            fileContent: $"{WellKnownPreference.JsonIndentSize}=5",
+                            preferenceName: WellKnownPreference.JsonIndentSize,
+                            defaultValue: 42);
+        }
+
+        [Fact]
+        public void GetStringValue_DoesNotExist_ReturnsDefault()
+        {
+            ConfirmStringValue(expected: "code.exe",
+                               fileContent: "",
+                               preferenceName: WellKnownPreference.DefaultEditorCommand,
+                               defaultValue: "code.exe");
+        }
+
+        [Fact]
+        public void GetStringValue_Exists_ReturnsValue()
+        {
+            ConfirmStringValue(expected: "code.exe",
+                               fileContent: $"{WellKnownPreference.DefaultEditorCommand}=code.exe",
+                               preferenceName: WellKnownPreference.DefaultEditorCommand,
+                               defaultValue: "notepad.exe");
+        }
+
+        [Fact]
+        public void SetValue_NoValueNoDefault_PreferenceIsRemoved()
+        {
+            string initialValue = "BoldRed";
+            SetupPreferencesWithFileContent($"{WellKnownPreference.JsonBraceColor}={initialValue}", out UserFolderPreferences preferences);
+            
+            Assert.Equal("BoldRed", preferences.GetValue(WellKnownPreference.JsonBraceColor));
+
+            // JsonBraceColor has no default, so this should remove the preference
+            preferences.SetValue(WellKnownPreference.JsonBraceColor, "");
+
+            bool found = preferences.TryGetValue(WellKnownPreference.JsonBraceColor, out _);
+
+            Assert.False(found);
+        }
+
+        private void ConfirmStringValue(string expected, string fileContent, string preferenceName, string defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            string result = preferences.GetValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private void ConfirmColorValue(AllowedColors expected, string fileContent, string preferenceName, AllowedColors defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            AllowedColors result = preferences.GetColorValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result);
+        }
+
+        private void ConfirmIntValue(int expected, string fileContent, string preferenceName, int defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            int result = preferences.GetIntValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result);
+        }
+
         private void SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem)
         {
             fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
+        }
+
+        private void SetupPreferencesWithFileContent(string fileContent, out UserFolderPreferences preferences)
+        {
+            SetupPreferences(out preferences, out MockedFileSystem fileSystem);
+
+            fileSystem.AddFile(preferences.PreferencesFilePath, fileContent);
         }
 
         private void ConfirmAllPreferencesAreDefaults(IPreferences preferences)

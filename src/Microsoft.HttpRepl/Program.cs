@@ -23,41 +23,18 @@ namespace Microsoft.HttpRepl
             await new Program().Start(args, new ConsoleManager());
         }
 
-        public async Task Start(string[] args, IConsoleManager console)
+        public async Task Start(string[] args, IConsoleManager consoleManager)
         {           
-            HttpState state = CreateHttpState(out IFileSystem fileSystem, out IPreferences preferences);
+            ComposeDependencies(consoleManager, out HttpState state, out Shell shell, out IPreferences preferences);
 
-            if (Console.IsOutputRedirected && !console.AllowOutputRedirection)
+            if (Console.IsOutputRedirected && !consoleManager.AllowOutputRedirection)
             {
-                Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(state.ErrorColor));
+                Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(preferences.GetColorValue(WellKnownPreference.ErrorColor)));
                 return;
             }
 
-            var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
-            dispatcher.AddCommand(new ChangeDirectoryCommand());
-            dispatcher.AddCommand(new ClearCommand());
-            //dispatcher.AddCommand(new ConfigCommand());
-            dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new EchoCommand());
-            dispatcher.AddCommand(new ExitCommand());
-            dispatcher.AddCommand(new HeadCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new HelpCommand(preferences));
-            dispatcher.AddCommand(new GetCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new ListCommand(preferences));
-            dispatcher.AddCommand(new OptionsCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PatchCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PrefCommand(preferences));
-            dispatcher.AddCommand(new PostCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PutCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new RunCommand(fileSystem));
-            dispatcher.AddCommand(new SetBaseCommand());
-            dispatcher.AddCommand(new SetDiagCommand());
-            dispatcher.AddCommand(new SetHeaderCommand());
-            dispatcher.AddCommand(new SetSwaggerCommand());
-            dispatcher.AddCommand(new UICommand());
-
             CancellationTokenSource source = new CancellationTokenSource();
-            Shell shell = new Shell(dispatcher, consoleManager: console);
+
             shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
             if (args.Length > 0)
             {
@@ -95,14 +72,37 @@ namespace Microsoft.HttpRepl
             await result.ConfigureAwait(false);
         }
 
-        private static HttpState CreateHttpState(out IFileSystem fileSystem, out IPreferences preferences)
+        private static void ComposeDependencies(IConsoleManager consoleManager, out HttpState state, out Shell shell, out IPreferences preferences)
         {
-            fileSystem = new RealFileSystem();
+            IFileSystem fileSystem = new RealFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             preferences = new Preferences.UserFolderPreferences(fileSystem, userProfileDirectoryProvider, CreateDefaultPreferences());
-            HttpState state = new HttpState(fileSystem, preferences);
+            state = new HttpState(fileSystem, preferences);
 
-            return state;
+            var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
+            dispatcher.AddCommand(new ChangeDirectoryCommand());
+            dispatcher.AddCommand(new ClearCommand());
+            //dispatcher.AddCommand(new ConfigCommand());
+            dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new EchoCommand());
+            dispatcher.AddCommand(new ExitCommand());
+            dispatcher.AddCommand(new HeadCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new HelpCommand(preferences));
+            dispatcher.AddCommand(new GetCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new ListCommand(preferences));
+            dispatcher.AddCommand(new OptionsCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PatchCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PrefCommand(preferences));
+            dispatcher.AddCommand(new PostCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new PutCommand(fileSystem, preferences));
+            dispatcher.AddCommand(new RunCommand(fileSystem));
+            dispatcher.AddCommand(new SetBaseCommand());
+            dispatcher.AddCommand(new SetDiagCommand());
+            dispatcher.AddCommand(new SetHeaderCommand());
+            dispatcher.AddCommand(new SetSwaggerCommand());
+            dispatcher.AddCommand(new UICommand());
+
+            shell = new Shell(dispatcher, consoleManager: consoleManager);
         }
 
         internal static Dictionary<string, string> CreateDefaultPreferences()
