@@ -50,12 +50,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             return _command.GetHelpSummary(shellState, httpState);
         }
 
-        protected async Task ExecuteAsyncWithInvalidParseResultSections(string parseResultSections, IShellState shellState, string baseAddress = null)
+        protected async Task ExecuteAsyncWithInvalidParseResultSections(string parseResultSections, IShellState shellState)
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             HttpClient httpClient = new HttpClient();
             HttpState httpState = new HttpState(httpClient);
-            httpState.BaseAddress = null;
 
             await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
         }
