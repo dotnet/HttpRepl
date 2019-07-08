@@ -9,6 +9,7 @@ using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl.Parsing;
+using Moq;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
@@ -80,15 +81,21 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public async Task ExecuteAsync_WithHttpStateBaseAddressSetToNull_WritesToConsoleManagerError()
         {
             MockedShellState shellState = new MockedShellState();
-            string parseResultSections = "ui";
+            ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(httpClient);
+            httpState.BaseAddress = null;
 
-            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
+            Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
+            UICommand uiCommand = new UICommand(mockLauncher.Object);
+
+            await uiCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithValidHttpStateBaseAddress_DoesNotThrowException()
+        public async Task ExecuteAsync_WithValidHttpStateBaseAddress_VerifyLaunchUriAsyncWasCalledOnce()
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
@@ -97,12 +104,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
-            MockUriLauncher mockUriLauncher = new MockUriLauncher(true);
-            UICommand uiCommand = new UICommand(mockUriLauncher);
+            Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
+            UICommand uiCommand = new UICommand(mockLauncher.Object);
 
-            var exception = await Record.ExceptionAsync(async () => await uiCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None));
+            mockLauncher.Setup(s => s.LaunchUriAsync(It.IsAny<Uri>()))
+                .Returns(Task.CompletedTask);
 
-            Assert.Null(exception);
+            await uiCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            mockLauncher.Verify(l => l.LaunchUriAsync(It.Is<Uri>(u => u.AbsoluteUri == "https://localhost:44366/swagger")), Times.Once());
         }
 
         [Fact]
@@ -115,11 +125,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
-            MockUriLauncher mockUriLauncher  = new MockUriLauncher(false);
-            UICommand uiCommand = new UICommand(mockUriLauncher);
-
-            var exception = await Record.ExceptionAsync(async () => await uiCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None));
+            Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
             string expectedErrorMessage = "Unable to launch https://localhost:44366/swagger";
+            mockLauncher.Setup(s => s.LaunchUriAsync(It.IsAny<Uri>()))
+                .Returns(Task.FromException(new Exception(expectedErrorMessage)));
+
+            UICommand uiCommand = new UICommand(mockLauncher.Object);
+            var exception = await Record.ExceptionAsync(async () => await uiCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None));
 
             Assert.NotNull(exception);
             Assert.Equal(expectedErrorMessage, exception.Message);
