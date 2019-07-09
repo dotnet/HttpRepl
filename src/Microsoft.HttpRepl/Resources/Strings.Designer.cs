@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: The &apos;/{0}&apos; endpoint is not present in the swagger metadata.
+        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the swagger metadata.
         /// </summary>
         internal static string ChangeDirectoryCommand_Warning_UnknownEndpoint {
             get {

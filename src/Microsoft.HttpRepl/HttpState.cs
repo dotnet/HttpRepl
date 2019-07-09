@@ -289,5 +289,17 @@ namespace Microsoft.HttpRepl
 
             return builder.Uri;
         }
+
+        internal string GetRelativePathString()
+        {
+            string pathString = "/";
+
+            if (PathSections != null && PathSections.Count > 0)
+            {
+                pathString += string.Join("/", PathSections.Reverse());
+            }
+
+            return pathString;
+        }
     }
 }

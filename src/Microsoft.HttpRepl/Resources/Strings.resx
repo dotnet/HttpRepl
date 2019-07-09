@@ -121,7 +121,7 @@
     <value>Append the given directory to the currently selected path, or move up a path when using `cd ..`</value>
   </data>
   <data name="ChangeDirectoryCommand_Warning_UnknownEndpoint" xml:space="preserve">
-    <value>Warning: The '/{0}' endpoint is not present in the swagger metadata</value>
+    <value>Warning: The '{0}' endpoint is not present in the swagger metadata</value>
     <comment>{0} is the path to the referenced endpoint</comment>
   </data>
   <data name="ClearCommand_HelpSummary" xml:space="preserve">
