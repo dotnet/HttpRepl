@@ -57,6 +57,11 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     IDirectoryStructure s = programState.Structure.TraverseTo(programState.PathSections.Reverse());
 
+                    if (s.RequestInfo == null || s.RequestInfo.Methods.Count == 0)
+                    {
+                        shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.ChangeDirectoryCommand_Warning_UnknownEndpoint, string.Join("/", programState.PathSections.Reverse()).SetColor(programState.WarningColor)));
+                    }
+
                     string thisDirMethod = s.RequestInfo != null && s.RequestInfo.Methods.Count > 0
                         ? "[" + string.Join("|", s.RequestInfo.Methods) + "]"
                         : "[]";
