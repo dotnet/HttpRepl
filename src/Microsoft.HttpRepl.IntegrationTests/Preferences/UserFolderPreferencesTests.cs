@@ -2,7 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Preferences;
@@ -102,78 +104,6 @@ This third line is invalid as well";
         }
 
         [Fact]
-        public void GetColorValue_DoesNotExist_ReturnsDefault()
-        {
-            ConfirmColorValue(expected: AllowedColors.Magenta,
-                              fileContent: $"",
-                              preferenceName: WellKnownPreference.ErrorColor,
-                              defaultValue: AllowedColors.Magenta);
-        }
-
-        [Fact]
-        public void GetColorValue_NotAColorValue_ReturnsDefault()
-        {
-            ConfirmColorValue(expected: AllowedColors.Magenta,
-                              fileContent: $"{WellKnownPreference.ErrorColor}=ThisIsGibberish",
-                              preferenceName: WellKnownPreference.ErrorColor,
-                              defaultValue: AllowedColors.Magenta);
-        }
-
-        [Fact]
-        public void GetColorValue_Exists_ReturnsValue()
-        {
-            ConfirmColorValue(expected: AllowedColors.BoldRed,
-                              fileContent: $"{WellKnownPreference.ErrorColor}=BoldRed",
-                              preferenceName: WellKnownPreference.ErrorColor,
-                              defaultValue: AllowedColors.Cyan);
-        }
-
-        [Fact]
-        public void GetIntValue_DoesNotExist_ReturnsDefault()
-        {
-            ConfirmIntValue(expected: 5,
-                            fileContent: $"",
-                            preferenceName: WellKnownPreference.JsonIndentSize,
-                            defaultValue: 5);
-        }
-
-        [Fact]
-        public void GetIntValue_NotAnIntValue_ReturnsDefault()
-        {
-            ConfirmIntValue(expected: 5,
-                            fileContent: $"{WellKnownPreference.JsonIndentSize}=NotAnInt",
-                            preferenceName: WellKnownPreference.JsonIndentSize,
-                            defaultValue: 5);
-        }
-
-        [Fact]
-        public void GetIntValue_Exists_ReturnsValue()
-        {
-            ConfirmIntValue(expected: 5,
-                            fileContent: $"{WellKnownPreference.JsonIndentSize}=5",
-                            preferenceName: WellKnownPreference.JsonIndentSize,
-                            defaultValue: 42);
-        }
-
-        [Fact]
-        public void GetStringValue_DoesNotExist_ReturnsDefault()
-        {
-            ConfirmStringValue(expected: "code.exe",
-                               fileContent: "",
-                               preferenceName: WellKnownPreference.DefaultEditorCommand,
-                               defaultValue: "code.exe");
-        }
-
-        [Fact]
-        public void GetStringValue_Exists_ReturnsValue()
-        {
-            ConfirmStringValue(expected: "code.exe",
-                               fileContent: $"{WellKnownPreference.DefaultEditorCommand}=code.exe",
-                               preferenceName: WellKnownPreference.DefaultEditorCommand,
-                               defaultValue: "notepad.exe");
-        }
-
-        [Fact]
         public void SetValue_NoValueNoDefault_PreferenceIsRemoved()
         {
             string initialValue = "BoldRed";
@@ -189,7 +119,9 @@ This third line is invalid as well";
             Assert.False(found);
         }
 
-        private void ConfirmStringValue(string expected, string fileContent, string preferenceName, string defaultValue)
+        [Theory]
+        [MemberData(nameof(GetStringValuesTestData))]
+        public void GetValue_CorrectOutput(string expected, string fileContent, string preferenceName, string defaultValue)
         {
             SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
 
@@ -198,7 +130,9 @@ This third line is invalid as well";
             Assert.Equal(expected, result, StringComparer.OrdinalIgnoreCase);
         }
 
-        private void ConfirmColorValue(AllowedColors expected, string fileContent, string preferenceName, AllowedColors defaultValue)
+        [Theory]
+        [MemberData(nameof(GetColorValuesTestData))]
+        public void GetColorValue_CorrectOutput(AllowedColors expected, string fileContent, string preferenceName, AllowedColors defaultValue)
         {
             SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
 
@@ -207,13 +141,43 @@ This third line is invalid as well";
             Assert.Equal(expected, result);
         }
 
-        private void ConfirmIntValue(int expected, string fileContent, string preferenceName, int defaultValue)
+        [Theory]
+        [MemberData(nameof(GetIntValuesTestData))]
+        public void GetIntValue_CorrectOutput(int expected, string fileContent, string preferenceName, int defaultValue)
         {
             SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
 
             int result = preferences.GetIntValue(preferenceName, defaultValue);
 
             Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> GetStringValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default.
+            yield return new object[] { "code.exe", string.Empty, WellKnownPreference.DefaultEditorCommand, "code.exe" };
+            // Actual value is returned
+            yield return new object[] { "code.exe", $"{WellKnownPreference.DefaultEditorCommand}=code.exe", WellKnownPreference.DefaultEditorCommand, "notepad.exe" };
+        }
+
+        public static IEnumerable<object[]> GetColorValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default
+            yield return new object[] { AllowedColors.Magenta, string.Empty, WellKnownPreference.ErrorColor, AllowedColors.Magenta };
+            // Preference value that isn't an actual color falls back to the passed in default
+            yield return new object[] { AllowedColors.Magenta, $"{WellKnownPreference.ErrorColor}=ThisIsGibberish", WellKnownPreference.ErrorColor, AllowedColors.Magenta };
+            // Actual value is returned
+            yield return new object[] { AllowedColors.BoldRed, $"{WellKnownPreference.ErrorColor}=BoldRed", WellKnownPreference.ErrorColor, AllowedColors.Cyan };
+        }
+
+        public static IEnumerable<object[]> GetIntValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default
+            yield return new object[] { 5, string.Empty, WellKnownPreference.JsonIndentSize, 5 };
+            // Preference value that isn't an int falls back to the passed in default
+            yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=ThisIsGibberish", WellKnownPreference.JsonIndentSize, 5 };
+            // Actual value is returned
+            yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=5", WellKnownPreference.JsonIndentSize, 42 };
         }
 
         private void SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem)
