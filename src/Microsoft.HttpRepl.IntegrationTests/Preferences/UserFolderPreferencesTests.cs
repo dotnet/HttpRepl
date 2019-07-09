@@ -1,10 +1,15 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Extensions.ObjectPool;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
+using Microsoft.Repl.ConsoleHandling;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Preferences
@@ -48,9 +53,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Preferences
 This third line is invalid as well";
             fileSystem.AddFile(preferences.PreferencesFilePath, prefsFileContent);
 
-            Dictionary<string, string> preferencesDictionary = preferences.ReadPreferences(HttpState.CreateDefaultPreferences());
-
-            Assert.Equal(expectedValue, preferencesDictionary[settingName]);
+            Assert.Equal(expectedValue, preferences.CurrentPreferences[settingName]);
         }
 
         [Fact]
@@ -63,17 +66,15 @@ This third line is invalid as well";
 
             SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem);
 
-            // Setup the preferences dictionary to have the default preferences, except for one that was modified
-            // and one that was added. Only the modified and the added preferences should be written to the file system
-            IReadOnlyDictionary<string, string> defaultPreferences = HttpState.CreateDefaultPreferences();
-            Dictionary<string, string> preferencesToWrite = new Dictionary<string, string>(defaultPreferences);
-            preferencesToWrite[WellKnownPreference.DefaultEditorCommand] = defaultEditor;
-            preferencesToWrite[WellKnownPreference.ErrorColor] = errorColor;
-
-            bool succeeded = preferences.WritePreferences(preferencesToWrite, defaultPreferences);
+            // Add one and change one
+            // Only the changes should be written, not any of the defaults.
+            bool succeeded = preferences.SetValue(WellKnownPreference.DefaultEditorCommand, defaultEditor);
 
             Assert.True(succeeded);
 
+            succeeded = preferences.SetValue(WellKnownPreference.ErrorColor, errorColor);
+
+            Assert.True(succeeded);
             Assert.Equal(expected, fileSystem.ReadFile(preferences.PreferencesFilePath));
         }
 
@@ -82,37 +83,121 @@ This third line is invalid as well";
         {
             string originalValue = "BoldMagenta";
             string defaultValue = "Red";
-            IReadOnlyDictionary<string, string> defaultPreferences = new Dictionary<string, string> { { WellKnownPreference.ProtocolColor, defaultValue } };
+            IDictionary<string, string> defaultPreferences = new Dictionary<string, string> { { WellKnownPreference.ProtocolColor, defaultValue } };
 
-            SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem);
+            MockedFileSystem fileSystem = new MockedFileSystem();
+            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, defaultPreferences);           
 
             // Create a file with a non-default value, read it from the file system and
             // validate that it was read correctly
             fileSystem.AddFile(preferences.PreferencesFilePath, $"{WellKnownPreference.ProtocolColor}={originalValue}");
-            Dictionary<string, string> preferencesFromFile = preferences.ReadPreferences(defaultPreferences);
 
-            Assert.Equal(originalValue, preferencesFromFile[WellKnownPreference.ProtocolColor]);
+            Assert.Equal(originalValue, preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]);
 
             // Now change it to the default value, write it back to the file system and
             // validate that it was removed from the file
-            preferencesFromFile[WellKnownPreference.ProtocolColor] = defaultPreferences[WellKnownPreference.ProtocolColor];
-            bool succeeded = preferences.WritePreferences(preferencesFromFile, defaultPreferences);
+            bool succeeded = preferences.SetValue(WellKnownPreference.ProtocolColor, defaultPreferences[WellKnownPreference.ProtocolColor]);
 
             Assert.True(succeeded);
             Assert.Equal(string.Empty, fileSystem.ReadFile(preferences.PreferencesFilePath));
+        }
+
+        [Fact]
+        public void SetValue_NoValueNoDefault_PreferenceIsRemoved()
+        {
+            string initialValue = "BoldRed";
+            SetupPreferencesWithFileContent($"{WellKnownPreference.JsonBraceColor}={initialValue}", out UserFolderPreferences preferences);
+            
+            Assert.Equal("BoldRed", preferences.GetValue(WellKnownPreference.JsonBraceColor));
+
+            // JsonBraceColor has no default, so this should remove the preference
+            preferences.SetValue(WellKnownPreference.JsonBraceColor, "");
+
+            bool found = preferences.TryGetValue(WellKnownPreference.JsonBraceColor, out _);
+
+            Assert.False(found);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetStringValuesTestData))]
+        public void GetValue_CorrectOutput(string expected, string fileContent, string preferenceName, string defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            string result = preferences.GetValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result, StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetColorValuesTestData))]
+        public void GetColorValue_CorrectOutput(AllowedColors expected, string fileContent, string preferenceName, AllowedColors defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            AllowedColors result = preferences.GetColorValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetIntValuesTestData))]
+        public void GetIntValue_CorrectOutput(int expected, string fileContent, string preferenceName, int defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            int result = preferences.GetIntValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result);
+        }
+
+        public static IEnumerable<object[]> GetStringValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default.
+            yield return new object[] { "code.exe", string.Empty, WellKnownPreference.DefaultEditorCommand, "code.exe" };
+            // Actual value is returned
+            yield return new object[] { "code.exe", $"{WellKnownPreference.DefaultEditorCommand}=code.exe", WellKnownPreference.DefaultEditorCommand, "notepad.exe" };
+        }
+
+        public static IEnumerable<object[]> GetColorValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default
+            yield return new object[] { AllowedColors.Magenta, string.Empty, WellKnownPreference.ErrorColor, AllowedColors.Magenta };
+            // Preference value that isn't an actual color falls back to the passed in default
+            yield return new object[] { AllowedColors.Magenta, $"{WellKnownPreference.ErrorColor}=ThisIsGibberish", WellKnownPreference.ErrorColor, AllowedColors.Magenta };
+            // Actual value is returned
+            yield return new object[] { AllowedColors.BoldRed, $"{WellKnownPreference.ErrorColor}=BoldRed", WellKnownPreference.ErrorColor, AllowedColors.Cyan };
+        }
+
+        public static IEnumerable<object[]> GetIntValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default
+            yield return new object[] { 5, string.Empty, WellKnownPreference.JsonIndentSize, 5 };
+            // Preference value that isn't an int falls back to the passed in default
+            yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=ThisIsGibberish", WellKnownPreference.JsonIndentSize, 5 };
+            // Actual value is returned
+            yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=5", WellKnownPreference.JsonIndentSize, 42 };
         }
 
         private void SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem)
         {
             fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider);
+            preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
+        }
+
+        private void SetupPreferencesWithFileContent(string fileContent, out UserFolderPreferences preferences)
+        {
+            SetupPreferences(out preferences, out MockedFileSystem fileSystem);
+
+            fileSystem.AddFile(preferences.PreferencesFilePath, fileContent);
         }
 
         private void ConfirmAllPreferencesAreDefaults(IPreferences preferences)
         {
-            var defaultPreferences = HttpState.CreateDefaultPreferences();
-            var currentPreferences = preferences.ReadPreferences(defaultPreferences);
+            var defaultPreferences = TestDefaultPreferences.GetDefaultPreferences();
+            var currentPreferences = preferences.CurrentPreferences;
             Assert.Equal(defaultPreferences.Count, currentPreferences.Count);
             foreach (KeyValuePair<string, string> kvp in defaultPreferences)
             {

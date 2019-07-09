@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
+using Microsoft.HttpRepl.IntegrationTests.Preferences;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.Parsing;
@@ -21,7 +22,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             await ValidateOutput(commandText: $"pref GET {WellKnownPreference.ProtocolColor}",
                                  expectedOutputLines: 1,
-                                 expectedOutputOnLastLineCallback: (httpState) => $"Configured value: {httpState.Preferences[WellKnownPreference.ProtocolColor]}");
+                                 expectedOutputOnLastLineCallback: (preferences) => $"Configured value: {preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]}");
         }
 
         [Fact]
@@ -29,7 +30,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             await ValidateOutput(commandText: $"pref get {WellKnownPreference.ProtocolColor}",
                                  expectedOutputLines: 1,
-                                 expectedOutputOnLastLineCallback: (httpState) => $"Configured value: {httpState.Preferences[WellKnownPreference.ProtocolColor]}");
+                                 expectedOutputOnLastLineCallback: (preferences) => $"Configured value: {preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]}");
         }
 
         [Fact]
@@ -37,7 +38,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             await ValidateOutput(commandText: $"pref gEt {WellKnownPreference.ProtocolColor}",
                                  expectedOutputLines: 1,
-                                 expectedOutputOnLastLineCallback: (httpState) => $"Configured value: {httpState.Preferences[WellKnownPreference.ProtocolColor]}");
+                                 expectedOutputOnLastLineCallback: (preferences) => $"Configured value: {preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]}");
         }
 
         [Fact]
@@ -72,10 +73,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider);
+            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
             HttpState httpState = new HttpState(fileSystem, preferences);
             MockedShellState shellState = new MockedShellState();
-            PrefCommand command = new PrefCommand();
+            PrefCommand command = new PrefCommand(preferences);
 
             // First, set it to something other than the default and make sure that works.
             string firstCommandExpectedValue = "BoldMagenta";
@@ -85,7 +86,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             await command.ExecuteAsync(shellState, httpState, firstParseResult, CancellationToken.None);
 
             Assert.Empty(shellState.Output);
-            Assert.Equal(firstCommandExpectedValue, httpState.Preferences[WellKnownPreference.ProtocolColor]);
+            Assert.Equal(firstCommandExpectedValue, preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]);
 
             // Then, set it to nothing and make sure it goes back to the default
             string secondCommandText = $"pref set {WellKnownPreference.ProtocolColor}";
@@ -94,7 +95,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             await command.ExecuteAsync(shellState, httpState, secondParseResult, CancellationToken.None);
 
             Assert.Empty(shellState.Output);
-            Assert.Equal(httpState.DefaultPreferences[WellKnownPreference.ProtocolColor], httpState.Preferences[WellKnownPreference.ProtocolColor]);
+            Assert.Equal(preferences.DefaultPreferences[WellKnownPreference.ProtocolColor], preferences.CurrentPreferences[WellKnownPreference.ProtocolColor]);
 
         }
 
@@ -103,7 +104,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             bool? canHandle = command.CanHandle(shellState, httpState, parseResult);
 
@@ -115,7 +116,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "preferences set colors.protocol";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             bool? canHandle = command.CanHandle(shellState, httpState, parseResult);
 
@@ -127,7 +128,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "pref set";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             bool? canHandle = command.CanHandle(shellState, httpState, parseResult);
 
@@ -140,7 +141,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "pref set  ";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             bool? canHandle = command.CanHandle(shellState, httpState, parseResult);
 
@@ -153,7 +154,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "pref";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             string output = command.GetHelpDetails(shellState, httpState, parseResult);
 
@@ -165,7 +166,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "pref get";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             string output = command.GetHelpDetails(shellState, httpState, parseResult);
 
@@ -177,7 +178,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             string commandText = "pref set";
 
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out _);
 
             string output = command.GetHelpDetails(shellState, httpState, parseResult);
 
@@ -186,33 +187,33 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private static async Task ValidatePreference(string commandText, string preferenceName, Func<HttpState, string> expectedValueCallback)
         {
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out UserFolderPreferences preferences);
 
             await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Empty(shellState.Output);
-            Assert.Equal(expectedValueCallback(httpState), httpState.Preferences[preferenceName]);
+            Assert.Equal(expectedValueCallback(httpState), preferences.CurrentPreferences[preferenceName]);
         }
 
-        private static async Task ValidateOutput(string commandText, int expectedOutputLines, Func<HttpState, string> expectedOutputOnLastLineCallback)
+        private static async Task ValidateOutput(string commandText, int expectedOutputLines, Func<UserFolderPreferences, string> expectedOutputOnLastLineCallback)
         {
-            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command);
+            Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out UserFolderPreferences preferences);
 
             await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Single(shellState.Output);
-            Assert.Equal(expectedOutputOnLastLineCallback(httpState), shellState.Output[0]);
+            Assert.Equal(expectedOutputOnLastLineCallback(preferences), shellState.Output[0]);
         }
 
-        private static void Arrange(string commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command)
+        private static void Arrange(string commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out UserFolderPreferences preferences)
         {
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider);
+            preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
             httpState = new HttpState(fileSystem, preferences);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
-            command = new PrefCommand();
+            command = new PrefCommand(preferences);
         }
 
     }

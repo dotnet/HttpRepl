@@ -7,39 +7,39 @@ namespace Microsoft.HttpRepl.Preferences
 {
     public class JsonConfig : IJsonConfig
     {
-        private readonly HttpState _state;
+        private readonly IPreferences _preferences;
 
-        public int IndentSize => _state.GetIntPreference(WellKnownPreference.JsonIndentSize, 2);
+        public int IndentSize => _preferences.GetIntValue(WellKnownPreference.JsonIndentSize, 2);
 
-        public AllowedColors DefaultColor => _state.GetColorPreference(WellKnownPreference.JsonColor);
+        public AllowedColors DefaultColor => _preferences.GetColorValue(WellKnownPreference.JsonColor);
 
-        private AllowedColors DefaultBraceColor => _state.GetColorPreference(WellKnownPreference.JsonBraceColor, DefaultSyntaxColor);
+        private AllowedColors DefaultBraceColor => _preferences.GetColorValue(WellKnownPreference.JsonBraceColor, DefaultSyntaxColor);
 
-        private AllowedColors DefaultSyntaxColor => _state.GetColorPreference(WellKnownPreference.JsonSyntaxColor, DefaultColor);
+        private AllowedColors DefaultSyntaxColor => _preferences.GetColorValue(WellKnownPreference.JsonSyntaxColor, DefaultColor);
 
-        private AllowedColors DefaultLiteralColor => _state.GetColorPreference(WellKnownPreference.JsonLiteralColor, DefaultColor);
+        private AllowedColors DefaultLiteralColor => _preferences.GetColorValue(WellKnownPreference.JsonLiteralColor, DefaultColor);
 
-        public AllowedColors ArrayBraceColor => _state.GetColorPreference(WellKnownPreference.JsonArrayBraceColor, DefaultBraceColor);
+        public AllowedColors ArrayBraceColor => _preferences.GetColorValue(WellKnownPreference.JsonArrayBraceColor, DefaultBraceColor);
 
-        public AllowedColors ObjectBraceColor => _state.GetColorPreference(WellKnownPreference.JsonObjectBraceColor, DefaultBraceColor);
+        public AllowedColors ObjectBraceColor => _preferences.GetColorValue(WellKnownPreference.JsonObjectBraceColor, DefaultBraceColor);
 
-        public AllowedColors CommaColor => _state.GetColorPreference(WellKnownPreference.JsonCommaColor, DefaultSyntaxColor);
+        public AllowedColors CommaColor => _preferences.GetColorValue(WellKnownPreference.JsonCommaColor, DefaultSyntaxColor);
 
-        public AllowedColors NameColor => _state.GetColorPreference(WellKnownPreference.JsonNameColor, StringColor);
+        public AllowedColors NameColor => _preferences.GetColorValue(WellKnownPreference.JsonNameColor, StringColor);
 
-        public AllowedColors NameSeparatorColor => _state.GetColorPreference(WellKnownPreference.JsonNameSeparatorColor, DefaultSyntaxColor);
+        public AllowedColors NameSeparatorColor => _preferences.GetColorValue(WellKnownPreference.JsonNameSeparatorColor, DefaultSyntaxColor);
 
-        public AllowedColors BoolColor => _state.GetColorPreference(WellKnownPreference.JsonBoolColor, DefaultLiteralColor);
+        public AllowedColors BoolColor => _preferences.GetColorValue(WellKnownPreference.JsonBoolColor, DefaultLiteralColor);
 
-        public AllowedColors NumericColor => _state.GetColorPreference(WellKnownPreference.JsonNumericColor, DefaultLiteralColor);
+        public AllowedColors NumericColor => _preferences.GetColorValue(WellKnownPreference.JsonNumericColor, DefaultLiteralColor);
 
-        public AllowedColors StringColor => _state.GetColorPreference(WellKnownPreference.JsonStringColor, DefaultLiteralColor);
+        public AllowedColors StringColor => _preferences.GetColorValue(WellKnownPreference.JsonStringColor, DefaultLiteralColor);
 
-        public AllowedColors NullColor => _state.GetColorPreference(WellKnownPreference.JsonNullColor, DefaultLiteralColor);
+        public AllowedColors NullColor => _preferences.GetColorValue(WellKnownPreference.JsonNullColor, DefaultLiteralColor);
 
-        public JsonConfig(HttpState state)
+        public JsonConfig(IPreferences preferences)
         {
-            _state = state;
+            _preferences = preferences;
         }
     }
 }

@@ -1,9 +1,13 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
+using Microsoft.HttpRepl.IntegrationTests.Preferences;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;
@@ -21,7 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public HttpCommandTests(T command)
         {
             _command = command;
-            _preferences = new HttpRepl.Preferences.UserFolderPreferences(FileSystem, new UserProfileDirectoryProvider());
+            _preferences = new UserFolderPreferences(FileSystem, new UserProfileDirectoryProvider(), TestDefaultPreferences.GetDefaultPreferences());
         }
 
         protected async Task VerifyErrorMessage(string commandText, string baseAddress, string path, string expectedErrorMessage)

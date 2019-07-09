@@ -20,11 +20,19 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string RecursiveOption = nameof(RecursiveOption);
 
+        private readonly IPreferences _preferences;
+
+        public ListCommand(IPreferences preferences)
+        {
+            _preferences = preferences;
+        }
+
+
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
             if (programState.SwaggerEndpoint != null)
             {
-                string swaggerRequeryBehaviorSetting = programState.GetStringPreference(WellKnownPreference.SwaggerRequeryBehavior, "auto");
+                string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
 
                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                 {
