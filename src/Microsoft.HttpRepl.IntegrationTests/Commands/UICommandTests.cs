@@ -82,8 +82,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
             httpState.BaseAddress = null;
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
@@ -99,8 +98,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
@@ -120,8 +118,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 

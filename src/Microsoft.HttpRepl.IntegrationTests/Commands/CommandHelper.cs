@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
+using Microsoft.HttpRepl.IntegrationTests.Preferences;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -28,8 +32,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
 
             return _command.CanHandle(shellState, httpState, parseResult);
         }
@@ -38,8 +41,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
 
             return _command.GetHelpDetails(shellState, httpState, parseResult);
         }
@@ -47,8 +49,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         protected string GetHelpSummary()
         {
             MockedShellState shellState = new MockedShellState();
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
 
             return _command.GetHelpSummary(shellState, httpState);
         }
@@ -56,8 +57,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         protected async Task ExecuteAsyncWithInvalidParseResultSections(string parseResultSections, IShellState shellState)
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
 
             await _command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
         }
@@ -66,8 +66,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             MockedShellState shellState = new MockedShellState();
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
             return _command.Suggest(shellState, httpState, parseResult);
         }
 
@@ -76,6 +75,19 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Mock<IWritable> error = Mock.Get(shellState.ConsoleManager.Error);
 
             error.Verify(s => s.WriteLine(It.IsAny<string>()), Times.Once);
+        }
+
+        protected HttpState GetHttpState(string content)
+        {
+            IFileSystem fileSystem = new MockedFileSystem();
+            IPreferences preferences = new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), TestDefaultPreferences.GetDefaultPreferences());
+
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            responseMessage.Content = new MockHttpContent(content);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(responseMessage);
+            HttpClient httpClient = new HttpClient(messageHandler);
+
+            return new HttpState(fileSystem, preferences, httpClient);
         }
     }
 }
