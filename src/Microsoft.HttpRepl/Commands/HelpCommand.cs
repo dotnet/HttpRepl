@@ -266,12 +266,5 @@ namespace Microsoft.HttpRepl.Commands
 
             shellState.ConsoleManager.Write(output.ToString());
         }
-
-        private static T GetCommand<T, TState, TParseResult>(ICommandDispatcher<TState, TParseResult> dispatcher) where T: class, ICommand where TParseResult: ICoreParseResult
-        {
-            var command = dispatcher.Commands?.SingleOrDefault(c => c.GetType() == typeof(T));
-
-            return command as T;
-        }
     }
 }
