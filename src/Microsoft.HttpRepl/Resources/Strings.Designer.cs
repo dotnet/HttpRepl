@@ -61,6 +61,33 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Append the given directory to the currently selected path, or move up a path when using `cd ..`.
+        /// </summary>
+        internal static string ChangeDirectoryCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ChangeDirectoryCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removes all text from the shell.
+        /// </summary>
+        internal static string ClearCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ClearCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turns request echoing on or off, show the request that was made when using request commands.
+        /// </summary>
+        internal static string EchoCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("EchoCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;set base {url}&apos; must be called before issuing requests to a relative path.
         /// </summary>
         internal static string Error_NoBasePath {
@@ -75,6 +102,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string Error_OutputRedirected {
             get {
                 return ResourceManager.GetString("Error_OutputRedirected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit the shell.
+        /// </summary>
+        internal static string ExitCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ExitCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -129,6 +165,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string Help_Usage {
             get {
                 return ResourceManager.GetString("Help_Usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all endpoints for the current path.
+        /// </summary>
+        internal static string ListCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ListCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -223,11 +268,56 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Allows viewing or changing preferences.
+        ///   Looks up a localized string similar to Allows viewing or changing preferences, e.g. &apos;pref set editor.command.default &apos;C:\\Program Files\\Microsoft VS Code\\Code.exe&apos;`.
         /// </summary>
         internal static string PrefCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("PrefCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs the script at the given path. A script is a set of commands that can be typed with one command per line.
+        /// </summary>
+        internal static string RunCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("RunCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the base URI. e.g. `set base http://locahost:5000`.
+        /// </summary>
+        internal static string SetBaseCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetBaseCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets or clears a header for all requests. e.g. `set header content-type application/json`.
+        /// </summary>
+        internal static string SetHeaderCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetHeaderCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
+        /// </summary>
+        internal static string SetSwaggerCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the Swagger UI page, if available, in the default browser.
+        /// </summary>
+        internal static string UICommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
             }
         }
     }

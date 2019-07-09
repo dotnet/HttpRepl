@@ -23,7 +23,7 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly string Name = "set";
         private static readonly string SubCommand = "swagger";
 
-        public string Description => "Sets the swagger document to use for information about the current server";
+        public string Description => Resources.Strings.SetSwaggerCommand_HelpSummary;
 
         private static void FillDirectoryInfo(DirectoryStructure parent, EndpointMetadata entry)
         {

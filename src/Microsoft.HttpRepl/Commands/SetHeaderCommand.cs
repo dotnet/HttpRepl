@@ -20,7 +20,7 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly string Name = "set";
         private static readonly string SubCommand = "header";
 
-        public string Description => "set header {name} [value] - Sets or clears a header";
+        public string Description => Resources.Strings.SetHeaderCommand_HelpSummary;
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
@@ -52,7 +52,7 @@ namespace Microsoft.HttpRepl.Commands
                 helpText.AppendLine("set header {name} [value]");
                 helpText.AppendLine();
                 helpText.AppendLine("Sets or clears a header. When [value] is empty the header is cleared.");
-                return Description;
+                return helpText.ToString();
             }
 
             return null;

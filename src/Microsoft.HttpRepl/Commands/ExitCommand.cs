@@ -33,7 +33,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public override string GetHelpSummary(IShellState shellState, object programState)
         {
-            return "exit - Exits the shell";
+            return Resources.Strings.ExitCommand_HelpSummary;
         }
     }
 }

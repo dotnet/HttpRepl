@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpSummary(IShellState shellState, HttpState programState)
         {
-            return "run {path to script} - Runs a script";
+            return Resources.Strings.RunCommand_HelpSummary;
         }
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
