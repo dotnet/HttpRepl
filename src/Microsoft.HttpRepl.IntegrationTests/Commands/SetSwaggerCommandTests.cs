@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -121,8 +120,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 sections2");
-            HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(httpClient);
+            HttpState httpState = GetHttpState(string.Empty);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -253,11 +251,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections)
         {
             MockedShellState shellState = new MockedShellState();
-            HttpResponseMessage responseMessage = new HttpResponseMessage();
-            responseMessage.Content = new MockHttpContent(response);
-            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(responseMessage);
-            HttpClient client = new HttpClient(messageHandler);
-            HttpState httpState = new HttpState(client);
+            HttpState httpState = GetHttpState(response);
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 

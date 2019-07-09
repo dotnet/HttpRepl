@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -73,7 +74,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private HttpState GetHttpState(string baseAddress, string path)
         {
-            HttpState httpState = new HttpState(FileSystem, _preferences);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(FileSystem, _preferences, httpClient);
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {

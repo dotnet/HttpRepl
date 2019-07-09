@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -74,7 +75,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
-            HttpState httpState = new HttpState(fileSystem, preferences);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
             MockedShellState shellState = new MockedShellState();
             PrefCommand command = new PrefCommand(preferences);
 
@@ -210,7 +212,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             IFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
-            httpState = new HttpState(fileSystem, preferences);
+            HttpClient httpClient = new HttpClient();
+            httpState = new HttpState(fileSystem, preferences, httpClient);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
             command = new PrefCommand(preferences);
