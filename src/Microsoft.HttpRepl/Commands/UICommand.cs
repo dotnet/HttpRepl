@@ -3,10 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -17,6 +16,12 @@ namespace Microsoft.HttpRepl.Commands
     public class UICommand : ICommand<HttpState, ICoreParseResult>
     {
         private static readonly string Name = "ui";
+        private IUriLauncher UriLauncher;
+
+        public UICommand(IUriLauncher uriLauncher)
+        {
+            UriLauncher = uriLauncher ?? throw new ArgumentNullException(nameof(uriLauncher));
+        }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
@@ -29,34 +34,20 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (programState.BaseAddress == null)
             {
-                shellState.ConsoleManager.Error.WriteLine("Must be connected to a server to launch Swagger UI".SetColor(programState.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Strings.UICommand_NotConnectedToServerError.SetColor(programState.ErrorColor));
                 return Task.CompletedTask;
             }
 
             Uri uri = new Uri(programState.BaseAddress, "swagger");
-            string agent = "cmd";
-            string agentParam = $"/c start {uri.AbsoluteUri}";
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                agent = "open";
-                agentParam = uri.AbsoluteUri;
-            }
-            else if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                agent = "xdg-open";
-                agentParam = uri.AbsoluteUri;
-            }
-
-            Process.Start(new ProcessStartInfo(agent, agentParam) { CreateNoWindow = true });
-            return Task.CompletedTask;
+            return UriLauncher.LaunchUriAsync(uri);
         }
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.Sections.Count == 1 && string.Equals(parseResult.Sections[0], Name))
             {
-                return "ui - Launches the Swagger UI page (if available) in the default browser";
+                return Strings.UICommand_Description;
             }
 
             return null;

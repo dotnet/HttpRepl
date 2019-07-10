@@ -329,5 +329,50 @@ namespace Microsoft.HttpRepl.Resources {
                 return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
+        /// </summary>
+        internal static string SetSwaggerCommand_Description {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must specify a swagger document.
+        /// </summary>
+        internal static string SetSwaggerCommand_SpecifySwaggerDocument {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_SpecifySwaggerDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ui - Launches the Swagger UI page (if available) in the default browser.
+        /// </summary>
+        internal static string UICommand_Description {
+            get {
+                return ResourceManager.GetString("UICommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be connected to a server to launch Swagger UI.
+        /// </summary>
+        internal static string UICommand_NotConnectedToServerError {
+            get {
+                return ResourceManager.GetString("UICommand_NotConnectedToServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to launch {0}.
+        /// </summary>
+        internal static string UICommand_UnableToLaunchUriError {
+            get {
+                return ResourceManager.GetString("UICommand_UnableToLaunchUriError", resourceCulture);
+            }
+        }
     }
 }

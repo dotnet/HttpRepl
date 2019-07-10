@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -77,7 +78,8 @@ namespace Microsoft.HttpRepl
             IFileSystem fileSystem = new RealFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             preferences = new Preferences.UserFolderPreferences(fileSystem, userProfileDirectoryProvider, CreateDefaultPreferences());
-            state = new HttpState(fileSystem, preferences);
+            HttpClient httpClient = new HttpClient();
+            state = new HttpState(fileSystem, preferences, httpClient);
 
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
             dispatcher.AddCommand(new ChangeDirectoryCommand());
@@ -100,7 +102,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new SetDiagCommand());
             dispatcher.AddCommand(new SetHeaderCommand());
             dispatcher.AddCommand(new SetSwaggerCommand());
-            dispatcher.AddCommand(new UICommand());
+            dispatcher.AddCommand(new UICommand(new UriLauncher()));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
         }
