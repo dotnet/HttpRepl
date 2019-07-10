@@ -26,7 +26,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             Arrange(commandText: "clear", out ClearCommand clearCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            var result = clearCommand.CanHandle(shellState, httpState, parseResult);
+            bool? result = clearCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
         }
@@ -36,7 +36,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             Arrange(commandText: "cls", out ClearCommand clearCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            var result = clearCommand.CanHandle(shellState, httpState, parseResult);
+            bool? result = clearCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
         }
@@ -46,7 +46,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             Arrange(commandText: "cl", out ClearCommand clearCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            var result = clearCommand.Suggest(shellState, httpState, parseResult);
+            IEnumerable<string> result = clearCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.NotNull(result);
 
@@ -62,7 +62,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             Arrange(commandText: "cle", out ClearCommand clearCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            var result = clearCommand.Suggest(shellState, httpState, parseResult);
+            IEnumerable<string> result = clearCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.NotNull(result);
 
@@ -77,7 +77,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         {
             Arrange(commandText: "cls", out ClearCommand clearCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            var result = clearCommand.Suggest(shellState, httpState, parseResult);
+            IEnumerable<string> result = clearCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.NotNull(result);
 
