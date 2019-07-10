@@ -20,7 +20,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     ""version"": ""v1""
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Empty(endpointMetadata);
         }
@@ -36,7 +39,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
    ""paths"": {
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Empty(endpointMetadata);
         }
@@ -60,7 +66,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/pets", endpointMetadata[0].Path);
@@ -88,7 +97,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/pets", endpointMetadata[0].Path);
@@ -96,7 +108,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void Read_WithValidInput_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithValidInput_ReturnsEndpointMetadata()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -142,7 +154,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
 
             Assert.Single(endpointMetadata);
@@ -163,7 +179,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
    ""paths"": {
   }
 }";
-            Assert.False(CanHandle(json));
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
+
+            Assert.False(result);
         }
 
         [Fact]
@@ -177,7 +198,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
    ""paths"": {
   }
 }";
-            Assert.True(CanHandle(json));
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
+
+            Assert.True(result);
         }
 
         [Fact]
@@ -191,23 +217,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
    ""paths"": {
   }
 }";
-            Assert.False(CanHandle(json));
-        }
-
-        private List<EndpointMetadata> GetEndpointMetadataList(string json)
-        {
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            return openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
-        }
+            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
 
-        private bool CanHandle(string json)
-        {
-            JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
-
-            return openApiV3EndpointMetadataReader.CanHandle(jobject);
+            Assert.False(result);
         }
     }
 }

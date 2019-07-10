@@ -20,7 +20,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     ""version"": ""v1""
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Empty(endpointMetadata);
         }
@@ -35,7 +38,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         ""description"": ""resource1""
     }]
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             Assert.Empty(endpointMetadata);
         }
@@ -55,7 +61,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   ]
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
 
             Assert.Single(endpointMetadata);
@@ -74,7 +84,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   ]
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
 
             Assert.Single(endpointMetadata);
@@ -137,7 +151,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
 
             Assert.Single(endpointMetadata);
@@ -196,7 +214,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   }
 }";
-            List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
 
             EndpointMetadata endpointMetadata1 = endpointMetadata[0];
             EndpointMetadata endpointMetadata2 = endpointMetadata[1];
@@ -226,7 +247,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   ]
 }";
-            Assert.False(CanHandle(json));
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
+
+            Assert.False(result);
         }
 
         [Fact]
@@ -244,7 +270,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   ]
 }";
-            Assert.True(CanHandle(json));
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+
+            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
+
+            Assert.True(result);
         }
 
         [Fact]
@@ -262,23 +293,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }
   ]
 }";
-            Assert.False(CanHandle(json));
-        }
-
-        private List<EndpointMetadata> GetEndpointMetadataList(string json)
-        {
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            return swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
-        }
+            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
 
-        private bool CanHandle(string json)
-        {
-            JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
-
-            return swaggerV1EndpointMetadataReader.CanHandle(jobject);
+            Assert.False(result);
         }
     }
 }
