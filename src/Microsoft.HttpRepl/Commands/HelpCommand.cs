@@ -30,7 +30,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name)
+            return parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase)
                 ? (bool?)true
                 : null;
         }
