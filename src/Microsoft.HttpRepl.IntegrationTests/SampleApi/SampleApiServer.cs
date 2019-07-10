@@ -21,10 +21,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                            .ConfigureServices(services =>
                            {
                                services.AddControllers();
-                               services.AddSwaggerGen(c =>
+                               if (config.EnableSwagger)
                                {
-                                   c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-                               });
+                                   services.AddSwaggerGen(c =>
+                                   {
+                                       c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                                   });
+                               }
                            })
                            .Configure(app =>
                            {
@@ -36,7 +39,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                                IRouter routes = routeBuilder.Build();
                                app.UseRouter(routes);
 
-                               app.UseSwagger();
+                               if (config.EnableSwagger)
+                               {
+                                   app.UseSwagger();
+                               }
                            })
                            .Build();
         }
