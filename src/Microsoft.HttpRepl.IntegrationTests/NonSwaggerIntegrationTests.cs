@@ -11,15 +11,16 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
-    public class SwaggerIntegrationTests : BaseIntegrationTest, IClassFixture<HttpCommandsFixture<SampleApiServerConfig>>
+    public class NonSwaggerIntegrationTests : BaseIntegrationTest, IClassFixture<HttpCommandsFixture<NonSwaggerSampleApiServerConfig>>
     {
-        private readonly SampleApiServerConfig _serverConfig;
+        private readonly NonSwaggerSampleApiServerConfig _serverConfig;
 
-        public SwaggerIntegrationTests(HttpCommandsFixture<SampleApiServerConfig> fixture)
+        public NonSwaggerIntegrationTests(HttpCommandsFixture<NonSwaggerSampleApiServerConfig> fixture)
         {
             _serverConfig = fixture.Config;
+            _serverConfig.EnableSwagger = false;
         }
-        
+
         [Fact]
         public async Task ListCommand_WithSwagger_ShowsAvailableSubpaths()
         {
@@ -41,19 +42,12 @@ ls";
 
             // make sure to normalize newlines in the expected output
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ ls
-.     []
-api   []
 
 [BaseUrl]/~ cd api
-/api    []
 
 [BaseUrl]/api~ ls
-.        []
-..       []
-Values   [post]
 
 [BaseUrl]/api~", null);
 
@@ -77,19 +71,22 @@ ls";
             output = NormalizeOutput(output, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/Values
-/api/Values    [post]
 
 [BaseUrl]/api/Values~ ls
-.      [post]
-..     []
-{id}   [put]
 
 [BaseUrl]/api/Values~", null);
 
             Assert.Equal(expected, output);
+        }
+    }
+
+    public class NonSwaggerSampleApiServerConfig : SampleApiServerConfig
+    {
+        public NonSwaggerSampleApiServerConfig()
+        {
+            EnableSwagger = false;
         }
     }
 }

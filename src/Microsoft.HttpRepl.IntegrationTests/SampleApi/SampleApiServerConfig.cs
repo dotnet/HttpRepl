@@ -15,6 +15,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
         public string BaseAddress => $"http://localhost:{Port}";
         public Lazy<int> Port { get; set; } = new Lazy<int>(() => FindFreeTcpPort());
 
+        /// <summary>
+        /// Turns Swagger on or off for the SampleApiServer instance.
+        /// </summary>
+        public bool EnableSwagger { get; set; } = true;
+
         public Collection<SampleApiServerRoute> Routes { get; } = new Collection<SampleApiServerRoute>();
 
         private static int FindFreeTcpPort()
