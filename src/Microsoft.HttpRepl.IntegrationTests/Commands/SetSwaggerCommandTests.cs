@@ -13,17 +13,19 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class SetSwaggerCommandTests : CommandHelper<SetSwaggerCommand>
+    public class SetSwaggerCommandTests : CommandHelper
     {
-        public SetSwaggerCommandTests()
-          : base(new SetSwaggerCommand())
-        {
-        }
-
         [Fact]
         public void GetHelpDetails_WithInvalidParseResultSection_ReturnsNull()
         {
-            string result = GetHelpDetails(parseResultSections: "section1");
+            ArrangeInputs(parseResultSections: "section1",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -31,7 +33,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void GetHelpDetails_WithFirstParseResultSectionNotEqualToName_ReturnsNull()
         {
-            string result = GetHelpDetails(parseResultSections: "section1 section2 section3");
+            ArrangeInputs(parseResultSections: "section1 section2 section3",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -40,7 +49,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         public void GetHelpDetails_WithValidInput_ReturnsDescription()
         {
             string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
-            string result = GetHelpDetails(parseResultSections);
+
+            ArrangeInputs(parseResultSections,
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string result = setSwaggerCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Equal(Strings.SetSwaggerCommand_Description, result);
         }
@@ -48,7 +65,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void GetHelpSummary_ReturnsDescription()
         {
-            string result = GetHelpSummary();
+            ArrangeInputs(parseResultSections: string.Empty,
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult _);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string result = setSwaggerCommand.GetHelpSummary(shellState, httpState);
 
             Assert.Equal(Strings.SetSwaggerCommand_Description, result);
         }
@@ -56,7 +80,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithNoParseResultSections_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: string.Empty);
+            ArrangeInputs(parseResultSections: string.Empty,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -64,7 +95,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithFirstSectionNotEqualToName_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: "section1 section2 section3");
+            ArrangeInputs(parseResultSections: "section1 section2 section3",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -72,7 +110,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithSecondSectionNotEqualToSubCommand_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: "set section2 section3");
+            ArrangeInputs(parseResultSections: "set section2 section3",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -80,8 +125,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithValidInput_ReturnsTrue()
         {
-            string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
-            bool? result = CanHandle(parseResultSections);
+            ArrangeInputs(parseResultSections: "set swagger https://localhost:44366/swagger/v1/swagger.json",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            bool? result = setSwaggerCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result.Value);
         }
@@ -89,28 +140,48 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void Suggest_WithNoParseResultSections_ReturnsName()
         {
-            IEnumerable<string> suggestions = GetSuggestions(parseResultSections: string.Empty);
-            string expected = "set";
+            ArrangeInputs(parseResultSections: string.Empty,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
 
-            Assert.Single(suggestions);
-            Assert.Equal(expected, suggestions.First());
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string expected = "set";
+            IEnumerable<string> result = setSwaggerCommand.Suggest(shellState, httpState, parseResult);
+
+            Assert.Single(result);
+            Assert.Equal(expected, result.First());
         }
 
         [Fact]
         public void Suggest_WithSelectedSectionAtOne_ReturnsSubCommand()
         {
-            IEnumerable<string> suggestions = GetSuggestions(parseResultSections: "set swagger");
-            string expected = "swagger";
+            ArrangeInputs(parseResultSections: "set swagger",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
 
-            Assert.Single(suggestions);
-            Assert.Equal(expected, suggestions.First());
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            string expected = "swagger";
+            IEnumerable<string> result = setSwaggerCommand.Suggest(shellState, httpState, parseResult);
+
+            Assert.Single(result);
+            Assert.Equal(expected, result.First());
         }
 
         [Fact]
         public async Task ExecuteAsync_WithExactlyOneParseResultSection_WritesToConsoleManagerError()
         {
-            MockedShellState shellState = new MockedShellState();
-            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections: "section1", shellState);
+            ArrangeInputs(parseResultSections: "section1",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
@@ -118,9 +189,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithExactlyTwoParseResultSections_SetsHttpStateSwaggerStructureToNull()
         {
-            MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("section1 sections2");
-            HttpState httpState = GetHttpState(string.Empty);
+            ArrangeInputs(parseResultSections: "section1 sections2",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -131,10 +204,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithEmptyThirdParseResultSection_WritesToConsoleManagerError()
         {
-            MockedShellState shellState = new MockedShellState();
-            string parseResultSections = "section1 sections2  ";
+            ArrangeInputs(parseResultSections: "section1 sections2  ",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
 
-            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }
@@ -142,10 +219,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WhenThirdSectionIsNotAValidUri_WritesToConsoleManagerError()
         {
-            MockedShellState shellState = new MockedShellState();
-            string parseResultSections = "section1 sections2 section3";
+            ArrangeInputs(parseResultSections: "section1 sections2 section3",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
 
-            await ExecuteAsyncWithInvalidParseResultSections(parseResultSections, shellState);
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
         }

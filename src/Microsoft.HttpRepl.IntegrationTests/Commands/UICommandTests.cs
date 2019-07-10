@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -14,17 +13,19 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class UICommandTests : CommandHelper<UICommand>
+    public class UICommandTests : CommandHelper
     {
-        public UICommandTests()
-            : base(new UICommand(new UriLauncher()))
-        {
-        }
-
         [Fact]
         public void CanHandle_WithNoParseResultSections_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: string.Empty);
+            ArrangeInputs(parseResultSections: string.Empty,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            bool? result = uiCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -32,7 +33,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithMoreThanOneParseResultSections_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: "ui test");
+            ArrangeInputs(parseResultSections: "ui test",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            bool? result = uiCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -40,7 +48,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithInvalidName_ReturnsNull()
         {
-            bool? result = CanHandle(parseResultSections: "test");
+            ArrangeInputs(parseResultSections: "test",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            bool? result = uiCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -48,23 +63,44 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void CanHandle_WithValidName_ReturnsTrue()
         {
-            bool? result = CanHandle(parseResultSections: "ui");
+            ArrangeInputs(parseResultSections: "ui",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            bool? result = uiCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
         }
 
         [Fact]
-        public void GetHelpSummary_ReturnsDescription()
+        public void GetHelpSummary_ReturnsHelpSummary()
         {
-            string result = GetHelpSummary();
+            ArrangeInputs(parseResultSections: string.Empty,
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult _);
 
-            Assert.Equal(Strings.UICommand_Description, result);
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            string result = uiCommand.GetHelpSummary(shellState, httpState);
+
+            Assert.Equal(Strings.UICommand_HelpSummary, result);
         }
 
         [Fact]
         public void GetHelpDetails_WithInvalidParseResultSection_ReturnsNull()
         {
-            string result = GetHelpDetails(parseResultSections: "section1");
+            ArrangeInputs(parseResultSections: "section1",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            string result = uiCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -72,7 +108,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void GetHelpDetails_WithMoreThanOneParseResultSections_ReturnsNull()
         {
-            string result = GetHelpDetails(parseResultSections: "ui section2");
+            ArrangeInputs(parseResultSections: "ui section1",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            UICommand uiCommand = new UICommand(new UriLauncher());
+
+            string result = uiCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Null(result);
         }
@@ -96,9 +139,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithValidHttpStateBaseAddress_VerifyLaunchUriAsyncWasCalledOnce()
         {
-            MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpState httpState = GetHttpState(string.Empty);
+            ArrangeInputs(parseResultSections: "ui",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
@@ -116,9 +161,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithLaunchUriFailure_ThrowsException()
         {
-            MockedShellState shellState = new MockedShellState();
-            ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpState httpState = GetHttpState(string.Empty);
+            ArrangeInputs(parseResultSections: "ui",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
             Uri uri = new Uri("https://localhost:44366/");
             httpState.BaseAddress = uri;
 
