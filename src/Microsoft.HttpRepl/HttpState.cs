@@ -290,7 +290,7 @@ namespace Microsoft.HttpRepl
             return builder.Uri;
         }
 
-        internal string GetRelativePathString()
+        public string GetRelativePathString()
         {
             string pathString = "/";
 

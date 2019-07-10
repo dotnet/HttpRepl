@@ -3,6 +3,7 @@
 
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Tests.TestDoubles;
 using Microsoft.HttpRepl.UserProfile;
 using Xunit;
 
@@ -49,7 +50,7 @@ namespace Microsoft.HttpRepl.Tests
 
         private static HttpState SetupHttpState()
         {
-            IFileSystem fileSystem = new RealFileSystem();
+            IFileSystem fileSystem = new FileSystemStub();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
 
