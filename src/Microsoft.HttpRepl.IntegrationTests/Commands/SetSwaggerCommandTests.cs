@@ -125,7 +125,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Null(httpState.SwaggerStructure);
+            Assert.Null(httpState.Structure);
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            return httpState.SwaggerStructure;
+            return httpState.Structure;
         }
     }
 }

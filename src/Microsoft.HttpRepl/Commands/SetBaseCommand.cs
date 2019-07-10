@@ -55,12 +55,12 @@ namespace Microsoft.HttpRepl.Commands
 
             if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger.json", out Uri result))
             {
-                state.SwaggerStructure = null;
+                state.Structure = null;
             }
             else
             {
                 await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
-                if (state.SwaggerStructure != null)
+                if (state.Structure != null)
                 {
                     shellState.ConsoleManager.WriteLine("Using swagger metadata from " + result);
                 }
@@ -68,12 +68,12 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger/v1/swagger.json", out result))
                     {
-                        state.SwaggerStructure = null;
+                        state.Structure = null;
                     }
                     else
                     {
                         await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
-                        if (state.SwaggerStructure != null)
+                        if (state.Structure != null)
                         {
                             shellState.ConsoleManager.WriteLine("Using swagger metadata from " + result);
                         }

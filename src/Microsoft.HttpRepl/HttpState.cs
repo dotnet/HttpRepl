@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Microsoft.HttpRepl.Diagnostics;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
@@ -25,21 +24,13 @@ namespace Microsoft.HttpRepl
 
         public Stack<string> PathSections { get; }
 
-        public IDirectoryStructure SwaggerStructure { get; set; }
-
-        public IDirectoryStructure Structure => DiagnosticsState.DiagEndpointsStructure == null
-            ? SwaggerStructure
-            : SwaggerStructure == null
-                ? DiagnosticsState.DiagEndpointsStructure
-                : new AggregateDirectoryStructure(SwaggerStructure, DiagnosticsState.DiagEndpointsStructure);
+        public IDirectoryStructure Structure { get; set; }
 
         public Uri BaseAddress { get; set; }
 
         public bool EchoRequest { get; set; }
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
-
-        public DiagnosticsState DiagnosticsState { get; }
 
         public Uri SwaggerEndpoint { get; set; }
 
@@ -53,7 +44,6 @@ namespace Microsoft.HttpRepl
             {
                 { "User-Agent", new[] { "HTTP-REPL" } }
             };
-            DiagnosticsState = new DiagnosticsState();
         }
 
         public string GetPrompt()
@@ -65,7 +55,7 @@ namespace Microsoft.HttpRepl
         {
             Uri effectivePath = GetEffectivePath(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
-            IDirectoryStructure structure = SwaggerStructure?.TraverseTo(rootRelativePath);
+            IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
             return structure?.RequestInfo?.GetRequestBodyForContentType(ref contentType, method);
         }
 
@@ -73,7 +63,7 @@ namespace Microsoft.HttpRepl
         {
             Uri effectivePath = GetEffectivePath(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
-            IDirectoryStructure structure = SwaggerStructure?.TraverseTo(rootRelativePath);
+            IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
             IReadOnlyDictionary<string, IReadOnlyList<string>> contentTypesByMethod = structure?.RequestInfo?.ContentTypesByMethod;
 
             if (contentTypesByMethod != null)

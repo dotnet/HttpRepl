@@ -84,7 +84,6 @@ namespace Microsoft.HttpRepl
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
             dispatcher.AddCommand(new ChangeDirectoryCommand());
             dispatcher.AddCommand(new ClearCommand());
-            //dispatcher.AddCommand(new ConfigCommand());
             dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
             dispatcher.AddCommand(new EchoCommand());
             dispatcher.AddCommand(new ExitCommand());
@@ -99,7 +98,6 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new PutCommand(fileSystem, preferences));
             dispatcher.AddCommand(new RunCommand(fileSystem));
             dispatcher.AddCommand(new SetBaseCommand());
-            dispatcher.AddCommand(new SetDiagCommand());
             dispatcher.AddCommand(new SetHeaderCommand());
             dispatcher.AddCommand(new SetSwaggerCommand());
             dispatcher.AddCommand(new UICommand(new UriLauncher()));

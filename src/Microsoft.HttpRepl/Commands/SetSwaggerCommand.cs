@@ -238,7 +238,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (parseResult.Sections.Count == 2)
             {
-                programState.SwaggerStructure = null;
+                programState.Structure = null;
                 return;
             }
 
@@ -267,11 +267,11 @@ namespace Microsoft.HttpRepl.Commands
                     FillDirectoryInfo(d, entry);
                 }
 
-                programState.SwaggerStructure = !cancellationToken.IsCancellationRequested ? d : null;
+                programState.Structure = !cancellationToken.IsCancellationRequested ? d : null;
             }
             catch
             {
-                programState.SwaggerStructure = null;
+                programState.Structure = null;
             }
         }
     }

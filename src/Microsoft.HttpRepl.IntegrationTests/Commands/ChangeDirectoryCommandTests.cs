@@ -23,7 +23,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             Setup(commandText: "cd NotAnEndpoint", out MockedShellState mockedShellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            httpState.SwaggerStructure = new DirectoryStructure(null);
+            httpState.Structure = new DirectoryStructure(null);
 
             string expectedFirstLine = string.Format(Resources.Strings.ChangeDirectoryCommand_Warning_UnknownEndpoint, "/NotAnEndpoint").SetColor(httpState.WarningColor);
             string expectedSecondLine = "/NotAnEndpoint    []";
@@ -47,7 +47,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             RequestInfo childRequestInfo = new RequestInfo();
             childRequestInfo.AddMethod("GET");
             childDirectory.RequestInfo = childRequestInfo;
-            httpState.SwaggerStructure = directoryStructure;
+            httpState.Structure = directoryStructure;
 
             string expectedOutput = "/AnEndpoint    [GET]";
 
@@ -67,7 +67,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             DirectoryStructure directoryStructure = new DirectoryStructure(null);
             DirectoryStructure childDirectory = directoryStructure.DeclareDirectory("AnEndpoint");
             DirectoryStructure grandchildDirectory = childDirectory.DeclareDirectory("AnotherEndpoint");
-            httpState.SwaggerStructure = directoryStructure;
+            httpState.Structure = directoryStructure;
 
             string expectedOutput = "/AnEndpoint    []";
 
