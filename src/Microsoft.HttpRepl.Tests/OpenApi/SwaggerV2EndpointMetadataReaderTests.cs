@@ -114,15 +114,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 }";
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
-            KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> firstRequest = availableRequests.First();
-            KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> secondRequest = availableRequests.ElementAt(1);
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/api/Employees", endpointMetadata[0].Path);
 
             Assert.Equal(2, availableRequests.Count);
-            Assert.Equal("get", firstRequest.Key);
-            Assert.Equal("post", secondRequest.Key);
+            Assert.True(availableRequests.ContainsKey("get"));
+            Assert.True(availableRequests.ContainsKey("post"));
         }
 
         [Fact]

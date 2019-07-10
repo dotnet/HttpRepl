@@ -139,15 +139,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 }";
             List<EndpointMetadata> endpointMetadata = GetEndpointMetadataList(json);
             IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
-            KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> firstRequest = availableRequests.First();
-            KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> secondRequest = availableRequests.ElementAt(1);
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/user", endpointMetadata[0].Path);
 
             Assert.Equal(2, availableRequests.Count);
-            Assert.Equal("PUT", firstRequest.Key);
-            Assert.Equal("DELETE", secondRequest.Key);
+            Assert.True(availableRequests.ContainsKey("PUT"));
+            Assert.True(availableRequests.ContainsKey("DELETE"));
         }
 
         [Fact]
