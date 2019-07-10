@@ -54,11 +54,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpSummary_ReturnsDescription()
+        public void GetHelpSummary_ReturnsHelpSummary()
         {
             string result = GetHelpSummary();
 
-            Assert.Equal(Strings.UICommand_Description, result);
+            Assert.Equal(Strings.UICommand_HelpSummary, result);
         }
 
         [Fact]

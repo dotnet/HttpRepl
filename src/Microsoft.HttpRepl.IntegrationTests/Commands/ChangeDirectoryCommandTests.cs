@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Net.Http;
 using System.Threading;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
@@ -83,8 +84,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
             parseResult = CoreParseResultHelper.Create(commandText);
+            HttpClient httpClient = new HttpClient();
 
-            httpState = new HttpState(fileSystem, preferences);
+            httpState = new HttpState(fileSystem, preferences, httpClient);
         }
     }
 }
