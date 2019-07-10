@@ -21,7 +21,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (commandInput.Arguments.Count == 0 || string.IsNullOrEmpty(commandInput.Arguments[0]?.Text))
             {
-                shellState.ConsoleManager.WriteLine($"/{string.Join("/", programState.PathSections.Reverse())}");
+                shellState.ConsoleManager.WriteLine(programState.GetRelativePathString());
             }
             else
             {
@@ -57,12 +57,24 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     IDirectoryStructure s = programState.Structure.TraverseTo(programState.PathSections.Reverse());
 
-                    string thisDirMethod = s.RequestInfo != null && s.RequestInfo.Methods.Count > 0
-                        ? "[" + string.Join("|", s.RequestInfo.Methods) + "]"
-                        : "[]";
+                    string thisDirMethod = "[]";
 
+                    bool hasRequestMethods = s.RequestInfo?.Methods?.Count > 0;
+                    bool hasDirectoryNames = s.DirectoryNames?.Any() == true;
 
-                    shellState.ConsoleManager.WriteLine($"/{string.Join("/", programState.PathSections.Reverse())}    {thisDirMethod}");
+                    // If there's no RequestInfo/Methods AND there's no (sub)DirectoryNames, we currently
+                    // assume this must be an auto-generated directory and not one from a swagger definition
+                    if (!hasRequestMethods && !hasDirectoryNames)
+                    {
+                        string warningMessage = string.Format(Resources.Strings.ChangeDirectoryCommand_Warning_UnknownEndpoint, programState.GetRelativePathString()).SetColor(programState.WarningColor);
+                        shellState.ConsoleManager.WriteLine(warningMessage);
+                    }
+                    else if (hasRequestMethods)
+                    {
+                        thisDirMethod = "[" + string.Join("|", s.RequestInfo.Methods) + "]";
+                    }
+
+                    shellState.ConsoleManager.WriteLine($"{programState.GetRelativePathString()}    {thisDirMethod}");
                 }
             }
 
