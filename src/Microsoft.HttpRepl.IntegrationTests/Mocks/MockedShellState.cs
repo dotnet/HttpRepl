@@ -11,7 +11,7 @@ using Moq;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 {
-    internal class MockedShellState : IShellState
+    public class MockedShellState : IShellState
     {
         private readonly ShellState _shellState;
         public MockedShellState()
