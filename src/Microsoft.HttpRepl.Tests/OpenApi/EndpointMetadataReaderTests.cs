@@ -31,7 +31,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         public void RegisterReader_AddNewReader_VerifyReadReturnsEndpointMetadataCollection()
         {
             string json = @"{
-  ""version"": ""1.0.0"",
+  ""fakeApi"": ""1.0.0"",
   ""info"": {
     ""version"": ""v1""
   }

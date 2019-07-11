@@ -16,7 +16,7 @@ namespace Microsoft.HttpRepl.Tests.Fakes
 
         public bool CanHandle(JObject document)
         {
-            return (document["version"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
+            return (document["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
         public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
