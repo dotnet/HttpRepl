@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -113,13 +114,12 @@ namespace Microsoft.Repl.Input
         private void StashEchoState()
         {
             string sttyFlags = null;
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 _ttyState = GetTtyState();
                 sttyFlags = "gfmt1:erase=08:werase=08 -echo -icanon";
             }
-            //If it's any of the ubuntu variants on 18.x, stty tweaks are required
-            else if (System.Runtime.InteropServices.RuntimeInformation.OSDescription.IndexOf("buntu", StringComparison.OrdinalIgnoreCase) > -1)
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 _ttyState = GetTtyState();
                 sttyFlags = "erase 0x08 werase 0x08 -echo -icanon";
