@@ -16,7 +16,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class CommandTestsBase
     {
-        protected void ArrangeInputs(string parseResultSections,
+        protected static void ArrangeInputs(string parseResultSections,
             out MockedShellState shellState,
             out HttpState httpState,
             out ICoreParseResult parseResult)
@@ -26,17 +26,23 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             httpState = GetHttpState(string.Empty);
         }
 
-        protected void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
+        protected static void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
         {
             Mock<IWritable> error = Mock.Get(shellState.ConsoleManager.Error);
 
             error.Verify(s => s.WriteLine(It.IsAny<string>()), Times.Once);
         }
 
-        protected HttpState GetHttpState(string content)
+
+        protected static HttpState GetHttpState(string content = null)
         {
-            IFileSystem fileSystem = new MockedFileSystem();
-            IPreferences preferences = new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), TestDefaultPreferences.GetDefaultPreferences());
+            return GetHttpState(content, out _, out _);
+        }
+
+        protected static HttpState GetHttpState(string content, out IFileSystem fileSystem, out IPreferences preferences)
+        {
+            fileSystem = new MockedFileSystem();
+            preferences = new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), TestDefaultPreferences.GetDefaultPreferences());
 
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(content);
@@ -44,6 +50,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             HttpClient httpClient = new HttpClient(messageHandler);
 
             return new HttpState(fileSystem, preferences, httpClient);
+        }
+
+        protected ICoreParseResult CreateCoreParseResult(string commandText)
+        {
+            return CoreParseResultHelper.Create(commandText);
         }
     }
 }

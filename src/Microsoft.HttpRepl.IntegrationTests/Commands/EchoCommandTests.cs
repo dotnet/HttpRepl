@@ -4,19 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using Microsoft.HttpRepl.Commands;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.IntegrationTests.Mocks;
-using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.UserProfile;
-using Microsoft.Repl;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class EchoCommandTests
+    public class EchoCommandTests : CommandTestsBase
     {
         [Theory]
         [InlineData("echo ON", true)]
@@ -29,7 +24,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [InlineData("echo yes", false)]
         public void CanHandle(string commandText, bool expected)
         {
-            Arrange(commandText, out EchoCommand echoCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(commandText, out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+
+            EchoCommand echoCommand = new EchoCommand();
 
             bool? result = echoCommand.CanHandle(shellState, httpState, parseResult);
 
@@ -44,7 +41,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [InlineData("echo off", "off")]
         public void GetArgumentSuggestionsForText(string commandText, params string[] expectedResults)
         {
-            Arrange(commandText, out EchoCommand echoCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(commandText, out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+
+            EchoCommand echoCommand = new EchoCommand();
 
             IEnumerable<string> result = echoCommand.Suggest(shellState, httpState, parseResult);
 
@@ -58,17 +57,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             {
                 Assert.Contains(expectedResults[index], resultList, StringComparer.OrdinalIgnoreCase);
             }
-        }
-
-        private void Arrange(string commandText, out EchoCommand echoCommand, out IShellState shellState, out HttpState httpState, out ICoreParseResult parseResult)
-        {
-            IFileSystem fileSystem = new MockedFileSystem();
-            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
-            shellState = new MockedShellState();
-            echoCommand = new EchoCommand();
-            httpState = new HttpState(fileSystem, preferences, new HttpClient());
-            parseResult = CoreParseResultHelper.Create(commandText);
         }
     }
 }
