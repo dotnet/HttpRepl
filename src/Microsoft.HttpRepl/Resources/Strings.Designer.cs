@@ -331,11 +331,11 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Usage: .
+        ///   Looks up a localized string similar to Sets or clears a header. When [value] is empty the header is cleared..
         /// </summary>
-        internal static string SetBaseCommand_Usage {
+        internal static string SetHeaderCommand_HelpDetails {
             get {
-                return ResourceManager.GetString("SetBaseCommand_Usage", resourceCulture);
+                return ResourceManager.GetString("SetHeaderCommand_HelpDetails", resourceCulture);
             }
         }
         
@@ -408,6 +408,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string UICommand_UnableToLaunchUriError {
             get {
                 return ResourceManager.GetString("UICommand_UnableToLaunchUriError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: .
+        /// </summary>
+        internal static string Usage {
+            get {
+                return ResourceManager.GetString("Usage", resourceCulture);
             }
         }
     }

@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,10 +97,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                  out MockedShellState shellState,
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
+
             string expected = "\u001b[1mUsage: \u001b[22mset base [uri]\r\n\r\nSet the base URI. e.g. `set base http://locahost:5000`\r\n";
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             string result = setBaseCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Equal(expected, result);

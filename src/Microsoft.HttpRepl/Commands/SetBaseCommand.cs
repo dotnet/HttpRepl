@@ -98,7 +98,7 @@ namespace Microsoft.HttpRepl.Commands
             if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))
             {
                 var helpText = new StringBuilder();
-                helpText.Append(Strings.SetBaseCommand_Usage.Bold());
+                helpText.Append(Strings.Usage.Bold());
                 helpText.AppendLine($"set base [uri]");
                 helpText.AppendLine();
                 helpText.AppendLine(Description);
