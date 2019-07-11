@@ -24,7 +24,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             bool? result = setBaseCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -39,7 +38,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             bool? result = setBaseCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -54,7 +52,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             bool? result = setBaseCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -69,7 +66,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             bool? result = setBaseCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
@@ -84,7 +80,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                  out ICoreParseResult _);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             string result = setBaseCommand.GetHelpSummary(shellState, httpState);
 
             Assert.Equal(setBaseCommand.Description, result);
@@ -114,9 +109,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             string expected = "set";
+
+            SetBaseCommand setBaseCommand = new SetBaseCommand();
             IEnumerable<string> result = setBaseCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(result);
@@ -130,6 +125,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
+
             string expected = "set";
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
@@ -147,6 +143,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
                 caretPosition: 4);
+
             string expected = "base";
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
@@ -165,7 +162,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Null(httpState.BaseAddress);
@@ -210,7 +206,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             httpState.BaseAddress = new Uri("https://localhost:44366/");
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
 
             Assert.Null(httpState.Structure);
@@ -225,7 +220,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out ICoreParseResult parseResult);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
@@ -264,7 +258,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 responseContent: response);
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
-
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             IDirectoryStructure directoryStructure = httpState.Structure;
