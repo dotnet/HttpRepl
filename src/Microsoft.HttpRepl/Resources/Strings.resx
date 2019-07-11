@@ -232,4 +232,17 @@
     <value>Unable to launch {0}</value>
     <comment>{0} indicates a uri</comment>
   </data>
+  <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
+    <value>Must specify a server</value>
+  </data>
+  <data name="SetBaseCommand_SwaggerMetadataUriLocation" xml:space="preserve">
+    <value>Using swagger metadata from </value>
+  </data>
+  <data name="SetBaseCommand_Usage" xml:space="preserve">
+    <value>Usage: </value>
+  </data>
+  <data name="SetBaseCommand_HEADRequestUnSuccessful" xml:space="preserve">
+    <value>Warning: HEAD request to the specified address was unsuccessful {0}</value>
+    <comment>{0} is the SocketException message</comment>
+  </data>
 </root>

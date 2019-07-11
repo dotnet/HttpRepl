@@ -8,7 +8,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     internal static class CoreParseResultHelper
     {
-        public static ICoreParseResult Create(string commandText)
+        public static ICoreParseResult Create(string commandText, int caretPosition = 0)
         {
             if (commandText == null)
             {
@@ -16,7 +16,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             }
 
             CoreParser coreParser = new CoreParser();
-            ICoreParseResult parseResult = coreParser.Parse(commandText, commandText.Length);
+            ICoreParseResult parseResult = coreParser.Parse(commandText, caretPosition);
 
             return parseResult;
         }

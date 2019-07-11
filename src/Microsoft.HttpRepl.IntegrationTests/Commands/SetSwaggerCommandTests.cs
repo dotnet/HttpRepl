@@ -160,7 +160,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             ArrangeInputs(parseResultSections: "set swagger",
                 out MockedShellState shellState,
                 out HttpState httpState,
-                out ICoreParseResult parseResult);
+                out ICoreParseResult parseResult,
+                caretPosition: 10);
 
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
