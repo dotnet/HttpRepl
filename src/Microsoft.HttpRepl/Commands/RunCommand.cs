@@ -38,7 +38,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
-                shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.RunCommand_CouldNotFileScriptFile, parseResult.Sections[1]));
+                shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.RunCommand_CouldNotFindScriptFile, parseResult.Sections[1]));
                 return;
             }
 

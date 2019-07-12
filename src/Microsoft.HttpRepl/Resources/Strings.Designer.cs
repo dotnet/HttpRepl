@@ -297,9 +297,9 @@ namespace Microsoft.HttpRepl.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Could not find script file {0}.
         /// </summary>
-        internal static string RunCommand_CouldNotFileScriptFile {
+        internal static string RunCommand_CouldNotFindScriptFile {
             get {
-                return ResourceManager.GetString("RunCommand_CouldNotFileScriptFile", resourceCulture);
+                return ResourceManager.GetString("RunCommand_CouldNotFindScriptFile", resourceCulture);
             }
         }
         

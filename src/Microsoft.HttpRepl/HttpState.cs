@@ -98,13 +98,13 @@ namespace Microsoft.HttpRepl
             // Get everything beyond the BaseAddress for the current location
             string path = pathSections;
 
-            // Split that off into the path and the querystring parameters (if any)
+            // Split that off into the path and the query string parameters (if any)
             string[] parts = path.Split('?');
             string query = null;
             string query2 = null;
 
-            // If there are some querystring parameters, split the path off so it doesn't
-            // contain them and leave the querystring parameters in query
+            // If there are some query string parameters, split the path off so it doesn't
+            // contain them and leave the query string parameters in query
             if (parts.Length > 1)
             {
                 path = parts[0];
@@ -135,7 +135,7 @@ namespace Microsoft.HttpRepl
                         argPath = "/" + argPath;
                     }
 
-                    // Split the parameter between the path and the querystring
+                    // Split the parameter between the path and the query string
                     int queryIndex = argPath.IndexOf('?');
                     path = argPath;
 
@@ -151,7 +151,7 @@ namespace Microsoft.HttpRepl
                 // if the parameter does start with a slash
                 else
                 {
-                    // Split the parameter between the path and the querystring
+                    // Split the parameter between the path and the query string
                     int queryIndex = commandSpecifiedPath.IndexOf('?');
                     path = commandSpecifiedPath;
 
@@ -166,7 +166,7 @@ namespace Microsoft.HttpRepl
                 }
             }
 
-            // If there was a querystring in the current path, add it to the builder's query
+            // If there was a query string in the current path, add it to the builder's query
             if (query != null)
             {
                 if (!string.IsNullOrEmpty(builder.Query))
@@ -177,7 +177,7 @@ namespace Microsoft.HttpRepl
                 builder.Query += query;
             }
 
-            // If there was a querystring in the parameter, add it to the builder's query
+            // If there was a query string in the parameter, add it to the builder's query
             if (query2 != null)
             {
                 if (!string.IsNullOrEmpty(builder.Query))
