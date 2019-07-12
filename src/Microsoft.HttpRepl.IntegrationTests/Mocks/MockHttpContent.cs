@@ -15,7 +15,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 
         public MockHttpContent(string content)
         {
-            Content = content?? string.Empty;
+            Content = content;
         }
 
         protected async override Task SerializeToStreamAsync(Stream stream, TransportContext context)

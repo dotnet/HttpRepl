@@ -20,8 +20,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             out MockedShellState shellState,
             out HttpState httpState,
             out ICoreParseResult parseResult,
-            int caretPosition = 0,
-            string responseContent = null)
+            int caretPosition = -1,
+            string responseContent = "")
         {
             parseResult = CoreParseResultHelper.Create(parseResultSections, caretPosition);
             shellState = new MockedShellState();
