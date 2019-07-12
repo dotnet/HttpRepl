@@ -232,6 +232,34 @@
     <value>Unable to launch {0}</value>
     <comment>{0} indicates a uri</comment>
   </data>
+  <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
+    <value>Must specify a server</value>
+  </data>
+  <data name="SetBaseCommand_SwaggerMetadataUriLocation" xml:space="preserve">
+    <value>Using swagger metadata from </value>
+  </data>
+  <data name="Usage" xml:space="preserve">
+    <value>Usage: </value>
+  </data>
+  <data name="SetBaseCommand_HEADRequestUnSuccessful" xml:space="preserve">
+    <value>Warning: HEAD request to the specified address was unsuccessful {0}</value>
+    <comment>{0} is the SocketException message</comment>
+  </data>
+  <data name="SetHeaderCommand_HelpDetails" xml:space="preserve">
+    <value>Sets or clears a header. When [value] is empty the header is cleared.</value>
+  </data>
+  <data name="RunCommand_HelpDetails" xml:space="preserve">
+    <value>run {path to script}
+
+Runs the specified script.
+A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI.
+
+When +history option is specified, commands specified in the text file will be added to command history.</value>
+  </data>
+  <data name="RunCommand_CouldNotFileScriptFile" xml:space="preserve">
+    <value>Could not find script file {0}</value>
+    <comment>{0} indicates path to provided script file</comment>
+  </data>
   <data name="HttpState_Error_NoAbsoluteUriNoBaseAddress" xml:space="preserve">
     <value>If {0} is not an absolute URI, {1} must be specified.</value>
     <comment>{0} is the name of the commandSpecifiedPath parameter, {1} is the name of the baseAddress uri parameter</comment>
