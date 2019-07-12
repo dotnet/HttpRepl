@@ -234,7 +234,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 25);
 
-            IDirectoryStructure directoryStructure = new MockDirectoryStructure("testMethod", "testContentType", "testBody");
+            IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
             httpState.Structure = directoryStructure;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
@@ -254,7 +254,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 25);
 
-            IDirectoryStructure directoryStructure = new MockDirectoryStructure("testMethod", "testContentType", "testBody");
+            IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
             httpState.Structure = directoryStructure;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
@@ -262,6 +262,18 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Empty(suggestions);
+        }
+
+        private IDirectoryStructure GetDirectoryStructure(string method, string contentType, string body)
+        {
+            RequestInfo requestInfo = new RequestInfo();
+            requestInfo.SetRequestBody(method, contentType, body);
+
+            DirectoryStructure directoryStructure = new DirectoryStructure(null);
+            DirectoryStructure childDirectoryStructure = directoryStructure.DeclareDirectory(contentType);
+            childDirectoryStructure.RequestInfo = requestInfo;
+
+            return childDirectoryStructure;
         }
     }
 }
