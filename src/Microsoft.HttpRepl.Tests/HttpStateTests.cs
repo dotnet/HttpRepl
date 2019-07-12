@@ -140,21 +140,19 @@ namespace Microsoft.HttpRepl.Tests
         }
 
         [Theory]
-        [InlineData("AbsoluteUri", "https://github.com/", "", "https://localhost/pets", "https://localhost/pets")]
-        [InlineData("CurrentAndSpecified", "https://localhost/", "dir1", "dir2", "https://localhost/dir1/dir2")]
-        [InlineData("MultipleQuerystrings", "https://localhost/", "dir1?q=5&r=6", "dir2?s=7", "https://localhost/dir1/dir2?q=5&r=6&s=7")]
-        [InlineData("NonRootBase_Current", "https://petstore.swagger.io/v2/", "pet", "", "https://petstore.swagger.io/v2/pet")]
-        [InlineData("NonRootBase_SlashCurrent", "https://petstore.swagger.io/v2/", "/pet", "", "https://petstore.swagger.io/pet")]
-        [InlineData("NonRootBase_Specified", "https://petstore.swagger.io/v2/", "", "pet", "https://petstore.swagger.io/v2/pet")]
-        [InlineData("NonRootBase_SlashSpecified", "https://petstore.swagger.io/v2/", "", "/pet", "https://petstore.swagger.io/pet")]
-        [InlineData("NonRootBase_SlashBoth", "https://petstore.swagger.io/v2/", "/pet", "/buy", "https://petstore.swagger.io/buy")]
-        [InlineData("RootBase_Current", "https://petstore.swagger.io/", "pet", "", "https://petstore.swagger.io/pet")]
-        [InlineData("RootBase_SlashCurrent", "https://petstore.swagger.io/", "/pet", "", "https://petstore.swagger.io/pet")]
-        [InlineData("RootBase_Specified", "https://petstore.swagger.io/", "", "pet", "https://petstore.swagger.io/pet")]
-        [InlineData("RootBase_SlashSpecified", "https://petstore.swagger.io/", "", "/pet", "https://petstore.swagger.io/pet")]
-#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-        public void GetEffectivePath_ProperConcatenation(string testName, string baseUriString, string pathSections, string specifiedPath, string expectedResult)
-#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
+        [InlineData("https://github.com/", "", "https://localhost/pets", "https://localhost/pets")]
+        [InlineData("https://localhost/", "dir1", "dir2", "https://localhost/dir1/dir2")]
+        [InlineData("https://localhost/", "dir1?q=5&r=6", "dir2?s=7", "https://localhost/dir1/dir2?q=5&r=6&s=7")]
+        [InlineData("https://petstore.swagger.io/v2/", "pet", "", "https://petstore.swagger.io/v2/pet")]
+        [InlineData("https://petstore.swagger.io/v2/", "/pet", "", "https://petstore.swagger.io/pet")]
+        [InlineData("https://petstore.swagger.io/v2/", "", "pet", "https://petstore.swagger.io/v2/pet")]
+        [InlineData("https://petstore.swagger.io/v2/", "", "/pet", "https://petstore.swagger.io/pet")]
+        [InlineData("https://petstore.swagger.io/v2/", "/pet", "/buy", "https://petstore.swagger.io/buy")]
+        [InlineData("https://petstore.swagger.io/", "pet", "", "https://petstore.swagger.io/pet")]
+        [InlineData("https://petstore.swagger.io/", "/pet", "", "https://petstore.swagger.io/pet")]
+        [InlineData("https://petstore.swagger.io/", "", "pet", "https://petstore.swagger.io/pet")]
+        [InlineData("https://petstore.swagger.io/", "", "/pet", "https://petstore.swagger.io/pet")]
+        public void GetEffectivePath_ProperConcatenation(string baseUriString, string pathSections, string specifiedPath, string expectedResult)
         {
             Uri baseUri = new Uri(baseUriString);
 

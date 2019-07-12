@@ -82,9 +82,9 @@ namespace Microsoft.HttpRepl
         public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath)
         {
             // If an absolute uri string was already specified, just return that.
-            if (Uri.TryCreate(commandSpecifiedPath, UriKind.Absolute, out Uri absoluteUri))
+            if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
             {
-                return absoluteUri;
+                return new Uri(commandSpecifiedPath, UriKind.Absolute);
             }
             // If it wasn't, and there also isn't a base address, throw an exception
             else if (baseAddress == null)
