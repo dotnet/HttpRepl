@@ -298,7 +298,9 @@ namespace Microsoft.HttpRepl.Resources {
         ///   Looks up a localized string similar to run {path to script}
         ///
         ///Runs the specified script.
-        ///A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI..
+        ///A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI.
+        ///
+        ///When +history option is specified, commands specified in the text file will be added to command history..
         /// </summary>
         internal static string RunCommand_HelpDetails {
             get {

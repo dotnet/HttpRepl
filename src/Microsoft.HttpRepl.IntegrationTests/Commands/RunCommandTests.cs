@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,8 +19,10 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
-    public class RunCommandTests : CommandTestsBase
+    public class RunCommandTests : CommandTestsBase, IDisposable
     {
+        private string _pathToScript = Path.Combine(Directory.GetCurrentDirectory(), "InputFileForRunCommand.txt");
+
         [Fact]
         public void CanHandle_WithNoParseResultSections_ReturnsNull()
         {
@@ -137,15 +140,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task ExecuteAsync_WithValidInput_ExecutesTheCommandsInTheScript()
         {
-            string pathToScript = Path.Combine(Directory.GetCurrentDirectory(), "InputFileForRunCommand.txt");
             string commands = @"set header name value1 value2";
 
-            if (!File.Exists(pathToScript))
+            if (!File.Exists(_pathToScript))
             {
-                File.WriteAllText(pathToScript, commands);
+                File.WriteAllText(_pathToScript, commands);
             }
 
-            string parseResultSections = "run " + pathToScript;
+            string parseResultSections = "run " + _pathToScript;
             ArrangeInputs(parseResultSections: parseResultSections,
                  out MockedShellState _,
                  out HttpState httpState,
@@ -153,7 +155,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             IShellState shellState = GetShellState(commands, httpState);
             MockedFileSystem mockedFileSystem = new MockedFileSystem();
-            mockedFileSystem.AddFile(pathToScript, commands);
+            mockedFileSystem.AddFile(_pathToScript, commands);
             RunCommand runCommand = new RunCommand(mockedFileSystem);
 
             await runCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
@@ -169,8 +171,62 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             Assert.Equal("name", secondHeader.Key);
             Assert.Equal("value1", secondHeader.Value.First());
             Assert.Equal("value2", secondHeader.Value.ElementAt(1));
+        }
 
-            File.Delete(pathToScript);
+        [Fact]
+        public async Task ExecuteAsync_WithHistoryOption_AddsCommdsExecutedFromScriptToCommandHistory()
+        {
+            string commands = @"set header name value1 value2";
+
+            if (!File.Exists(_pathToScript))
+            {
+                File.WriteAllText(_pathToScript, commands);
+            }
+
+            string parseResultSections = "run " + _pathToScript + " +history";
+            ArrangeInputs(parseResultSections: parseResultSections,
+                 out MockedShellState _,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            IShellState shellState = GetShellState(commands, httpState);
+            MockedFileSystem mockedFileSystem = new MockedFileSystem();
+            mockedFileSystem.AddFile(_pathToScript, commands);
+            RunCommand runCommand = new RunCommand(mockedFileSystem);
+
+            await runCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string previousCommand = shellState.CommandHistory.GetPreviousCommand();
+
+            Assert.Equal(commands, previousCommand);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithoutHistoryOption_AvoidsAddingCommdsExecutedFromScriptToCommandHistory()
+        {
+            string commands = @"set header name value1 value2";
+
+            if (!File.Exists(_pathToScript))
+            {
+                File.WriteAllText(_pathToScript, commands);
+            }
+
+            string parseResultSections = "run " + _pathToScript;
+            ArrangeInputs(parseResultSections: parseResultSections,
+                 out MockedShellState _,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            IShellState shellState = GetShellState(commands, httpState);
+            MockedFileSystem mockedFileSystem = new MockedFileSystem();
+            mockedFileSystem.AddFile(_pathToScript, commands);
+            RunCommand runCommand = new RunCommand(mockedFileSystem);
+
+            await runCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string previousCommand = shellState.CommandHistory.GetPreviousCommand();
+
+            Assert.True(string.IsNullOrEmpty(previousCommand));
         }
 
         [Fact]
@@ -233,21 +289,28 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
         private IShellState GetShellState(string inputBuffer, HttpState httpState)
         {
-            var defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, httpState);
+            DefaultCommandDispatcher<HttpState> defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, httpState);
             defaultCommandDispatcher.AddCommand(new SetHeaderCommand());
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
-            Mock<ICommandHistory> mockCommandHistory = new Mock<ICommandHistory>();
             MockInputManager mockInputManager = new MockInputManager(inputBuffer);
 
             ShellState shellState = new ShellState(defaultCommandDispatcher,
                 consoleManager: mockConsoleManager.Object,
-                commandHistory: mockCommandHistory.Object,
+                commandHistory: new CommandHistory(),
                 inputManager: mockInputManager);
 
             Shell shell = new Shell(shellState);
 
             return shell.ShellState;
+        }
+
+        public void Dispose()
+        {
+            if (File.Exists(_pathToScript))
+            {
+                File.Delete(_pathToScript);
+            }
         }
     }
 }

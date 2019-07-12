@@ -86,7 +86,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpDetails_ReturnsUsage()
+        public void GetHelpDetails_ReturnsHelpDetails()
         {
             ArrangeInputs(parseResultSections: "set base",
                  out MockedShellState shellState,
@@ -124,7 +124,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             ArrangeInputs(parseResultSections: "s",
                 out MockedShellState shellState,
                 out HttpState httpState,
-                out ICoreParseResult parseResult);
+                out ICoreParseResult parseResult,
+                caretPosition: 0);
 
             string expected = "set";
 

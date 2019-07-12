@@ -86,7 +86,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpDetails_ReturnsDescription()
+        public void GetHelpDetails_ReturnsHelpDetails()
         {
             ArrangeInputs(parseResultSections: "set header",
                  out MockedShellState shellState,
@@ -149,7 +149,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void Suggest_WithNoParseResultSections_ReturnsName()
         {
-            ArrangeInputs(parseResultSections: "set header name value1 value2",
+            ArrangeInputs(parseResultSections: string.Empty,
                  out MockedShellState shellState,
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
@@ -167,7 +167,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             ArrangeInputs(parseResultSections: "set",
                  out MockedShellState shellState,
                  out HttpState httpState,
-                 out ICoreParseResult parseResult);
+                 out ICoreParseResult parseResult,
+                 caretPosition: 0);
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
