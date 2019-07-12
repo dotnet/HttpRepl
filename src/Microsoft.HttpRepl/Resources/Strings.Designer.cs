@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the swagger metadata.
+        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the Swagger metadata.
         /// </summary>
         internal static string ChangeDirectoryCommand_Warning_UnknownEndpoint {
             get {
@@ -174,6 +174,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string Help_Usage {
             get {
                 return ResourceManager.GetString("Help_Usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If {0} is not an absolute URI, {1} must be specified..
+        /// </summary>
+        internal static string HttpState_Error_NoAbsoluteUriNoBaseAddress {
+            get {
+                return ResourceManager.GetString("HttpState_Error_NoAbsoluteUriNoBaseAddress", resourceCulture);
             }
         }
         
@@ -313,29 +322,20 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
-        /// </summary>
-        internal static string SetSwaggerCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the Swagger UI page, if available, in the default browser.
-        /// </summary>
-        internal static string UICommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
         /// </summary>
         internal static string SetSwaggerCommand_Description {
             get {
                 return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
+        /// </summary>
+        internal static string SetSwaggerCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -354,6 +354,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string UICommand_Description {
             get {
                 return ResourceManager.GetString("UICommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the Swagger UI page, if available, in the default browser.
+        /// </summary>
+        internal static string UICommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
             }
         }
         

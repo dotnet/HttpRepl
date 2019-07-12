@@ -48,15 +48,7 @@ namespace Microsoft.HttpRepl
 
         public string GetPrompt()
         {
-            return $"{GetEffectivePath(new string[0], false, out int _)?.ToString() ?? "(Disconnected)"}~ ";
-        }
-
-        public string GetExampleBody(string path, ref string contentType, string method)
-        {
-            Uri effectivePath = GetEffectivePath(path);
-            string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
-            IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
-            return structure?.RequestInfo?.GetRequestBodyForContentType(ref contentType, method);
+            return $"{GetEffectivePathForPrompt()?.ToString() ?? "(Disconnected)"}~ ";
         }
 
         public IEnumerable<string> GetApplicableContentTypes(string method, string path)
@@ -84,35 +76,66 @@ namespace Microsoft.HttpRepl
 
         public Uri GetEffectivePath(string commandSpecifiedPath)
         {
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath);
+        }
+
+        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath)
+        {
+            // If an absolute uri string was already specified, just return that.
             if (Uri.TryCreate(commandSpecifiedPath, UriKind.Absolute, out Uri absoluteUri))
             {
                 return absoluteUri;
             }
+            // If it wasn't, and there also isn't a base address, throw an exception
+            else if (baseAddress == null)
+            {
+                throw new ArgumentNullException(nameof(baseAddress), string.Format(Resources.Strings.HttpState_Error_NoAbsoluteUriNoBaseAddress, nameof(commandSpecifiedPath), nameof(baseAddress)));
+            }
 
-            UriBuilder builder = new UriBuilder(BaseAddress);
-            string path = string.Join('/', PathSections.Reverse());
+            // Get a builder for the base address
+            UriBuilder builder = new UriBuilder(baseAddress);
+
+            // Get everything beyond the BaseAddress for the current location
+            string path = pathSections;
+
+            // Split that off into the path and the querystring parameters (if any)
             string[] parts = path.Split('?');
             string query = null;
             string query2 = null;
 
+            // If there are some querystring parameters, split the path off so it doesn't
+            // contain them and leave the querystring parameters in query
             if (parts.Length > 1)
             {
                 path = parts[0];
                 query = string.Join('?', parts.Skip(1));
             }
 
-            builder.Path += path;
-
-            if (commandSpecifiedPath.Length > 0)
+            if (path.StartsWith('/'))
             {
+                // Set the builder path to the current path
+                builder.Path = path;
+            }
+            else
+            {
+                // Add the current path to the builder path
+                builder.Path += path;
+            }
+
+            // If the parameter has a non-empty value
+            if (!string.IsNullOrEmpty(commandSpecifiedPath))
+            {
+                // If the parameter doesn't start with a slash
                 if (commandSpecifiedPath[0] != '/')
                 {
+                    // If the current builder path doesn't end with a slash, then add one to the parameter
                     string argPath = commandSpecifiedPath;
                     if (builder.Path.Length > 0 && builder.Path[builder.Path.Length - 1] != '/')
                     {
                         argPath = "/" + argPath;
                     }
 
+                    // Split the parameter between the path and the querystring
                     int queryIndex = argPath.IndexOf('?');
                     path = argPath;
 
@@ -122,10 +145,13 @@ namespace Microsoft.HttpRepl
                         path = argPath.Substring(0, queryIndex);
                     }
 
+                    // Add just the path part of the parameter to the current builder path
                     builder.Path += path;
                 }
+                // if the parameter does start with a slash
                 else
                 {
+                    // Split the parameter between the path and the querystring
                     int queryIndex = commandSpecifiedPath.IndexOf('?');
                     path = commandSpecifiedPath;
 
@@ -135,24 +161,12 @@ namespace Microsoft.HttpRepl
                         path = commandSpecifiedPath.Substring(0, queryIndex);
                     }
 
+                    // Set the builder path to just the path part of the parameter
                     builder.Path = path;
                 }
             }
-            else
-            {
 
-                int queryIndex = commandSpecifiedPath.IndexOf('?');
-                path = commandSpecifiedPath;
-
-                if (queryIndex > -1)
-                {
-                    query2 = commandSpecifiedPath.Substring(queryIndex + 1);
-                    path = commandSpecifiedPath.Substring(0, queryIndex);
-                }
-
-                builder.Path += path;
-            }
-
+            // If there was a querystring in the current path, add it to the builder's query
             if (query != null)
             {
                 if (!string.IsNullOrEmpty(builder.Query))
@@ -163,6 +177,7 @@ namespace Microsoft.HttpRepl
                 builder.Query += query;
             }
 
+            // If there was a querystring in the parameter, add it to the builder's query
             if (query2 != null)
             {
                 if (!string.IsNullOrEmpty(builder.Query))
@@ -176,108 +191,14 @@ namespace Microsoft.HttpRepl
             return builder.Uri;
         }
 
-        public Uri GetEffectivePath(IReadOnlyList<string> sections, bool requiresBody, out int filePathIndex)
+        public Uri GetEffectivePathForPrompt()
         {
-            filePathIndex = 1;
-
             if (BaseAddress == null)
             {
                 return null;
             }
 
-            UriBuilder builder = new UriBuilder(BaseAddress);
-            string path = string.Join('/', PathSections.Reverse());
-            string[] parts = path.Split('?');
-            string query = null;
-            string query2 = null;
-
-            if (parts.Length > 1)
-            {
-                path = parts[0];
-                query = string.Join('?', parts.Skip(1));
-            }
-
-            builder.Path += path;
-
-            if (sections.Count > 1)
-            {
-                if (!requiresBody || !_fileSystem.FileExists(sections[1]))
-                {
-                    if (sections[1].Length > 0)
-                    {
-                        if (sections[1][0] != '/')
-                        {
-                            string argPath = sections[1];
-                            if (builder.Path.Length > 0 && builder.Path[builder.Path.Length - 1] != '/')
-                            {
-                                argPath = "/" + argPath;
-                            }
-
-                            int queryIndex = argPath.IndexOf('?');
-                            path = argPath;
-
-                            if (queryIndex > -1)
-                            {
-                                query2 = argPath.Substring(queryIndex + 1);
-                                path = argPath.Substring(0, queryIndex);
-                            }
-
-                            builder.Path += path;
-                        }
-                        else
-                        {
-                            int queryIndex = sections[1].IndexOf('?');
-                            path = sections[1];
-
-                            if (queryIndex > -1)
-                            {
-                                query2 = sections[1].Substring(queryIndex + 1);
-                                path = sections[1].Substring(0, queryIndex);
-                            }
-
-                            builder.Path = path;
-                        }
-                    }
-                    else
-                    {
-
-                        int queryIndex = sections[1].IndexOf('?');
-                        path = sections[1];
-
-                        if (queryIndex > -1)
-                        {
-                            query2 = sections[1].Substring(queryIndex + 1);
-                            path = sections[1].Substring(0, queryIndex);
-                        }
-
-                        builder.Path += path;
-                    }
-
-                    filePathIndex = 2;
-                }
-            }
-
-            if (query != null)
-            {
-                if (!string.IsNullOrEmpty(builder.Query))
-                {
-                    query = "&" + query;
-                }
-
-                builder.Query += query;
-            }
-
-            if (query2 != null)
-            {
-                if (!string.IsNullOrEmpty(builder.Query))
-                {
-                    query2 = "&" + query2;
-                }
-
-                builder.Query += query2;
-            }
-
-            return builder.Uri;
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "");
         }
 
         public string GetRelativePathString()

@@ -165,7 +165,7 @@ namespace Microsoft.HttpRepl.Commands
                         deleteFile = true;
                         filePath = _fileSystem.GetTempFileName();
 
-                        string exampleBody = programState.GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb);
+                        string exampleBody = GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb, programState);
 
                         if (!string.IsNullOrEmpty(exampleBody))
                         {
@@ -617,6 +617,14 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             return null;
+        }
+
+        public string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
+        {
+            Uri effectivePath = httpState.GetEffectivePath(path);
+            string rootRelativePath = effectivePath.LocalPath.Substring(httpState.BaseAddress.LocalPath.Length).TrimStart('/');
+            IDirectoryStructure structure = httpState.Structure?.TraverseTo(rootRelativePath);
+            return structure?.RequestInfo?.GetRequestBodyForContentType(ref contentType, method);
         }
     }
 }
