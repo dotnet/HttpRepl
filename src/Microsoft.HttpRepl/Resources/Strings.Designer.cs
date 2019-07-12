@@ -286,6 +286,27 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find script file {0}.
+        /// </summary>
+        internal static string RunCommand_CouldNotFileScriptFile {
+            get {
+                return ResourceManager.GetString("RunCommand_CouldNotFileScriptFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to run {path to script}
+        ///
+        ///Runs the specified script.
+        ///A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI..
+        /// </summary>
+        internal static string RunCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("RunCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs the script at the given path. A script is a set of commands that can be typed with one command per line.
         /// </summary>
         internal static string RunCommand_HelpSummary {

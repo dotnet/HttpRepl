@@ -248,4 +248,14 @@
   <data name="SetHeaderCommand_HelpDetails" xml:space="preserve">
     <value>Sets or clears a header. When [value] is empty the header is cleared.</value>
   </data>
+  <data name="RunCommand_HelpDetails" xml:space="preserve">
+    <value>run {path to script}
+
+Runs the specified script.
+A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI.</value>
+  </data>
+  <data name="RunCommand_CouldNotFileScriptFile" xml:space="preserve">
+    <value>Could not find script file {0}</value>
+    <comment>{0} indicates path to provided script file</comment>
+  </data>
 </root>
