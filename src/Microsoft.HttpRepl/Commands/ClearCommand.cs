@@ -47,16 +47,23 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
-            if (parseResult.SelectedSection == 0 && 
-                (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
+            if (parseResult.SelectedSection == 0)
             {
-                return new[] { Name };
-            }
+                bool nameMatch = string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase);
+                bool alternateNameMatch = string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || AlternateName.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase);
 
-            if (parseResult.SelectedSection == 0 &&
-                (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || AlternateName.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
-            {
-                return new[] { Name };
+                if (nameMatch && alternateNameMatch)
+                {
+                    return new[] { Name, AlternateName };
+                }
+                else if (nameMatch)
+                {
+                    return new[] { Name };
+                }
+                else if (alternateNameMatch)
+                {
+                    return new[] { AlternateName };
+                }
             }
 
             return null;

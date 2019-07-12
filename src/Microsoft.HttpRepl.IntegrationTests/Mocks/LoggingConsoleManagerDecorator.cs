@@ -20,6 +20,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
         }
 
         public string LoggedOutput => _log.ToString();
+        public bool WasClearCalled { get; private set; }
 
         #region IConsoleManager
         public Point Caret => _baseConsole.Caret;
@@ -44,6 +45,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
         public void Clear()
         {
             _baseConsole.Clear();
+            WasClearCalled = true;
         }
 
         public void MoveCaret(int positions)

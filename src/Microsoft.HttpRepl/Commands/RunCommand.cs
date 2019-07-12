@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -37,7 +38,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
-                shellState.ConsoleManager.Error.WriteLine($"Could not find script file {parseResult.Sections[1]}");
+                shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.RunCommand_CouldNotFileScriptFile, parseResult.Sections[1]));
                 return;
             }
 
@@ -57,11 +58,8 @@ namespace Microsoft.HttpRepl.Commands
             if (parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase))
             {
                 var helpText = new StringBuilder();
-                helpText.Append("Usage: ".Bold());
-                helpText.AppendLine("run {path to script}");
-                helpText.AppendLine();
-                helpText.AppendLine("Runs the specified script.");
-                helpText.AppendLine("A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI.");
+                helpText.Append(Strings.Usage.Bold());
+                helpText.AppendLine(Strings.RunCommand_HelpDetails);
                 return helpText.ToString();
             }
 
