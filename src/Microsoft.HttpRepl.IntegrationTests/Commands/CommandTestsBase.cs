@@ -19,11 +19,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         protected static void ArrangeInputs(string parseResultSections,
             out MockedShellState shellState,
             out HttpState httpState,
-            out ICoreParseResult parseResult)
+            out ICoreParseResult parseResult,
+            int caretPosition = -1,
+            string responseContent = "")
         {
-            parseResult = CoreParseResultHelper.Create(parseResultSections);
+            parseResult = CoreParseResultHelper.Create(parseResultSections, caretPosition);
             shellState = new MockedShellState();
-            httpState = GetHttpState(string.Empty);
+            httpState = GetHttpState(responseContent);
         }
 
         protected static void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)

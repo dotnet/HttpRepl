@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the swagger metadata.
+        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the Swagger metadata.
         /// </summary>
         internal static string ChangeDirectoryCommand_Warning_UnknownEndpoint {
             get {
@@ -286,11 +286,43 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find script file {0}.
+        /// </summary>
+        internal static string RunCommand_CouldNotFileScriptFile {
+            get {
+                return ResourceManager.GetString("RunCommand_CouldNotFileScriptFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to run {path to script}
+        ///
+        ///Runs the specified script.
+        ///A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI.
+        ///
+        ///When +history option is specified, commands specified in the text file will be added to command history..
+        /// </summary>
+        internal static string RunCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("RunCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs the script at the given path. A script is a set of commands that can be typed with one command per line.
         /// </summary>
         internal static string RunCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("RunCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: HEAD request to the specified address was unsuccessful {0}.
+        /// </summary>
+        internal static string SetBaseCommand_HEADRequestUnSuccessful {
+            get {
+                return ResourceManager.GetString("SetBaseCommand_HEADRequestUnSuccessful", resourceCulture);
             }
         }
         
@@ -304,6 +336,33 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must specify a server.
+        /// </summary>
+        internal static string SetBaseCommand_MustSpecifyServerError {
+            get {
+                return ResourceManager.GetString("SetBaseCommand_MustSpecifyServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using swagger metadata from .
+        /// </summary>
+        internal static string SetBaseCommand_SwaggerMetadataUriLocation {
+            get {
+                return ResourceManager.GetString("SetBaseCommand_SwaggerMetadataUriLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets or clears a header. When [value] is empty the header is cleared..
+        /// </summary>
+        internal static string SetHeaderCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("SetHeaderCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets or clears a header for all requests. e.g. `set header content-type application/json`.
         /// </summary>
         internal static string SetHeaderCommand_HelpSummary {
@@ -313,29 +372,20 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
-        /// </summary>
-        internal static string SetSwaggerCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the Swagger UI page, if available, in the default browser.
-        /// </summary>
-        internal static string UICommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
         /// </summary>
         internal static string SetSwaggerCommand_Description {
             get {
                 return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
+        /// </summary>
+        internal static string SetSwaggerCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -358,6 +408,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Displays the Swagger UI page, if available, in the default browser.
+        /// </summary>
+        internal static string UICommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must be connected to a server to launch Swagger UI.
         /// </summary>
         internal static string UICommand_NotConnectedToServerError {
@@ -372,6 +431,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string UICommand_UnableToLaunchUriError {
             get {
                 return ResourceManager.GetString("UICommand_UnableToLaunchUriError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: .
+        /// </summary>
+        internal static string Usage {
+            get {
+                return ResourceManager.GetString("Usage", resourceCulture);
             }
         }
     }

@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -20,7 +21,7 @@ namespace Microsoft.HttpRepl.Commands
         private const string Name = "set";
         private const string SubCommand = "base";
 
-        public string Description => Resources.Strings.SetBaseCommand_HelpSummary;
+        public string Description => Strings.SetBaseCommand_HelpSummary;
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
@@ -37,7 +38,7 @@ namespace Microsoft.HttpRepl.Commands
             }
             else if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(EnsureTrailingSlash(parseResult.Sections[2]), UriKind.Absolute, out Uri serverUri))
             {
-                shellState.ConsoleManager.Error.WriteLine("Must specify a server".SetColor(state.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Strings.SetBaseCommand_MustSpecifyServerError.SetColor(state.ErrorColor));
             }
             else
             {
@@ -48,7 +49,7 @@ namespace Microsoft.HttpRepl.Commands
                 }
                 catch (Exception ex) when (ex.InnerException is SocketException se)
                 {
-                    shellState.ConsoleManager.Error.WriteLine($"Warning: HEAD request to the specified address was unsuccessful ({se.Message})".SetColor(state.WarningColor));
+                    shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.SetBaseCommand_HEADRequestUnSuccessful, se.Message).SetColor(state.WarningColor));
                 }
                 catch { }
             }
@@ -62,7 +63,7 @@ namespace Microsoft.HttpRepl.Commands
                 await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
                 if (state.Structure != null)
                 {
-                    shellState.ConsoleManager.WriteLine("Using swagger metadata from " + result);
+                    shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);
                 }
                 else
                 {
@@ -75,7 +76,7 @@ namespace Microsoft.HttpRepl.Commands
                         await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
                         if (state.Structure != null)
                         {
-                            shellState.ConsoleManager.WriteLine("Using swagger metadata from " + result);
+                            shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);
                         }
                     }
                 }
@@ -97,7 +98,7 @@ namespace Microsoft.HttpRepl.Commands
             if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))
             {
                 var helpText = new StringBuilder();
-                helpText.Append("Usage: ".Bold());
+                helpText.Append(Strings.Usage.Bold());
                 helpText.AppendLine($"set base [uri]");
                 helpText.AppendLine();
                 helpText.AppendLine(Description);

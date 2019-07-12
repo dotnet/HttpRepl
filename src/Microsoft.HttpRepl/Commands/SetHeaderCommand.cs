@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -20,7 +21,7 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly string Name = "set";
         private static readonly string SubCommand = "header";
 
-        public string Description => Resources.Strings.SetHeaderCommand_HelpSummary;
+        public string Description => Strings.SetHeaderCommand_HelpSummary;
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
@@ -48,10 +49,10 @@ namespace Microsoft.HttpRepl.Commands
             if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.Ordinal) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))
             {
                 var helpText = new StringBuilder();
-                helpText.Append("Usage: ".Bold());
+                helpText.Append(Strings.Usage.Bold());
                 helpText.AppendLine("set header {name} [value]");
                 helpText.AppendLine();
-                helpText.AppendLine("Sets or clears a header. When [value] is empty the header is cleared.");
+                helpText.AppendLine(Strings.SetHeaderCommand_HelpDetails);
                 return helpText.ToString();
             }
 

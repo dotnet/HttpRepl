@@ -46,7 +46,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpDetails_WithValidInput_ReturnsDescription()
+        public void GetHelpDetails_WithValidInput_ReturnsHelpDetails()
         {
             string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
 
@@ -160,7 +160,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             ArrangeInputs(parseResultSections: "set swagger",
                 out MockedShellState shellState,
                 out HttpState httpState,
-                out ICoreParseResult parseResult);
+                out ICoreParseResult parseResult,
+                caretPosition: 10);
 
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 

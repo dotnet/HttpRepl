@@ -8,15 +8,20 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     internal static class CoreParseResultHelper
     {
-        public static ICoreParseResult Create(string commandText)
+        public static ICoreParseResult Create(string commandText, int caretPosition = -1)
         {
             if (commandText == null)
             {
                 throw new ArgumentNullException(nameof(commandText));
             }
 
+            if (caretPosition == -1)
+            {
+                caretPosition = commandText.Length;
+            }
+
             CoreParser coreParser = new CoreParser();
-            ICoreParseResult parseResult = coreParser.Parse(commandText, commandText.Length);
+            ICoreParseResult parseResult = coreParser.Parse(commandText, caretPosition);
 
             return parseResult;
         }
