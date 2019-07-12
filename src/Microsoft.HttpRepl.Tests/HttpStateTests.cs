@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -84,10 +83,9 @@ namespace Microsoft.HttpRepl.Tests
 
             Assert.NotNull(result);
 
-            List<string> resultList = result.ToList();
-            Assert.Equal(2, resultList.Count);
-            Assert.Contains("application/json", resultList, StringComparer.OrdinalIgnoreCase);
-            Assert.Contains("application/xml", resultList, StringComparer.OrdinalIgnoreCase);
+            Assert.Equal(2, result.Count());
+            Assert.Contains("application/json", result, StringComparer.OrdinalIgnoreCase);
+            Assert.Contains("application/xml", result, StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
