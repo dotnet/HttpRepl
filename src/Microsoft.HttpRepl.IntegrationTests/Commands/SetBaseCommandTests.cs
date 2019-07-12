@@ -170,7 +170,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_IfCancellationRequested_SetsSwaggerStructureToNull()
+        public async Task ExecuteAsync_IfCancellationIsRequested_SetsSwaggerStructureToNull()
         {
             string response = @"{
   ""swagger"": ""2.0"",

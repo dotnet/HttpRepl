@@ -46,7 +46,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpDetails_WithValidInput_ReturnsDescription()
+        public void GetHelpDetails_WithValidInput_ReturnsHelpDetails()
         {
             string parseResultSections = "set swagger https://localhost:44366/swagger/v1/swagger.json";
 

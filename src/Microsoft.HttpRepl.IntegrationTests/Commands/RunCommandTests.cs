@@ -108,7 +108,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public void GetHelpDetails_WithValidInput_ReturnsDescription()
+        public void GetHelpDetails_WithValidInput_HelpDetails()
         {
             ArrangeInputs(parseResultSections: "run InputFileForRunCommand.txt",
                  out MockedShellState shellState,
@@ -174,7 +174,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithHistoryOption_AddsCommdsExecutedFromScriptToCommandHistory()
+        public async Task ExecuteAsync_WithHistoryOption_AddsCommandsExecutedFromScriptToCommandHistory()
         {
             string commands = @"set header name value1 value2";
 
@@ -202,7 +202,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithoutHistoryOption_AvoidsAddingCommdsExecutedFromScriptToCommandHistory()
+        public async Task ExecuteAsync_WithoutHistoryOption_AvoidsAddingCommandsExecutedFromScriptToCommandHistory()
         {
             string commands = @"set header name value1 value2";
 
