@@ -152,7 +152,9 @@ namespace Microsoft.HttpRepl.Tests
         [InlineData("RootBase_SlashCurrent", "https://petstore.swagger.io/", "/pet", "", "https://petstore.swagger.io/pet")]
         [InlineData("RootBase_Specified", "https://petstore.swagger.io/", "", "pet", "https://petstore.swagger.io/pet")]
         [InlineData("RootBase_SlashSpecified", "https://petstore.swagger.io/", "", "/pet", "https://petstore.swagger.io/pet")]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void GetEffectivePath_ProperConcatenation(string testName, string baseUriString, string pathSections, string specifiedPath, string expectedResult)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             Uri baseUri = new Uri(baseUriString);
 
