@@ -106,11 +106,8 @@ namespace Microsoft.HttpRepl.Tests
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "");
 
-            Assert.NotNull(result);
-
-            List<string> resultList = result.ToList();
-            Assert.Single(resultList);
-            Assert.Contains("application/json", resultList, StringComparer.OrdinalIgnoreCase);
+            Assert.Single(result);
+            Assert.Contains("application/json", result, StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -132,11 +129,8 @@ namespace Microsoft.HttpRepl.Tests
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "child");
 
-            Assert.NotNull(result);
-
-            List<string> resultList = result.ToList();
-            Assert.Single(resultList);
-            Assert.Contains("application/xml", resultList, StringComparer.OrdinalIgnoreCase);
+            Assert.Single(result);
+            Assert.Contains("application/xml", result, StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
