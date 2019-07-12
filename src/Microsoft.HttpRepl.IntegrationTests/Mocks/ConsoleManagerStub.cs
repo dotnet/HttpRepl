@@ -1,9 +1,9 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
-using Moq;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Mocks
 {
@@ -24,7 +24,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Mocks
         public bool IsCaretVisible { get => default; set { } }
 
         public IDisposable AddBreakHandler(Action onBreak) => default;
-
 
         public void Clear() { }
 

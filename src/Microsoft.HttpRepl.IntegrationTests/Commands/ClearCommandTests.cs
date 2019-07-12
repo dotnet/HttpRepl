@@ -17,34 +17,32 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 {
     public class ClearCommandTests : CommandTestsBase
     {
-        [Fact]
-        public void CanHandle_Name_ReturnsTrue()
+        [Theory]
+        [InlineData("clear", true)]
+        [InlineData("cls", true)]
+        [InlineData("cd", null)]
+        [InlineData("clearing", null)]
+        public void CanHandle_ReturnsCorrectResult(string command, bool? expectedResult)
         {
-            ArrangeInputs("clear", out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(parseResultSections: command,
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult);
 
             ClearCommand clearCommand = new ClearCommand();
 
             bool? result = clearCommand.CanHandle(shellState, httpState, parseResult);
 
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void CanHandle_AlternateName_ReturnsTrue()
-        {
-            ArrangeInputs("cls", out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
-
-            ClearCommand clearCommand = new ClearCommand();
-
-            bool? result = clearCommand.CanHandle(shellState, httpState, parseResult);
-
-            Assert.True(result);
+            Assert.Equal(expectedResult, result);
         }
 
         [Fact]
         public void Suggest_Cl_ReturnsBoth()
         {
-            ArrangeInputs("cl", out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(parseResultSections: "cl",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult);
 
             ClearCommand clearCommand = new ClearCommand();
 
@@ -62,7 +60,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void Suggest_Cle_ReturnsClear()
         {
-            ArrangeInputs("cle", out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(parseResultSections: "cle",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult);
 
             ClearCommand clearCommand = new ClearCommand();
 
@@ -79,7 +80,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public void Suggest_Cls_ReturnsCls()
         {
-            ArrangeInputs("cls", out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult);
+            ArrangeInputs(parseResultSections: "cls",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult);
 
             ClearCommand clearCommand = new ClearCommand();
 
