@@ -57,7 +57,6 @@ namespace Microsoft.HttpRepl.Tests
         public void GetApplicableContentTypes_NoBaseAddress_ReturnsNull()
         {
             HttpState httpState = SetupHttpState();
-
             httpState.BaseAddress = null;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, string.Empty);
@@ -81,14 +80,13 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetApplicableContentTypes_NoMethod_ReturnsAll()
         {
-            HttpState httpState = SetupHttpState();
-
             DirectoryStructure directoryStructure = new DirectoryStructure(null);
             RequestInfo requestInfo = new RequestInfo();
             requestInfo.SetRequestBody("GET", "application/json", "");
             requestInfo.SetRequestBody("PUT", "application/xml", "");
             directoryStructure.RequestInfo = requestInfo;
 
+            HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
             httpState.Structure = directoryStructure;
 
@@ -104,14 +102,13 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetApplicableContentTypes_GetMethod_ReturnsCorrectOne()
         {
-            HttpState httpState = SetupHttpState();
-
             DirectoryStructure directoryStructure = new DirectoryStructure(null);
             RequestInfo requestInfo = new RequestInfo();
             requestInfo.SetRequestBody("GET", "application/json", "");
             requestInfo.SetRequestBody("PUT", "application/xml", "");
             directoryStructure.RequestInfo = requestInfo;
 
+            HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
             httpState.Structure = directoryStructure;
 
@@ -124,7 +121,7 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetApplicableContentTypes_WithPath_ReturnsCorrectOne()
         {
-            HttpState httpState = SetupHttpState();
+            
 
             DirectoryStructure parentDirectoryStructure = new DirectoryStructure(null);
             RequestInfo parentRequestInfo = new RequestInfo();
@@ -135,6 +132,7 @@ namespace Microsoft.HttpRepl.Tests
             childRequestInfo.SetRequestBody("GET", "application/xml", "");
             childDirectoryStructure.RequestInfo = childRequestInfo;
 
+            HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
             httpState.Structure = parentDirectoryStructure;
 
