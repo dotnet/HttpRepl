@@ -30,7 +30,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase)
+            return parseResult.ContainsAtLeast(Name)
                 ? (bool?)true
                 : null;
         }
@@ -156,7 +156,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult.Sections.Count > 0 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase))
+            if (parseResult.ContainsAtLeast(Name))
             {
                 if (parseResult.Sections.Count > 1)
                 {
@@ -183,7 +183,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 return new[] { Name };
             }
-            else if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase))
+            else if (parseResult.ContainsAtLeast(minimumLength: 2, Name))
             {
                 if (shellState.CommandDispatcher is ICommandDispatcher<HttpState, ICoreParseResult> dispatcher 
                     && parseResult.Slice(1) is ICoreParseResult continuationParseResult)

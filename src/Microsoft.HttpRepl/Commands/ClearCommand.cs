@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
-            return parseResult.Sections.Count == 1 && (string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) || string.Equals(parseResult.Sections[0], AlternateName, StringComparison.OrdinalIgnoreCase))
+            return parseResult.ContainsExactly(Name) || parseResult.ContainsExactly(AlternateName)
                 ? (bool?) true
                 : null;
         }
@@ -32,7 +32,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
-            if (parseResult.Sections.Count == 1 && (string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) || string.Equals(parseResult.Sections[0], AlternateName, StringComparison.OrdinalIgnoreCase)))
+            if (parseResult.ContainsExactly(Name) || parseResult.ContainsExactly(AlternateName))
             {
                 return "Clears the shell";
             }
