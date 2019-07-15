@@ -8,7 +8,6 @@ namespace Microsoft.HttpRepl.IntegrationTests
 {
     public class BaseIntegrationTest
     {
-
         protected static string NormalizeOutput(string output, string baseUrl)
         {
             // The console implementation uses trailing whitespace when a new line's text is shorter than the previous
