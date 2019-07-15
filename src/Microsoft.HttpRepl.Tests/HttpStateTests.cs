@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -50,6 +51,18 @@ namespace Microsoft.HttpRepl.Tests
             string result = state.GetRelativePathString();
 
             Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void GetApplicableContentTypes_NoBaseAddress_ReturnsNull()
+        {
+            HttpState httpState = SetupHttpState();
+
+            httpState.BaseAddress = null;
+
+            IEnumerable<string> result = httpState.GetApplicableContentTypes(null, string.Empty);
+
+            Assert.Null(result);
         }
 
         [Fact]
@@ -157,6 +170,15 @@ namespace Microsoft.HttpRepl.Tests
             Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath);
 
             Assert.Equal(expectedResult, result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_NullBaseAddressAndNoPath_Throws()
+        {
+            HttpState httpState = SetupHttpState();
+            httpState.BaseAddress = null;
+
+            Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePath(""));
         }
 
         [Fact]
