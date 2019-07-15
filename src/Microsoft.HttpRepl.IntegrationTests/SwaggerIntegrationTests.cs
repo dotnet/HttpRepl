@@ -3,10 +3,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.IntegrationTests.Commands;
-using Microsoft.HttpRepl.IntegrationTests.Mocks;
-using Microsoft.HttpRepl.IntegrationTests.SampleApi;
 using Microsoft.HttpRepl.IntegrationTests.Utilities;
+using Microsoft.HttpRepl.Shared.Tests.Commands;
+using Microsoft.HttpRepl.Shared.Tests.SampleApi;
+using Microsoft.HttpRepl.Tests.Mocks;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests
