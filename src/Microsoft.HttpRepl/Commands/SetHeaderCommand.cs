@@ -25,7 +25,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.Sections.Count > 2 && string.Equals(parseResult.Sections[0], Name, StringComparison.OrdinalIgnoreCase) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase)
+            return parseResult.ContainsAtLeast(minimumLength: 3, Name, SubCommand)
                 ? (bool?)true
                 : null;
         }
@@ -46,7 +46,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult.Sections.Count > 1 && string.Equals(parseResult.Sections[0], Name, StringComparison.Ordinal) && string.Equals(parseResult.Sections[1], SubCommand, StringComparison.OrdinalIgnoreCase))
+            if (parseResult.ContainsAtLeast(Name, SubCommand))
             {
                 var helpText = new StringBuilder();
                 helpText.Append(Strings.Usage.Bold());

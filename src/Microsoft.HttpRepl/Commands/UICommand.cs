@@ -25,7 +25,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.Sections.Count == 1 && string.Equals(parseResult.Sections[0], Name)
+            return parseResult.ContainsExactly(Name)
                 ? (bool?)true
                 : null;
         }
@@ -45,7 +45,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult.Sections.Count == 1 && string.Equals(parseResult.Sections[0], Name))
+            if (parseResult.ContainsExactly(Name))
             {
                 return Strings.UICommand_Description;
             }

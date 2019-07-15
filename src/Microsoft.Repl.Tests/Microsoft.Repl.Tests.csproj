@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Parsing\" />
   </ItemGroup>
 
 </Project>
