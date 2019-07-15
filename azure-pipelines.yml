@@ -7,7 +7,9 @@ variables:
     value: true
   - name: _HelixType
     value: build/product
-  - name: _XUnitProject
+  - name: _HelixTestType
+    value: test/product/
+  - name: _XUnitProjects
     value: $(Build.SourcesDirectory)/src/Microsoft.HttpRepl.Tests/Microsoft.HttpRepl.Tests.csproj;$(Build.SourcesDirectory)/src/Microsoft.Repl.Tests/Microsoft.Repl.Tests.csproj;$(Build.SourcesDirectory)/src/Microsoft.HttpRepl.IntegrationTests/Microsoft.HttpRepl.IntegrationTests.csproj
   - name: _XUnitTargetFramework
     value: netcoreapp2.1
