@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.HttpRepl.IntegrationTests.Mocks
+namespace Microsoft.HttpRepl.Tests.Mocks
 {
     public class NullConsoleManager : IConsoleManager
     {
