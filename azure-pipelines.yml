@@ -95,19 +95,19 @@ jobs:
         displayName: Build
         condition: succeeded()
       - template: /eng/common/templates/steps/send-to-helix.yml
-      parameters:
-        HelixSource: $(_HelixSource)
-        HelixType: $(_HelixTestType)
-        HelixTargetQueues: Windows.10.Amd64.Client19H1.Open
-        XUnitProjects: $(_XUnitProjects)
-        XUnitTargetFramework: $(_XUnitTargetFramework)
-        XUnitRunnerVersion: $(_XUnitRunnerVersion)
-        IncludeDotNetCli: true
-        DotNetCliPackageType: $(_DotNetCliPackageType)
-        DotNetCliVersion: $(_DotNetCliVersion)
-        EnableXUnitReporter: true
-        WaitForWorkItemCompletion: true
-        condition: eq(variables['_BuildConfig'], 'Debug')
+        parameters:
+          HelixSource: $(_HelixSource)
+          HelixType: $(_HelixTestType)
+          HelixTargetQueues: Windows.10.Amd64.Client19H1.Open
+          XUnitProjects: $(_XUnitProjects)
+          XUnitTargetFramework: $(_XUnitTargetFramework)
+          XUnitRunnerVersion: $(_XUnitRunnerVersion)
+          IncludeDotNetCli: true
+          DotNetCliPackageType: $(_DotNetCliPackageType)
+          DotNetCliVersion: $(_DotNetCliVersion)
+          EnableXUnitReporter: true
+          WaitForWorkItemCompletion: true
+          condition: eq(variables['_BuildConfig'], 'Debug')
       - task: PublishTestResults@2
         displayName: Publish xUnit Test Results
         condition: always()
