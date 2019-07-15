@@ -268,7 +268,8 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine($"{"run",navCommandColumn}{dispatcher.GetCommand<RunCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"ui",navCommandColumn}{dispatcher.GetCommand<UICommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine();
-            output.AppendLine("Use help <COMMAND> to learn more details about individual commands. e.g. `help get`".Bold().Cyan());
+            output.AppendLine("Use `help <COMMAND>` for more detail on an individual command. e.g. `help get`.".Bold().Cyan());
+            output.AppendLine("For detailed tool info, see https://aka.ms/http-repl-doc.".Bold().Cyan());
             output.AppendLine();
 
             shellState.ConsoleManager.Write(output.ToString());
