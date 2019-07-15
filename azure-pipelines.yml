@@ -7,6 +7,16 @@ variables:
     value: true
   - name: _HelixType
     value: build/product
+  - name: _XUnitProject
+    value: $(Build.SourcesDirectory)/src/Microsoft.HttpRepl.Tests/Microsoft.HttpRepl.Tests.csproj;$(Build.SourcesDirectory)/src/Microsoft.Repl.Tests/Microsoft.Repl.Tests.csproj;$(Build.SourcesDirectory)/src/Microsoft.HttpRepl.IntegrationTests/Microsoft.HttpRepl.IntegrationTests.csproj
+  - name: _XUnitTargetFramework
+    value: netcoreapp2.1
+  - name: _XUnitRunnerVersion
+    value: 2.4.1
+  - name: _DotNetCliPackageType
+    value: sdk
+  - name: _DotNetCliVersion
+    value: 3.0.100-preview6-012264
 
   # Variables for public PR builds
   - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
@@ -84,6 +94,20 @@ jobs:
         name: Build
         displayName: Build
         condition: succeeded()
+      - template: /eng/common/templates/steps/send-to-helix.yml
+      parameters:
+        HelixSource: $(_HelixSource)
+        HelixType: $(_HelixTestType)
+        HelixTargetQueues:Windows.10.Amd64.Client19H1.Open;
+        XUnitProjects: $(_XUnitProjects)
+        XUnitTargetFramework: $(_XUnitTargetFramework)
+        XUnitRunnerVersion: $(_XUnitRunnerVersion)
+        IncludeDotNetCli: true
+        DotNetCliPackageType: $(_DotNetCliPackageType)
+        DotNetCliVersion: $(_DotNetCliVersion)
+        EnableXUnitReporter: true
+        WaitForWorkItemCompletion: true
+        condition: eq(variables['_BuildConfig'], 'Debug')
       - task: PublishTestResults@2
         displayName: Publish xUnit Test Results
         condition: always()
