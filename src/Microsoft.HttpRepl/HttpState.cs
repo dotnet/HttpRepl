@@ -53,6 +53,11 @@ namespace Microsoft.HttpRepl
 
         public IEnumerable<string> GetApplicableContentTypes(string method, string path)
         {
+            if (BaseAddress is null && !Uri.IsWellFormedUriString(path, UriKind.Absolute))
+            {
+                return null;
+            }
+
             Uri effectivePath = GetEffectivePath(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
             IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
