@@ -98,7 +98,7 @@ jobs:
       parameters:
         HelixSource: $(_HelixSource)
         HelixType: $(_HelixTestType)
-        HelixTargetQueues:Windows.10.Amd64.Client19H1.Open;
+        HelixTargetQueues:Windows.10.Amd64.Client19H1.Open
         XUnitProjects: $(_XUnitProjects)
         XUnitTargetFramework: $(_XUnitTargetFramework)
         XUnitRunnerVersion: $(_XUnitRunnerVersion)
