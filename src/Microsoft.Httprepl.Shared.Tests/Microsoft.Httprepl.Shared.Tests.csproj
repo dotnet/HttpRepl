@@ -17,9 +17,4 @@
     <ProjectReference Include="..\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Mocks\" />
-  </ItemGroup>
-
 </Project>

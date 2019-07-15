@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Httprepl.Shared.Tests\Microsoft.HttpRepl.Shared.Tests.csproj" />
     <ProjectReference Include="..\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
+    <ProjectReference Include="..\Microsoft.HttpRepl.Shared.Tests\Microsoft.HttpRepl.Shared.Tests.csproj" />
     <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
 
