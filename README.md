@@ -15,6 +15,7 @@ To build this repo, run the `build.cmd` or `build.sh` in the root of this repo. 
 ## Usage
 
 From the in-product help:
+
 ```
 HTTP Commands:
 Use these commands to execute requests against your application.
@@ -28,7 +29,6 @@ HEAD           Issues a HEAD request.
 OPTIONS        Issues an OPTIONS request.
 
 set header     Sets or clears a header for all requests. e.g. `set header content-type application/json`
-
 
 Navigation Commands:
 The REPL allows you to navigate your URL space and focus on specific APIs that you are working on.
@@ -52,7 +52,8 @@ pref [get/set] Allows viewing or changing preferences, e.g. 'pref set editor.com
 run            Runs the script at the given path. A script is a set of commands that can be typed with one command per line.
 ui             Displays the Swagger UI page, if available, in the default browser.
 
-Use help <COMMAND> to learn more details about individual commands. e.g. `help get`
+Use `help <COMMAND>` for more detail on an individual command. e.g. `help get`.
+For detailed tool info, see https://aka.ms/http-repl-doc.
 ```
 
 ## Reporting security issues and bugs
