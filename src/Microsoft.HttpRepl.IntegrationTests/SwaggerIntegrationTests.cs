@@ -30,7 +30,6 @@ ls";
             var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             using (var script = new TestScript(scriptText))
             {
-
                 await new Program().Start($"run {script.FilePath}".Split(' '), console);
             }
 
