@@ -9,7 +9,7 @@ using Microsoft.Repl.Input;
 using Microsoft.Repl.Suggestions;
 using Moq;
 
-namespace Microsoft.HttpRepl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
     public class MockedShellState : IShellState
     {

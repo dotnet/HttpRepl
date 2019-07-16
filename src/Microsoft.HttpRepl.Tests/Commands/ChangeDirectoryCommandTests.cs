@@ -4,8 +4,8 @@
 using System.Net.Http;
 using System.Threading;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.FileSystem;
-using Microsoft.HttpRepl.Tests.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;

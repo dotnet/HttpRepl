@@ -2,11 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.HttpRepl.FileSystem;
-using Microsoft.HttpRepl.Tests.Mocks;
+using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;

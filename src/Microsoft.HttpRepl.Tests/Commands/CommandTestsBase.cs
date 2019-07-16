@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Net.Http;
+using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.FileSystem;
-using Microsoft.HttpRepl.Tests.Mocks;
-using Microsoft.HttpRepl.Tests.Preferences;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Tests.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl;
 using Microsoft.Repl.ConsoleHandling;

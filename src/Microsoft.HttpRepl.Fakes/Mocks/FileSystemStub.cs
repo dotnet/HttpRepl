@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using Microsoft.HttpRepl.FileSystem;
 
-namespace Microsoft.HttpRepl.Tests.TestDoubles
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
-    internal class FileSystemStub : IFileSystem
+    public class FileSystemStub : IFileSystem
     {
         public void DeleteFile(string path)
         {

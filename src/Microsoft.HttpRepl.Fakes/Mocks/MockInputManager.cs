@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Repl;
 using Microsoft.Repl.Input;
 
-namespace Microsoft.HttpRepl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
     public class MockInputManager : IInputManager
     {

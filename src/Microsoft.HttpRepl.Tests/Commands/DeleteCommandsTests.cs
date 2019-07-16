@@ -4,9 +4,9 @@
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes.Commands;
+using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.Fakes.SampleApi;
 using Microsoft.HttpRepl.FileSystem;
-using Microsoft.HttpRepl.Tests.Mocks;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands

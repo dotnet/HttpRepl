@@ -8,19 +8,19 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.HttpRepl.FileSystem;
 
-namespace Microsoft.HttpRepl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
-    internal class MockedFileSystem : IFileSystem
+    public class MockedFileSystem : IFileSystem
     {
         private readonly Dictionary<string, string> _files = new Dictionary<string, string>();
 
-        internal MockedFileSystem AddFile(string path, string contents)
+        public MockedFileSystem AddFile(string path, string contents)
         {
             _files[path] = contents;
             return this;
         }
 
-        internal string ReadFile(string path)
+        public string ReadFile(string path)
         {
             return _files[path];
         }

@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
-using Microsoft.HttpRepl.Tests.Mocks;
+using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl.Parsing;
 using Moq;
