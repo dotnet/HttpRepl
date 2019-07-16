@@ -178,6 +178,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If {0} is not an absolute URI, {1} must be specified..
+        /// </summary>
+        internal static string HttpState_Error_NoAbsoluteUriNoBaseAddress {
+            get {
+                return ResourceManager.GetString("HttpState_Error_NoAbsoluteUriNoBaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all endpoints for the current path.
         /// </summary>
         internal static string ListCommand_HelpSummary {
@@ -288,9 +297,9 @@ namespace Microsoft.HttpRepl.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Could not find script file {0}.
         /// </summary>
-        internal static string RunCommand_CouldNotFileScriptFile {
+        internal static string RunCommand_CouldNotFindScriptFile {
             get {
-                return ResourceManager.GetString("RunCommand_CouldNotFileScriptFile", resourceCulture);
+                return ResourceManager.GetString("RunCommand_CouldNotFindScriptFile", resourceCulture);
             }
         }
         
