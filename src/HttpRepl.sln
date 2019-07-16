@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Repl", "Microsoft
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl.IntegrationTests", "Microsoft.HttpRepl.IntegrationTests\Microsoft.HttpRepl.IntegrationTests.csproj", "{A1B13133-8F4D-42D5-B470-D6349C71AFD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.HttpRepl.Shared.Tests", "Microsoft.HttpRepl.Shared.Tests\Microsoft.HttpRepl.Shared.Tests.csproj", "{32DEC29F-4FFB-4AFB-8E9E-A88B44739CC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.HttpRepl.Fakes", "Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj", "{32DEC29F-4FFB-4AFB-8E9E-A88B44739CC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

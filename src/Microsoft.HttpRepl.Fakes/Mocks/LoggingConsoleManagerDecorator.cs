@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.HttpRepl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
     public class LoggingConsoleManagerDecorator : IConsoleManager
     {

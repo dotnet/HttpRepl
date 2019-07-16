@@ -3,9 +3,10 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Fakes.Commands;
+using Microsoft.HttpRepl.Fakes.Mocks;
+using Microsoft.HttpRepl.Fakes.SampleApi;
 using Microsoft.HttpRepl.IntegrationTests.Utilities;
-using Microsoft.HttpRepl.Shared.Tests.Commands;
-using Microsoft.HttpRepl.Shared.Tests.SampleApi;
 using Microsoft.HttpRepl.Tests.Mocks;
 using Xunit;
 

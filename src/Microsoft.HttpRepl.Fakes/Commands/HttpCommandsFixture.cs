@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using Microsoft.HttpRepl.Shared.Tests.SampleApi;
+using Microsoft.HttpRepl.Fakes.SampleApi;
 
-namespace Microsoft.HttpRepl.Shared.Tests.Commands
+namespace Microsoft.HttpRepl.Fakes.Commands
 {
     public class HttpCommandsFixture<T> : IDisposable where T : SampleApiServerConfig, new()
     {
