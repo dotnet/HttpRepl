@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -17,7 +16,7 @@ namespace Microsoft.HttpRepl.Tests
     public class HttpStateTests
     {
         [Fact]
-        public void GetPathString_EmptyPathSections_Slash()
+        public void GetRelativePathString_EmptyPathSections_Slash()
         {
             string expected = "/";
             HttpState state = SetupHttpState();
@@ -29,7 +28,7 @@ namespace Microsoft.HttpRepl.Tests
         }
 
         [Fact]
-        public void GetPathString_SinglePathSection_CorrectString()
+        public void GetRelativePathString_SinglePathSection_CorrectString()
         {
             string expected = "/FirstDirectory";
             HttpState state = SetupHttpState();
@@ -41,7 +40,7 @@ namespace Microsoft.HttpRepl.Tests
         }
 
         [Fact]
-        public void GetPathString_MultiplePathSections_CorrectString()
+        public void GetRelativePathString_MultiplePathSections_CorrectString()
         {
             string expected = "/FirstDirectory/SecondDirectory";
             HttpState state = SetupHttpState();
@@ -121,7 +120,7 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetApplicableContentTypes_WithPath_ReturnsCorrectOne()
         {
-            
+
 
             DirectoryStructure parentDirectoryStructure = new DirectoryStructure(null);
             RequestInfo parentRequestInfo = new RequestInfo();

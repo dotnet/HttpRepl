@@ -619,7 +619,7 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
+        private string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
         {
             Uri effectivePath = httpState.GetEffectivePath(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(httpState.BaseAddress.LocalPath.Length).TrimStart('/');

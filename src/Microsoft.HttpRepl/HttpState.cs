@@ -97,101 +97,11 @@ namespace Microsoft.HttpRepl
                 throw new ArgumentNullException(nameof(baseAddress), string.Format(Resources.Strings.HttpState_Error_NoAbsoluteUriNoBaseAddress, nameof(commandSpecifiedPath), nameof(baseAddress)));
             }
 
-            // Get a builder for the base address
-            UriBuilder builder = new UriBuilder(baseAddress);
+            UriBuilder builder = GetUriBuilderFromBaseAddressAndPath(baseAddress, pathSections, out string baseAndPathQuery);
 
-            // Get everything beyond the BaseAddress for the current location
-            string path = pathSections;
-
-            // Split that off into the path and the query string parameters (if any)
-            string[] parts = path.Split('?');
-            string query = null;
-            string query2 = null;
-
-            // If there are some query string parameters, split the path off so it doesn't
-            // contain them and leave the query string parameters in query
-            if (parts.Length > 1)
-            {
-                path = parts[0];
-                query = string.Join('?', parts.Skip(1));
-            }
-
-            if (path.StartsWith('/'))
-            {
-                // Set the builder path to the current path
-                builder.Path = path;
-            }
-            else
-            {
-                // Add the current path to the builder path
-                builder.Path += path;
-            }
-
-            // If the parameter has a non-empty value
-            if (!string.IsNullOrEmpty(commandSpecifiedPath))
-            {
-                // If the parameter doesn't start with a slash
-                if (commandSpecifiedPath[0] != '/')
-                {
-                    // If the current builder path doesn't end with a slash, then add one to the parameter
-                    string argPath = commandSpecifiedPath;
-                    if (builder.Path.Length > 0 && builder.Path[builder.Path.Length - 1] != '/')
-                    {
-                        argPath = "/" + argPath;
-                    }
-
-                    // Split the parameter between the path and the query string
-                    int queryIndex = argPath.IndexOf('?');
-                    path = argPath;
-
-                    if (queryIndex > -1)
-                    {
-                        query2 = argPath.Substring(queryIndex + 1);
-                        path = argPath.Substring(0, queryIndex);
-                    }
-
-                    // Add just the path part of the parameter to the current builder path
-                    builder.Path += path;
-                }
-                // if the parameter does start with a slash
-                else
-                {
-                    // Split the parameter between the path and the query string
-                    int queryIndex = commandSpecifiedPath.IndexOf('?');
-                    path = commandSpecifiedPath;
-
-                    if (queryIndex > -1)
-                    {
-                        query2 = commandSpecifiedPath.Substring(queryIndex + 1);
-                        path = commandSpecifiedPath.Substring(0, queryIndex);
-                    }
-
-                    // Set the builder path to just the path part of the parameter
-                    builder.Path = path;
-                }
-            }
-
-            // If there was a query string in the current path, add it to the builder's query
-            if (query != null)
-            {
-                if (!string.IsNullOrEmpty(builder.Query))
-                {
-                    query = "&" + query;
-                }
-
-                builder.Query += query;
-            }
-
-            // If there was a query string in the parameter, add it to the builder's query
-            if (query2 != null)
-            {
-                if (!string.IsNullOrEmpty(builder.Query))
-                {
-                    query2 = "&" + query2;
-                }
-
-                builder.Query += query2;
-            }
+            UpdateUriBuilderForSpecifiedPath(builder, commandSpecifiedPath, out string commandQuery);
+            AppendQueryToBuilder(builder, baseAndPathQuery);
+            AppendQueryToBuilder(builder, commandQuery);
 
             return builder.Uri;
         }
@@ -216,6 +126,101 @@ namespace Microsoft.HttpRepl
             }
 
             return pathString;
+        }
+
+        private static UriBuilder GetUriBuilderFromBaseAddressAndPath(Uri baseAddress, string pathSections, out string query)
+        {
+            // Get a builder for the base address
+            UriBuilder builder = new UriBuilder(baseAddress);
+
+            // Get everything beyond the BaseAddress for the current location
+            string path = pathSections;
+
+            // Split that off into the path and the query string parameters (if any)
+            string[] parts = path.Split('?');
+            query = null;
+
+            // If there are some query string parameters, split the path off so it doesn't
+            // contain them and leave the query string parameters in query
+            if (parts.Length > 1)
+            {
+                path = parts[0];
+                query = string.Join('?', parts.Skip(1));
+            }
+
+            if (path.StartsWith('/'))
+            {
+                // Set the builder path to the current path
+                builder.Path = path;
+            }
+            else
+            {
+                // Add the current path to the builder path
+                builder.Path += path;
+            }
+
+            return builder;
+        }
+
+        private static void UpdateUriBuilderForSpecifiedPath(UriBuilder builder, string commandSpecifiedPath, out string query)
+        {
+            query = null;
+            // If the parameter has a non-empty value
+            if (!string.IsNullOrEmpty(commandSpecifiedPath))
+            {
+                // If the parameter doesn't start with a slash
+                if (commandSpecifiedPath[0] != '/')
+                {
+                    // If the current builder path doesn't end with a slash, then add one to the parameter
+                    string argPath = commandSpecifiedPath;
+                    if (builder.Path.Length > 0 && builder.Path[builder.Path.Length - 1] != '/')
+                    {
+                        argPath = "/" + argPath;
+                    }
+
+                    // Split the parameter between the path and the query string
+                    int queryIndex = argPath.IndexOf('?');
+                    string path = argPath;
+
+                    if (queryIndex > -1)
+                    {
+                        query = argPath.Substring(queryIndex + 1);
+                        path = argPath.Substring(0, queryIndex);
+                    }
+
+                    // Add just the path part of the parameter to the current builder path
+                    builder.Path += path;
+                }
+                // if the parameter does start with a slash
+                else
+                {
+                    // Split the parameter between the path and the query string
+                    int queryIndex = commandSpecifiedPath.IndexOf('?');
+                    string path = commandSpecifiedPath;
+
+                    if (queryIndex > -1)
+                    {
+                        query = commandSpecifiedPath.Substring(queryIndex + 1);
+                        path = commandSpecifiedPath.Substring(0, queryIndex);
+                    }
+
+                    // Set the builder path to just the path part of the parameter
+                    builder.Path = path;
+                }
+            }
+        }
+
+        private static void AppendQueryToBuilder(UriBuilder builder, string query)
+        {
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(builder.Query))
+                {
+                    query = "&" + query;
+                }
+
+                builder.Query += query;
+            }
         }
     }
 }
