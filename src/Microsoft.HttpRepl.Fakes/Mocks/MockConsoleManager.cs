@@ -2,9 +2,9 @@ using System;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.Repl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
-    internal class MockConsoleManager : IConsoleManager
+    public class MockConsoleManager : IConsoleManager
     {
         private CancellationTokenSource _cancellationTokenSource;
         private ConsoleKeyInfo _consoleKeyInfo;

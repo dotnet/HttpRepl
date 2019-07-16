@@ -45,7 +45,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             HttpState httpState = GetHttpState(null, out IFileSystem fileSystem, out IPreferences preferences);
             ICoreParseResult parseResult = CreateCoreParseResult(commandText);
-            IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new ConsoleManagerStub());
+            IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             DefaultCommandDispatcher<HttpState> commandDispatcher = DefaultCommandDispatcher.Create((ss) => { }, httpState);
             commandDispatcher.AddCommand(new ClearCommand());
             commandDispatcher.AddCommand(new ChangeDirectoryCommand());

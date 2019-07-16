@@ -104,7 +104,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HttpState httpState = GetHttpState();
             ICoreParseResult parseResult = CreateCoreParseResult("clear");
             DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create((ss) => { }, httpState);
-            LoggingConsoleManagerDecorator consoleManager = new LoggingConsoleManagerDecorator(new ConsoleManagerStub());
+            LoggingConsoleManagerDecorator consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             IShellState shellState = new ShellState(dispatcher, consoleManager: consoleManager);
 
             ClearCommand clearCommand = new ClearCommand();
@@ -122,7 +122,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HttpState httpState = GetHttpState();
             ICoreParseResult parseResult = CreateCoreParseResult("clear");
             DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create((ss) => wasOnReadyCalled = true, httpState);
-            IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new ConsoleManagerStub());
+            IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             IShellState shellState = new ShellState(dispatcher, consoleManager: consoleManager);
 
             ClearCommand clearCommand = new ClearCommand();

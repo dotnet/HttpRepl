@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
+    <ProjectReference Include="..\Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj" />
   </ItemGroup>
 
 </Project>

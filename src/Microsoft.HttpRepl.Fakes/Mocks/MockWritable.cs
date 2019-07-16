@@ -1,6 +1,6 @@
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.Repl.Tests.Mocks
+namespace Microsoft.HttpRepl.Fakes.Mocks
 {
     internal class MockWritable : IWritable
     {

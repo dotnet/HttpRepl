@@ -7,7 +7,6 @@ using Microsoft.HttpRepl.Fakes.Commands;
 using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.Fakes.SampleApi;
 using Microsoft.HttpRepl.IntegrationTests.Utilities;
-using Microsoft.HttpRepl.Tests.Mocks;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests
