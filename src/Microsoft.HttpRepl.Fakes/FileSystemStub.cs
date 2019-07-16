@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.HttpRepl.FileSystem;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class FileSystemStub : IFileSystem
     {

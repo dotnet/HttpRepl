@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.Fakes.Mocks;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.Repl.Commanding;
 using Moq;
 using Xunit;

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class NullPreferences : IPreferences
     {

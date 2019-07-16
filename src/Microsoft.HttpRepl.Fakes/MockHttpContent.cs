@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class MockHttpContent : HttpContent
     {

@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class MockHttpMessageHandler : HttpMessageHandler
     {

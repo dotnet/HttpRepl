@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.HttpRepl.Commands;
-using Microsoft.HttpRepl.Fakes.Mocks;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl;

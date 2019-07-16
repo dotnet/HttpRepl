@@ -3,7 +3,7 @@
 
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     internal class MockWritable : IWritable
     {

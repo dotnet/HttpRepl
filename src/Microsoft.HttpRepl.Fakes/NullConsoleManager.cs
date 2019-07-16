@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class NullConsoleManager : IConsoleManager
     {

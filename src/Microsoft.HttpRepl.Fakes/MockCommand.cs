@@ -8,7 +8,7 @@ using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.Parsing;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class MockCommand : ICommand<object, ICoreParseResult>
     {

@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.HttpRepl.FileSystem;
 
-namespace Microsoft.HttpRepl.Fakes.Mocks
+namespace Microsoft.HttpRepl.Fakes
 {
     public class MockedFileSystem : IFileSystem
     {

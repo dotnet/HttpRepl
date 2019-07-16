@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.HttpRepl.Fakes.Mocks;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;

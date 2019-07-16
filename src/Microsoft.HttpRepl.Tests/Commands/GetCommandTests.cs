@@ -3,8 +3,8 @@
 
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.Fakes.Commands;
-using Microsoft.HttpRepl.Fakes.Mocks;
 using Microsoft.HttpRepl.Fakes.SampleApi;
 using Xunit;
 
