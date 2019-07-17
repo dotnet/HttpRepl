@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.OpenApi;
-using Microsoft.HttpRepl.Tests.Fakes;
 using Newtonsoft.Json.Linq;
 using Xunit;
 

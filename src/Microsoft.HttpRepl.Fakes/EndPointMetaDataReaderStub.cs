@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.HttpRepl.Tests.Fakes
+namespace Microsoft.HttpRepl.Fakes
 {
-    internal class EndPointMetaDataReaderStub : IEndpointMetadataReader
+    public class EndPointMetaDataReaderStub : IEndpointMetadataReader
     {
         private EndpointMetadata _endpointMetadata;
 
