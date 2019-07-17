@@ -155,7 +155,7 @@
     <value>Options:</value>
   </data>
   <data name="Help_REPLCommands" xml:space="preserve">
-    <value>REPL Commands:</value>
+    <value>Once the REPL starts, these commands are valid:</value>
   </data>
   <data name="Help_Usage" xml:space="preserve">
     <value>Usage: </value>
