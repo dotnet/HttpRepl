@@ -6,8 +6,9 @@
   -->
   <ItemGroup>
     <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.6" />
-    <PackageReference Update="Moq" Version="4.10.1" PrivateAssets="All" />
-    <PackageReference Update="Newtonsoft.Json" Version="12.0.1" PrivateAssets="All" />
+    <PackageReference Update="Moq" Version="4.12.0" PrivateAssets="All" />
+    <PackageReference Update="Newtonsoft.Json" Version="12.0.2" PrivateAssets="All" />
     <PackageReference Update="Swashbuckle.AspNetCore" Version="5.0.0-rc2" PrivateAssets="All" />
+    <PackageReference Update="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 </Project>
