@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Tests.TestDoubles;
 using Microsoft.HttpRepl.UserProfile;
 using Xunit;
 

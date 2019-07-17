@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -6,11 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
+    <ProjectReference Include="..\Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj" />
     <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
 
