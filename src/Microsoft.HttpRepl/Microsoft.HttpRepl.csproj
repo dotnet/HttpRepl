@@ -6,6 +6,7 @@
     <RollForward>Major</RollForward>
     <AssemblyName>dotnet-httprepl</AssemblyName>
     <Description>Command line tool for making HTTP calls and viewing their results.</Description>
+    <PackageId>Microsoft.dotnet-httprepl</PackageId>
     <PackageTags>dotnet;http;httprepl</PackageTags>
 
     <IsPackable>true</IsPackable>
