@@ -125,7 +125,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
-            HttpState httpState = GetHttpState(string.Empty);
+            HttpState httpState = GetHttpState(out _, out _);
             httpState.BaseAddress = null;
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();

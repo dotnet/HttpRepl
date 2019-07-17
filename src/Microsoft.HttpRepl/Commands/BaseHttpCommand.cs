@@ -275,10 +275,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (response.RequestMessage.Content != null)
                 {
-                    
-
                     await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
-                    
                 }
 
                 consoleManager.WriteLine();

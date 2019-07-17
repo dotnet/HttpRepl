@@ -333,7 +333,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
         private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections)
         {
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = GetHttpState(response);
+            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
+            urlsWithResponse.Add(string.Empty, response);
+            HttpState httpState = GetHttpState(out _, out _, urlsWithResponse: urlsWithResponse);
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
