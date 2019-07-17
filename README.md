@@ -2,7 +2,10 @@ HttpRepl
 =======
 [![Build Status](https://dev.azure.com/dnceng/public/_apis/build/status/aspnet/HttpRepl/aspnet-HttpRepl-CI?branchName=master)](https://dev.azure.com/dnceng/public/_build/latest?definitionId=538&branchName=master)
 
-Repo for HttpRepl tool. Formerly part of the [AspLabs repo](https://github.com/aspnet/AspLabs).
+The HTTP Read-Eval-Print Loop (REPL) is:
+
+- A lightweight, cross-platform command-line tool that's supported everywhere .NET Core is supported.
+- Used for making HTTP requests to test ASP.NET Core web APIs and view their results.
 
 ## Contributing
 
