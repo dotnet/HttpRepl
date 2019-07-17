@@ -160,7 +160,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to REPL Commands:.
+        ///   Looks up a localized string similar to Once the REPL starts, these commands are valid:.
         /// </summary>
         internal static string Help_REPLCommands {
             get {
