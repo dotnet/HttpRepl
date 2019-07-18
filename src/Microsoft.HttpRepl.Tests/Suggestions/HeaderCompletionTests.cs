@@ -54,11 +54,11 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
         }
 
         [Fact]
-        public void GetCompletions_NoResults_ReturnsNull()
+        public void GetCompletions_NoResults_ReturnsEmpty()
         {
             IEnumerable<string> result = HeaderCompletion.GetCompletions(null, "Not-A-Real-Header");
 
-            Assert.Null(result);
+            Assert.Empty(result);
         }
 
         [Theory]

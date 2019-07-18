@@ -578,11 +578,6 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     IEnumerable<string> headerNameOptions = HeaderCompletion.GetCompletions(alreadySpecifiedHeaders, normalizedCompletionText);
 
-                    if (headerNameOptions == null)
-                    {
-                        return null;
-                    }
-
                     List<string> allSuggestions = new List<string>();
                     foreach (string suggestion in headerNameOptions.Select(x => x))
                     {

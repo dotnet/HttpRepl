@@ -67,14 +67,9 @@ namespace Microsoft.HttpRepl.Suggestions
 
         public static IEnumerable<string> GetCompletions(IReadOnlyCollection<string> existingHeaders, string prefix)
         {
-            List<string> result = CommonHeaders.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && !(existingHeaders?.Contains(x) ?? false)).ToList();
-
-            if (result.Count > 0)
-            {
-                return result;
-            }
-
-            return null;
+            return CommonHeaders.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) &&
+                                            existingHeaders?.Contains(x) != true)
+                                .ToList();
         }
 
         public static IEnumerable<string> GetValueCompletions(string method, string path, string header, string prefix, HttpState programState)
