@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -13,7 +13,7 @@ namespace Microsoft.HttpRepl.Suggestions
         {
 
             //If it's an absolute URI, nothing to suggest
-            if (Uri.TryCreate(normalCompletionString, UriKind.Absolute, out Uri _))
+            if (Uri.IsWellFormedUriString(normalCompletionString, UriKind.Absolute))
             {
                 return null;
             }
