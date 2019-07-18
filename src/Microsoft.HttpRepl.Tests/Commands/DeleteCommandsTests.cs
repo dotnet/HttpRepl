@@ -17,6 +17,19 @@ namespace Microsoft.HttpRepl.Tests.Commands
 {
     public class DeleteCommandTests : CommandTestsBase
     {
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public DeleteCommandTests()
+        {
+            _baseAddress = "http://localhost:5050/";
+            _path = "a/file/path.txt";
+
+            _urlsWithResponse.Add(_baseAddress, "Root delete received successfully.");
+            _urlsWithResponse.Add(_baseAddress + _path, "File path delete received successfully.");
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
@@ -41,18 +54,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string path = "a/file/path.txt";
-            string response = "File path delete received successfully.";
-
-            urlsWithResponse.Add(baseAddress, "Root delete received successfully.");
-            urlsWithResponse.Add(baseAddress + "/" + path, response);
-
             ArrangeInputs(commandText: "DELETE",
-                baseAddress: baseAddress,
-                path: path,
-                urlsWithResponse: urlsWithResponse,
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -62,27 +67,21 @@ namespace Microsoft.HttpRepl.Tests.Commands
             DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences);
             await deleteCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedResponse = "File path delete received successfully.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(response, result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string response = "File path delete received successfully.";
-
-            urlsWithResponse.Add(baseAddress, "Root delete received successfully.");
-            urlsWithResponse.Add(baseAddress + "/", response);
-
             ArrangeInputs(commandText: "DELETE",
-                baseAddress: baseAddress,
+                baseAddress: _baseAddress,
                 path: null,
-                urlsWithResponse: urlsWithResponse,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -92,11 +91,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences);
             await deleteCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedResponse = "Root delete received successfully.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(response, result);
+            Assert.Contains(expectedResponse, result);
         }
     }
 }

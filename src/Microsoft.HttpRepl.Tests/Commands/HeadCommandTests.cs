@@ -17,6 +17,19 @@ namespace Microsoft.HttpRepl.Tests.Commands
 {
     public class HeadCommandTests : CommandTestsBase
     {
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public HeadCommandTests()
+        {
+            _baseAddress = "http://localhost:5050/";
+            _path = "this/is/a/test/route";
+
+            _urlsWithResponse.Add(_baseAddress, "Header value for root HEAD request.");
+            _urlsWithResponse.Add(_baseAddress + _path, "Header value for HEAD request with route.");
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
@@ -41,18 +54,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyHeaders()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string path = "this/is/a/test/route";
-            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.";
-
-            urlsWithResponse.Add(baseAddress, "This is a response from the root.");
-            urlsWithResponse.Add(baseAddress + "/" + path, "Header value for HEAD request with route.");
-
             ArrangeInputs(commandText: "HEAD",
-                baseAddress: baseAddress,
-                path: path,
-                urlsWithResponse: urlsWithResponse,
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -63,6 +68,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
             await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
@@ -73,17 +79,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyHeaders()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.";
-
-            urlsWithResponse.Add(baseAddress, "This is a response from the root.");
-            urlsWithResponse.Add(baseAddress + "/", "Header value for root HEAD request.");
-
             ArrangeInputs(commandText: "HEAD",
-                baseAddress: baseAddress,
+                baseAddress: _baseAddress,
                 path: null,
-                urlsWithResponse: urlsWithResponse,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -94,6 +93,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
             await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);

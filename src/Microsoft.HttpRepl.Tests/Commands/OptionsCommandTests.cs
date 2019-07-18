@@ -17,6 +17,19 @@ namespace Microsoft.HttpRepl.Tests.Commands
 {
     public class OptionsCommandTests : CommandTestsBase
     {
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public OptionsCommandTests()
+        {
+            _baseAddress = "http://localhost:5050/";
+            _path = "this/is/a/test/route";
+
+            _urlsWithResponse.Add(_baseAddress, "Header value for root OPTIONS request.");
+            _urlsWithResponse.Add(_baseAddress + _path, "Header value for OPTIONS request with route.");
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
@@ -41,18 +54,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string path = "this/is/a/test/route";
-            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
-
-            urlsWithResponse.Add(baseAddress, "Header value for root OPTIONS request.");
-            urlsWithResponse.Add(baseAddress + "/" + path, "Header value for OPTIONS request with route.");
-
-            ArrangeInputs(commandText: "HEAD",
-                baseAddress: baseAddress,
-                path: path,
-                urlsWithResponse: urlsWithResponse,
+            ArrangeInputs(commandText: "OPTIONS",
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -63,6 +68,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
             await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
@@ -73,18 +79,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string path = "this/is/a/test/route";
-            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";
-
-            urlsWithResponse.Add(baseAddress, "Header value for root OPTIONS request.");
-            urlsWithResponse.Add(baseAddress + "/" + path, "Header value for OPTIONS request with route.");
-
-            ArrangeInputs(commandText: "HEAD",
-                baseAddress: baseAddress,
-                path: path,
-                urlsWithResponse: urlsWithResponse,
+            ArrangeInputs(commandText: "Options",
+                baseAddress: _baseAddress,
+                path: null,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -95,6 +93,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
             await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);

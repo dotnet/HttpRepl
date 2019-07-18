@@ -17,6 +17,19 @@ namespace Microsoft.HttpRepl.Tests.Commands
 {
     public class GetCommandTests : CommandTestsBase
     {
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public GetCommandTests()
+        {
+            _baseAddress = "http://localhost:5050/";
+            _path = "this/is/a/test/route";
+
+            _urlsWithResponse.Add(_baseAddress, "This is a response from the root.");
+            _urlsWithResponse.Add(_baseAddress + _path, "This is a test response.");
+        }
+
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
@@ -41,18 +54,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string path = "this/is/a/test/route";
-            string response = "This is a test response.";
-
-            urlsWithResponse.Add(baseAddress, "This is a response from the root.");
-            urlsWithResponse.Add(baseAddress + "/" + path, response);
-
             ArrangeInputs(commandText: "GET",
-                baseAddress: baseAddress,
-                path: path,
-                urlsWithResponse: urlsWithResponse,
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -62,27 +67,21 @@ namespace Microsoft.HttpRepl.Tests.Commands
             GetCommand getCommand = new GetCommand(fileSystem, preferences);
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedResponse = "This is a test response.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(response, result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            string baseAddress = "http://localhost:5050";
-            string response = "This is a response from the root.";
-
-            urlsWithResponse.Add(baseAddress, "This is a response from the root.");
-            urlsWithResponse.Add(baseAddress + "/", response);
-
             ArrangeInputs(commandText: "GET",
-                baseAddress: baseAddress,
+                baseAddress: _baseAddress,
                 path: null,
-                urlsWithResponse: urlsWithResponse,
+                urlsWithResponse: _urlsWithResponse,
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
@@ -92,11 +91,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             GetCommand getCommand = new GetCommand(fileSystem, preferences);
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            string expectedResponse = "This is a response from the root.";
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(response, result);
+            Assert.Contains(expectedResponse, result);
         }
     }
 }
