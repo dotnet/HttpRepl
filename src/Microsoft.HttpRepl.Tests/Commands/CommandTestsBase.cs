@@ -79,7 +79,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(string.Empty);
-            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents, filePath);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents);
             HttpClient httpClient = new HttpClient(messageHandler);
             fileSystem = new MockedFileSystem();
             preferences = new NullPreferences();

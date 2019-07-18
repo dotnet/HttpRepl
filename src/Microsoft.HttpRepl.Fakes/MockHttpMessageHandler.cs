@@ -12,7 +12,6 @@ namespace Microsoft.HttpRepl.Fakes
     public class MockHttpMessageHandler : HttpMessageHandler
     {
         private string _fileContents;
-        private string _filePath;
         private string _header;
         private bool _readFromFile;
         private IDictionary<string, string> _urlsWithResponse;
@@ -20,11 +19,9 @@ namespace Microsoft.HttpRepl.Fakes
         public MockHttpMessageHandler(IDictionary<string, string> urlsWithResponse,
             string header,
             bool readFromFile,
-            string fileContents,
-            string filePath)
+            string fileContents)
         {
             _fileContents = fileContents;
-            _filePath = filePath;
             _header = header;
             _readFromFile = readFromFile;
             _urlsWithResponse = urlsWithResponse;
