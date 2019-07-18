@@ -11,10 +11,12 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class MockHttpMessageHandler : HttpMessageHandler
     {
-        IDictionary<string, string> _urlsWithResponse;
+        private string _header;
+        private IDictionary<string, string> _urlsWithResponse;
 
-        public MockHttpMessageHandler(IDictionary<string, string> urlsWithResponse)
+        public MockHttpMessageHandler(IDictionary<string, string> urlsWithResponse, string header)
         {
+            _header = header;
             _urlsWithResponse = urlsWithResponse;
         }
 
@@ -24,7 +26,15 @@ namespace Microsoft.HttpRepl.Fakes
             _urlsWithResponse.TryGetValue(absoluteUri, out string responseContent);
 
             HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
-            httpResponseMessage.Content = new MockHttpContent(responseContent);
+
+            if (!string.IsNullOrEmpty(_header))
+            {
+                httpResponseMessage.Headers.Add(_header, responseContent);
+            }
+            else
+            {
+                httpResponseMessage.Content = new MockHttpContent(responseContent);
+            }
 
             return Task.FromResult(httpResponseMessage);
         }

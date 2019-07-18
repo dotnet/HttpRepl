@@ -20,13 +20,14 @@ namespace Microsoft.HttpRepl.Tests.Commands
             out MockedShellState shellState,
             out HttpState httpState,
             out ICoreParseResult parseResult,
+            string baseAddress = "",
             int caretPosition = -1,
             string responseContent = "")
         {
             parseResult = CoreParseResultHelper.Create(parseResultSections, caretPosition);
             shellState = new MockedShellState();
             IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            urlsWithResponse.Add(string.Empty, responseContent);
+            urlsWithResponse.Add(baseAddress, responseContent);
 
             httpState = GetHttpState(out _, out _, urlsWithResponse: urlsWithResponse);
         }
@@ -39,7 +40,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             out HttpState httpState,
             out ICoreParseResult parseResult,
             out IFileSystem fileSystem,
-            out IPreferences preferences)
+            out IPreferences preferences,
+            string header = "")
         {
             parseResult = CoreParseResultHelper.Create(commandText);
             shellState = new MockedShellState();
@@ -47,6 +49,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             httpState = GetHttpState(out fileSystem,
                 out preferences,
                 baseAddress,
+                header,
                 path,
                 urlsWithResponse);
         }
@@ -61,12 +64,13 @@ namespace Microsoft.HttpRepl.Tests.Commands
         protected static HttpState GetHttpState(out IFileSystem fileSystem,
             out IPreferences preferences,
             string baseAddress = "",
+            string header = "",
             string path = "",
             IDictionary<string, string> urlsWithResponse = null)
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(string.Empty);
-            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header);
             HttpClient httpClient = new HttpClient(messageHandler);
             fileSystem = new MockedFileSystem();
             preferences = new NullPreferences();

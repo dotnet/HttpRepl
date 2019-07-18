@@ -8,11 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Tests.Commands;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
-namespace Microsoft.HttpRepl.IntegrationTests.Commands
+namespace Microsoft.HttpRepl.Tests.Commands
 {
     public class SetBaseCommandTests : CommandTestsBase
     {
@@ -200,7 +199,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
-                responseContent: response);
+                responseContent: response,
+                baseAddress: "https://localhost:44366/");
 
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.Cancel();
@@ -257,7 +257,8 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
-                responseContent: response);
+                responseContent: response,
+                baseAddress: "https://localhost:44366/swagger.json");
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
