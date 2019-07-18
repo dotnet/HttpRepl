@@ -17,7 +17,7 @@ To build this repo, run the `build.cmd` or `build.sh` in the root of this repo. 
 
 ## Usage
 
-See the [ASP.NET Core documentation](https://aka.ms/http-repl-docs) for how to use and configure HttpRepl.
+See the [ASP.NET Core documentation](https://aka.ms/http-repl-doc) for how to use and configure HttpRepl.
 
 ## Reporting security issues and bugs
 
