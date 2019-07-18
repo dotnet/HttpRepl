@@ -83,6 +83,6 @@ namespace Microsoft.HttpRepl.Suggestions
                 default:
                     return null;
             }
-        }        
+        }
     }
 }
