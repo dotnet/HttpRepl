@@ -28,7 +28,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             _testPath = "this/is/a/test/route";
             _noBodyRequiredPath = "no/body/required";
 
-
             _urlsWithResponse.Add(_baseAddress, "This is a test response from a PATCH: \"Test Patch Body\"");
             _urlsWithResponse.Add(_baseAddress + _testPath, "This is a test response from a PATCH: \"Test Patch Body\"");
             _urlsWithResponse.Add(_baseAddress + _noBodyRequiredPath, "This is a test response from a PATCH: \"\"");
