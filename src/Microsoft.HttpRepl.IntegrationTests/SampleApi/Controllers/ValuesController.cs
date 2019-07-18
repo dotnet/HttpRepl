@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Microsoft.HttpRepl.Fakes.SampleApi.Controllers
+namespace Microsoft.HttpRepl.IntegrationTests.SampleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

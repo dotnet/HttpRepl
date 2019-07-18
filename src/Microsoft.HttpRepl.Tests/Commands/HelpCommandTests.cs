@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -42,7 +41,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [InlineData("help z")]
         public void Suggest(string commandText, params string[] expectedResults)
         {
-            HttpState httpState = GetHttpState(out IFileSystem fileSystem, out IPreferences preferences);
+            HttpState httpState = GetHttpState(out MockedFileSystem fileSystem, out IPreferences preferences);
             ICoreParseResult parseResult = CreateCoreParseResult(commandText);
             IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             DefaultCommandDispatcher<HttpState> commandDispatcher = DefaultCommandDispatcher.Create((ss) => { }, httpState);

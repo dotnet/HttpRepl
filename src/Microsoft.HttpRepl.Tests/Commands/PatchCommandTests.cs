@@ -1,94 +1,161 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Fakes.Commands;
-using Microsoft.HttpRepl.Fakes.SampleApi;
-using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
+using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class PatchCommandTests : HttpCommandTests<PatchCommand>, IClassFixture<HttpCommandsFixture<PatchCommandsConfig>>
+    public class PatchCommandTests : CommandTestsBase
     {
-        private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Patch Body From File");
+        private string _baseAddress;
+        private string _testPath;
+        private string _noBodyRequiredPath;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
 
-        private readonly PatchCommandsConfig _config;
-        public PatchCommandTests(HttpCommandsFixture<PatchCommandsConfig> PatchCommandsFixture)
-            : base(new PatchCommand(_fileSystem, new NullPreferences()))
+        public PatchCommandTests()
         {
-            _config = PatchCommandsFixture.Config;
+            _baseAddress = "http://localhost:5050/";
+            _testPath = "this/is/a/test/route";
+            _noBodyRequiredPath = "no/body/required";
+
+
+            _urlsWithResponse.Add(_baseAddress, "This is a test response from a PATCH: \"Test Patch Body\"");
+            _urlsWithResponse.Add(_baseAddress + _testPath, "This is a test response from a PATCH: \"Test Patch Body\"");
+            _urlsWithResponse.Add(_baseAddress + _noBodyRequiredPath, "This is a test response from a PATCH: \"\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "PATCH",
-                                     baseAddress: null,
-                                     path: null,
-                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
+            ArrangeInputs(commandText: "PATCH",
+                baseAddress: null,
+                path: null,
+                urlsWithResponse: null,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
+
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
         }
 
         [Fact]
         public async Task ExecuteAsync_OnlyBaseAddressWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PATCH --content \"Test Patch Body\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: null,
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body\"");
+            ArrangeInputs(commandText: "PATCH --content \"Test Patch Body\"",
+                baseAddress: _baseAddress,
+                path: null,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PATCH: \"Test Patch Body\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PATCH --content \"Test Patch Body\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "this/is/a/test/route",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body\"");
+            ArrangeInputs(commandText: "PATCH --content \"Test Patch Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PATCH: \"Test Patch Body\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithNoBodyRequired_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PATCH --no-body",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "no/body/required",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PATCH: \"\"");
+            ArrangeInputs(commandText: "PATCH --no-body",
+                baseAddress: _baseAddress,
+                path: _noBodyRequiredPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PATCH: \"\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse()
         {
-            await VerifyResponse(commandText: $"PATCH --file \"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "this/is/a/test/route",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PATCH: \"Test Patch Body From File\"");
-        }
-    }
+            string filePath = "someFilePath.txt";
+            string fileContents = "This is a test response from a PATCH: \"Test Patch Body From File\"";
 
-    public class PatchCommandsConfig : SampleApiServerConfig
-    {
-        public PatchCommandsConfig()
-        {
-            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "this/is/a/test/route", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("PATCH", "no/body/required", RespondWithBody));
-        }
+            ArrangeInputs(commandText: $"PATCH --file " + filePath,
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                readBodyFromFile: true,
+                filePath: filePath,
+                fileContents: fileContents);
 
-        private async Task RespondWithBody(HttpContext context)
-        {
-            byte[] buffer = new byte[64];
-            int bytesRead = await context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
-            string body = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            await context.Response.WriteAsync($"This is a test response from a PATCH: \"{body}\"");
+            fileSystem.AddFile(filePath, "Test Patch Body From File");
+
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(fileContents, result);
         }
     }
 }

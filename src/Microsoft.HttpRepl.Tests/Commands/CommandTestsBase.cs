@@ -39,9 +39,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             out MockedShellState shellState,
             out HttpState httpState,
             out ICoreParseResult parseResult,
-            out IFileSystem fileSystem,
+            out MockedFileSystem fileSystem,
             out IPreferences preferences,
-            string header = "")
+            string header = "",
+            bool readBodyFromFile = false,
+            string filePath = "",
+            string fileContents = "")
         {
             parseResult = CoreParseResultHelper.Create(commandText);
             shellState = new MockedShellState();
@@ -51,7 +54,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 baseAddress,
                 header,
                 path,
-                urlsWithResponse);
+                urlsWithResponse,
+                readBodyFromFile,
+                filePath,
+                fileContents);
         }
 
         protected static void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
@@ -61,16 +67,19 @@ namespace Microsoft.HttpRepl.Tests.Commands
             error.Verify(s => s.WriteLine(It.IsAny<string>()), Times.Once);
         }
 
-        protected static HttpState GetHttpState(out IFileSystem fileSystem,
+        protected static HttpState GetHttpState(out MockedFileSystem fileSystem,
             out IPreferences preferences,
             string baseAddress = "",
             string header = "",
             string path = "",
-            IDictionary<string, string> urlsWithResponse = null)
+            IDictionary<string, string> urlsWithResponse = null,
+            bool readFromFile = false,
+            string filePath = "",
+            string fileContents = "")
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(string.Empty);
-            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents, filePath);
             HttpClient httpClient = new HttpClient(messageHandler);
             fileSystem = new MockedFileSystem();
             preferences = new NullPreferences();

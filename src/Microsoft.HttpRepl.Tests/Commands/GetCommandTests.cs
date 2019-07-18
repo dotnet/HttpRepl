@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl.ConsoleHandling;
@@ -40,7 +39,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
-                out IFileSystem fileSystem,
+                out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
@@ -61,7 +60,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
-                out IFileSystem fileSystem,
+                out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
             GetCommand getCommand = new GetCommand(fileSystem, preferences);
@@ -85,7 +84,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedShellState shellState,
                 out HttpState httpState,
                 out ICoreParseResult parseResult,
-                out IFileSystem fileSystem,
+                out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
             GetCommand getCommand = new GetCommand(fileSystem, preferences);

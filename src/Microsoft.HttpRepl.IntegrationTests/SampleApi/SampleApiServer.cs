@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace Microsoft.HttpRepl.Fakes.SampleApi
+namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
     public class SampleApiServer
     {
