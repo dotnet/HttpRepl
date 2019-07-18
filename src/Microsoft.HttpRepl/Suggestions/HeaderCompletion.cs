@@ -65,18 +65,11 @@ namespace Microsoft.HttpRepl.Suggestions
             "X-Correlation-ID"
         };
 
-        private static readonly IReadOnlyList<string> DefaultContentTypesList = null;
-
         public static IEnumerable<string> GetCompletions(IReadOnlyCollection<string> existingHeaders, string prefix)
         {
-            List<string> result = CommonHeaders.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && !(existingHeaders?.Contains(x) ?? false)).ToList();
-
-            if (result.Count > 0)
-            {
-                return result;
-            }
-
-            return null;
+            return CommonHeaders.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) &&
+                                            existingHeaders?.Contains(x) != true)
+                                .ToList();
         }
 
         public static IEnumerable<string> GetValueCompletions(string method, string path, string header, string prefix, HttpState programState)
@@ -84,14 +77,9 @@ namespace Microsoft.HttpRepl.Suggestions
             switch (header.ToUpperInvariant())
             {
                 case "CONTENT-TYPE":
-                    IEnumerable<string> results = programState.GetApplicableContentTypes(method, path) ?? DefaultContentTypesList;
+                    IEnumerable<string> results = programState.GetApplicableContentTypes(method, path);
 
-                    if (results is null)
-                    {
-                        return null;
-                    }
-
-                    return results.Where(x => !string.IsNullOrEmpty(x) && x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+                    return results?.Where(x => !string.IsNullOrEmpty(x) && x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
                 default:
                     return null;
             }

@@ -120,8 +120,6 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetApplicableContentTypes_WithPath_ReturnsCorrectOne()
         {
-
-
             DirectoryStructure parentDirectoryStructure = new DirectoryStructure(null);
             RequestInfo parentRequestInfo = new RequestInfo();
             parentRequestInfo.SetRequestBody("GET", "application/json", "");
