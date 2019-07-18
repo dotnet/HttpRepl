@@ -11,10 +11,10 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class MockHttpMessageHandler : HttpMessageHandler
     {
-        private string _fileContents;
-        private string _header;
-        private bool _readFromFile;
-        private IDictionary<string, string> _urlsWithResponse;
+        private readonly string _fileContents;
+        private readonly string _header;
+        private readonly bool _readFromFile;
+        private readonly IDictionary<string, string> _urlsWithResponse;
 
         public MockHttpMessageHandler(IDictionary<string, string> urlsWithResponse,
             string header,
