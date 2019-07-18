@@ -142,7 +142,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences,
                 readBodyFromFile: true,
-                filePath: filePath,
                 fileContents: fileContents);
 
             fileSystem.AddFile(filePath, "Test Patch Body From File");

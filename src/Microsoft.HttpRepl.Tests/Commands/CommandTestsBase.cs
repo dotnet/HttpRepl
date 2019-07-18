@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl;
 using Microsoft.Repl.ConsoleHandling;
@@ -43,7 +42,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             out IPreferences preferences,
             string header = "",
             bool readBodyFromFile = false,
-            string filePath = "",
             string fileContents = "")
         {
             parseResult = CoreParseResultHelper.Create(commandText);
@@ -56,7 +54,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 path,
                 urlsWithResponse,
                 readBodyFromFile,
-                filePath,
                 fileContents);
         }
 
@@ -74,7 +71,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string path = "",
             IDictionary<string, string> urlsWithResponse = null,
             bool readFromFile = false,
-            string filePath = "",
             string fileContents = "")
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
