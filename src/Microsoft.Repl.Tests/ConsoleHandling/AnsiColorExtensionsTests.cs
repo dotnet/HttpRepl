@@ -49,6 +49,5 @@ namespace Microsoft.Repl.Tests.ConsoleHandling
 
             Assert.Equal(expected, result);
         }
-
     }
 }
