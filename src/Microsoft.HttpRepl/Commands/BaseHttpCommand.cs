@@ -64,7 +64,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 CommandInputSpecificationBuilder builder = CommandInputSpecification.Create(Verb)
                     .MaximumArgCount(1)
-                    .WithOption(new CommandOptionSpecification(HeaderOption, requiresValue: true, forms: new[] {"--header", "-h"}))
+                    .WithOption(new CommandOptionSpecification(HeaderOption, requiresValue: true, forms: new[] { "--header", "-h" }))
                     .WithOption(new CommandOptionSpecification(ResponseFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response", }))
                     .WithOption(new CommandOptionSpecification(ResponseHeadersFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response:headers", }))
                     .WithOption(new CommandOptionSpecification(ResponseBodyFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response:body", }))
@@ -74,8 +74,8 @@ namespace Microsoft.HttpRepl.Commands
                 if (RequiresBody)
                 {
                     builder = builder.WithOption(new CommandOptionSpecification(NoBodyOption, maximumOccurrences: 1, forms: "--no-body"))
-                        .WithOption(new CommandOptionSpecification(BodyFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] {"--file", "-f"}))
-                        .WithOption(new CommandOptionSpecification(BodyContentOption, requiresValue: true, maximumOccurrences: 1, forms: new[] {"--content", "-c"}));
+                        .WithOption(new CommandOptionSpecification(BodyFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--file", "-f" }))
+                        .WithOption(new CommandOptionSpecification(BodyContentOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--content", "-c" }));
                 }
 
                 _inputSpec = builder.Finish();
@@ -194,10 +194,10 @@ namespace Microsoft.HttpRepl.Commands
                     contentType = "application/json";
                 }
 
-                byte[] data = noBody 
-                    ? new byte[0] 
-                    : string.IsNullOrEmpty(bodyContent) 
-                        ? _fileSystem.ReadAllBytesFromFile(filePath) 
+                byte[] data = noBody
+                    ? new byte[0]
+                    : string.IsNullOrEmpty(bodyContent)
+                        ? _fileSystem.ReadAllBytesFromFile(filePath)
                         : Encoding.UTF8.GetBytes(bodyContent);
 
                 HttpContent content = new ByteArrayContent(data);
@@ -388,6 +388,20 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
+            await FormatResponseContentAsync(commandInput, programState, consoleManager, content, bodyFileOutput, preferences);
+
+            string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
+            bodyFileOutput?.Add(responseContent);
+            consoleManager.WriteLine(responseContent);
+        }
+
+        private static async Task FormatResponseContentAsync(DefaultCommandInput<ICoreParseResult> commandInput,
+            HttpState programState,
+            IConsoleManager consoleManager,
+            HttpContent content,
+            List<string> bodyFileOutput,
+            IPreferences preferences)
+        {
             string contentType = null;
             if (content.Headers.TryGetValues("Content-Type", out IEnumerable<string> contentTypeValues))
             {
@@ -423,10 +437,6 @@ namespace Microsoft.HttpRepl.Commands
                     }
                 }
             }
-
-            string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
-            bodyFileOutput?.Add(responseContent);
-            consoleManager.WriteLine(responseContent);
         }
 
         private static async Task<bool> WaitForCompletionAsync(ValueTask<int> readTask, CancellationToken cancellationToken)
