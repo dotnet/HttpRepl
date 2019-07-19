@@ -36,6 +36,15 @@ namespace Microsoft.HttpRepl.OpenApi
 
                         if (method.Value is JObject methodBody)
                         {
+                            if (!(methodBody["responses"] is JObject))
+                            {
+                                // responses is the only required part of an Operation Object
+                                // so if this is missing, we'll skip this operation
+                                continue;
+                            }
+
+                            requestMethods[method.Name] = new Dictionary<string, IReadOnlyList<Parameter>>(StringComparer.OrdinalIgnoreCase);
+
                             if (methodBody["parameters"] is JArray parametersArray)
                             {
                                 foreach (JObject parameterObj in parametersArray.OfType<JObject>())
