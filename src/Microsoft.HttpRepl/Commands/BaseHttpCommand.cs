@@ -116,7 +116,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (RequiresBody)
             {
-                HandleBodyRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
+                HandleRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
             }
 
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
@@ -146,11 +146,11 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        private void HandleBodyRequiresBody(DefaultCommandInput<ICoreParseResult> commandInput,
-        IShellState shellState,
-        HttpState programState,
-        HttpRequestMessage request,
-        Dictionary<string, string> requestHeaders)
+        private void HandleRequiresBody(DefaultCommandInput<ICoreParseResult> commandInput,
+            IShellState shellState,
+            HttpState programState,
+            HttpRequestMessage request,
+            Dictionary<string, string> requestHeaders)
         {
             string filePath = null;
             string bodyContent = null;
@@ -369,6 +369,7 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine();
             consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
             consoleManager.WriteLine();
+
             foreach (string responseLine in responseOutput)
             {
                 consoleManager.WriteLine(responseLine);
