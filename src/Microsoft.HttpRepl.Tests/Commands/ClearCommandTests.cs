@@ -100,7 +100,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_CallsConsoleManagerClear()
         {
-            HttpState httpState = GetHttpState();
+            HttpState httpState = GetHttpState(out _, out _);
             ICoreParseResult parseResult = CreateCoreParseResult("clear");
             DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create((ss) => { }, httpState);
             LoggingConsoleManagerDecorator consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
@@ -118,7 +118,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             bool wasOnReadyCalled = false;
 
-            HttpState httpState = GetHttpState();
+            HttpState httpState = GetHttpState(out _, out _);
             ICoreParseResult parseResult = CreateCoreParseResult("clear");
             DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create((ss) => wasOnReadyCalled = true, httpState);
             IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());

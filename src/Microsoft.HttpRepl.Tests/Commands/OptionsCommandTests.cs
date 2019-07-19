@@ -1,68 +1,103 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Fakes.Commands;
-using Microsoft.HttpRepl.Fakes.SampleApi;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
+using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class OptionsCommandTests : HttpCommandTests<OptionsCommand>, IClassFixture<HttpCommandsFixture<OptionsCommandsConfig>>
+    public class OptionsCommandTests : CommandTestsBase
     {
-        private readonly OptionsCommandsConfig _config;
-        public OptionsCommandTests(HttpCommandsFixture<OptionsCommandsConfig> optionsCommandsFixture)
-            : base(new OptionsCommand(new MockedFileSystem(), new NullPreferences()))
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public OptionsCommandTests()
         {
-            _config = optionsCommandsFixture.Config;
+            _baseAddress = "http://localhost:5050/";
+            _path = "this/is/a/test/route";
+
+            _urlsWithResponse.Add(_baseAddress, "Header value for root OPTIONS request.");
+            _urlsWithResponse.Add(_baseAddress + _path, "Header value for OPTIONS request with route.");
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "OPTIONS",
-                                     baseAddress: null,
-                                     path: null,
-                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
+            ArrangeInputs(commandText: "OPTIONS",
+                baseAddress: null,
+                path: null,
+                urlsWithResponse: null,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
+
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
+            await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyOutput()
         {
-            await VerifyHeaders(commandText: "OPTIONS",
-                                baseAddress: _config.BaseAddress,
-                                path: "this/is/a/test/route",
-                                expectedResponseLines: 6,
-                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.");
+            ArrangeInputs(commandText: "OPTIONS",
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                header: "X-HTTPREPL-TESTHEADER");
+
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
+            await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedHeader, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyOutput()
         {
-            await VerifyHeaders(commandText: "OPTIONS",
-                                baseAddress: _config.BaseAddress,
-                                path: null,
-                                expectedResponseLines: 6,
-                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.");
-        }
-    }
+            ArrangeInputs(commandText: "Options",
+                baseAddress: _baseAddress,
+                path: null,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                header: "X-HTTPREPL-TESTHEADER");
 
-    public class OptionsCommandsConfig : SampleApiServerConfig
-    {
-        public OptionsCommandsConfig()
-        {
-            Routes.Add(new DynamicSampleApiServerRoute("OPTIONS", "", context =>
-            {
-                context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for root OPTIONS request.");
-                return Task.CompletedTask;
-            }));
-            Routes.Add(new DynamicSampleApiServerRoute("OPTIONS", "this/is/a/test/route", context =>
-            {
-                context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for OPTIONS request with route.");
-                return Task.CompletedTask;
-            }));
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
+            await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedHeader, result);
         }
     }
 }

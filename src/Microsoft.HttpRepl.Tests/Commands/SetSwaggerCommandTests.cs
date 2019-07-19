@@ -258,8 +258,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
     }
   }
 }";
-            string parseResultSections = "set swagger http://localhost:5050/somePath";
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections).ConfigureAwait(false);
+            string baseAddress = "http://localhost:5050/somePath";
+            string parseResultSections = "set swagger " + baseAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, baseAddress).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -314,8 +315,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
     }
   }
 }";
-            string parseResultSections = "set swagger http://localhost:5050/somePath";
-            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections).ConfigureAwait(false);
+            string baseAddress = "http://localhost:5050/somePath";
+            string parseResultSections = "set swagger " + baseAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, baseAddress).ConfigureAwait(false);
             List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
             string expectedDirectoryName = "api";
 
@@ -330,10 +332,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Values", childDirectoryNames.ElementAt(1));
         }
 
-        private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections)
+        private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections, string baseAddress)
         {
             MockedShellState shellState = new MockedShellState();
-            HttpState httpState = GetHttpState(response);
+            IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
+            urlsWithResponse.Add(baseAddress, response);
+            HttpState httpState = GetHttpState(out _, out _, urlsWithResponse: urlsWithResponse);
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 

@@ -1,94 +1,158 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Text;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Fakes.Commands;
-using Microsoft.HttpRepl.Fakes.SampleApi;
-using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
+using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class PutCommandTests : HttpCommandTests<PutCommand>, IClassFixture<HttpCommandsFixture<PutCommandsConfig>>
+    public class PutCommandTests : CommandTestsBase
     {
-        private static readonly IFileSystem _fileSystem = new MockedFileSystem().AddFile($"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt", "Test Put Body From File");
+        private string _baseAddress;
+        private string _testPath;
+        private string _noBodyRequiredPath;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
 
-        private readonly PutCommandsConfig _config;
-        public PutCommandTests(HttpCommandsFixture<PutCommandsConfig> PutCommandsFixture)
-            : base(new PutCommand(_fileSystem, new NullPreferences()))
+        public PutCommandTests()
         {
-            _config = PutCommandsFixture.Config;
+            _baseAddress = "http://localhost:5050/";
+            _testPath = "this/is/a/test/route";
+            _noBodyRequiredPath = "no/body/required";
+
+            _urlsWithResponse.Add(_baseAddress, "This is a test response from a PUT: \"Test Put Body\"");
+            _urlsWithResponse.Add(_baseAddress + _testPath, "This is a test response from a PUT: \"Test Put Body\"");
+            _urlsWithResponse.Add(_baseAddress + _noBodyRequiredPath, "This is a test response from a PUT: \"\"");
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "PUT",
-                                     baseAddress: null,
-                                     path: null,
-                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
+            ArrangeInputs(commandText: "PUT",
+                baseAddress: null,
+                path: null,
+                urlsWithResponse: null,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
+
+            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
         }
 
         [Fact]
         public async Task ExecuteAsync_OnlyBaseAddressWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PUT --content \"Test Put Body\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: null,
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body\"");
+            ArrangeInputs(commandText: "PUT --content \"Test Put Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PUT: \"Test Put Body\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithInlineContent_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PUT --content \"Test Put Body\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "this/is/a/test/route",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body\"");
+            ArrangeInputs(commandText: "PUT --content \"Test Put Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PUT: \"Test Put Body\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithNoBodyRequired_VerifyResponse()
         {
-            await VerifyResponse(commandText: "PUT --no-body",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "no/body/required",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PUT: \"\"");
+            ArrangeInputs(commandText: "PUT --no-body",
+                baseAddress: _baseAddress,
+                path: _noBodyRequiredPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = "This is a test response from a PUT: \"\"";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse()
         {
-            await VerifyResponse(commandText: $"PUT --file \"{nameof(ExecuteAsync_MultiPartRouteWithBodyFromFile_VerifyResponse)}.txt\"",
-                                 baseAddress: _config.BaseAddress,
-                                 path: "this/is/a/test/route",
-                                 expectedResponseLines: 5,
-                                 expectedResponseContent: "This is a test response from a PUT: \"Test Put Body From File\"");
-        }
-    }
+            string filePath = "someFilePath.txt";
+            string fileContents = "This is a test response from a PUT: \"Test Put Body From File\"";
 
-    public class PutCommandsConfig : SampleApiServerConfig
-    {
-        public PutCommandsConfig()
-        {
-            Routes.Add(new DynamicSampleApiServerRoute("PUT", "", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("PUT", "this/is/a/test/route", RespondWithBody));
-            Routes.Add(new DynamicSampleApiServerRoute("PUT", "no/body/required", RespondWithBody));
-        }
+            ArrangeInputs(commandText: $"PUT --file " + filePath,
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                readBodyFromFile: true,
+                fileContents: fileContents);
 
-        private async Task RespondWithBody(HttpContext context)
-        {
-            byte[] buffer = new byte[64];
-            int bytesRead = await context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
-            string body = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            await context.Response.WriteAsync($"This is a test response from a PUT: \"{body}\"");
+            fileSystem.AddFile(filePath, "Test Put Body From File");
+
+            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(fileContents, result);
         }
     }
 }

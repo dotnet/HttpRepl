@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Microsoft.HttpRepl.Fakes.SampleApi
+namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
     public class SampleApiServerConfig
     {

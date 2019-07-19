@@ -8,8 +8,6 @@
   <ItemGroup>
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="System.Net.Http" />
   </ItemGroup>
 
   <ItemGroup>

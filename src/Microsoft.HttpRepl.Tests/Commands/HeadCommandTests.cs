@@ -1,68 +1,103 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Fakes.Commands;
-using Microsoft.HttpRepl.Fakes.SampleApi;
+using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
+using Microsoft.Repl.ConsoleHandling;
+using Microsoft.Repl.Parsing;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.Commands
 {
-    public class HeadCommandTests : HttpCommandTests<HeadCommand>, IClassFixture<HttpCommandsFixture<HeadCommandsConfig>>
+    public class HeadCommandTests : CommandTestsBase
     {
-        private readonly HeadCommandsConfig _config;
-        public HeadCommandTests(HttpCommandsFixture<HeadCommandsConfig> headCommandsFixture)
-            :  base(new HeadCommand(new MockedFileSystem(), new NullPreferences()))
+        private string _baseAddress;
+        private string _path;
+        private IDictionary<string, string> _urlsWithResponse = new Dictionary<string, string>();
+
+        public HeadCommandTests()
         {
-            _config = headCommandsFixture.Config;
+            _baseAddress = "http://localhost:5050/";
+            _path = "this/is/a/test/route";
+
+            _urlsWithResponse.Add(_baseAddress, "Header value for root HEAD request.");
+            _urlsWithResponse.Add(_baseAddress + _path, "Header value for HEAD request with route.");
         }
 
         [Fact]
         public async Task ExecuteAsync_WithNoBasePath_VerifyError()
         {
-            await VerifyErrorMessage(commandText: "HEAD",
-                                     baseAddress: null,
-                                     path: null,
-                                     expectedErrorMessage: Resources.Strings.Error_NoBasePath);
+            ArrangeInputs(commandText: "HEAD",
+                baseAddress: null,
+                path: null,
+                urlsWithResponse: null,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
+
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
+            await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithMultipartRoute_VerifyHeaders()
         {
-            await VerifyHeaders(commandText: "HEAD",
-                                baseAddress: _config.BaseAddress,
-                                path: "this/is/a/test/route",
-                                expectedResponseLines: 5,
-                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.");
+            ArrangeInputs(commandText: "HEAD",
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                header: "X-HTTPREPL-TESTHEADER");
+
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
+            await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedHeader, result);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithOnlyBaseAddress_VerifyHeaders()
         {
-            await VerifyHeaders(commandText: "HEAD",
-                                baseAddress: _config.BaseAddress,
-                                path: null,
-                                expectedResponseLines: 5,
-                                expectedHeader: "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.");
-        }
-    }
+            ArrangeInputs(commandText: "HEAD",
+                baseAddress: _baseAddress,
+                path: null,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                header: "X-HTTPREPL-TESTHEADER");
 
-    public class HeadCommandsConfig : SampleApiServerConfig
-    {
-        public HeadCommandsConfig()
-        {
-            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "", context =>
-            {
-                context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for root HEAD request.");
-                return Task.CompletedTask;
-            }));
-            Routes.Add(new DynamicSampleApiServerRoute("HEAD", "this/is/a/test/route", context =>
-            {
-                context.Response.Headers.Add("X-HTTPREPL-TESTHEADER", "Header value for HEAD request with route.");
-                return Task.CompletedTask;
-            }));
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
+            await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedHeader, result);
         }
     }
 }
