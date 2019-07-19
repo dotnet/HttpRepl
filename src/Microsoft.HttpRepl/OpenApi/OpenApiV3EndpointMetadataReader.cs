@@ -15,6 +15,7 @@ namespace Microsoft.HttpRepl.OpenApi
             return (document["openapi"]?.ToString() ?? "").StartsWith("3.", StringComparison.Ordinal);
         }
 
+        // Based on latest spec at https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
         public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
         {
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
