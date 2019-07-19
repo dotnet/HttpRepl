@@ -45,7 +45,7 @@ namespace Microsoft.Repl.Tests.Parsing
         [InlineData("set header content-type application/json", 1, "header content-type application/json")]
         [InlineData("set header content-type application/json", 2, "content-type application/json")]
         [InlineData("set header content-type application/json", 3, "application/json")]
-        public void Slice_CorrectCommandText(string commandText, int toRemove, string expectedCommandText)
+        public void Slice_WithVariousSliceLengths_CorrectCommandTextOutput(string commandText, int toRemove, string expectedCommandText)
         {
             CoreParser parser = new CoreParser();
             ICoreParseResult parseResult = parser.Parse(commandText, commandText.Length);

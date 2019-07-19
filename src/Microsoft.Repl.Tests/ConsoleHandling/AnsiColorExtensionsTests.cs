@@ -17,7 +17,7 @@ namespace Microsoft.Repl.Tests.ConsoleHandling
         [InlineData("MagentaText", AllowedColors.BoldMagenta, "\x1B[35m\x1B[1mMagentaText\x1B[22m\x1B[39m")]
         [InlineData("CyanText", AllowedColors.BoldCyan, "\x1B[36m\x1B[1mCyanText\x1B[22m\x1B[39m")]
         [InlineData("WhiteText", AllowedColors.BoldWhite, "\x1B[37m\x1B[1mWhiteText\x1B[22m\x1B[39m")]
-        public void SetColor_WithBold_Both(string text, AllowedColors color, string expected)
+        public void SetColor_WithBold_ResponseIncludesColorAndBold(string text, AllowedColors color, string expected)
         {
             var result = text.SetColor(color);
 
@@ -33,7 +33,7 @@ namespace Microsoft.Repl.Tests.ConsoleHandling
         [InlineData("MagentaText", AllowedColors.Magenta, "\x1B[35mMagentaText\x1B[39m")]
         [InlineData("CyanText", AllowedColors.Cyan, "\x1B[36mCyanText\x1B[39m")]
         [InlineData("WhiteText", AllowedColors.White, "\x1B[37mWhiteText\x1B[39m")]
-        public void SetColor_WithoutBold_Both(string text, AllowedColors color, string expected)
+        public void SetColor_WithoutBold_ResponseIncludesJustColor(string text, AllowedColors color, string expected)
         {
             var result = text.SetColor(color);
 
