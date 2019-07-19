@@ -8,6 +8,7 @@
     <PackageId>Microsoft.dotnet-httprepl</PackageId>
     <PackageTags>dotnet;http;httprepl</PackageTags>
     <PackageProjectUrl>https://aka.ms/http-repl-doc</PackageProjectUrl>
+    <PackageIconUrl>https://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
 
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
