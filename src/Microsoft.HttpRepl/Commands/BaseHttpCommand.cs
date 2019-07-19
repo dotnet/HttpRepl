@@ -459,12 +459,10 @@ namespace Microsoft.HttpRepl.Commands
                     }
                 }
             }
-            else
-            {
-                string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
-                bodyFileOutput?.Add(responseContent);
-                consoleManager.WriteLine(responseContent);
-            }
+
+            string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
+            bodyFileOutput?.Add(responseContent);
+            consoleManager.WriteLine(responseContent);
         }
 
         private static async Task<bool> WaitForCompletionAsync(ValueTask<int> readTask, CancellationToken cancellationToken)
