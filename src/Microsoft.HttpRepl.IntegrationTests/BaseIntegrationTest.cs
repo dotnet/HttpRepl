@@ -3,7 +3,6 @@
 
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.HttpRepl.IntegrationTests
@@ -26,6 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests
                 _dateReplacement = "Date: [Date]";
             }
         }
+
         protected static string NormalizeOutput(string output, string baseUrl)
         {
             // The console implementation uses trailing whitespace when a new line's text is shorter than the previous
