@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -48,7 +49,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void ReadMetadata_WithNoResponses_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void ReadMetadata_WithNoResponses_ReturnsEndpointMetadata()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -73,7 +74,51 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Empty(endpointMetadata[0].AvailableRequests);
+            Assert.Single(endpointMetadata[0].AvailableRequests);
+            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+        }
+
+        [Theory]
+        [InlineData("get", true)]
+        [InlineData("post", true)]
+        [InlineData("put", true)]
+        [InlineData("delete", true)]
+        [InlineData("options", true)]
+        [InlineData("head", true)]
+        [InlineData("patch", true)]
+        [InlineData("trace", true)]
+        [InlineData("$ref", false)]
+        [InlineData("summary", false)]
+        [InlineData("description", false)]
+        [InlineData("servers", false)]
+        [InlineData("parameters", false)]
+        [InlineData("", false)]
+        public void ReadMetadata_WithSpecifiedMethodName_ReturnsEndpointMetadataWithCorrectNumberOfRequests(string method, bool shouldHaveRequest)
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+      """ + method + @""": """"
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/pets", endpointMetadata[0].Path);
+            if (shouldHaveRequest)
+            {
+                Assert.Single(endpointMetadata[0].AvailableRequests);
+                Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey(method));
+            }
+            else
+            {
+                Assert.Empty(endpointMetadata[0].AvailableRequests);
+            }
         }
 
         [Fact]

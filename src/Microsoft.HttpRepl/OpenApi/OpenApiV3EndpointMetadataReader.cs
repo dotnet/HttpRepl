@@ -10,6 +10,7 @@ namespace Microsoft.HttpRepl.OpenApi
 {
     public class OpenApiV3EndpointMetadataReader : IEndpointMetadataReader
     {
+        private static readonly HashSet<string> _ValidOperationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "get", "put", "post", "delete", "options", "head", "patch", "trace" };
         public bool CanHandle(JObject document)
         {
             return (document["openapi"]?.ToString() ?? "").StartsWith("3.", StringComparison.Ordinal);
@@ -33,19 +34,19 @@ namespace Microsoft.HttpRepl.OpenApi
 
                     foreach (JProperty method in pathBody.Properties())
                     {
+                        // A path item has a fixed set of field names and we are only looking for the set of
+                        // field names that are for operation objects
+                        if (!_ValidOperationNames.Contains(method.Name))
+                        {
+                            continue;
+                        }
+
+                        requestMethods[method.Name] = new Dictionary<string, IReadOnlyList<Parameter>>(StringComparer.OrdinalIgnoreCase);
+
                         List<Parameter> parameters = new List<Parameter>();
 
                         if (method.Value is JObject methodBody)
                         {
-                            if (!(methodBody["responses"] is JObject))
-                            {
-                                // responses is the only required part of an Operation Object
-                                // so if this is missing, we'll skip this operation
-                                continue;
-                            }
-
-                            requestMethods[method.Name] = new Dictionary<string, IReadOnlyList<Parameter>>(StringComparer.OrdinalIgnoreCase);
-
                             if (methodBody["parameters"] is JArray parametersArray)
                             {
                                 foreach (JObject parameterObj in parametersArray.OfType<JObject>())
