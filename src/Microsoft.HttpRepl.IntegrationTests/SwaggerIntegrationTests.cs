@@ -52,7 +52,7 @@ api   []
 [BaseUrl]/api~ ls
 .        []
 ..       []
-Values   [post]
+Values   [get|post]
 
 [BaseUrl]/api~", null);
 
@@ -79,12 +79,12 @@ ls";
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/Values
-/api/Values    [post]
+/api/Values    [get|post]
 
 [BaseUrl]/api/Values~ ls
-.      [post]
+.      [get|post]
 ..     []
-{id}   [put]
+{id}   [get|put|delete]
 
 [BaseUrl]/api/Values~", null);
 

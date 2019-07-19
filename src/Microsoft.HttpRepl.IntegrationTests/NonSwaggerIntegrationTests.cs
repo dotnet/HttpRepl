@@ -22,7 +22,7 @@ namespace Microsoft.HttpRepl.IntegrationTests
         }
 
         [Fact]
-        public async Task ListCommand_WithSwagger_ShowsAvailableSubpaths()
+        public async Task ListCommand_WithoutSwagger_ShowsNoSubpaths()
         {
             string scriptText = $@"set base {_serverConfig.BaseAddress}
 ls
@@ -55,7 +55,7 @@ ls";
         }
 
         [Fact]
-        public async Task ListCommand_WithSwagger_ShowsControllerActionsWithHttpVerbs()
+        public async Task ListCommand_WithoutSwagger_ShowsNoActionsOrVerbs()
         {
             string scriptText = $@"set base {_serverConfig.BaseAddress}
 cd api/Values

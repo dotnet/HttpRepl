@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -48,7 +49,80 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         }
 
         [Fact]
-        public void ReadMetadata_WithNoRequestBody_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void ReadMetadata_WithNoResponses_ReturnsEndpointMetadata()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+      ""post"": {
+        ""summary"": ""Create a pet"",
+        ""operationId"": ""createPets"",
+        ""requestBody"": {
+          ""content"": {
+
+          }
+        }
+      }
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/pets", endpointMetadata[0].Path);
+            Assert.Single(endpointMetadata[0].AvailableRequests);
+            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+        }
+
+        [Theory]
+        [InlineData("get", true)]
+        [InlineData("post", true)]
+        [InlineData("put", true)]
+        [InlineData("delete", true)]
+        [InlineData("options", true)]
+        [InlineData("head", true)]
+        [InlineData("patch", true)]
+        [InlineData("trace", true)]
+        [InlineData("$ref", false)]
+        [InlineData("summary", false)]
+        [InlineData("description", false)]
+        [InlineData("servers", false)]
+        [InlineData("parameters", false)]
+        [InlineData("", false)]
+        public void ReadMetadata_WithSpecifiedMethodName_ReturnsEndpointMetadataWithCorrectNumberOfRequests(string method, bool shouldHaveRequest)
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+      """ + method + @""": """"
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/pets", endpointMetadata[0].Path);
+            if (shouldHaveRequest)
+            {
+                Assert.Single(endpointMetadata[0].AvailableRequests);
+                Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey(method));
+            }
+            else
+            {
+                Assert.Empty(endpointMetadata[0].AvailableRequests);
+            }
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoContent_ReturnsEndpointMetadataWithRequestButNoContentTypes()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -61,6 +135,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
           ""201"": {
             ""description"": ""Null response""
           }
+        },
+        ""requestBody"": {
+          ""description"": ""A Request Body"",
+          ""required"": false
         }
       }
     }
@@ -73,23 +151,31 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Empty(endpointMetadata[0].AvailableRequests);
+            Assert.Single(endpointMetadata[0].AvailableRequests);
+            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+            Assert.Empty(endpointMetadata[0].AvailableRequests["post"]);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoContent_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void ReadMetadata_WithContentAndOneContentType_ReturnsEndpointMetadataWithContentType()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
   ""paths"": {
     ""/pets"": {
       ""post"": {
+        ""summary"": ""Create a pet"",
+        ""operationId"": ""createPets"",
+        ""responses"": {
+          ""201"": {
+            ""description"": ""Null response""
+          }
+        },
         ""requestBody"": {
-          ""summary"": ""Create a pet"",
-          ""operationId"": ""createPets"",
-          ""responses"": {
-            ""201"": {
-              ""description"": ""Null response""
+          ""description"": ""A Request Body"",
+          ""required"": false,
+          ""content"": {
+            ""application/json"": {
             }
           }
         }
@@ -104,7 +190,53 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             Assert.Single(endpointMetadata);
             Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Empty(endpointMetadata[0].AvailableRequests);
+            Assert.Single(endpointMetadata[0].AvailableRequests);
+            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+            Assert.Single(endpointMetadata[0].AvailableRequests["post"]);
+            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("application/json"));
+        }
+
+        [Fact]
+        public void ReadMetadata_WithContentAndMultipleContentTypes_ReturnsEndpointMetadataWithContentTypes()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+      ""post"": {
+        ""summary"": ""Create a pet"",
+        ""operationId"": ""createPets"",
+        ""responses"": {
+          ""201"": {
+            ""description"": ""Null response""
+          }
+        },
+        ""requestBody"": {
+          ""description"": ""A Request Body"",
+          ""required"": false,
+          ""content"": {
+            ""application/json"": {
+            },
+            ""text/plain"": {
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/pets", endpointMetadata[0].Path);
+            Assert.Single(endpointMetadata[0].AvailableRequests);
+            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+            Assert.Equal(2, endpointMetadata[0].AvailableRequests["post"].Count);
+            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("application/json"));
+            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("text/plain"));
         }
 
         [Fact]
@@ -115,39 +247,82 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ""paths"": {
     ""/pets"": {
       ""get"": {
-        ""requestBody"": {
-          ""content"": {
-            ""summary"": ""List all pets"",
-            ""operationId"": ""listPets"",
-            ""parameters"": [
-              {
-                ""name"": ""limit"",
-                ""in"": ""query"",
-                ""required"": false,
-                ""schema"": {
-                  ""type"": ""integer"",
-                  ""format"": ""int32""
-                }
-              }
-            ],
-            ""responses"": {
-              ""200"": {
-                ""description"": ""An paged array of pets""
-              }
+        ""summary"": ""List all pets"",
+        ""operationId"": ""listPets"",
+        ""parameters"": [
+          {
+            ""name"": ""limit"",
+            ""in"": ""query"",
+            ""required"": false,
+            ""schema"": {
+              ""type"": ""integer"",
+              ""format"": ""int32""
             }
+          }
+        ],
+        ""responses"": {
+          ""200"": {
+            ""description"": ""An paged array of pets""
           }
         }
       },
       ""post"": {
+        ""summary"": ""Create a pet"",
+        ""operationId"": ""createPets"",
+        ""responses"": {
+          ""201"": {
+            ""description"": ""Null response""
+          }
+        },
         ""requestBody"": {
           ""content"": {
-            ""summary"": ""Create a pet"",
-            ""operationId"": ""createPets"",
-            ""responses"": {
-              ""201"": {
-                ""description"": ""Null response""
-              }
-            }
+            
+          }
+        }
+      }
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+
+            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+
+            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+
+            Assert.Single(endpointMetadata);
+            Assert.Equal("/pets", endpointMetadata[0].Path);
+
+            Assert.Equal(2, availableRequests.Count);
+            Assert.True(availableRequests.ContainsKey("get"));
+            Assert.True(availableRequests.ContainsKey("post"));
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoRequestBody_ReturnsEndpointMetadata()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+      ""get"": {
+        ""responses"": {
+          ""200"": {
+            ""description"": ""Success""
+          }
+        }
+      },
+      ""post"": {
+        ""summary"": ""Create a pet"",
+        ""operationId"": ""createPets"",
+        ""responses"": {
+          ""201"": {
+            ""description"": ""Null response""
+          }
+        },
+        ""requestBody"": {
+          ""content"": {
+            
           }
         }
       }
