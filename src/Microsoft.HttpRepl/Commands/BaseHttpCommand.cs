@@ -416,10 +416,6 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, preferences);
-
-            string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
-            bodyFileOutput?.Add(responseContent);
-            consoleManager.WriteLine(responseContent);
         }
 
         private static async Task FormatResponseContentAsync(DefaultCommandInput<ICoreParseResult> commandInput,
@@ -462,6 +458,12 @@ namespace Microsoft.HttpRepl.Commands
                         return;
                     }
                 }
+            }
+            else
+            {
+                string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
+                bodyFileOutput?.Add(responseContent);
+                consoleManager.WriteLine(responseContent);
             }
         }
 

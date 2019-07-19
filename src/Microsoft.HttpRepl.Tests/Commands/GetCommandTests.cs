@@ -101,7 +101,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithJsonContentTypeInHeader_FormatsResponseContent()
         {
-            string response = @"{
+            string json = @"{
 ""swagger"": ""2.0"",
 ""info"": {
 ""version"": ""v1""
@@ -113,7 +113,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 }";
             string path  = "this/is/a/test/route/for/formatting";
 
-            _urlsWithResponse.Add(_baseAddress + path, response);
+            _urlsWithResponse.Add(_baseAddress + path, json);
 
             ArrangeInputs(commandText: "GET",
                 baseAddress: _baseAddress,
@@ -141,8 +141,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
 }";
             List<string> result = shellState.Output;
 
-            Assert.Equal(2, result.Count);
+            Assert.Equal(3, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains("Content-Type: application/json", result);
             Assert.Contains(expectedResponse, result);
         }
     }
