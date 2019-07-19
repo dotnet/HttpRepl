@@ -11,6 +11,7 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class MockHttpMessageHandler : HttpMessageHandler
     {
+        private readonly string _contentType;
         private readonly string _fileContents;
         private readonly string _header;
         private readonly bool _readFromFile;
@@ -19,8 +20,10 @@ namespace Microsoft.HttpRepl.Fakes
         public MockHttpMessageHandler(IDictionary<string, string> urlsWithResponse,
             string header,
             bool readFromFile,
-            string fileContents)
+            string fileContents,
+            string contentType)
         {
+            _contentType = contentType;
             _fileContents = fileContents;
             _header = header;
             _readFromFile = readFromFile;
@@ -45,6 +48,11 @@ namespace Microsoft.HttpRepl.Fakes
             else
             {
                 httpResponseMessage.Content = new MockHttpContent(responseContent);
+            }
+
+            if (!string.IsNullOrEmpty(_contentType) && httpResponseMessage.Content != null)
+            {
+                httpResponseMessage.Content.Headers.Add("Content-Type", _contentType);
             }
 
             return Task.FromResult(httpResponseMessage);

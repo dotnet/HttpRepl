@@ -97,5 +97,53 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(expectedResponse, result);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithJsonContentTypeInHeader_FormatsResponseContent()
+        {
+            string response = @"{
+""swagger"": ""2.0"",
+""info"": {
+""version"": ""v1""
+},
+""paths"": {
+""/api/Employees"": {
+}
+}
+}";
+            string path  = "this/is/a/test/route/for/formatting";
+
+            _urlsWithResponse.Add(_baseAddress + path, response);
+
+            ArrangeInputs(commandText: "GET",
+                baseAddress: _baseAddress,
+                path: path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                contentType: "application/json");
+
+            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string expectedResponse = @"{
+  ""swagger"": ""2.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/api/Employees"": {
+    }
+  }
+}";
+            List<string> result = shellState.Output;
+
+            Assert.Equal(2, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains(expectedResponse, result);
+        }
     }
 }

@@ -85,7 +85,7 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (programState.BaseAddress == null && (commandInput.Arguments.Count == 0 || !Uri.TryCreate(commandInput.Arguments[0].Text, UriKind.Absolute, out Uri _)))
+            if (programState.BaseAddress == null && (commandInput.Arguments.Count == 0 || !Uri.TryCreate(commandInput.Arguments[0].Text, UriKind.Absolute, out _)))
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.Error_NoBasePath.SetColor(programState.ErrorColor));
                 return;
@@ -93,12 +93,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (programState.SwaggerEndpoint != null)
             {
-                string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
-
-                if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
-                {
-                    await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
-                }
+                await CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, cancellationToken).ConfigureAwait(false);
             }
 
             Dictionary<string, string> thisRequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -118,106 +113,10 @@ namespace Microsoft.HttpRepl.Commands
 
             Uri effectivePath = programState.GetEffectivePath(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty);
             HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(Verb.ToUpperInvariant()), effectivePath);
-            bool noBody = false;
 
             if (RequiresBody)
             {
-                string filePath = null;
-                string bodyContent = null;
-                bool deleteFile = false;
-                noBody = commandInput.Options[NoBodyOption].Count > 0;
-
-                if (!thisRequestHeaders.TryGetValue("content-type", out string contentType) && programState.Headers.TryGetValue("content-type", out IEnumerable<string> contentTypes))
-                {
-                    contentType = contentTypes.FirstOrDefault();
-                }
-
-                if (!noBody)
-                {
-                    if (string.IsNullOrEmpty(contentType))
-                    {
-                        contentType = "application/json";
-                    }
-
-                    if (commandInput.Options[BodyFileOption].Count > 0)
-                    {
-                        filePath = commandInput.Options[BodyFileOption][0].Text;
-
-                        if (!_fileSystem.FileExists(filePath))
-                        {
-                            shellState.ConsoleManager.Error.WriteLine($"Content file {filePath} does not exist".SetColor(programState.ErrorColor));
-                            return;
-                        }
-                    }
-                    else if (commandInput.Options[BodyContentOption].Count > 0)
-                    {
-                        bodyContent = commandInput.Options[BodyContentOption][0].Text;
-                    }
-                    else
-                    {
-                        string defaultEditorCommand = _preferences.GetValue(WellKnownPreference.DefaultEditorCommand, null);
-                        if (defaultEditorCommand == null)
-                        {
-                            shellState.ConsoleManager.Error.WriteLine($"The default editor must be configured using the command `pref set {WellKnownPreference.DefaultEditorCommand} \"{{commandline}}\"`".SetColor(programState.ErrorColor));
-                            return;
-                        }
-
-                        deleteFile = true;
-                        filePath = _fileSystem.GetTempFileName();
-
-                        string exampleBody = GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb, programState);
-
-                        if (!string.IsNullOrEmpty(exampleBody))
-                        {
-                            _fileSystem.WriteAllTextToFile(filePath, exampleBody);
-                        }
-
-                        string defaultEditorArguments = _preferences.GetValue(WellKnownPreference.DefaultEditorArguments, null) ?? "";
-                        string original = defaultEditorArguments;
-                        string pathString = $"\"{filePath}\"";
-
-                        defaultEditorArguments = defaultEditorArguments.Replace("{filename}", pathString);
-
-                        if (string.Equals(defaultEditorArguments, original, StringComparison.Ordinal))
-                        {
-                            defaultEditorArguments = (defaultEditorArguments + " " + pathString).Trim();
-                        }
-
-                        ProcessStartInfo info = new ProcessStartInfo(defaultEditorCommand, defaultEditorArguments);
-
-                        Process.Start(info)?.WaitForExit();
-                    }
-                }
-
-                if (string.IsNullOrEmpty(contentType))
-                {
-                    contentType = "application/json";
-                }
-
-                byte[] data = noBody
-                    ? new byte[0]
-                    : string.IsNullOrEmpty(bodyContent)
-                        ? _fileSystem.ReadAllBytesFromFile(filePath)
-                        : Encoding.UTF8.GetBytes(bodyContent);
-
-                HttpContent content = new ByteArrayContent(data);
-                content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-                request.Content = content;
-
-                if (deleteFile)
-                {
-                    _fileSystem.DeleteFile(filePath);
-                }
-
-                foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
-                {
-                    content.Headers.TryAddWithoutValidation(header.Key, header.Value);
-                }
-
-                foreach (KeyValuePair<string, string> header in thisRequestHeaders)
-                {
-                    content.Headers.TryAddWithoutValidation(header.Key, header.Value);
-                }
+                HandleBodyRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
             }
 
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
@@ -237,55 +136,130 @@ namespace Microsoft.HttpRepl.Commands
             await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
         }
 
+        internal async Task CreateDirectoryStructureForSwaggerEndpointAsync(IShellState shellState, HttpState programState, CancellationToken cancellationToken)
+        {
+            string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
+
+            if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
+            {
+                await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private void HandleBodyRequiresBody(DefaultCommandInput<ICoreParseResult> commandInput,
+        IShellState shellState,
+        HttpState programState,
+        HttpRequestMessage request,
+        Dictionary<string, string> requestHeaders)
+        {
+            string filePath = null;
+            string bodyContent = null;
+            bool deleteFile = false;
+            bool noBody = commandInput.Options[NoBodyOption].Count > 0;
+
+            if (!requestHeaders.TryGetValue("content-type", out string contentType) && programState.Headers.TryGetValue("content-type", out IEnumerable<string> contentTypes))
+            {
+                contentType = contentTypes.FirstOrDefault();
+            }
+
+            if (!noBody)
+            {
+                if (string.IsNullOrEmpty(contentType))
+                {
+                    contentType = "application/json";
+                }
+
+                if (commandInput.Options[BodyFileOption].Count > 0)
+                {
+                    filePath = commandInput.Options[BodyFileOption][0].Text;
+
+                    if (!_fileSystem.FileExists(filePath))
+                    {
+                        shellState.ConsoleManager.Error.WriteLine($"Content file {filePath} does not exist".SetColor(programState.ErrorColor));
+                        return;
+                    }
+                }
+                else if (commandInput.Options[BodyContentOption].Count > 0)
+                {
+                    bodyContent = commandInput.Options[BodyContentOption][0].Text;
+                }
+                else
+                {
+                    string defaultEditorCommand = _preferences.GetValue(WellKnownPreference.DefaultEditorCommand, null);
+                    if (defaultEditorCommand == null)
+                    {
+                        shellState.ConsoleManager.Error.WriteLine($"The default editor must be configured using the command `pref set {WellKnownPreference.DefaultEditorCommand} \"{{commandline}}\"`".SetColor(programState.ErrorColor));
+                        return;
+                    }
+
+                    deleteFile = true;
+                    filePath = _fileSystem.GetTempFileName();
+
+                    string exampleBody = GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb, programState);
+
+                    if (!string.IsNullOrEmpty(exampleBody))
+                    {
+                        _fileSystem.WriteAllTextToFile(filePath, exampleBody);
+                    }
+
+                    string defaultEditorArguments = _preferences.GetValue(WellKnownPreference.DefaultEditorArguments, null) ?? "";
+                    string original = defaultEditorArguments;
+                    string pathString = $"\"{filePath}\"";
+
+                    defaultEditorArguments = defaultEditorArguments.Replace("{filename}", pathString);
+
+                    if (string.Equals(defaultEditorArguments, original, StringComparison.Ordinal))
+                    {
+                        defaultEditorArguments = (defaultEditorArguments + " " + pathString).Trim();
+                    }
+
+                    ProcessStartInfo info = new ProcessStartInfo(defaultEditorCommand, defaultEditorArguments);
+
+                    Process.Start(info)?.WaitForExit();
+                }
+            }
+
+            if (string.IsNullOrEmpty(contentType))
+            {
+                contentType = "application/json";
+            }
+
+            byte[] data = noBody
+                ? new byte[0]
+                : string.IsNullOrEmpty(bodyContent)
+                    ? _fileSystem.ReadAllBytesFromFile(filePath)
+                    : Encoding.UTF8.GetBytes(bodyContent);
+
+            HttpContent content = new ByteArrayContent(data);
+            content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            request.Content = content;
+
+            if (deleteFile)
+            {
+                _fileSystem.DeleteFile(filePath);
+            }
+
+            foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
+            {
+                content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+
+            foreach (KeyValuePair<string, string> header in requestHeaders)
+            {
+                content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+        }
+
         private async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
         {
-            RequestConfig requestConfig = new RequestConfig(_preferences);
-            ResponseConfig responseConfig = new ResponseConfig(_preferences);
             string protocolInfo;
 
             if (echoRequest)
             {
-                string hostString = response.RequestMessage.RequestUri.Scheme + "://" + response.RequestMessage.RequestUri.Host + (!response.RequestMessage.RequestUri.IsDefaultPort ? ":" + response.RequestMessage.RequestUri.Port : "");
-                consoleManager.WriteLine($"Request to {hostString}...".SetColor(requestConfig.AddressColor));
-                consoleManager.WriteLine();
-
-                string method = response.RequestMessage.Method.ToString().ToUpperInvariant().SetColor(requestConfig.MethodColor);
-                string pathAndQuery = response.RequestMessage.RequestUri.PathAndQuery.SetColor(requestConfig.AddressColor);
-                protocolInfo = $"{"HTTP".SetColor(requestConfig.ProtocolNameColor)}{"/".SetColor(requestConfig.ProtocolSeparatorColor)}{response.Version.ToString().SetColor(requestConfig.ProtocolVersionColor)}";
-
-                consoleManager.WriteLine($"{method} {pathAndQuery} {protocolInfo}");
-                IEnumerable<KeyValuePair<string, IEnumerable<string>>> requestHeaders = response.RequestMessage.Headers;
-
-                if (response.RequestMessage.Content != null)
-                {
-                    requestHeaders = requestHeaders.Union(response.RequestMessage.Content.Headers);
-                }
-
-                foreach (KeyValuePair<string, IEnumerable<string>> header in requestHeaders.OrderBy(x => x.Key))
-                {
-                    string headerKey = header.Key.SetColor(requestConfig.HeaderKeyColor);
-                    string headerSep = ":".SetColor(requestConfig.HeaderSeparatorColor);
-                    string headerValue = string.Join(";".SetColor(requestConfig.HeaderValueSeparatorColor), header.Value.Select(x => x.Trim().SetColor(requestConfig.HeaderValueColor)));
-                    consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
-                }
-
-                consoleManager.WriteLine();
-
-                List<string> responseOutput = new List<string>();
-
-                if (response.RequestMessage.Content != null)
-                {
-                    await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
-                }
-
-                consoleManager.WriteLine();
-                consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
-                consoleManager.WriteLine();
-                foreach (string responseLine in responseOutput)
-                {
-                    consoleManager.WriteLine(responseLine);
-                }
+                protocolInfo = await HandleEchoRequest(commandInput, consoleManager, programState, response, cancellationToken);
             }
+
+            ResponseConfig responseConfig = new ResponseConfig(_preferences);
 
             protocolInfo = $"{"HTTP".SetColor(responseConfig.ProtocolNameColor)}{"/".SetColor(responseConfig.ProtocolSeparatorColor)}{response.Version.ToString().SetColor(responseConfig.ProtocolVersionColor)}";
             string status = ((int)response.StatusCode).ToString().SetColor(responseConfig.StatusCodeColor) + " " + response.ReasonPhrase.SetColor(responseConfig.StatusReasonPhraseColor);
@@ -350,6 +324,59 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine();
         }
 
+        private async Task<string> HandleEchoRequest(DefaultCommandInput<ICoreParseResult> commandInput,
+            IConsoleManager consoleManager,
+            HttpState programState,
+            HttpResponseMessage response,
+            CancellationToken cancellationToken)
+        {
+            RequestConfig requestConfig = new RequestConfig(_preferences);
+            ResponseConfig responseConfig = new ResponseConfig(_preferences);
+
+            string hostString = response.RequestMessage.RequestUri.Scheme + "://" + response.RequestMessage.RequestUri.Host + (!response.RequestMessage.RequestUri.IsDefaultPort ? ":" + response.RequestMessage.RequestUri.Port : "");
+            consoleManager.WriteLine($"Request to {hostString}...".SetColor(requestConfig.AddressColor));
+            consoleManager.WriteLine();
+
+            string method = response.RequestMessage.Method.ToString().ToUpperInvariant().SetColor(requestConfig.MethodColor);
+            string pathAndQuery = response.RequestMessage.RequestUri.PathAndQuery.SetColor(requestConfig.AddressColor);
+            string protocolInfo = $"{"HTTP".SetColor(requestConfig.ProtocolNameColor)}{"/".SetColor(requestConfig.ProtocolSeparatorColor)}{response.Version.ToString().SetColor(requestConfig.ProtocolVersionColor)}";
+
+            consoleManager.WriteLine($"{method} {pathAndQuery} {protocolInfo}");
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> requestHeaders = response.RequestMessage.Headers;
+
+            if (response.RequestMessage.Content != null)
+            {
+                requestHeaders = requestHeaders.Union(response.RequestMessage.Content.Headers);
+            }
+
+            foreach (KeyValuePair<string, IEnumerable<string>> header in requestHeaders.OrderBy(x => x.Key))
+            {
+                string headerKey = header.Key.SetColor(requestConfig.HeaderKeyColor);
+                string headerSep = ":".SetColor(requestConfig.HeaderSeparatorColor);
+                string headerValue = string.Join(";".SetColor(requestConfig.HeaderValueSeparatorColor), header.Value.Select(x => x.Trim().SetColor(requestConfig.HeaderValueColor)));
+                consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
+            }
+
+            consoleManager.WriteLine();
+
+            List<string> responseOutput = new List<string>();
+
+            if (response.RequestMessage.Content != null)
+            {
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
+            }
+
+            consoleManager.WriteLine();
+            consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
+            consoleManager.WriteLine();
+            foreach (string responseLine in responseOutput)
+            {
+                consoleManager.WriteLine(responseLine);
+            }
+
+            return protocolInfo;
+        }
+
         private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
         {
             if (commandInput.Options[StreamingOption].Count > 0)
@@ -388,7 +415,7 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            await FormatResponseContentAsync(commandInput, programState, consoleManager, content, bodyFileOutput, preferences);
+            await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, preferences);
 
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
             bodyFileOutput?.Add(responseContent);
@@ -396,7 +423,6 @@ namespace Microsoft.HttpRepl.Commands
         }
 
         private static async Task FormatResponseContentAsync(DefaultCommandInput<ICoreParseResult> commandInput,
-            HttpState programState,
             IConsoleManager consoleManager,
             HttpContent content,
             List<string> bodyFileOutput,
@@ -419,7 +445,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-JAVASCRIPT", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+JAVASCRIPT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatJsonAsync(programState, consoleManager, content, bodyFileOutput, preferences))
+                    if (await FormatJsonAsync(consoleManager, content, bodyFileOutput, preferences))
                     {
                         return;
                     }
@@ -472,7 +498,7 @@ namespace Microsoft.HttpRepl.Commands
             return false;
         }
 
-        private static async Task<bool> FormatJsonAsync(HttpState programState, IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences)
+        private static async Task<bool> FormatJsonAsync(IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
 
