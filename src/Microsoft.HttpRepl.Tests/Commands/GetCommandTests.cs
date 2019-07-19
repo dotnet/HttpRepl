@@ -146,5 +146,36 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("Content-Type: application/json", result);
             Assert.Contains(expectedResponse, result);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithTextContentType_DoesNotFormatResponseContent()
+        {
+            string unformattedResponse = "This is an        unformatted response.      ";
+
+            string path = "this/is/a/test/route/for/formatting";
+
+            _urlsWithResponse.Add(_baseAddress + path, unformattedResponse);
+
+            ArrangeInputs(commandText: "GET",
+                baseAddress: _baseAddress,
+                path: path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                contentType: "text/plain");
+
+            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(3, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Contains("Content-Type: text/plain", result);
+            Assert.Contains(unformattedResponse, result);
+        }
     }
 }
