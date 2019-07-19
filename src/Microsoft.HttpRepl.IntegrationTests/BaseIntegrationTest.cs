@@ -3,11 +3,29 @@
 
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
     public class BaseIntegrationTest
     {
+        private static readonly Regex _dateRegex;
+        private static readonly string _dateReplacement;
+
+        static BaseIntegrationTest()
+        {
+            if (Environment.NewLine == "\r\n")
+            {
+                _dateRegex = new Regex("^Date: [A-Za-z]{3}, \\d{2} [A-Za-z]{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT\r$", RegexOptions.Compiled | RegexOptions.Multiline);
+                _dateReplacement = "Date: [Date]\r";
+            }
+            else
+            {
+                _dateRegex = new Regex("^Date: [A-Za-z]{3}, \\d{2} [A-Za-z]{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT$", RegexOptions.Compiled | RegexOptions.Multiline);
+                _dateReplacement = "Date: [Date]";
+            }
+        }
         protected static string NormalizeOutput(string output, string baseUrl)
         {
             // The console implementation uses trailing whitespace when a new line's text is shorter than the previous
@@ -22,6 +40,9 @@ namespace Microsoft.HttpRepl.IntegrationTests
             {
                 result = result.Replace(baseUrl, "[BaseUrl]");
             }
+
+            // next, normalize the date
+            result = _dateRegex.Replace(result, _dateReplacement);
 
             return result;
         }
