@@ -1,12 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
     <AssemblyName>dotnet-httprepl</AssemblyName>
-    <Description>Command line tool for making HTTP calls and viewing their results.</Description>
+    <Description>The HTTP Read-Eval-Print Loop (REPL) is a lightweight, cross-platform command-line tool that's supported everywhere .NET Core is supported and is used for making HTTP requests to test ASP.NET Core web APIs and view their results.</Description>
     <PackageId>Microsoft.dotnet-httprepl</PackageId>
     <PackageTags>dotnet;http;httprepl</PackageTags>
+    <PackageProjectUrl>https://aka.ms/http-repl-doc</PackageProjectUrl>
 
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
