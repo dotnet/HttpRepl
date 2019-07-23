@@ -4,6 +4,9 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.IntegrationTests.Utilities;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
@@ -45,6 +48,22 @@ namespace Microsoft.HttpRepl.IntegrationTests
             result = _dateRegex.Replace(result, _dateReplacement);
 
             return result;
+        }
+
+        protected static async Task<string> RunTestScript(string scriptText, string baseAddress)
+        {
+            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
+            using (var script = new TestScript(scriptText))
+            {
+                await new Program().Start($"run {script.FilePath}".Split(' '), console);
+            }
+
+            string output = console.LoggedOutput;
+            // remove the first line because it has the randomly generated script file name.
+            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
+            output = NormalizeOutput(output, baseAddress);
+
+            return output;
         }
     }
 }

@@ -1,11 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
-using Microsoft.HttpRepl.IntegrationTests.Utilities;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
@@ -26,16 +23,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 cd api/values
 get";
 
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _serverConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
@@ -68,16 +56,7 @@ Transfer-Encoding: chunked
 cd api/values
 get 5";
 
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _serverConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
@@ -107,16 +86,7 @@ value
 cd api/invalidpath
 get";
 
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _serverConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
@@ -144,16 +114,7 @@ Server: Kestrel
         {
             string scriptText = $@"get {_serverConfig.BaseAddress}/api/values";
 
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _serverConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ get [BaseUrl]/api/values
 [32m[1mHTTP[22m[39m[32m[1m/[22m[39m[32m[1m1.1[22m[39m [33m[1m200[22m[39m [33m[1mOK[22m[39m

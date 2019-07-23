@@ -1,11 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.IntegrationTests.SampleApi;
-using Microsoft.HttpRepl.IntegrationTests.Utilities;
 using Xunit;
 
 namespace Microsoft.HttpRepl.IntegrationTests.Commands
@@ -28,16 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 ls
 cd api
 ls";
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _swaggerServerConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
@@ -66,15 +54,7 @@ Values   [get|post]
             string scriptText = $@"set base {_swaggerServerConfig.BaseAddress}
 cd api/Values
 ls";
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var scriptFile = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {scriptFile.FilePath}".Split(' '), console);
-            }
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _swaggerServerConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
@@ -99,17 +79,7 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 ls
 cd api
 ls";
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var script = new TestScript(scriptText))
-            {
-
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
-            }
-
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _nonSwaggerServerConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
@@ -131,15 +101,7 @@ ls";
             string scriptText = $@"set base {_nonSwaggerServerConfig.BaseAddress}
 cd api/Values
 ls";
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            using (var scriptFile = new TestScript(scriptText))
-            {
-                await new Program().Start($"run {scriptFile.FilePath}".Split(' '), console);
-            }
-            string output = console.LoggedOutput;
-            // remove the first line because it has the randomly generated script file name.
-            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
-            output = NormalizeOutput(output, _nonSwaggerServerConfig.BaseAddress);
+            string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 
