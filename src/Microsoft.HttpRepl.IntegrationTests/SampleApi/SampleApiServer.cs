@@ -4,7 +4,6 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -34,10 +33,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                                app.UseDeveloperExceptionPage();
 
                                app.UseRouting();
-                               RouteBuilder routeBuilder = new RouteBuilder(app);
-                               SetupRoutes(routeBuilder, config);
-                               IRouter routes = routeBuilder.Build();
-                               app.UseRouter(routes);
+
+                               app.UseEndpoints(endpoints =>
+                               {
+                                   endpoints.MapControllers();
+                               });
 
                                if (config.EnableSwagger)
                                {
@@ -55,21 +55,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
         public void Stop()
         {
             _Host.StopAsync();
-        }
-
-        private static void SetupRoutes(RouteBuilder routeBuilder, SampleApiServerConfig config)
-        {
-            foreach (SampleApiServerRoute route in config.Routes)
-            {
-                if (route.Verb == "*")
-                {
-                    routeBuilder.MapRoute(route.Route, context => route.Execute(context));
-                }
-                else
-                {
-                    routeBuilder.MapVerb(route.Verb, route.Route, context => route.Execute(context));
-                }
-            }
         }
     }
 }

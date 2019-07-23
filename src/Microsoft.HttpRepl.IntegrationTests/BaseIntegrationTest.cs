@@ -3,11 +3,32 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.IntegrationTests.Utilities;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
     public class BaseIntegrationTest
     {
+        private static readonly Regex _dateRegex;
+        private static readonly string _dateReplacement;
+
+        static BaseIntegrationTest()
+        {
+            if (Environment.NewLine == "\r\n")
+            {
+                _dateRegex = new Regex("^Date: [A-Za-z]{3}, \\d{2} [A-Za-z]{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT\r$", RegexOptions.Compiled | RegexOptions.Multiline);
+                _dateReplacement = "Date: [Date]\r";
+            }
+            else
+            {
+                _dateRegex = new Regex("^Date: [A-Za-z]{3}, \\d{2} [A-Za-z]{3} \\d{4} \\d{2}:\\d{2}:\\d{2} GMT$", RegexOptions.Compiled | RegexOptions.Multiline);
+                _dateReplacement = "Date: [Date]";
+            }
+        }
+
         protected static string NormalizeOutput(string output, string baseUrl)
         {
             // The console implementation uses trailing whitespace when a new line's text is shorter than the previous
@@ -23,7 +44,26 @@ namespace Microsoft.HttpRepl.IntegrationTests
                 result = result.Replace(baseUrl, "[BaseUrl]");
             }
 
+            // next, normalize the date
+            result = _dateRegex.Replace(result, _dateReplacement);
+
             return result;
+        }
+
+        protected static async Task<string> RunTestScript(string scriptText, string baseAddress)
+        {
+            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
+            using (var script = new TestScript(scriptText))
+            {
+                await new Program().Start($"run {script.FilePath}".Split(' '), console);
+            }
+
+            string output = console.LoggedOutput;
+            // remove the first line because it has the randomly generated script file name.
+            output = output.Substring(output.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
+            output = NormalizeOutput(output, baseAddress);
+
+            return output;
         }
     }
 }

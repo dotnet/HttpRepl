@@ -23,4 +23,28 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             _testWebServer.Stop();
         }
     }
+
+    public class DualHttpCommandsFixture<T> : IDisposable where T : SampleApiServerConfig, new()
+    {
+        private readonly SampleApiServer _swaggerServer;
+        private readonly SampleApiServer _nonSwaggerServer;
+
+        public T SwaggerConfig { get; } = new T();
+        public T NonSwaggerConfig { get; } = new T() { EnableSwagger = false };
+
+        public DualHttpCommandsFixture()
+        {
+            _swaggerServer = new SampleApiServer(SwaggerConfig);
+            _swaggerServer.Start();
+
+            _nonSwaggerServer = new SampleApiServer(NonSwaggerConfig);
+            _nonSwaggerServer.Start();
+        }
+
+        public void Dispose()
+        {
+            _swaggerServer.Stop();
+            _nonSwaggerServer.Stop();
+        }
+    }
 }
