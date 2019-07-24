@@ -7,17 +7,27 @@ The HTTP Read-Eval-Print Loop (REPL) is:
 - A lightweight, cross-platform command-line tool that's supported everywhere .NET Core is supported.
 - Used for making HTTP requests to test ASP.NET Core web APIs and view their results.
 
-## Contributing
+## Installation
 
-See the [Contributing Guide](/CONTRIBUTING.md) for details on what it means to contribute and how to do so.
+To install the HTTP REPL, run the following command:
+
+```
+dotnet tool install -g Microsoft.dotnet-httprepl --version 3.0.0-*
+```
+
+A [.NET Core Global Tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool) is installed from the [Microsoft.dotnet-httprepl](https://www.nuget.org/packages/Microsoft.dotnet-httprepl) NuGet package.
+
+## Usage
+
+See the [documentation](https://aka.ms/http-repl-doc) for how to use and configure HttpRepl.
 
 ## Building
 
 To build this repo, run the `build.cmd` or `build.sh` in the root of this repo. This repo uses the .NET [Arcade toolset](https://github.com/dotnet/arcade).
 
-## Usage
+## Contributing
 
-See the [ASP.NET Core documentation](https://aka.ms/http-repl-doc) for how to use and configure HttpRepl.
+See the [Contributing Guide](/CONTRIBUTING.md) for details on what it means to contribute and how to do so.
 
 ## Reporting security issues and bugs
 
