@@ -123,8 +123,7 @@ namespace Microsoft.HttpRepl
 
         private static HttpClient GetHttpClientWithPreferences(IPreferences preferences)
         {
-            if (preferences.TryGetValue(HttpClientPreferences.UseDefaultCredentials, out var value) &&
-                value.Equals("true", StringComparison.OrdinalIgnoreCase))
+            if (preferences.GetBoolValue(WellKnownPreference.UseDefaultCredentials))
             {
                 return new HttpClient(new HttpClientHandler { UseDefaultCredentials = true });
             }

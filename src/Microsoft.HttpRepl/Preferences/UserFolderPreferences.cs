@@ -75,6 +75,16 @@ namespace Microsoft.HttpRepl.Preferences
             return result;
         }
 
+        public bool GetBoolValue(string preference, bool defaultValue)
+        {
+            if (!Preferences.TryGetValue(preference, out string preferenceValueString) || !bool.TryParse(preferenceValueString, out bool result))
+            {
+                result = defaultValue;
+            }
+
+            return result;
+        }
+
         public string GetValue(string preference, string defaultValue = default)
         {
             if (!Preferences.TryGetValue(preference, out string result))

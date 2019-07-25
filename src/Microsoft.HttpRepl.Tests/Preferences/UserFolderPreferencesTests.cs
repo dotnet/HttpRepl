@@ -149,6 +149,17 @@ This third line is invalid as well";
             Assert.Equal(expected, result);
         }
 
+        [Theory]
+        [MemberData(nameof(GetBoolValuesTestData))]
+        public void GetBoolValue_CorrectOutput(bool expected, string fileContent, string preferenceName, bool defaultValue)
+        {
+            SetupPreferencesWithFileContent(fileContent, out UserFolderPreferences preferences);
+
+            bool result = preferences.GetBoolValue(preferenceName, defaultValue);
+
+            Assert.Equal(expected, result);
+        }
+
         public static IEnumerable<object[]> GetStringValuesTestData()
         {
             // Empty/blank preferences file falls back to the passed in default.
@@ -175,6 +186,16 @@ This third line is invalid as well";
             yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=ThisIsGibberish", WellKnownPreference.JsonIndentSize, 5 };
             // Actual value is returned
             yield return new object[] { 5, $"{WellKnownPreference.JsonIndentSize}=5", WellKnownPreference.JsonIndentSize, 42 };
+        }
+
+        public static IEnumerable<object[]> GetBoolValuesTestData()
+        {
+            // Empty/blank preferences file falls back to the passed in default
+            yield return new object[] { false, string.Empty, WellKnownPreference.UseDefaultCredentials, false };
+            // Preference value that isn't a bool falls back to the passed in default
+            yield return new object[] { false, $"{WellKnownPreference.UseDefaultCredentials}=ThisIsGibberish", WellKnownPreference.UseDefaultCredentials, false };
+            // Actual value is returned
+            yield return new object[] { true, $"{WellKnownPreference.UseDefaultCredentials}=true", WellKnownPreference.UseDefaultCredentials, false };
         }
 
         private void SetupPreferences(out UserFolderPreferences preferences, out MockedFileSystem fileSystem)
