@@ -148,7 +148,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithTextContentType_DoesNotFormatResponseContent()
+        public async Task ExecuteAsync_WithTextContentTypeInHeader_DoesNotFormatResponseContent()
         {
             string unformattedResponse = "This is an        unformatted response.      ";
 
