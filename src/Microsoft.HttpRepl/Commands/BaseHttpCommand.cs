@@ -261,7 +261,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (echoRequest)
             {
-                protocolInfo = await HandleEchoRequest(commandInput, consoleManager, programState, response, cancellationToken);
+                await HandleEchoRequest(commandInput, consoleManager, programState, response, cancellationToken);
             }
 
             ResponseConfig responseConfig = new ResponseConfig(_preferences);
@@ -329,7 +329,7 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine();
         }
 
-        private async Task<string> HandleEchoRequest(DefaultCommandInput<ICoreParseResult> commandInput,
+        private async Task HandleEchoRequest(DefaultCommandInput<ICoreParseResult> commandInput,
             IConsoleManager consoleManager,
             HttpState programState,
             HttpResponseMessage response,
@@ -379,8 +379,6 @@ namespace Microsoft.HttpRepl.Commands
             {
                 consoleManager.WriteLine(responseLine);
             }
-
-            return protocolInfo;
         }
 
         private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
