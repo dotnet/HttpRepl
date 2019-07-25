@@ -239,6 +239,11 @@ namespace Microsoft.HttpRepl.Commands
                 _fileSystem.DeleteFile(filePath);
             }
 
+            AddHttpContentHeaders(content, programState, requestHeaders);
+        }
+
+        private void AddHttpContentHeaders(HttpContent content, HttpState programState, Dictionary<string, string> requestHeaders)
+        {
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
             {
                 content.Headers.TryAddWithoutValidation(header.Key, header.Value);
