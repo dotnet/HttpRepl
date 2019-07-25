@@ -21,12 +21,12 @@ namespace Microsoft.HttpRepl
     {
         public static async Task Main(string[] args)
         {
-            await new Program().Start(args, new ConsoleManager());
+            await new Program().Start(args);
         }
 
-        public async Task Start(string[] args, IConsoleManager consoleManager)
+        public async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null)
         {           
-            ComposeDependencies(consoleManager, out HttpState state, out Shell shell, out IPreferences preferences);
+            ComposeDependencies(ref consoleManager, ref preferences, out HttpState state, out Shell shell);
 
             if (Console.IsOutputRedirected && !consoleManager.AllowOutputRedirection)
             {
@@ -73,11 +73,11 @@ namespace Microsoft.HttpRepl
             await result.ConfigureAwait(false);
         }
 
-        private static void ComposeDependencies(IConsoleManager consoleManager, out HttpState state, out Shell shell, out IPreferences preferences)
+        private static void ComposeDependencies(ref IConsoleManager consoleManager, ref IPreferences preferences, out HttpState state, out Shell shell)
         {
+            consoleManager = consoleManager ?? new ConsoleManager();
             IFileSystem fileSystem = new RealFileSystem();
-            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            preferences = new Preferences.UserFolderPreferences(fileSystem, userProfileDirectoryProvider, CreateDefaultPreferences());
+            preferences = preferences ?? new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), CreateDefaultPreferences());
             HttpClient httpClient = new HttpClient();
             state = new HttpState(fileSystem, preferences, httpClient);
 

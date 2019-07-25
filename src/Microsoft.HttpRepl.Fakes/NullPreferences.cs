@@ -12,17 +12,17 @@ namespace Microsoft.HttpRepl.Fakes
         public IReadOnlyDictionary<string, string> CurrentPreferences => null;
         public IReadOnlyDictionary<string, string> DefaultPreferences => null;
 
-        public AllowedColors GetColorValue(string preference, AllowedColors defaultValue = AllowedColors.None)
+        public AllowedColors GetColorValue(string preference, AllowedColors defaultValue = default)
+        {
+            return default;
+        }
+
+        public int GetIntValue(string preference, int defaultValue = default)
         {
             return defaultValue;
         }
 
-        public int GetIntValue(string preference, int defaultValue = 0)
-        {
-            return defaultValue;
-        }
-
-        public string GetValue(string preference, string defaultValue = null)
+        public string GetValue(string preference, string defaultValue = default)
         {
             return defaultValue;
         }

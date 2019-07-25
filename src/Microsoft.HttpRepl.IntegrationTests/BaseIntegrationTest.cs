@@ -52,10 +52,11 @@ namespace Microsoft.HttpRepl.IntegrationTests
 
         protected static async Task<string> RunTestScript(string scriptText, string baseAddress)
         {
-            var console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
+            LoggingConsoleManagerDecorator console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
+            NullPreferences preferences = new NullPreferences();
             using (var script = new TestScript(scriptText))
             {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console);
+                await new Program().Start($"run {script.FilePath}".Split(' '), console, preferences);
             }
 
             string output = console.LoggedOutput;

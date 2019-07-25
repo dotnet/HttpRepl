@@ -5,48 +5,62 @@ namespace Microsoft.Repl.ConsoleHandling
 {
     public static class AnsiColorExtensions
     {
+        // For reference on these codes and values, see:
+        // https://en.wikipedia.org/wiki/ANSI_escape_code#Escape_sequences
+        private static readonly string _ansiControlSequenceIntroducer = "\x1B[";
+        private static readonly string _ansiSgrCode = "m";
+        private static readonly string _ansiSgrDefaultForegroundColor = $"{_ansiControlSequenceIntroducer}39{_ansiSgrCode}";
+        private static readonly string _ansiSgrNormalColorAndIntensity = $"{_ansiControlSequenceIntroducer}22{_ansiSgrCode}";
+        private static readonly string _ansiSgrBold = $"{_ansiControlSequenceIntroducer}1{_ansiSgrCode}";
+
         public static string Black(this string text)
         {
-            return "\x1B[30m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Black);
         }
 
         public static string Red(this string text)
         {
-            return "\x1B[31m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Red);
         }
         public static string Green(this string text)
         {
-            return "\x1B[32m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Green);
         }
 
         public static string Yellow(this string text)
         {
-            return "\x1B[33m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Yellow);
         }
 
         public static string Blue(this string text)
         {
-            return "\x1B[34m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Blue);
         }
 
         public static string Magenta(this string text)
         {
-            return "\x1B[35m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Magenta);
         }
 
         public static string Cyan(this string text)
         {
-            return "\x1B[36m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.Cyan);
         }
 
         public static string White(this string text)
         {
-            return "\x1B[37m" + text + "\x1B[39m";
+            return SetColorInternal(text, AllowedColors.White);
         }
 
         public static string Bold(this string text)
         {
-            return "\x1B[1m" + text + "\x1B[22m";
+            return $"{_ansiSgrBold}{text}{_ansiSgrNormalColorAndIntensity}";
+        }
+
+        private static string SetColorInternal(string text, AllowedColors color)
+        {
+            int sgrParameter = (int)color;
+            return $"{_ansiControlSequenceIntroducer}{sgrParameter}{_ansiSgrCode}{text}{_ansiSgrDefaultForegroundColor}";
         }
 
         public static string SetColor(this string text, AllowedColors color)
@@ -60,21 +74,14 @@ namespace Microsoft.Repl.ConsoleHandling
             switch (color)
             {
                 case AllowedColors.Black:
-                    return text.Black();
                 case AllowedColors.Red:
-                    return text.Red();
                 case AllowedColors.Green:
-                    return text.Green();
                 case AllowedColors.Yellow:
-                    return text.Yellow();
                 case AllowedColors.Blue:
-                    return text.Blue();
                 case AllowedColors.Magenta:
-                    return text.Magenta();
                 case AllowedColors.Cyan:
-                    return text.Cyan();
                 case AllowedColors.White:
-                    return text.White();
+                    return SetColorInternal(text, color);
                 default:
                     return text;
             }
