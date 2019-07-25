@@ -92,7 +92,7 @@ get";
 Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/invalidpath
-[33m[1mWarning: The '/api/invalidpath' endpoint is not present in the Swagger metadata[22m[39m
+Warning: The '/api/invalidpath' endpoint is not present in the Swagger metadata
 /api/invalidpath    []
 
 [BaseUrl]/api/invalidpath~ get

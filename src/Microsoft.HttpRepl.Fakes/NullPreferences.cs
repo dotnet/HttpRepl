@@ -14,7 +14,7 @@ namespace Microsoft.HttpRepl.Fakes
 
         public AllowedColors GetColorValue(string preference, AllowedColors defaultValue = AllowedColors.None)
         {
-            return defaultValue;
+            return AllowedColors.None;
         }
 
         public int GetIntValue(string preference, int defaultValue = 0)
