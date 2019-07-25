@@ -17,7 +17,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task WithoutParameter_ShowsColorizedOutput()
+        public async Task WithoutParameter_ShowsCorrectOutput()
         {
             string scriptText = $@"set base {_serverConfig.BaseAddress}
 cd api/values
@@ -32,16 +32,16 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 /api/values    [get|post]
 
 [BaseUrl]/api/values~ get
-[32m[1mHTTP[22m[39m[32m[1m/[22m[39m[32m[1m1.1[22m[39m [33m[1m200[22m[39m [33m[1mOK[22m[39m
+HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 Date: [Date]
 Server: Kestrel
 Transfer-Encoding: chunked
 
-[36m[1m[[22m[39m
-  [32m""value1""[39m[33m[1m,[22m[39m
-  [32m""value2""[39m
-[36m[1m][22m[39m
+[
+  ""value1"",
+  ""value2""
+]
 
 
 [BaseUrl]/api/values~", null);
@@ -50,7 +50,7 @@ Transfer-Encoding: chunked
         }
 
         [Fact]
-        public async Task WithParameter_ShowsColorizedOutput()
+        public async Task WithParameter_ShowsCorrectOutput()
         {
             string scriptText = $@"set base {_serverConfig.BaseAddress}
 cd api/values
@@ -65,7 +65,7 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 /api/values    [get|post]
 
 [BaseUrl]/api/values~ get 5
-[32m[1mHTTP[22m[39m[32m[1m/[22m[39m[32m[1m1.1[22m[39m [33m[1m200[22m[39m [33m[1mOK[22m[39m
+HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 Date: [Date]
 Server: Kestrel
@@ -96,7 +96,7 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 /api/invalidpath    []
 
 [BaseUrl]/api/invalidpath~ get
-[32m[1mHTTP[22m[39m[32m[1m/[22m[39m[32m[1m1.1[22m[39m [33m[1m404[22m[39m [33m[1mNot Found[22m[39m
+HTTP/1.1 404 Not Found
 Content-Length: 0
 Date: [Date]
 Server: Kestrel
@@ -110,23 +110,23 @@ Server: Kestrel
         }
 
         [Fact]
-        public async Task WithNoSwaggerAndAbsoluteUrl_ShowsColorizedOutput()
+        public async Task WithNoSwaggerAndAbsoluteUrl_ShowsCorrectOutput()
         {
             string scriptText = $@"get {_serverConfig.BaseAddress}/api/values";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ get [BaseUrl]/api/values
-[32m[1mHTTP[22m[39m[32m[1m/[22m[39m[32m[1m1.1[22m[39m [33m[1m200[22m[39m [33m[1mOK[22m[39m
+HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 Date: [Date]
 Server: Kestrel
 Transfer-Encoding: chunked
 
-[36m[1m[[22m[39m
-  [32m""value1""[39m[33m[1m,[22m[39m
-  [32m""value2""[39m
-[36m[1m][22m[39m
+[
+  ""value1"",
+  ""value2""
+]
 
 
 (Disconnected)~", null);
