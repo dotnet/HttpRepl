@@ -1,10 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
-    <Description>A framework for creating REPLs in .NET Core.</Description>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <Description>A framework for creating REPLs in .NET Standard.</Description>
     <PackageTags>dotnet;repl</PackageTags>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.Process" />
+    <PackageReference Include="System.Threading.Thread" />
+  </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ namespace Microsoft.Repl.Suggestions
     {
         public static IEnumerable<string> GetCompletions(string prefix)
         {
-            if (prefix.StartsWith('\"'))
+            if (prefix.StartsWith("\""))
             {
                 prefix = prefix.Substring(1);
 
