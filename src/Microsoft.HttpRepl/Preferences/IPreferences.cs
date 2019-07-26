@@ -10,6 +10,7 @@ namespace Microsoft.HttpRepl.Preferences
     {
         AllowedColors GetColorValue(string preference, AllowedColors defaultValue = AllowedColors.None);
         int GetIntValue(string preference, int defaultValue = default);
+        bool GetBoolValue(string preference, bool defaultValue = default);
         string GetValue(string preference, string defaultValue = default);
         bool TryGetValue(string preference, out string value);
         bool SetValue(string preference, string value);

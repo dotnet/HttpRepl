@@ -78,7 +78,7 @@ namespace Microsoft.HttpRepl
             consoleManager = consoleManager ?? new ConsoleManager();
             IFileSystem fileSystem = new RealFileSystem();
             preferences = preferences ?? new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), CreateDefaultPreferences());
-            HttpClient httpClient = new HttpClient();
+            var httpClient = GetHttpClientWithPreferences(preferences);
             state = new HttpState(fileSystem, preferences, httpClient);
 
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
@@ -119,6 +119,16 @@ namespace Microsoft.HttpRepl
                 { WellKnownPreference.JsonObjectBraceColor, "Cyan" },
                 { WellKnownPreference.JsonColor, "Green" }
             };
+        }
+
+        private static HttpClient GetHttpClientWithPreferences(IPreferences preferences)
+        {
+            if (preferences.GetBoolValue(WellKnownPreference.UseDefaultCredentials))
+            {
+                return new HttpClient(new HttpClientHandler { UseDefaultCredentials = true });
+            }
+
+            return new HttpClient();
         }
     }
 }
