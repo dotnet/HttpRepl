@@ -36,6 +36,7 @@ namespace Microsoft.HttpRepl.Fakes
             _urlsWithResponse.TryGetValue(absoluteUri, out string responseContent);
 
             HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+            httpResponseMessage.RequestMessage = request;
 
             if (_readFromFile)
             {

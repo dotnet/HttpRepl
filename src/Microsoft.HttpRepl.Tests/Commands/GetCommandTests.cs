@@ -177,5 +177,43 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Content-Type: text/plain", result[1]);
             Assert.Equal(unformattedResponse, result[2]);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithHeaderOptionAndEchoOn_VerifyOutputContainsRequestAndReaponseHeaders()
+        {
+            string unformattedResponse = "This is a test response.";
+
+            string path = "this/is/a/test/route/for/formatting";
+
+            _urlsWithResponse.Add(_baseAddress + path, unformattedResponse);
+
+            ArrangeInputs(commandText: "GET --header Accept=text/plain",
+                baseAddress: _baseAddress,
+                path: path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                contentType: "text/plain");
+
+            httpState.EchoRequest = true;
+
+            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(8, result.Count);
+            Assert.Equal("Request to http://localhost:5050...", result[0]);
+            Assert.Equal("GET /this/is/a/test/route/for/formatting HTTP/1.1", result[1]);
+            Assert.Equal("Accept: text/plain", result[2]);
+            Assert.Equal("User-Agent: HTTP-REPL", result[3]);
+            Assert.Equal("Response from http://localhost:5050...", result[4]);
+            Assert.Equal("HTTP/1.1 200 OK", result[5]);
+            Assert.Equal("Content-Type: text/plain", result[6]);
+            Assert.Equal(unformattedResponse, result[7]);
+        }
     }
 }
