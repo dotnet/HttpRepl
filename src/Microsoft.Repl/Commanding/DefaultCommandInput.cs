@@ -49,7 +49,7 @@ namespace Microsoft.Repl.Commanding
             for (int i = spec.CommandName.Count; i < parseResult.Sections.Count; ++i)
             {
                 //If we're not looking at an option name
-                if (!parseResult.Sections[i].StartsWith(spec.OptionPreamble) || parseResult.IsQuotedSection(i))
+                if (!parseResult.Sections[i].StartsWith(spec.OptionPreamble.ToString()) || parseResult.IsQuotedSection(i))
                 {
                     if (currentOption is null)
                     {

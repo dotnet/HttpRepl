@@ -68,50 +68,17 @@ namespace Microsoft.Repl.Input
             inputManager.RegisterKeyHandler(ConsoleKey.F23, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.F24, Unhandled);
 
-            inputManager.RegisterKeyHandler(ConsoleKey.Applications, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.Attention, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserBack, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserFavorites, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserForward, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserHome, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserRefresh, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserSearch, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.BrowserStop, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Clear, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.CrSel, Unhandled);
-
-            inputManager.RegisterKeyHandler(ConsoleKey.EraseEndOfFile, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Execute, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.ExSel, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Help, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.LaunchApp1, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.LaunchApp2, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.LaunchMail, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.LaunchMediaSelect, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.LeftWindows, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.MediaNext, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.MediaPlay, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.MediaPrevious, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.MediaStop, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.NoName, Unhandled);
-
-            inputManager.RegisterKeyHandler(ConsoleKey.Pa1, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.Packet, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.PageDown, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.PageUp, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Pause, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.Play, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Print, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.PrintScreen, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.Process, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.RightWindows, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Select, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Separator, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Sleep, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.VolumeDown, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.VolumeMute, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.VolumeUp, Unhandled);
-            inputManager.RegisterKeyHandler(ConsoleKey.Zoom, Unhandled);
         }
 
         private static Task End(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)

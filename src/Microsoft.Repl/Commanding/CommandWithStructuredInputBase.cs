@@ -76,7 +76,7 @@ namespace Microsoft.Repl.Commanding
                 return null;
             }
 
-            if (normalCompletionString.StartsWith(InputSpec.OptionPreamble))
+            if (normalCompletionString.StartsWith(InputSpec.OptionPreamble.ToString()))
             {
                 return GetOptionCompletions(commandInput, normalCompletionString);
             }
