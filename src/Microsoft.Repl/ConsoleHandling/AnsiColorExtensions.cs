@@ -10,7 +10,6 @@ namespace Microsoft.Repl.ConsoleHandling
         private static readonly string _ansiControlSequenceIntroducer = "\x1B[";
         private static readonly string _ansiSgrCode = "m";
         private static readonly string _ansiSgrDefaultForegroundColor = $"{_ansiControlSequenceIntroducer}39{_ansiSgrCode}";
-        private static readonly string _ansiSgrNormalColorAndIntensity = $"{_ansiControlSequenceIntroducer}22{_ansiSgrCode}";
         private static readonly string _ansiSgrBold = $"{_ansiControlSequenceIntroducer}1{_ansiSgrCode}";
 
         public static string Black(this string text)
@@ -54,7 +53,7 @@ namespace Microsoft.Repl.ConsoleHandling
 
         public static string Bold(this string text)
         {
-            return $"{_ansiSgrBold}{text}{_ansiSgrNormalColorAndIntensity}";
+            return $"{_ansiSgrBold}{text}{_ansiSgrDefaultForegroundColor}";
         }
 
         private static string SetColorInternal(string text, AllowedColors color)
