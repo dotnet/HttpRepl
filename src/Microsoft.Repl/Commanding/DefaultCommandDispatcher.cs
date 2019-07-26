@@ -123,7 +123,7 @@ namespace Microsoft.Repl.Commanding
                 }
             }
 
-            if (!_isReady)
+            if (!_isReady && !shellState.IsExiting)
             {
                 shellState.ConsoleManager.WriteLine();
                 OnReady(shellState);
@@ -162,7 +162,7 @@ namespace Microsoft.Repl.Commanding
 
         public void OnReady(IShellState shellState)
         {
-            if (!_isReady)
+            if (!_isReady && !shellState.IsExiting)
             {
                 _onReady(shellState);
                 shellState.ConsoleManager.ResetCommandStart();
