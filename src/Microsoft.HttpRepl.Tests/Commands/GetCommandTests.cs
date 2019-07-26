@@ -70,8 +70,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
-            Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(expectedResponse, result);
+            Assert.Equal("HTTP/1.1 200 OK", result[0]);
+            Assert.Equal(expectedResponse, result[1]);
         }
 
         [Fact]
@@ -94,8 +94,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             List<string> result = shellState.Output;
 
             Assert.Equal(2, result.Count);
-            Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains(expectedResponse, result);
+            Assert.Equal("HTTP/1.1 200 OK", result[0]);
+            Assert.Equal(expectedResponse, result[1]);
         }
 
         [Fact]
@@ -142,9 +142,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
             List<string> result = shellState.Output;
 
             Assert.Equal(3, result.Count);
-            Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains("Content-Type: application/json", result);
-            Assert.Contains(expectedResponse, result);
+            Assert.Equal("HTTP/1.1 200 OK", result[0]);
+            Assert.Equal("Content-Type: application/json", result[1]);
+            Assert.Equal(expectedResponse, result[2]);
         }
 
         [Fact]
@@ -173,9 +173,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
             List<string> result = shellState.Output;
 
             Assert.Equal(3, result.Count);
-            Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Contains("Content-Type: text/plain", result);
-            Assert.Contains(unformattedResponse, result);
+            Assert.Equal("HTTP/1.1 200 OK", result[0]);
+            Assert.Equal("Content-Type: text/plain", result[1]);
+            Assert.Equal(unformattedResponse, result[2]);
         }
     }
 }
