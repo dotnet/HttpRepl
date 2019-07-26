@@ -27,7 +27,7 @@ namespace Microsoft.HttpRepl.Fakes
             return defaultValue;
         }
 
-        public string GetValue(string preference, string defaultValue = null)
+        public string GetValue(string preference, string defaultValue = default)
         {
             return defaultValue;
         }
