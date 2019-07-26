@@ -115,7 +115,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            string expected = "\u001b[1mUsage: \u001b[22mrun {path to script}" + Environment.NewLine + Environment.NewLine +
+            string expected = "\u001b[1mUsage: \u001b[39mrun {path to script}" + Environment.NewLine + Environment.NewLine +
                 "Runs the specified script." + Environment.NewLine +
                 "A script is a text file containing one CLI command per line. Each line will be run as if it was typed into the CLI." + Environment.NewLine + Environment.NewLine +
                 "When +history option is specified, commands specified in the text file will be added to command history." + Environment.NewLine;

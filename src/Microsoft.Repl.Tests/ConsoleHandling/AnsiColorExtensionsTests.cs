@@ -9,14 +9,14 @@ namespace Microsoft.Repl.Tests.ConsoleHandling
     public class AnsiColorExtensionsTests
     {
         [Theory]
-        [InlineData("BlackText", AllowedColors.BoldBlack, "\x1B[30m\x1B[1mBlackText\x1B[22m\x1B[39m")]
-        [InlineData("RedText", AllowedColors.BoldRed, "\x1B[31m\x1B[1mRedText\x1B[22m\x1B[39m")]
-        [InlineData("GreenText", AllowedColors.BoldGreen, "\x1B[32m\x1B[1mGreenText\x1B[22m\x1B[39m")]
-        [InlineData("YellowText", AllowedColors.BoldYellow, "\x1B[33m\x1B[1mYellowText\x1B[22m\x1B[39m")]
-        [InlineData("BlueText", AllowedColors.BoldBlue, "\x1B[34m\x1B[1mBlueText\x1B[22m\x1B[39m")]
-        [InlineData("MagentaText", AllowedColors.BoldMagenta, "\x1B[35m\x1B[1mMagentaText\x1B[22m\x1B[39m")]
-        [InlineData("CyanText", AllowedColors.BoldCyan, "\x1B[36m\x1B[1mCyanText\x1B[22m\x1B[39m")]
-        [InlineData("WhiteText", AllowedColors.BoldWhite, "\x1B[37m\x1B[1mWhiteText\x1B[22m\x1B[39m")]
+        [InlineData("BlackText", AllowedColors.BoldBlack, "\x1B[30m\x1B[1mBlackText\x1B[39m\x1B[39m")]
+        [InlineData("RedText", AllowedColors.BoldRed, "\x1B[31m\x1B[1mRedText\x1B[39m\x1B[39m")]
+        [InlineData("GreenText", AllowedColors.BoldGreen, "\x1B[32m\x1B[1mGreenText\x1B[39m\x1B[39m")]
+        [InlineData("YellowText", AllowedColors.BoldYellow, "\x1B[33m\x1B[1mYellowText\x1B[39m\x1B[39m")]
+        [InlineData("BlueText", AllowedColors.BoldBlue, "\x1B[34m\x1B[1mBlueText\x1B[39m\x1B[39m")]
+        [InlineData("MagentaText", AllowedColors.BoldMagenta, "\x1B[35m\x1B[1mMagentaText\x1B[39m\x1B[39m")]
+        [InlineData("CyanText", AllowedColors.BoldCyan, "\x1B[36m\x1B[1mCyanText\x1B[39m\x1B[39m")]
+        [InlineData("WhiteText", AllowedColors.BoldWhite, "\x1B[37m\x1B[1mWhiteText\x1B[39m\x1B[39m")]
         public void SetColor_WithBold_ResponseIncludesColorAndBold(string text, AllowedColors color, string expected)
         {
             var result = text.SetColor(color);

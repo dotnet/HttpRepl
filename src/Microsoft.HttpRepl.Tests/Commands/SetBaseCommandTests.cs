@@ -93,7 +93,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            string expected = "\u001b[1mUsage: \u001b[22mset base [uri]" + Environment.NewLine + Environment.NewLine + "Set the base URI. e.g. `set base http://locahost:5000`" + Environment.NewLine;
+            string expected = "\u001b[1mUsage: \u001b[39mset base [uri]" + Environment.NewLine + Environment.NewLine + "Set the base URI. e.g. `set base http://locahost:5000`" + Environment.NewLine;
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
             string result = setBaseCommand.GetHelpDetails(shellState, httpState, parseResult);
