@@ -42,7 +42,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             out IPreferences preferences,
             string header = "",
             bool readBodyFromFile = false,
-            string fileContents = "")
+            string fileContents = "",
+            string contentType = "")
         {
             parseResult = CoreParseResultHelper.Create(commandText);
             shellState = new MockedShellState();
@@ -54,7 +55,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 path,
                 urlsWithResponse,
                 readBodyFromFile,
-                fileContents);
+                fileContents,
+                contentType);
         }
 
         protected static void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
@@ -71,11 +73,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string path = "",
             IDictionary<string, string> urlsWithResponse = null,
             bool readFromFile = false,
-            string fileContents = "")
+            string fileContents = "",
+            string contentType = "")
         {
             HttpResponseMessage responseMessage = new HttpResponseMessage();
             responseMessage.Content = new MockHttpContent(string.Empty);
-            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents);
+            MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents, contentType);
             HttpClient httpClient = new HttpClient(messageHandler);
             fileSystem = new MockedFileSystem();
             preferences = new NullPreferences();
