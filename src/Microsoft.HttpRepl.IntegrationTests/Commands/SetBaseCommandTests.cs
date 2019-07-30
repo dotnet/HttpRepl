@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         }
 
         [Fact]
-        public async Task WithSwaggerAndValidUri_ShowsCorrectOutput()
+        public async Task WithSwaggerConfig_ShowsCorrectOutput()
         {
             string scriptText = $@"set base {_swaggerServerConfig.BaseAddress}";
 
@@ -34,7 +34,7 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
         }
 
         [Fact]
-        public async Task WithoutSwaggerAndValidUri_ShowsCorrectOutput()
+        public async Task WithNonSwaggerConfig_ShowsCorrectOutput()
         {
             string scriptText = $@"set base {_nonSwaggerServerConfig.BaseAddress}";
 
