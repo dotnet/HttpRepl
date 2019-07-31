@@ -228,6 +228,20 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_WithInvalidUri_WritesErrorToConsole()
+        {
+            ArrangeInputs(parseResultSections: "set base invalidUri",
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult);
+
+            SetBaseCommand setBaseCommand = new SetBaseCommand();
+            await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_WithValidInput_CreatesDirectoryStructureForSwaggerEndpoint()
         {
             string response = @"{
