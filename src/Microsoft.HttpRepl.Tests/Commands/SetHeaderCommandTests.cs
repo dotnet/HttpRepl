@@ -93,7 +93,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            string expected = "\u001b[1mUsage: \u001b[22mset header {name} [value]" + Environment.NewLine + Environment.NewLine + "Sets or clears a header. When [value] is empty the header is cleared." + Environment.NewLine;
+            string expected = "\u001b[1mUsage: \u001b[39mset header {name} [value]" + Environment.NewLine + Environment.NewLine + "Sets or clears a header. When [value] is empty the header is cleared." + Environment.NewLine;
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             string result = setHeaderCommand.GetHelpDetails(shellState, httpState, parseResult);
