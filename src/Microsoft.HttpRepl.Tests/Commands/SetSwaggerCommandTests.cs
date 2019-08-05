@@ -332,6 +332,51 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Values", childDirectoryNames.ElementAt(1));
         }
 
+        [Fact]
+        public async Task ExecuteAsync_WithChildDirectories_SetsHttpStateSwaggerStructureWithChildDirectorStuctureInfoWhenSchemaPropertiesIsNull()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api/Values"": {
+      ""post"": {
+        ""tags"": [ ""Values"" ],
+        ""operationId"": ""Post"",
+        ""consumes"": [ ""application/json-patch+json"", ""application/json"", ""text/json"", ""application/*+json"" ],
+        ""produces"": [],
+        ""parameters"": [
+          {
+            ""name"": ""value"",
+            ""in"": ""body"",
+            ""required"": false,
+            ""schema"": {
+              ""type"":""object""
+            }
+          }
+        ],
+        ""responses"": { ""200"": { ""description"": ""Success"" } }
+      }
+    }
+  }
+}";
+            string baseAddress = "http://localhost:5050/somePath";
+            string parseResultSections = "set swagger " + baseAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, baseAddress).ConfigureAwait(false);
+            List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
+            string expectedDirectoryName = "api";
+
+            Assert.Single(directoryNames);
+            Assert.Equal(expectedDirectoryName, directoryNames.First());
+
+            IDirectoryStructure childDirectoryStructure = directoryStructure.GetChildDirectory(expectedDirectoryName);
+            Assert.NotNull(childDirectoryStructure);
+
+            List<string> childDirectoryNames = childDirectoryStructure.DirectoryNames.ToList();
+
+            Assert.Single(childDirectoryNames);
+            Assert.Equal("Values", childDirectoryNames.First());
+        }
+
         private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections, string baseAddress)
         {
             MockedShellState shellState = new MockedShellState();

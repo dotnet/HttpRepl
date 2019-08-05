@@ -162,13 +162,17 @@ namespace Microsoft.HttpRepl.Commands
 
                     return container;
                 case "OBJECT":
-                    JObject obj = new JObject();
-                    foreach (KeyValuePair<string, Schema> property in schema.Properties)
+                    if (schema.Properties != null)
                     {
-                        JToken data = GenerateData(property.Value) ?? "";
-                        obj[property.Key] = data;
+                        JObject obj = new JObject();
+                        foreach (KeyValuePair<string, Schema> property in schema.Properties)
+                        {
+                            JToken data = GenerateData(property.Value) ?? "";
+                            obj[property.Key] = data;
+                        }
+                        return obj;
                     }
-                    return obj;
+                    return null;
             }
 
             return null;
@@ -179,7 +183,7 @@ namespace Microsoft.HttpRepl.Commands
             var resp = await client.GetAsync(uri).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
             string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-            JsonSerializer serializer = new JsonSerializer{ PreserveReferencesHandling = PreserveReferencesHandling.All };
+            JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
             JObject responseObject = (JObject)serializer.Deserialize(new StringReader(responseString), typeof(JObject));
             EndpointMetadataReader reader = new EndpointMetadataReader();
             responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
