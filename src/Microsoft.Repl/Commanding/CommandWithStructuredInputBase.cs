@@ -17,7 +17,7 @@ namespace Microsoft.Repl.Commanding
 
         public string GetHelpDetails(IShellState shellState, TProgramState programState, TParseResult parseResult)
         {
-            if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues) 
+            if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues)
                 && processingIssues.Any(x => x.Kind == CommandInputProcessingIssueKind.CommandMismatch))
             {
                 //If this is the right command, just not the right syntax, report the usage errors
@@ -65,7 +65,7 @@ namespace Microsoft.Repl.Commanding
                     return null;
                 }
 
-                if (commandName[parseResult.SelectedSection].StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase))
+                if (parseResult.SelectedSection < commandName.Count && commandName[parseResult.SelectedSection].StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase))
                 {
                     return new[] {commandName[parseResult.SelectedSection]};
                 }
