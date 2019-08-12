@@ -86,7 +86,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
         public void GetCompletions_NullStructure_ReturnsNull()
         {
             HttpState httpState = SetupHttpState();
-            httpState.Structure = null;
+            httpState.ApiDefinition = null;
 
             IEnumerable<string> result = ServerPathCompletion.GetCompletions(httpState, "c");
 
@@ -108,7 +108,9 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             child1.DeclareDirectory("grandchild1");
             child1.DeclareDirectory("grandchild2");
 
-            httpState.Structure = structure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = structure;
+            httpState.ApiDefinition = apiDefinition;
 
             return httpState;
         }

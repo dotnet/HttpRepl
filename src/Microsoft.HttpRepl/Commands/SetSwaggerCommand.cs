@@ -26,159 +26,13 @@ namespace Microsoft.HttpRepl.Commands
 
         public string Description => Strings.SetSwaggerCommand_Description;
 
-        private static void FillDirectoryInfo(DirectoryStructure parent, EndpointMetadata entry)
-        {
-            string[] parts = entry.Path.Split('/');
 
-            foreach (string part in parts)
-            {
-                if (!string.IsNullOrEmpty(part))
-                {
-                    parent = parent.DeclareDirectory(part);
-                }
-            }
 
-            RequestInfo dirRequestInfo = new RequestInfo();
+        
 
-            foreach (KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> requestInfo in entry.AvailableRequests)
-            {
-                string method = requestInfo.Key;
+       
 
-                foreach (KeyValuePair<string, IReadOnlyList<Parameter>> parameterSetsByContentType in requestInfo.Value)
-                {
-                    if (string.IsNullOrEmpty(parameterSetsByContentType.Key))
-                    {
-                        dirRequestInfo.SetFallbackRequestBody(method, parameterSetsByContentType.Key, GetBodyString(null, parameterSetsByContentType.Value));
-                    }
-
-                    dirRequestInfo.SetRequestBody(method, parameterSetsByContentType.Key, GetBodyString(parameterSetsByContentType.Key, parameterSetsByContentType.Value));
-                }
-
-                dirRequestInfo.AddMethod(method);
-            }
-
-            if (dirRequestInfo.Methods.Count > 0)
-            {
-                parent.RequestInfo = dirRequestInfo;
-            }
-        }
-
-        private static string GetBodyString(string contentType, IEnumerable<Parameter> operation)
-        {
-            Parameter body = operation.FirstOrDefault(x => string.Equals(x.Location, "body", StringComparison.OrdinalIgnoreCase));
-
-            if (body != null)
-            {
-                JToken result = GenerateData(body.Schema);
-                return result?.ToString() ?? "{\n}";
-            }
-
-            return null;
-        }
-
-        private static JToken GenerateData(Schema schema)
-        {
-            if (schema == null)
-            {
-                return null;
-            }
-
-            if (schema.Example != null)
-            {
-                return JToken.FromObject(schema.Example);
-            }
-
-            if (schema.Default != null)
-            {
-                return JToken.FromObject(schema.Default);
-            }
-
-            if (schema.Type is null)
-            {
-                if (schema.Properties != null || schema.AdditionalProperties != null || schema.MinProperties.HasValue || schema.MaxProperties.HasValue)
-                {
-                    schema.Type = "OBJECT";
-                }
-                else if (schema.Items != null || schema.MinItems.HasValue || schema.MaxItems.HasValue)
-                {
-                    schema.Type = "ARRAY";
-                }
-                else if (schema.Minimum.HasValue || schema.Maximum.HasValue || schema.MultipleOf.HasValue)
-                {
-                    schema.Type = "INTEGER";
-                }
-            }
-
-            switch (schema.Type?.ToUpperInvariant())
-            {
-                case null:
-                case "STRING":
-                    return "";
-                case "NUMBER":
-                    if (schema.Minimum.HasValue)
-                    {
-                        if (schema.Maximum.HasValue)
-                        {
-                            return (schema.Maximum.Value + schema.Minimum.Value) / 2;
-                        }
-
-                        if (schema.ExclusiveMinimum)
-                        {
-                            return schema.Minimum.Value + 1;
-                        }
-
-                        return schema.Minimum.Value;
-                    }
-                    return 1.1;
-                case "INTEGER":
-                    if (schema.Minimum.HasValue)
-                    {
-                        if (schema.Maximum.HasValue)
-                        {
-                            return (int)((schema.Maximum.Value + schema.Minimum.Value) / 2);
-                        }
-
-                        if (schema.ExclusiveMinimum)
-                        {
-                            return schema.Minimum.Value + 1;
-                        }
-
-                        return schema.Minimum.Value;
-                    }
-                    return 0;
-                case "BOOLEAN":
-                    return true;
-                case "ARRAY":
-                    JArray container = new JArray();
-                    JToken item = GenerateData(schema.Items) ?? "";
-
-                    int count = schema.MinItems.GetValueOrDefault();
-                    count = Math.Max(1, count);
-
-                    for (int i = 0; i < count; ++i)
-                    {
-                        container.Add(item.DeepClone());
-                    }
-
-                    return container;
-                case "OBJECT":
-                    if (schema.Properties != null)
-                    {
-                        JObject obj = new JObject();
-                        foreach (KeyValuePair<string, Schema> property in schema.Properties)
-                        {
-                            JToken data = GenerateData(property.Value) ?? "";
-                            obj[property.Key] = data;
-                        }
-                        return obj;
-                    }
-                    return null;
-            }
-
-            return null;
-        }
-
-        private static async Task<IEnumerable<EndpointMetadata>> GetSwaggerDocAsync(HttpClient client, Uri uri)
+        private static async Task<ApiDefinition> GetSwaggerDocAsync(HttpClient client, Uri uri)
         {
             var resp = await client.GetAsync(uri).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
@@ -190,10 +44,10 @@ namespace Microsoft.HttpRepl.Commands
 
             if (responseObject is null)
             {
-                return new EndpointMetadata[0];
+                return new ApiDefinition();
             }
 
-            return reader.Read(responseObject);
+            return reader.Read(responseObject, uri);
         }
 
         public string GetHelpSummary(IShellState shellState, HttpState programState)
@@ -242,7 +96,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (parseResult.Sections.Count == 2)
             {
-                programState.Structure = null;
+                programState.ApiDefinition = null;
                 return;
             }
 
@@ -271,20 +125,26 @@ namespace Microsoft.HttpRepl.Commands
 
             try
             {
-                IEnumerable<EndpointMetadata> doc = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
+                ApiDefinition definition = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
+                programState.ApiDefinition = !cancellationToken.IsCancellationRequested ? definition : null;
 
-                DirectoryStructure d = new DirectoryStructure(null);
+                //IEnumerable<EndpointMetadata> doc = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
 
-                foreach (EndpointMetadata entry in doc)
-                {
-                    FillDirectoryInfo(d, entry);
-                }
+                //DirectoryStructure d = new DirectoryStructure(null);
 
-                programState.Structure = !cancellationToken.IsCancellationRequested ? d : null;
+                //foreach (EndpointMetadata entry in doc)
+                //{
+                //    FillDirectoryInfo(d, entry);
+                //}
+
+                //ApiDefinition definition = new ApiDefinition();
+                //definition.DirectoryStructure = d;
+
+                //programState.ApiDefinition = !cancellationToken.IsCancellationRequested ? definition : null;
             }
             catch
             {
-                programState.Structure = null;
+                programState.ApiDefinition = null;
             }
         }
     }

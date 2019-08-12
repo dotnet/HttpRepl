@@ -34,7 +34,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (parseResult.Sections.Count == 2)
             {
-                state.BaseAddress = null;
+                state.SpecifiedBaseAddress = null;
             }
             else if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(EnsureTrailingSlash(parseResult.Sections[2]), UriKind.Absolute, out Uri serverUri))
             {
@@ -42,7 +42,7 @@ namespace Microsoft.HttpRepl.Commands
             }
             else
             {
-                state.BaseAddress = serverUri;
+                state.SpecifiedBaseAddress = serverUri;
                 try
                 {
                     await state.Client.SendAsync(new HttpRequestMessage(HttpMethod.Head, serverUri)).ConfigureAwait(false);
@@ -56,7 +56,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger.json", out Uri result))
             {
-                state.Structure = null;
+                state.ApiDefinition = null;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger/v1/swagger.json", out result))
                     {
-                        state.Structure = null;
+                        state.ApiDefinition = null;
                     }
                     else
                     {

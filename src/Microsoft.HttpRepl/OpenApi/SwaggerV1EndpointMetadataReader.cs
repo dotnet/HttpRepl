@@ -15,9 +15,20 @@ namespace Microsoft.HttpRepl.OpenApi
             return (document["swaggerVersion"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
         {
+            ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
+
+            string basePath = document["basePath"]?.Value<string>();
+
+            if (!string.IsNullOrWhiteSpace(basePath))
+            {
+                if (Uri.TryCreate(basePath, UriKind.Absolute, out Uri serverUri))
+                {
+                    apiDefinition.BaseAddresses.Add(serverUri);
+                }
+            }
 
             if (!(document["consumes"] is JArray globalConsumes))
             {
@@ -108,7 +119,16 @@ namespace Microsoft.HttpRepl.OpenApi
                 }
             }
 
-            return metadata;
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            foreach (EndpointMetadata entry in metadata)
+            {
+                EndpointMetadataReader.FillDirectoryInfo(d, entry);
+            }
+
+            apiDefinition.DirectoryStructure = d;
+
+            return apiDefinition;
         }
     }
 }

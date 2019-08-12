@@ -56,7 +56,7 @@ namespace Microsoft.HttpRepl.Tests
         public void GetApplicableContentTypes_NoBaseAddress_ReturnsNull()
         {
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = null;
+            httpState.SpecifiedBaseAddress = null;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, string.Empty);
 
@@ -68,8 +68,8 @@ namespace Microsoft.HttpRepl.Tests
         {
             HttpState httpState = SetupHttpState();
 
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = null;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.ApiDefinition = null;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, string.Empty);
 
@@ -86,8 +86,10 @@ namespace Microsoft.HttpRepl.Tests
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, "");
 
@@ -108,8 +110,10 @@ namespace Microsoft.HttpRepl.Tests
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "");
 
@@ -130,8 +134,10 @@ namespace Microsoft.HttpRepl.Tests
             childDirectoryStructure.RequestInfo = childRequestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = parentDirectoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = parentDirectoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "child");
 
@@ -171,7 +177,7 @@ namespace Microsoft.HttpRepl.Tests
         public void GetEffectivePath_NullBaseAddressAndNoPath_Throws()
         {
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = null;
+            httpState.SpecifiedBaseAddress = null;
 
             Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePath(""));
         }
@@ -181,7 +187,7 @@ namespace Microsoft.HttpRepl.Tests
         {
             HttpState httpState = SetupHttpState();
 
-            httpState.BaseAddress = null;
+            httpState.SpecifiedBaseAddress = null;
 
             Uri result = httpState.GetEffectivePathForPrompt();
 

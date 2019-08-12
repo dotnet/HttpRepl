@@ -92,8 +92,10 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: "GET", path: "", header: "Content-Type", "", httpState);
 
@@ -112,8 +114,10 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: "GET", path: "", header: "Content-Type", "", httpState);
 
@@ -133,8 +137,10 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: null, path: "", header: "Content-Type", "", httpState);
 
@@ -155,8 +161,10 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: "GET", path: "", header: "Content-Type", "a", httpState);
 
@@ -174,8 +182,10 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: "GET", path: "", header: "Content-Type", "", httpState);
 

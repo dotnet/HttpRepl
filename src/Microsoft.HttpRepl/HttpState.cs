@@ -22,11 +22,31 @@ namespace Microsoft.HttpRepl
 
         public AllowedColors WarningColor => _preferences.GetColorValue(WellKnownPreference.WarningColor, AllowedColors.BoldYellow);
 
+        public bool SwaggerBaseOverridesExplicitBase => _preferences.GetBoolValue(WellKnownPreference.SwaggerBaseOverridesExplicitBase);
+
         public Stack<string> PathSections { get; }
 
-        public IDirectoryStructure Structure { get; set; }
+        public ApiDefinition ApiDefinition { get; set; }
 
-        public Uri BaseAddress { get; set; }
+        public Uri SpecifiedBaseAddress { get; set; }
+        public Uri BaseAddress
+        {
+            get
+            {
+                if (SpecifiedBaseAddress is null || (SwaggerBaseOverridesExplicitBase && ApiDefinitionBaseAddress != null))
+                {
+                    return ApiDefinitionBaseAddress;
+                }
+                else
+                {
+                    return SpecifiedBaseAddress;
+                }
+            }
+        }
+
+        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault();
+
+        public IDirectoryStructure Structure => ApiDefinition?.DirectoryStructure;
 
         public bool EchoRequest { get; set; }
 

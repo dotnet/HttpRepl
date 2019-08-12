@@ -17,9 +17,31 @@ namespace Microsoft.HttpRepl.OpenApi
         }
 
         // Based on latest spec at https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
         {
+            ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
+
+            if (document["servers"] is JArray serverArray)
+            {
+                foreach (JObject server in serverArray)
+                {
+                    string url = server["url"].Value<string>();
+                    if (!url.EndsWith("/"))
+                    {
+                        url = url + "/";
+                    }
+
+                    if (Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
+                    {
+                        apiDefinition.BaseAddresses.Add(absoluteServerUri);
+                    }
+                    else if (Uri.TryCreate(swaggerUri, url, out Uri relativeServerUri))
+                    {
+                        apiDefinition.BaseAddresses.Add(relativeServerUri);
+                    }
+                }
+            }
 
             if (document["paths"] is JObject paths)
             {
@@ -106,7 +128,16 @@ namespace Microsoft.HttpRepl.OpenApi
                 }
             }
 
-            return metadata;
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            foreach (EndpointMetadata entry in metadata)
+            {
+                EndpointMetadataReader.FillDirectoryInfo(d, entry);
+            }
+
+            apiDefinition.DirectoryStructure = d;
+
+            return apiDefinition;
         }
     }
 }

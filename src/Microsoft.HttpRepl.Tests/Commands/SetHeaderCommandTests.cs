@@ -235,8 +235,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  caretPosition: 25);
 
             IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
-            httpState.Structure = directoryStructure;
-            httpState.BaseAddress = new Uri("http://localhost:5050/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
+            httpState.SpecifiedBaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             List<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult).ToList();
@@ -255,8 +257,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  caretPosition: 25);
 
             IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
-            httpState.Structure = directoryStructure;
-            httpState.BaseAddress = new Uri("http://localhost:5050/");
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
+            httpState.SpecifiedBaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);

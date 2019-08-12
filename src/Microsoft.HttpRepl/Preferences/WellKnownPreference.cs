@@ -170,6 +170,8 @@ namespace Microsoft.HttpRepl.Preferences
 
         public static string SwaggerRequeryBehavior { get; } = "swagger.requery";
 
+        public static string SwaggerBaseOverridesExplicitBase { get; } = "swagger.overrideExplicitBase";
+
         public static string UseDefaultCredentials { get; } = "httpClient.useDefaultCredentials";
 
         public static string HttpClientUserAgent { get; } = "httpClient.userAgent";
