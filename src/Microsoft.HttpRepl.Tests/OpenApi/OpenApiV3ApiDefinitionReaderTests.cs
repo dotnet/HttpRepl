@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -422,6 +423,130 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             bool? result = openApiV3ApiDefinitionReader.CanHandle(jobject);
 
             Assert.False(result);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithNoServers_BaseAddressesIsEmpty()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Empty(apiDefinition.BaseAddresses);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithOneServer_BaseAddressesHasOneEntry()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""servers"": [
+    {
+      ""url"": ""https://localhost/"",
+      ""description"": ""First Server Address""
+    }
+  ],
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Single(apiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("First Server Address", apiDefinition.BaseAddresses[0].Description);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithTwoServers_BaseAddressesHasTwoEntries()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""servers"": [
+    {
+      ""url"": ""https://petstore.swagger.io/"",
+      ""description"": ""Production Server Address""
+    },
+    {
+      ""url"": ""https://localhost/"",
+      ""description"": ""Local Development Server Address""
+    }
+  ],
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Equal(2, apiDefinition.BaseAddresses.Count);
+
+            Assert.Equal("https://petstore.swagger.io/", apiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("Production Server Address", apiDefinition.BaseAddresses[0].Description);
+
+            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[1].Url.ToString());
+            Assert.Equal("Local Development Server Address", apiDefinition.BaseAddresses[1].Description);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithRelativeServer_BaseAddressesCorrectEntry()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""servers"": [
+    {
+      ""url"": ""/api/v2"",
+      ""description"": ""First Server Address""
+    }
+  ],
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, new Uri("https://localhost/swagger.json"));
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Single(apiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/api/v2/", apiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("First Server Address", apiDefinition.BaseAddresses[0].Description);
         }
     }
 }

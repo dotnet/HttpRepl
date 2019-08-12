@@ -29,7 +29,7 @@ namespace Microsoft.HttpRepl.OpenApi
             string basePath = document["basePath"]?.Value<string>()?.EnsureTrailingSlash();
             IEnumerable<string> schemes = document["schemes"]?.Values<string>();
 
-            if (!string.IsNullOrWhiteSpace(host) && !string.IsNullOrWhiteSpace(basePath))
+            if (!string.IsNullOrWhiteSpace(host))
             {
                 if (schemes == null)
                 {

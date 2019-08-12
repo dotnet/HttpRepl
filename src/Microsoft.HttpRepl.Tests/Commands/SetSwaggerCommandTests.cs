@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -230,6 +231,40 @@ namespace Microsoft.HttpRepl.Tests.Commands
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithBaseAddress_SetsHttpStateBaseAddress()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""host"": ""localhost"",
+  ""schemes"": [
+    ""https""
+  ],
+  ""basePath"": ""/api/v2"",
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            ArrangeInputs(commandText: "set swagger http://localhost/swagger.json",
+                baseAddress: "http://localhost/",
+                path: "/",
+                urlsWithResponse: new Dictionary<string, string> { { "http://localhost/swagger.json", response } },
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out _,
+                out _);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            Assert.Equal("http://localhost/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal("https://localhost/api/v2/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
         }
 
         [Fact]

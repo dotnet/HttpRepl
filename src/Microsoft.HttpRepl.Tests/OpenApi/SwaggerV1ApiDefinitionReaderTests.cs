@@ -304,5 +304,55 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             Assert.False(result);
         }
+
+        [Fact]
+        public void ReadDefinition_WithNoBasePath_BaseAddressesIsEmpty()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+      ""operations"": [
+        {
+        }
+      ]
+    }
+  ]
+}";
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Empty(apiDefinition.BaseAddresses);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithBasePath_BaseAddressHasOneEntry()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""basePath"": ""https://localhost"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+      ""operations"": [
+        {
+        }
+      ]
+    }
+  ]
+}";
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, new Uri("https://localhost/swagger.json"));
+
+            Assert.NotNull(apiDefinition?.BaseAddresses);
+            Assert.Single(apiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString());
+        }
     }
 }
