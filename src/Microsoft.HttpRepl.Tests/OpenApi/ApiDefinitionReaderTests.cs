@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.OpenApi
 {
-    public class EndpointMetadataReaderTests
+    public class ApiDefinitionReaderTests
     {
         [Fact]
         public void Read_WithJObjectFormatNotSupportedByAnyExistingReader_ReturnsNull()
@@ -20,9 +20,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
+            ApiDefinitionReader apiDefinitionReader = new ApiDefinitionReader();
 
-            Assert.Null(endpointMetadataReader.Read(jobject, null));
+            Assert.Null(apiDefinitionReader.Read(jobject, null));
         }
 
         [Fact]
@@ -36,12 +36,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 }";
             JObject jobject = JObject.Parse(json);
             ApiDefinition apiDefinition = new ApiDefinition() { DirectoryStructure = new DirectoryStructure(null) };
-            EndPointMetaDataReaderStub endPointMetaDataReaderStub = new EndPointMetaDataReaderStub(apiDefinition);
+            ApiDefinitionReaderStub apiDefinitionReaderStub = new ApiDefinitionReaderStub(apiDefinition);
 
-            EndpointMetadataReader endpointMetadataReader = new EndpointMetadataReader();
-            endpointMetadataReader.RegisterReader(endPointMetaDataReaderStub);
+            ApiDefinitionReader reader = new ApiDefinitionReader();
+            reader.RegisterReader(apiDefinitionReaderStub);
 
-            ApiDefinition result = endpointMetadataReader.Read(jobject, null);
+            ApiDefinition result = reader.Read(jobject, null);
 
             Assert.Same(apiDefinition, result);
         }

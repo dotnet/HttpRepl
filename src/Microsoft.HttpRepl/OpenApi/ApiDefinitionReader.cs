@@ -8,27 +8,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class EndpointMetadataReader
+    public class ApiDefinitionReader
     {
-        private readonly List<IEndpointMetadataReader> _readers = new List<IEndpointMetadataReader>
+        private readonly List<IApiDefinitionReader> _readers = new List<IApiDefinitionReader>
         {
-            new OpenApiV3EndpointMetadataReader(),
-            new SwaggerV2EndpointMetadataReader(),
-            new SwaggerV1EndpointMetadataReader()
+            new OpenApiV3ApiDefinitionReader(),
+            new SwaggerV2ApiDefinitionReader(),
+            new SwaggerV1ApiDefinitionReader()
         };
 
-        public void RegisterReader(IEndpointMetadataReader reader)
+        internal void RegisterReader(IApiDefinitionReader reader)
         {
             _readers.Add(reader);
         }
 
         public ApiDefinition Read(JObject document, Uri swaggerUri)
         {
-            foreach (IEndpointMetadataReader reader in _readers)
+            foreach (IApiDefinitionReader reader in _readers)
             {
                 if (reader.CanHandle(document))
                 {
-                    ApiDefinition result = reader.ReadMetadata(document, swaggerUri);
+                    ApiDefinition result = reader.ReadDefinition(document, swaggerUri);
 
                     return result;
                 }

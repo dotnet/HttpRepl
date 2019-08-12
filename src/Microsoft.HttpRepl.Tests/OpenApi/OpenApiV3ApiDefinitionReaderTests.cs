@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.OpenApi
 {
-    public class OpenApiV3EndpointMetadataReaderTests
+    public class OpenApiV3ApiDefinitionReaderTests
     {
         [Fact]
         public void ReadMetadata_WithNoPaths_ReturnsEmptyDirectoryStructure()
@@ -22,9 +22,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -42,9 +42,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -70,9 +70,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -110,9 +110,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -155,9 +155,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -198,9 +198,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -244,9 +244,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -306,9 +306,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -353,9 +353,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -379,9 +379,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
+            bool? result = openApiV3ApiDefinitionReader.CanHandle(jobject);
 
             Assert.False(result);
         }
@@ -398,9 +398,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
+            bool? result = openApiV3ApiDefinitionReader.CanHandle(jobject);
 
             Assert.True(result);
         }
@@ -417,9 +417,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
 
-            bool? result = openApiV3EndpointMetadataReader.CanHandle(jobject);
+            bool? result = openApiV3ApiDefinitionReader.CanHandle(jobject);
 
             Assert.False(result);
         }

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.OpenApi
 {
-    public class SwaggerV1EndpointMetadataReaderTests
+    public class SwaggerV1ApiDefinitionReaderTests
     {
         [Fact]
         public void ReadMetadata_WithNoApis_ReturnsApiDefinitionWithNoDirectories()
@@ -21,9 +21,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -40,9 +40,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     }]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -64,9 +64,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
 
@@ -87,9 +87,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
 
@@ -154,9 +154,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -218,9 +218,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   }
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
             Assert.NotNull(apiDefinition?.DirectoryStructure);
             Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
@@ -252,9 +252,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
+            bool? result = swaggerV1ApiDefinitionReader.CanHandle(jobject);
 
             Assert.False(result);
         }
@@ -275,9 +275,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
+            bool? result = swaggerV1ApiDefinitionReader.CanHandle(jobject);
 
             Assert.True(result);
         }
@@ -298,9 +298,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
   ]
 }";
             JObject jobject = JObject.Parse(json);
-            SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
 
-            bool? result = swaggerV1EndpointMetadataReader.CanHandle(jobject);
+            bool? result = swaggerV1ApiDefinitionReader.CanHandle(jobject);
 
             Assert.False(result);
         }

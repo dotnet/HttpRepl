@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class OpenApiV3EndpointMetadataReader : IEndpointMetadataReader
+    public class OpenApiV3ApiDefinitionReader : IApiDefinitionReader
     {
         private static readonly HashSet<string> _ValidOperationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "get", "put", "post", "delete", "options", "head", "patch", "trace" };
         public bool CanHandle(JObject document)
@@ -17,7 +17,7 @@ namespace Microsoft.HttpRepl.OpenApi
         }
 
         // Based on latest spec at https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
-        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
+        public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
@@ -38,7 +38,7 @@ namespace Microsoft.HttpRepl.OpenApi
                     {
                         apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = absoluteServerUri, Description = description });
                     }
-                    else if (Uri.TryCreate(swaggerUri, url, out Uri relativeServerUri))
+                    else if (Uri.TryCreate(sourceUri, url, out Uri relativeServerUri))
                     {
                         apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = relativeServerUri, Description = description });
                     }
@@ -134,7 +134,7 @@ namespace Microsoft.HttpRepl.OpenApi
 
             foreach (EndpointMetadata entry in metadata)
             {
-                EndpointMetadataReader.FillDirectoryInfo(d, entry);
+                ApiDefinitionReader.FillDirectoryInfo(d, entry);
             }
 
             apiDefinition.DirectoryStructure = d;

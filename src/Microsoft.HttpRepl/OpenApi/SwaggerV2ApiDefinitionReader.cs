@@ -8,14 +8,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class SwaggerV2EndpointMetadataReader : IEndpointMetadataReader
+    public class SwaggerV2ApiDefinitionReader : IApiDefinitionReader
     {
         public bool CanHandle(JObject document)
         {
             return (document["swagger"]?.ToString() ?? "").StartsWith("2.", StringComparison.Ordinal);
         }
 
-        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
+        public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
@@ -33,14 +33,14 @@ namespace Microsoft.HttpRepl.OpenApi
             {
                 if (schemes == null)
                 {
-                    schemes = new[] { swaggerUri.Scheme }; 
+                    schemes = new[] { sourceUri.Scheme }; 
                 }
 
                 foreach (string scheme in schemes)
                 {
                     if (Uri.TryCreate($"{scheme}://{host}{basePath}", UriKind.Absolute, out Uri serverUri))
                     {
-                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v2 combined scheme, host and basePath from {swaggerUri.ToString()}" });
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v2 combined scheme, host and basePath from {sourceUri.ToString()}" });
                     }
                 }
             }
@@ -109,7 +109,7 @@ namespace Microsoft.HttpRepl.OpenApi
 
             foreach (EndpointMetadata entry in metadata)
             {
-                EndpointMetadataReader.FillDirectoryInfo(d, entry);
+                ApiDefinitionReader.FillDirectoryInfo(d, entry);
             }
 
             apiDefinition.DirectoryStructure = d;

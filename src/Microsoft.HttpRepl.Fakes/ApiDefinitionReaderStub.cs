@@ -1,14 +1,17 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.Fakes
 {
-    public class EndPointMetaDataReaderStub : IEndpointMetadataReader
+    public class ApiDefinitionReaderStub : IApiDefinitionReader
     {
         private ApiDefinition _apiDefinition;
 
-        public EndPointMetaDataReaderStub(ApiDefinition apiDefinition)
+        public ApiDefinitionReaderStub(ApiDefinition apiDefinition)
         {
             _apiDefinition = apiDefinition;
         }
@@ -18,7 +21,7 @@ namespace Microsoft.HttpRepl.Fakes
             return (document["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
-        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
+        public ApiDefinition ReadDefinition(JObject document, Uri swsourceUri)
         {
             return _apiDefinition;
         }
