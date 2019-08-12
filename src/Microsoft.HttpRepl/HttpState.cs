@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
 
@@ -22,29 +23,15 @@ namespace Microsoft.HttpRepl
 
         public AllowedColors WarningColor => _preferences.GetColorValue(WellKnownPreference.WarningColor, AllowedColors.BoldYellow);
 
-        public bool SwaggerBaseOverridesExplicitBase => _preferences.GetBoolValue(WellKnownPreference.SwaggerBaseOverridesExplicitBase);
+        public bool SwaggerAutoDetect => _preferences.GetBoolValue(WellKnownPreference.SwaggerAutoDetect, true);
 
         public Stack<string> PathSections { get; }
 
         public ApiDefinition ApiDefinition { get; set; }
 
-        public Uri SpecifiedBaseAddress { get; set; }
-        public Uri BaseAddress
-        {
-            get
-            {
-                if (SpecifiedBaseAddress is null || (SwaggerBaseOverridesExplicitBase && ApiDefinitionBaseAddress != null))
-                {
-                    return ApiDefinitionBaseAddress;
-                }
-                else
-                {
-                    return SpecifiedBaseAddress;
-                }
-            }
-        }
+        public Uri BaseAddress { get; set; }
 
-        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault();
+        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault().Url;
 
         public IDirectoryStructure Structure => ApiDefinition?.DirectoryStructure;
 

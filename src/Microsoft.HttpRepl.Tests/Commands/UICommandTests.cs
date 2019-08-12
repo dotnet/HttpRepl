@@ -126,7 +126,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             MockedShellState shellState = new MockedShellState();
             ICoreParseResult parseResult = CoreParseResultHelper.Create("ui");
             HttpState httpState = GetHttpState(out _, out _);
-            httpState.SpecifiedBaseAddress = null;
+            httpState.BaseAddress = null;
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
             UICommand uiCommand = new UICommand(mockLauncher.Object);
@@ -145,7 +145,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult);
 
             Uri uri = new Uri("https://localhost:44366/");
-            httpState.SpecifiedBaseAddress = uri;
+            httpState.BaseAddress = uri;
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
             UICommand uiCommand = new UICommand(mockLauncher.Object);
@@ -167,7 +167,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult);
 
             Uri uri = new Uri("https://localhost:44366/");
-            httpState.SpecifiedBaseAddress = uri;
+            httpState.BaseAddress = uri;
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
             string expectedErrorMessage = "Unable to launch https://localhost:44366/swagger";

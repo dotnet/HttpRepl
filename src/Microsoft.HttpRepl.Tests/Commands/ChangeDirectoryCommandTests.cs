@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;

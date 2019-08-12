@@ -1,7 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
@@ -12,7 +12,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     public class SwaggerV1EndpointMetadataReaderTests
     {
         [Fact]
-        public void ReadMetadata_WithNoApis_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoApis_ReturnsApiDefinitionWithNoDirectories()
         {
             string json = @"{
   ""swaggerVersion"": ""1.0.0"",
@@ -23,13 +23,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoPath_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoPath_ReturnsApiDefinitionWithNoDirectories()
         {
             string json = @"{
   ""swaggerVersion"": ""1.0.0"",
@@ -41,13 +42,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoMethods_ReturnsEndPointMetadataWithNoAvailableRequests()
+        public void ReadMetadata_WithNoMethods_ReturnsApiDefinitionWithNullRequestInfo()
         {
             string json = @"{
   ""swaggerVersion"": ""1.2"",
@@ -64,17 +66,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/user/logout", endpointMetadata[0].Path);
-            Assert.Empty(availableRequests);
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
+
+            Assert.Null(subDirectory.RequestInfo);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoOperations_ReturnsEndPointMetadataWithNoAvailableRequests()
+        public void ReadMetadata_WithNoOperations_ReturnsApiDefinitionWithNullRequestInfo()
         {
             string json = @"{
   ""swaggerVersion"": ""1.2"",
@@ -87,17 +89,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/user/logout", endpointMetadata[0].Path);
-            Assert.Empty(availableRequests);
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
+
+            Assert.Null(subDirectory.RequestInfo);
         }
 
         [Fact]
-        public void ReadMetadata_WithSingleObjectInApisArray_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithSingleObjectInApisArray_ReturnsApiDefinition()
         {
             string json = @"{
   ""swaggerVersion"": ""1.2"",
@@ -154,20 +156,21 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("user", apiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/user", endpointMetadata[0].Path);
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user");
 
-            Assert.Equal(2, availableRequests.Count);
-            Assert.True(availableRequests.ContainsKey("PUT"));
-            Assert.True(availableRequests.ContainsKey("DELETE"));
+            Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
+            Assert.Contains("PUT", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Contains("DELETE", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Fact]
-        public void ReadMetadata_WithMultipleObjectsInApisArray_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithMultipleObjectsInApisArray_ReturnsApiDefinition()
         {
             string json = @"{
   ""swaggerVersion"": ""1.2"",
@@ -217,20 +220,21 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV1EndpointMetadataReader swaggerV1EndpointMetadataReader = new SwaggerV1EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV1EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV1EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            EndpointMetadata endpointMetadata1 = endpointMetadata[0];
-            EndpointMetadata endpointMetadata2 = endpointMetadata[1];
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("user", apiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            Assert.Equal(2, endpointMetadata.Count);
+            IDirectoryStructure logoutSubDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
 
-            Assert.Equal("/user/logout", endpointMetadata1.Path);
-            Assert.Single(endpointMetadata1.AvailableRequests);
-            Assert.Equal("GET", endpointMetadata1.AvailableRequests.First().Key);
+            Assert.Single(logoutSubDirectory.RequestInfo.Methods);
+            Assert.Contains("GET", logoutSubDirectory.RequestInfo.Methods, StringComparer.Ordinal);
 
-            Assert.Equal("/user/login", endpointMetadata2.Path);
-            Assert.Single(endpointMetadata2.AvailableRequests);
-            Assert.Equal("GET", endpointMetadata2.AvailableRequests.First().Key);
+            IDirectoryStructure loginSubDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
+
+            Assert.Single(loginSubDirectory.RequestInfo.Methods);
+            Assert.Contains("GET", loginSubDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Fact]

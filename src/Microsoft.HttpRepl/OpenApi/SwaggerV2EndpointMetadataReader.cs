@@ -26,7 +26,7 @@ namespace Microsoft.HttpRepl.OpenApi
             }
 
             string host = document["host"]?.Value<string>();
-            string basePath = document["basePath"]?.Value<string>();
+            string basePath = document["basePath"]?.Value<string>()?.EnsureTrailingSlash();
             IEnumerable<string> schemes = document["schemes"]?.Values<string>();
 
             if (!string.IsNullOrWhiteSpace(host) && !string.IsNullOrWhiteSpace(basePath))
@@ -40,7 +40,7 @@ namespace Microsoft.HttpRepl.OpenApi
                 {
                     if (Uri.TryCreate($"{scheme}://{host}{basePath}", UriKind.Absolute, out Uri serverUri))
                     {
-                        apiDefinition.BaseAddresses.Add(serverUri);
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v2 combined scheme, host and basePath from {swaggerUri.ToString()}" });
                     }
                 }
             }

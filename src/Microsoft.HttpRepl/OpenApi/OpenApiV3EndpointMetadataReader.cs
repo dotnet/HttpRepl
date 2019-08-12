@@ -26,19 +26,21 @@ namespace Microsoft.HttpRepl.OpenApi
             {
                 foreach (JObject server in serverArray)
                 {
-                    string url = server["url"].Value<string>();
-                    if (!url.EndsWith("/"))
+                    string url = server["url"]?.Value<string>()?.EnsureTrailingSlash();
+                    string description = server["description"]?.Value<string>();
+
+                    if (url is null)
                     {
-                        url = url + "/";
+                        continue;
                     }
 
                     if (Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
                     {
-                        apiDefinition.BaseAddresses.Add(absoluteServerUri);
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = absoluteServerUri, Description = description });
                     }
                     else if (Uri.TryCreate(swaggerUri, url, out Uri relativeServerUri))
                     {
-                        apiDefinition.BaseAddresses.Add(relativeServerUri);
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = relativeServerUri, Description = description });
                     }
                 }
             }

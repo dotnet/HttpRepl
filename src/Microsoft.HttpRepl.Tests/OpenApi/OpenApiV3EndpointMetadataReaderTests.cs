@@ -1,9 +1,9 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -13,7 +13,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     public class OpenApiV3EndpointMetadataReaderTests
     {
         [Fact]
-        public void ReadMetadata_WithNoPaths_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoPaths_ReturnsEmptyDirectoryStructure()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -24,13 +24,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoProperties_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoProperties_ReturnsNullDirectoryStructure()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -43,13 +44,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoResponses_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithNoResponses_ReturnsApiDefinition()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -70,12 +72,16 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Single(endpointMetadata[0].AvailableRequests);
-            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
+            Assert.Single(subDirectory.RequestInfo.Methods);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Theory]
@@ -93,7 +99,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [InlineData("servers", false)]
         [InlineData("parameters", false)]
         [InlineData("", false)]
-        public void ReadMetadata_WithSpecifiedMethodName_ReturnsEndpointMetadataWithCorrectNumberOfRequests(string method, bool shouldHaveRequest)
+        public void ReadMetadata_WithSpecifiedMethodName_ReturnsApiDefinitionWithCorrectNumberOfRequestMethods(string method, bool shouldHaveRequest)
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -106,23 +112,27 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
             if (shouldHaveRequest)
             {
-                Assert.Single(endpointMetadata[0].AvailableRequests);
-                Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey(method));
+                Assert.Single(subDirectory.RequestInfo.Methods);
+                Assert.Contains(method, subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
             }
             else
             {
-                Assert.Empty(endpointMetadata[0].AvailableRequests);
+                Assert.Null(subDirectory.RequestInfo);
             }
         }
 
         [Fact]
-        public void ReadMetadata_WithNoContent_ReturnsEndpointMetadataWithRequestButNoContentTypes()
+        public void ReadMetadata_WithNoContent_ReturnsApiDefinitionWithRequestMethodButNoContentTypes()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -147,17 +157,21 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Single(endpointMetadata[0].AvailableRequests);
-            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
-            Assert.Empty(endpointMetadata[0].AvailableRequests["post"]);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
+            Assert.Single(subDirectory.RequestInfo.Methods);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.DoesNotContain("post", subDirectory.RequestInfo.ContentTypesByMethod.Keys, StringComparer.Ordinal);
         }
 
         [Fact]
-        public void ReadMetadata_WithContentAndOneContentType_ReturnsEndpointMetadataWithContentType()
+        public void ReadMetadata_WithContentAndOneContentType_ReturnsApiDefinitionWithContentType()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -186,18 +200,22 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Single(endpointMetadata[0].AvailableRequests);
-            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
-            Assert.Single(endpointMetadata[0].AvailableRequests["post"]);
-            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("application/json"));
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
+            Assert.Single(subDirectory.RequestInfo.Methods);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Single(subDirectory.RequestInfo.ContentTypesByMethod["post"]);
+            Assert.Contains("application/json", subDirectory.RequestInfo.ContentTypesByMethod["post"]);
         }
 
         [Fact]
-        public void ReadMetadata_WithContentAndMultipleContentTypes_ReturnsEndpointMetadataWithContentTypes()
+        public void ReadMetadata_WithContentAndMultipleContentTypes_ReturnsApiDefinitionWithContentTypes()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -228,19 +246,23 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
-            Assert.Single(endpointMetadata[0].AvailableRequests);
-            Assert.True(endpointMetadata[0].AvailableRequests.ContainsKey("post"));
-            Assert.Equal(2, endpointMetadata[0].AvailableRequests["post"].Count);
-            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("application/json"));
-            Assert.True(endpointMetadata[0].AvailableRequests["post"].ContainsKey("text/plain"));
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
+            Assert.Single(subDirectory.RequestInfo.Methods);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Equal(2, subDirectory.RequestInfo.ContentTypesByMethod["post"].Count);
+            Assert.Contains("application/json", subDirectory.RequestInfo.ContentTypesByMethod["post"]);
+            Assert.Contains("text/plain", subDirectory.RequestInfo.ContentTypesByMethod["post"]);
         }
 
         [Fact]
-        public void ReadMetadata_WithValidInput_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithValidInput_ReturnsApiDefinition()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -286,20 +308,21 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
 
-            Assert.Equal(2, availableRequests.Count);
-            Assert.True(availableRequests.ContainsKey("get"));
-            Assert.True(availableRequests.ContainsKey("post"));
+            Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
+            Assert.Contains("get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoRequestBody_ReturnsEndpointMetadata()
+        public void ReadMetadata_WithNoRequestBody_ReturnsApiDefinition()
         {
             string json = @"{
   ""openapi"": ""3.0.0"",
@@ -332,16 +355,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             OpenApiV3EndpointMetadataReader openApiV3EndpointMetadataReader = new OpenApiV3EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = openApiV3EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = openApiV3EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/pets", endpointMetadata[0].Path);
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
 
-            Assert.Equal(2, availableRequests.Count);
-            Assert.True(availableRequests.ContainsKey("get"));
-            Assert.True(availableRequests.ContainsKey("post"));
+            Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
+            Assert.Contains("get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Fact]

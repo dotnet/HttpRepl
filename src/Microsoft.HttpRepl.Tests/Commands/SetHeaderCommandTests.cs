@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -238,7 +239,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
-            httpState.SpecifiedBaseAddress = new Uri("http://localhost:5050/");
+            httpState.BaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             List<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult).ToList();
@@ -260,7 +261,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
-            httpState.SpecifiedBaseAddress = new Uri("http://localhost:5050/");
+            httpState.BaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);

@@ -169,8 +169,7 @@ namespace Microsoft.HttpRepl.Preferences
         public static string DefaultEditorArguments { get; } = "editor.command.default.arguments";
 
         public static string SwaggerRequeryBehavior { get; } = "swagger.requery";
-
-        public static string SwaggerBaseOverridesExplicitBase { get; } = "swagger.overrideExplicitBase";
+        public static string SwaggerAutoDetect { get; } = "swagger.autoDetect";
 
         public static string UseDefaultCredentials { get; } = "httpClient.useDefaultCredentials";
 

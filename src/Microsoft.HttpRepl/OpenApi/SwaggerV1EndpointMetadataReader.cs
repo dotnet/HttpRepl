@@ -20,13 +20,13 @@ namespace Microsoft.HttpRepl.OpenApi
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 
-            string basePath = document["basePath"]?.Value<string>();
+            string basePath = document["basePath"]?.Value<string>()?.EnsureTrailingSlash();
 
             if (!string.IsNullOrWhiteSpace(basePath))
             {
                 if (Uri.TryCreate(basePath, UriKind.Absolute, out Uri serverUri))
                 {
-                    apiDefinition.BaseAddresses.Add(serverUri);
+                    apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v1 basePath from {swaggerUri.ToString()}" });
                 }
             }
 

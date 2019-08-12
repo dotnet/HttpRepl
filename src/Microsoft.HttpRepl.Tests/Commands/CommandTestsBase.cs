@@ -87,11 +87,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {
-                httpState.SpecifiedBaseAddress = new Uri(baseAddress);
+                httpState.BaseAddress = new Uri(baseAddress);
             }
             if (!string.IsNullOrWhiteSpace(path))
             {
-                httpState.SpecifiedBaseAddress = new Uri(baseAddress);
+                httpState.BaseAddress = new Uri(baseAddress);
 
                 if (path != null)
                 {

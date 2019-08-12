@@ -26,12 +26,6 @@ namespace Microsoft.HttpRepl.Commands
 
         public string Description => Strings.SetSwaggerCommand_Description;
 
-
-
-        
-
-       
-
         private static async Task<ApiDefinition> GetSwaggerDocAsync(HttpClient client, Uri uri)
         {
             var resp = await client.GetAsync(uri).ConfigureAwait(false);
@@ -126,21 +120,18 @@ namespace Microsoft.HttpRepl.Commands
             try
             {
                 ApiDefinition definition = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
-                programState.ApiDefinition = !cancellationToken.IsCancellationRequested ? definition : null;
-
-                //IEnumerable<EndpointMetadata> doc = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
-
-                //DirectoryStructure d = new DirectoryStructure(null);
-
-                //foreach (EndpointMetadata entry in doc)
-                //{
-                //    FillDirectoryInfo(d, entry);
-                //}
-
-                //ApiDefinition definition = new ApiDefinition();
-                //definition.DirectoryStructure = d;
-
-                //programState.ApiDefinition = !cancellationToken.IsCancellationRequested ? definition : null;
+                if (cancellationToken.IsCancellationRequested || definition == null)
+                {
+                    programState.ApiDefinition = null;
+                }
+                else
+                {
+                    programState.ApiDefinition = definition;
+                    if (definition.BaseAddresses.Any())
+                    {
+                        programState.BaseAddress = definition.BaseAddresses[0].Url;
+                    }
+                }
             }
             catch
             {

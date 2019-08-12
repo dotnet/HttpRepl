@@ -205,7 +205,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             CancellationTokenSource cts = new CancellationTokenSource();
             cts.Cancel();
 
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost:44366/");
+            httpState.BaseAddress = new Uri("https://localhost:44366/");
 
             SetBaseCommand setBaseCommand = new SetBaseCommand();
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, cts.Token);

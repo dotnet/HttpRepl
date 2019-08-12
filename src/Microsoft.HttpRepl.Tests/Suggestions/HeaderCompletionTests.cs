@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.HttpRepl.UserProfile;
@@ -92,7 +93,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.BaseAddress = new Uri("https://localhost/");
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
@@ -114,7 +115,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.BaseAddress = new Uri("https://localhost/");
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
@@ -137,7 +138,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.BaseAddress = new Uri("https://localhost/");
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
@@ -161,7 +162,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.BaseAddress = new Uri("https://localhost/");
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;
@@ -182,7 +183,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             directoryStructure.RequestInfo = requestInfo;
 
             HttpState httpState = SetupHttpState();
-            httpState.SpecifiedBaseAddress = new Uri("https://localhost/");
+            httpState.BaseAddress = new Uri("https://localhost/");
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.DirectoryStructure = directoryStructure;
             httpState.ApiDefinition = apiDefinition;

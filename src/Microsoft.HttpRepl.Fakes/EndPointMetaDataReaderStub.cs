@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 
@@ -7,11 +6,11 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class EndPointMetaDataReaderStub : IEndpointMetadataReader
     {
-        private EndpointMetadata _endpointMetadata;
+        private ApiDefinition _apiDefinition;
 
-        public EndPointMetaDataReaderStub(EndpointMetadata endpointMetadata)
+        public EndPointMetaDataReaderStub(ApiDefinition apiDefinition)
         {
-            _endpointMetadata = endpointMetadata;
+            _apiDefinition = apiDefinition;
         }
 
         public bool CanHandle(JObject document)
@@ -19,9 +18,9 @@ namespace Microsoft.HttpRepl.Fakes
             return (document["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadMetadata(JObject document, Uri swaggerUri)
         {
-            return new List<EndpointMetadata> { _endpointMetadata };
+            return _apiDefinition;
         }
     }
 }

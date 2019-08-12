@@ -1,7 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
@@ -12,7 +12,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     public class SwaggerV2EndpointMetadataReaderTests
     {
         [Fact]
-        public void ReadMetadata_WithNoPaths_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoPaths_ReturnsApiDefinitionWithNoDirectories()
         {
             string json = @"{
   ""swagger"": ""2.0"",
@@ -23,13 +23,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV2EndpointMetadataReader swaggerV2EndpointMetadataReader = new SwaggerV2EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV2EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV2EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoProperties_ReturnsEmptyListOfEndPointMetaData()
+        public void ReadMetadata_WithNoProperties_ReturnsApiDefinitionWithNoDirectories()
         {
             string json = @"{
   ""swagger"": ""2.0"",
@@ -42,13 +43,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV2EndpointMetadataReader swaggerV2EndpointMetadataReader = new SwaggerV2EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV2EndpointMetadataReader.ReadMetadata(jobject).ToList();
+            ApiDefinition apiDefinition = swaggerV2EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Empty(endpointMetadata);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
-        public void ReadMetadata_WithNoRequestMethods_ReturnsEndpointMetadataWithEmptyAvailableRequests()
+        public void ReadMetadata_WithNoRequestMethods_ReturnsEndpointMetadataWithNullRequestInfo()
         {
             string json = @"{
   ""swagger"": ""2.0"",
@@ -63,12 +65,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV2EndpointMetadataReader swaggerV2EndpointMetadataReader = new SwaggerV2EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV2EndpointMetadataReader.ReadMetadata(jobject).ToList();
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            ApiDefinition apiDefinition = swaggerV2EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/api/Employees", endpointMetadata[0].Path);
-            Assert.Empty(availableRequests);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
+
+            Assert.Null(subDirectory.RequestInfo);
         }
 
         [Fact]
@@ -124,15 +127,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             SwaggerV2EndpointMetadataReader swaggerV2EndpointMetadataReader = new SwaggerV2EndpointMetadataReader();
 
-            List<EndpointMetadata> endpointMetadata = swaggerV2EndpointMetadataReader.ReadMetadata(jobject).ToList();
-            IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> availableRequests = endpointMetadata[0].AvailableRequests;
+            ApiDefinition apiDefinition = swaggerV2EndpointMetadataReader.ReadMetadata(jobject, null);
 
-            Assert.Single(endpointMetadata);
-            Assert.Equal("/api/Employees", endpointMetadata[0].Path);
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("api", apiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            Assert.Equal(2, availableRequests.Count);
-            Assert.True(availableRequests.ContainsKey("get"));
-            Assert.True(availableRequests.ContainsKey("post"));
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
+
+            Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
+            Assert.Contains("get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
+            Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
         [Fact]
