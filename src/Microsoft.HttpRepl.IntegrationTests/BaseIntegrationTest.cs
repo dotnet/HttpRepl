@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.IntegrationTests.Utilities;
+using Microsoft.HttpRepl.Preferences;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
@@ -50,10 +51,10 @@ namespace Microsoft.HttpRepl.IntegrationTests
             return result;
         }
 
-        protected static async Task<string> RunTestScript(string scriptText, string baseAddress)
+        protected static async Task<string> RunTestScript(string scriptText, string baseAddress, IPreferences preferences = null)
         {
             LoggingConsoleManagerDecorator console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            NullPreferences preferences = new NullPreferences();
+            preferences = preferences ?? new NullPreferences();
             using (var script = new TestScript(scriptText))
             {
                 await new Program().Start($"run {script.FilePath}".Split(' '), console, preferences);
