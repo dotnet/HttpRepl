@@ -66,7 +66,7 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     if (Uri.TryCreate(state.BaseAddress, swaggerSearchPath, out Uri result))
                     {
-                        await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
+                        await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
                         if (state.ApiDefinition != null)
                         {
                             shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);

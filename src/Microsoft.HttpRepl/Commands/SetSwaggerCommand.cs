@@ -26,9 +26,14 @@ namespace Microsoft.HttpRepl.Commands
 
         public string Description => Strings.SetSwaggerCommand_Description;
 
-        private static async Task<ApiDefinition> GetSwaggerDocAsync(HttpClient client, Uri uri)
+        private static async Task<ApiDefinition> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
         {
-            var resp = await client.GetAsync(uri).ConfigureAwait(false);
+            var resp = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+
             resp.EnsureSuccessStatusCode();
             string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
@@ -104,7 +109,7 @@ namespace Microsoft.HttpRepl.Commands
                 if ((Uri.IsWellFormedUriString(parseResult.Sections[2], UriKind.Absolute) && Uri.TryCreate(parseResult.Sections[2], UriKind.Absolute, out serverUri)) ||
                     (!(programState.BaseAddress is null) && Uri.TryCreate(programState.BaseAddress, parseResult.Sections[2], out serverUri)))
                 {
-                    await CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, serverUri, cancellationToken).ConfigureAwait(false);
+                    await CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, serverUri, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -113,13 +118,13 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        internal static async Task CreateDirectoryStructureForSwaggerEndpointAsync(IShellState shellState, HttpState programState, Uri serverUri, CancellationToken cancellationToken)
+        internal static async Task CreateApiDefinitionForSwaggerEndpointAsync(IShellState shellState, HttpState programState, Uri serverUri, CancellationToken cancellationToken)
         {
             programState.SwaggerEndpoint = serverUri;
 
             try
             {
-                ApiDefinition definition = await GetSwaggerDocAsync(programState.Client, serverUri).ConfigureAwait(false);
+                ApiDefinition definition = await GetSwaggerDocAsync(programState.Client, serverUri, cancellationToken).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested || definition == null)
                 {
                     programState.ApiDefinition = null;
