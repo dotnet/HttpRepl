@@ -399,6 +399,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must specify a valid swagger document.
+        /// </summary>
+        internal static string SetSwaggerCommand_InvalidSwaggerUri {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_InvalidSwaggerUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must specify a swagger document.
         /// </summary>
         internal static string SetSwaggerCommand_SpecifySwaggerDocument {

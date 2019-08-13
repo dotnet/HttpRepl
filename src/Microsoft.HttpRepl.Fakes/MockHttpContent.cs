@@ -26,7 +26,7 @@ namespace Microsoft.HttpRepl.Fakes
 
         protected override bool TryComputeLength(out long length)
         {
-            length = Content.Length;
+            length = Content?.Length ?? 0;
             return true;
         }
     }
