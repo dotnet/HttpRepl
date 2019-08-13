@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Reflection;
-using System.Security;
 
 namespace Microsoft.HttpRepl.Preferences
 {
