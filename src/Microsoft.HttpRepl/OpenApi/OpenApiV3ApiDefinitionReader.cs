@@ -34,7 +34,7 @@ namespace Microsoft.HttpRepl.OpenApi
                         continue;
                     }
 
-                    if (Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
+                    if (Uri.IsWellFormedUriString(url, UriKind.Absolute) && Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
                     {
                         apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = absoluteServerUri, Description = description });
                     }
