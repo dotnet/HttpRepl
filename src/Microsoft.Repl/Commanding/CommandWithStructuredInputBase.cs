@@ -37,16 +37,22 @@ namespace Microsoft.Repl.Commanding
                 ? string.Empty
                 : parseResult.Sections[parseResult.SelectedSection].Substring(0, parseResult.CaretPositionWithinSelectedSection);
 
-            //If we're completing in a name position, offer completion for the command name
-            if (parseResult.SelectedSection < InputSpec.CommandName.Count)
+
+            // Check the various command name permutations to see if we might be completing one of them
+            IReadOnlyList<string> commandName = null;
+            for (int j = 0; j < InputSpec.CommandName.Count; ++j)
             {
-                IReadOnlyList<string> commandName = null;
-                for (int j = 0; j < InputSpec.CommandName.Count; ++j)
+                IReadOnlyList<string> currentCommandNameParts = InputSpec.CommandName[j];
+                
+                //If we're completing in a name position, offer completion for the command name
+                if (parseResult.SelectedSection < currentCommandNameParts.Count)
                 {
                     bool success = true;
                     for (int i = 0; i < parseResult.SelectedSection; ++i)
                     {
-                        if (!string.Equals(InputSpec.CommandName[j][i], parseResult.Sections[i], StringComparison.OrdinalIgnoreCase))
+                        string currentCommandNamePart = currentCommandNameParts[i];
+                        string currentParseSection = parseResult.Sections[i];
+                        if (!string.Equals(currentCommandNamePart, currentParseSection, StringComparison.OrdinalIgnoreCase))
                         {
                             success = false;
                             break;
@@ -55,20 +61,15 @@ namespace Microsoft.Repl.Commanding
 
                     if (success)
                     {
-                        commandName = InputSpec.CommandName[j];
+                        commandName = currentCommandNameParts;
                         break;
                     }
                 }
+            }
 
-                if (commandName is null)
-                {
-                    return null;
-                }
-
-                if (commandName[parseResult.SelectedSection].StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase))
-                {
-                    return new[] {commandName[parseResult.SelectedSection]};
-                }
+            if (commandName?.Count > parseResult.SelectedSection && commandName[parseResult.SelectedSection].StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase))
+            {
+                return new[] { commandName[parseResult.SelectedSection] };
             }
 
             if (commandInput is null)
