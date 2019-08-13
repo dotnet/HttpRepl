@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security;
 
 namespace Microsoft.HttpRepl.Preferences
 {
@@ -171,5 +172,7 @@ namespace Microsoft.HttpRepl.Preferences
         public static string SwaggerRequeryBehavior { get; } = "swagger.requery";
 
         public static string UseDefaultCredentials { get; } = "httpClient.useDefaultCredentials";
+
+        public static string HttpClientUserAgent { get; } = "httpClient.userAgent";
     }
 }

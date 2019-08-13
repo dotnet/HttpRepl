@@ -188,14 +188,46 @@ namespace Microsoft.HttpRepl.Tests
             Assert.Null(result);
         }
 
-        private static HttpState SetupHttpState()
+        [Fact]
+        public void HeaderSetup_WithDefaultUserAgent_UsesHttpRepl()
         {
-            IFileSystem fileSystem = new FileSystemStub();
-            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
-            HttpClient httpClient = new HttpClient();
+            HttpState httpState = SetupHttpState(preferencesFileContent: "");
 
-            return new HttpState(fileSystem, preferences, httpClient);
+            Assert.Equal("HTTP-REPL", httpState.Headers["User-Agent"].Single(), StringComparer.Ordinal);
+        }
+
+        [Fact]
+        public void HeaderSetup_WithCustomUserAgent_UsesCustom()
+        {
+            string differentUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3875.0 Safari/537.36 Edg/78.0.245.0";
+
+            HttpState httpState = SetupHttpState(preferencesFileContent: $"{WellKnownPreference.HttpClientUserAgent}={differentUserAgent}");
+
+            Assert.Equal(differentUserAgent, httpState.Headers["User-Agent"].Single(), StringComparer.Ordinal);
+        }
+
+        private static HttpState SetupHttpState(string preferencesFileContent = null)
+        {
+            UserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            IFileSystem fileSystem;
+            if (preferencesFileContent != null)
+            {
+                fileSystem = new MockedFileSystem();
+            }
+            else
+            {
+                fileSystem = new FileSystemStub();
+            }
+            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
+            if (preferencesFileContent != null)
+            {
+                ((MockedFileSystem)fileSystem).AddFile(preferences.PreferencesFilePath, preferencesFileContent);
+            }
+            
+            HttpClient client = new HttpClient();
+            HttpState state = new HttpState(fileSystem, preferences, client);
+
+            return state;
         }
     }
 }

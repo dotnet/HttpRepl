@@ -42,7 +42,7 @@ namespace Microsoft.HttpRepl
             PathSections = new Stack<string>();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
-                { "User-Agent", new[] { "HTTP-REPL" } }
+                { "User-Agent", new[] { _preferences.GetValue(WellKnownPreference.HttpClientUserAgent, "HTTP-REPL") } }
             };
         }
 
