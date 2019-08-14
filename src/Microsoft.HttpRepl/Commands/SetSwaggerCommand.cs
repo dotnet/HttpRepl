@@ -132,10 +132,6 @@ namespace Microsoft.HttpRepl.Commands
                 else
                 {
                     programState.ApiDefinition = definition;
-                    if (definition.BaseAddresses.Any())
-                    {
-                        programState.BaseAddress = definition.BaseAddresses[0].Url;
-                    }
                 }
             }
             catch

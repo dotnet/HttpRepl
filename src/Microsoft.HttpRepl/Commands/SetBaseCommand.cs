@@ -54,7 +54,7 @@ namespace Microsoft.HttpRepl.Commands
                 catch { }
             }
 
-            if (state.BaseAddress == null || !state.SwaggerAutoDetect)
+            if (state.BaseAddress == null)
             {
                 state.ApiDefinition = null;
             }

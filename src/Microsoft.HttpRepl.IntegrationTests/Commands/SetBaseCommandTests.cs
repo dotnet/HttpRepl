@@ -49,22 +49,5 @@ Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
             Assert.Equal(expected, output);
         }
-
-        [Fact]
-        public async Task WithSwaggerConfigAndAutoDetectFalse_ShowsCorrectOutput()
-        {
-            string scriptText = $@"pref set swagger.autoDetect false
-set base {_swaggerServerConfig.BaseAddress}";
-
-            string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress, new UserFolderPreferences(new MockedFileSystem(), new UserProfileDirectoryProvider(), null));
-
-            string expected = NormalizeOutput(@"(Disconnected)~ pref set swagger.autoDetect false
-
-(Disconnected)~ set base [BaseUrl]
-
-[BaseUrl]/~", null);
-
-            Assert.Equal(expected, output);
-        }
     }
 }

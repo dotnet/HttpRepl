@@ -23,8 +23,6 @@ namespace Microsoft.HttpRepl
 
         public AllowedColors WarningColor => _preferences.GetColorValue(WellKnownPreference.WarningColor, AllowedColors.BoldYellow);
 
-        public bool SwaggerAutoDetect => _preferences.GetBoolValue(WellKnownPreference.SwaggerAutoDetect, true);
-
         public Stack<string> PathSections { get; }
 
         public ApiDefinition ApiDefinition { get; set; }

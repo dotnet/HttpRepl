@@ -234,7 +234,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_WithBaseAddress_SetsHttpStateBaseAddress()
+        public async Task ExecuteAsync_WithBaseAddress_DoesNotSetHttpStateBaseAddress()
         {
             string response = @"{
   ""swagger"": ""2.0"",
@@ -264,7 +264,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Equal("https://localhost/api/v2/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
+            Assert.NotEqual("https://localhost/api/v2/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
         }
 
         [Fact]
