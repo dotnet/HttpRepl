@@ -187,6 +187,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list..
+        /// </summary>
+        internal static string ListCommand_Error_NoBaseAddress {
+            get {
+                return ResourceManager.GetString("ListCommand_Error_NoBaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list..
+        /// </summary>
+        internal static string ListCommand_Error_NoDirectoryStructure {
+            get {
+                return ResourceManager.GetString("ListCommand_Error_NoDirectoryStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all endpoints for the current path.
         /// </summary>
         internal static string ListCommand_HelpSummary {
