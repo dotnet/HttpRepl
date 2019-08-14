@@ -85,10 +85,12 @@ ls";
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 
 [BaseUrl]/~ ls
+No directory structure has been set, so there is nothing to list.
 
 [BaseUrl]/~ cd api
 
 [BaseUrl]/api~ ls
+No directory structure has been set, so there is nothing to list.
 
 [BaseUrl]/api~", null);
 
@@ -108,6 +110,7 @@ ls";
 [BaseUrl]/~ cd api/Values
 
 [BaseUrl]/api/Values~ ls
+No directory structure has been set, so there is nothing to list.
 
 [BaseUrl]/api/Values~", null);
 
