@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
