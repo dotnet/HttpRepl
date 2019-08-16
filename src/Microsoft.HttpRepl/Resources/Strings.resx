@@ -264,6 +264,12 @@ When +history option is specified, commands specified in the text file will be a
     <value>If {0} is not an absolute URI, {1} must be specified.</value>
     <comment>{0} is the name of the commandSpecifiedPath parameter, {1} is the name of the baseAddress uri parameter</comment>
   </data>
+  <data name="ListCommand_Error_NoBaseAddress" xml:space="preserve">
+    <value>No base address has been set, so there is nothing to list. Use the "set base" command to set a base address.</value>
+  </data>
+  <data name="ListCommand_Error_NoDirectoryStructure" xml:space="preserve">
+    <value>No directory structure has been set, so there is nothing to list. Use the "set swagger" command to set a directory structure based on a swagger definition.</value>
+  </data>
   <data name="SetSwaggerCommand_InvalidSwaggerUri" xml:space="preserve">
     <value>Must specify a valid swagger document</value>
   </data>
