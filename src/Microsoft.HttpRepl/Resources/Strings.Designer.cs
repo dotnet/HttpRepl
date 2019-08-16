@@ -187,7 +187,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list..
+        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list. Use the &quot;set base&quot; command to set a base address..
         /// </summary>
         internal static string ListCommand_Error_NoBaseAddress {
             get {
@@ -196,7 +196,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list..
+        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;set swagger&quot; command to set a directory structure based on a swagger definition..
         /// </summary>
         internal static string ListCommand_Error_NoDirectoryStructure {
             get {

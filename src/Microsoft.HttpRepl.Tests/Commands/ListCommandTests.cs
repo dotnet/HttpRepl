@@ -16,10 +16,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
     public class ListCommandTests : CommandTestsBase
     {
         [Fact]
-        public async Task ExecuteAsync_NoBaseAddress_ShowsWarning()
+        public async Task ExecuteAsync_NoBaseAddressOnHttpState_ShowsWarning()
         {
             ArrangeInputs(commandText: "ls",
-                          baseAddress: "http://lcoalhost/",
+                          baseAddress: "http://localhost/",
                           path: "/",
                           urlsWithResponse: null,
                           out MockedShellState shellState,
@@ -36,8 +36,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             await listCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Single(shellState.Output);
-            Assert.Equal(Resources.Strings.ListCommand_Error_NoBaseAddress, shellState.Output[0]);
+            string actualOutput = string.Join(Environment.NewLine, shellState.Output);
+            Assert.Equal(Resources.Strings.ListCommand_Error_NoBaseAddress, actualOutput);
         }
 
         [Fact]
@@ -53,7 +53,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            httpState.BaseAddress = new Uri("http://localhost/swagger.json");
             httpState.SwaggerEndpoint = null;
             httpState.Structure = new DirectoryStructure(null);
 
@@ -61,8 +60,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             await listCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Single(shellState.Output);
-            Assert.Equal(Resources.Strings.ListCommand_Error_NoDirectoryStructure, shellState.Output[0]);
+            string actualOutput = string.Join(Environment.NewLine, shellState.Output);
+            Assert.Equal(Resources.Strings.ListCommand_Error_NoDirectoryStructure, actualOutput);
         }
 
         [Fact]
@@ -78,7 +77,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            httpState.BaseAddress = new Uri("http://localhost/swagger.json");
             httpState.SwaggerEndpoint = new Uri("http://localhost/swagger.json");
             httpState.Structure = null;
 
@@ -86,8 +84,56 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             await listCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Single(shellState.Output);
-            Assert.Equal(Resources.Strings.ListCommand_Error_NoDirectoryStructure, shellState.Output[0]);
+            string actualOutput = string.Join(Environment.NewLine, shellState.Output);
+            Assert.Equal(Resources.Strings.ListCommand_Error_NoDirectoryStructure, actualOutput);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithBaseAddressSwaggerAndStructure_NoWarning()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api"": {
+      ""get"": {
+        ""tags"": [ ""Employees"" ],
+        ""operationId"": ""GetEmployee"",
+        ""consumes"": [],
+        ""produces"": [ ""text/plain"", ""application/json"", ""text/json"" ],
+        ""parameters"": [],
+        ""responses"": {
+          ""200"": {
+            ""description"": ""Success"",
+            ""schema"": {
+              ""uniqueItems"": false,
+              ""type"": ""array""
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+
+            ArrangeInputs(commandText: "ls",
+                          baseAddress: "http://localhost/",
+                          path: "/",
+                          urlsWithResponse: new Dictionary<string, string>() { { "http://localhost/swagger.json", response } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            httpState.SwaggerEndpoint = new Uri("http://localhost/swagger.json");
+
+            ListCommand listCommand = new ListCommand(preferences);
+
+            await listCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string actualOutput = string.Join(Environment.NewLine, shellState.Output);
+            Assert.DoesNotContain(Resources.Strings.ListCommand_Error_NoBaseAddress, actualOutput, StringComparison.Ordinal);
+            Assert.DoesNotContain(Resources.Strings.ListCommand_Error_NoDirectoryStructure, actualOutput, StringComparison.Ordinal);
         }
 
         [Fact]

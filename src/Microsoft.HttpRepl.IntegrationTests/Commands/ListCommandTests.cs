@@ -85,12 +85,12 @@ ls";
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
 
 [BaseUrl]/~ ls
-No directory structure has been set, so there is nothing to list.
+No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
 [BaseUrl]/~ cd api
 
 [BaseUrl]/api~ ls
-No directory structure has been set, so there is nothing to list.
+No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
 [BaseUrl]/api~", null);
 
@@ -110,7 +110,7 @@ ls";
 [BaseUrl]/~ cd api/Values
 
 [BaseUrl]/api/Values~ ls
-No directory structure has been set, so there is nothing to list.
+No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
 [BaseUrl]/api/Values~", null);
 
