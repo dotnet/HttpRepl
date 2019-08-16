@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
 
@@ -24,9 +25,13 @@ namespace Microsoft.HttpRepl
 
         public Stack<string> PathSections { get; }
 
-        public IDirectoryStructure Structure { get; set; }
+        public ApiDefinition ApiDefinition { get; set; }
 
         public Uri BaseAddress { get; set; }
+
+        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault().Url;
+
+        public IDirectoryStructure Structure => ApiDefinition?.DirectoryStructure;
 
         public bool EchoRequest { get; set; }
 

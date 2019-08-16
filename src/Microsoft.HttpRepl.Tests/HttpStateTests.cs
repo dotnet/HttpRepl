@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Xunit;
@@ -69,7 +70,7 @@ namespace Microsoft.HttpRepl.Tests
             HttpState httpState = SetupHttpState();
 
             httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = null;
+            httpState.ApiDefinition = null;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, string.Empty);
 
@@ -87,7 +88,9 @@ namespace Microsoft.HttpRepl.Tests
 
             HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes(null, "");
 
@@ -109,7 +112,9 @@ namespace Microsoft.HttpRepl.Tests
 
             HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "");
 
@@ -131,7 +136,9 @@ namespace Microsoft.HttpRepl.Tests
 
             HttpState httpState = SetupHttpState();
             httpState.BaseAddress = new Uri("https://localhost/");
-            httpState.Structure = parentDirectoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = parentDirectoryStructure;
+            httpState.ApiDefinition = apiDefinition;
 
             IEnumerable<string> result = httpState.GetApplicableContentTypes("GET", "child");
 

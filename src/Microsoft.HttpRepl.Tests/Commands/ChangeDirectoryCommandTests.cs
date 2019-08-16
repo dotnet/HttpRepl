@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;
@@ -23,7 +24,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Setup(commandText: "cd NotAnEndpoint", out MockedShellState mockedShellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            httpState.Structure = new DirectoryStructure(null);
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = new DirectoryStructure(null)
+            };
+            httpState.ApiDefinition = apiDefinition;
 
             string expectedFirstLine = string.Format(Resources.Strings.ChangeDirectoryCommand_Warning_UnknownEndpoint, "/NotAnEndpoint").SetColor(httpState.WarningColor);
             string expectedSecondLine = "/NotAnEndpoint    []";
@@ -47,7 +52,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
             RequestInfo childRequestInfo = new RequestInfo();
             childRequestInfo.AddMethod("GET");
             childDirectory.RequestInfo = childRequestInfo;
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = directoryStructure
+            };
+            httpState.ApiDefinition = apiDefinition;
 
             string expectedOutput = "/AnEndpoint    [GET]";
 
@@ -67,7 +76,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
             DirectoryStructure directoryStructure = new DirectoryStructure(null);
             DirectoryStructure childDirectory = directoryStructure.DeclareDirectory("AnEndpoint");
             DirectoryStructure grandchildDirectory = childDirectory.DeclareDirectory("AnotherEndpoint");
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = directoryStructure
+            };
+            httpState.ApiDefinition = apiDefinition;
 
             string expectedOutput = "/AnEndpoint    []";
 

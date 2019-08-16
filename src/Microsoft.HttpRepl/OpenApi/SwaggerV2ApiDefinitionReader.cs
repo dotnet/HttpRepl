@@ -8,20 +8,41 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class SwaggerV2EndpointMetadataReader : IEndpointMetadataReader
+    public class SwaggerV2ApiDefinitionReader : IApiDefinitionReader
     {
         public bool CanHandle(JObject document)
         {
             return (document["swagger"]?.ToString() ?? "").StartsWith("2.", StringComparison.Ordinal);
         }
 
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
+            ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 
             if (!(document["consumes"] is JArray globalConsumes))
             {
                 globalConsumes = new JArray();
+            }
+
+            string host = document["host"]?.Value<string>();
+            string basePath = document["basePath"]?.Value<string>()?.EnsureTrailingSlash();
+            IEnumerable<string> schemes = document["schemes"]?.Values<string>();
+
+            if (!string.IsNullOrWhiteSpace(host))
+            {
+                if (schemes == null)
+                {
+                    schemes = new[] { sourceUri.Scheme }; 
+                }
+
+                foreach (string scheme in schemes)
+                {
+                    if (Uri.TryCreate($"{scheme}://{host}{basePath}", UriKind.Absolute, out Uri serverUri))
+                    {
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v2 combined scheme, host and basePath from {sourceUri.ToString()}" });
+                    }
+                }
             }
 
             if (document["paths"] is JObject obj)
@@ -84,7 +105,16 @@ namespace Microsoft.HttpRepl.OpenApi
                 }
             }
 
-            return metadata;
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            foreach (EndpointMetadata entry in metadata)
+            {
+                ApiDefinitionReader.FillDirectoryInfo(d, entry);
+            }
+
+            apiDefinition.DirectoryStructure = d;
+
+            return apiDefinition;
         }
     }
 }
