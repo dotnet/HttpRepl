@@ -246,13 +246,22 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(parseResult.Sections[2], UriKind.Absolute, out Uri serverUri))
+            if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]))
             {
                 shellState.ConsoleManager.Error.WriteLine(Strings.SetSwaggerCommand_SpecifySwaggerDocument.SetColor(programState.ErrorColor));
             }
             else
             {
-                await CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, serverUri, cancellationToken).ConfigureAwait(false);
+                Uri serverUri;
+                if ((Uri.IsWellFormedUriString(parseResult.Sections[2], UriKind.Absolute) && Uri.TryCreate(parseResult.Sections[2], UriKind.Absolute, out serverUri)) ||
+                    (!(programState.BaseAddress is null) && Uri.TryCreate(programState.BaseAddress, parseResult.Sections[2], out serverUri)))
+                {
+                    await CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, serverUri, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    shellState.ConsoleManager.Error.WriteLine(Strings.SetSwaggerCommand_InvalidSwaggerUri.SetColor(programState.ErrorColor));
+                }
             }
         }
 
