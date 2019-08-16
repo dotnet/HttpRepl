@@ -260,8 +260,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 
-            Assert.Equal("http://localhost/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
-
             await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.NotEqual("https://localhost/api/v2/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);

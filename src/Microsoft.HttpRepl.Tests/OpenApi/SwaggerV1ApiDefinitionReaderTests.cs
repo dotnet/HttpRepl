@@ -68,11 +68,32 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-
             IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
 
             Assert.Null(subDirectory.RequestInfo);
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoMethods_ReturnsApiDefinitionWithStructure()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+      ""operations"": [
+        {
+        }
+      ]
+    }
+  ]
+}";
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
         }
 
         [Fact]
@@ -91,11 +112,28 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-
             IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/user/logout");
 
             Assert.Null(subDirectory.RequestInfo);
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoOperations_ReturnsApiDefinitionWithStructure()
+        {
+            string json = @"{
+  ""swaggerVersion"": ""1.2"",
+  ""apis"": [
+    {
+      ""path"": ""/user/logout"",
+    }
+  ]
+}";
+            JObject jobject = JObject.Parse(json);
+            SwaggerV1ApiDefinitionReader swaggerV1ApiDefinitionReader = new SwaggerV1ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = swaggerV1ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
         }
 
         [Fact]

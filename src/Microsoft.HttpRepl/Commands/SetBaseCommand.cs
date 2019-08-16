@@ -20,6 +20,7 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string Name = "set";
         private const string SubCommand = "base";
+        private static readonly string[] SwaggerSearchPaths = new[] { "swagger.json", "swagger/v1/swagger.json" };
 
         public string Description => Strings.SetBaseCommand_HelpSummary;
 
@@ -60,9 +61,7 @@ namespace Microsoft.HttpRepl.Commands
             }
             else
             {
-                string[] swaggerSearchPaths = new[] { "swagger.json", "swagger/v1/swagger.json" };
-
-                foreach (string swaggerSearchPath in swaggerSearchPaths)
+                foreach (string swaggerSearchPath in SwaggerSearchPaths)
                 {
                     if (Uri.TryCreate(state.BaseAddress, swaggerSearchPath, out Uri result))
                     {

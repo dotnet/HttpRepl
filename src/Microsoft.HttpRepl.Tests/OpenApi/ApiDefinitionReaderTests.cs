@@ -22,7 +22,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JObject jobject = JObject.Parse(json);
             ApiDefinitionReader apiDefinitionReader = new ApiDefinitionReader();
 
-            Assert.Null(apiDefinitionReader.Read(jobject, null));
+            ApiDefinition definition = apiDefinitionReader.Read(jobject, null);
+
+            Assert.Null(definition);
         }
 
         [Fact]

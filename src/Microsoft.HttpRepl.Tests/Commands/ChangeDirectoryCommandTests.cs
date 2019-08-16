@@ -24,8 +24,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Setup(commandText: "cd NotAnEndpoint", out MockedShellState mockedShellState, out HttpState httpState, out ICoreParseResult parseResult);
 
-            ApiDefinition apiDefinition = new ApiDefinition();
-            apiDefinition.DirectoryStructure = new DirectoryStructure(null);
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = new DirectoryStructure(null)
+            };
             httpState.ApiDefinition = apiDefinition;
 
             string expectedFirstLine = string.Format(Resources.Strings.ChangeDirectoryCommand_Warning_UnknownEndpoint, "/NotAnEndpoint").SetColor(httpState.WarningColor);
@@ -50,8 +52,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
             RequestInfo childRequestInfo = new RequestInfo();
             childRequestInfo.AddMethod("GET");
             childDirectory.RequestInfo = childRequestInfo;
-            ApiDefinition apiDefinition = new ApiDefinition();
-            apiDefinition.DirectoryStructure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = directoryStructure
+            };
             httpState.ApiDefinition = apiDefinition;
 
             string expectedOutput = "/AnEndpoint    [GET]";
@@ -72,8 +76,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
             DirectoryStructure directoryStructure = new DirectoryStructure(null);
             DirectoryStructure childDirectory = directoryStructure.DeclareDirectory("AnEndpoint");
             DirectoryStructure grandchildDirectory = childDirectory.DeclareDirectory("AnotherEndpoint");
-            ApiDefinition apiDefinition = new ApiDefinition();
-            apiDefinition.DirectoryStructure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = directoryStructure
+            };
             httpState.ApiDefinition = apiDefinition;
 
             string expectedOutput = "/AnEndpoint    []";

@@ -67,11 +67,30 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(jobject, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-
             IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
 
             Assert.Null(subDirectory.RequestInfo);
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoRequestMethods_ReturnsApiDefinitionWithStructure()
+        {
+            string json = @"{
+  ""swagger"": ""2.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/api/Employees"": {
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            SwaggerV2ApiDefinitionReader swaggerV2ApiDefinitionReader = new SwaggerV2ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
         }
 
         [Fact]

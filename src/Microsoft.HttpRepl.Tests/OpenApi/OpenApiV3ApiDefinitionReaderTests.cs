@@ -85,6 +85,44 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             Assert.Contains("post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
         }
 
+        [Fact]
+        public void ReadMetadata_WithNoMethods_ReturnsApiDefinitionWithStructure()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            Assert.NotNull(apiDefinition?.DirectoryStructure);
+        }
+
+        [Fact]
+        public void ReadMetadata_WithNoResponses_ReturnsApiDefinitionWithNoRequestInfo()
+        {
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, null);
+
+            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+
+            Assert.Null(subDirectory.RequestInfo);
+        }
+
         [Theory]
         [InlineData("get", true)]
         [InlineData("post", true)]
