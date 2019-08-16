@@ -392,7 +392,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 }";
 
             string swaggerAddress = "http://localhost/swagger.json";
-            string baseAddress = "https://petstore.swagger.io/v2/";
+            string baseAddress = "https://localhost/v2/";
             string requestAddress = swaggerAddress;
             string parseResultSections = "set swagger " + swaggerAddress;
             IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, requestAddress, baseAddress).ConfigureAwait(false);
