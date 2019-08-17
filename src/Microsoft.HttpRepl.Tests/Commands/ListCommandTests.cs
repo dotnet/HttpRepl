@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.Parsing;
 using Xunit;
@@ -30,7 +31,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             httpState.BaseAddress = null;
             httpState.SwaggerEndpoint = new Uri("http://localhost/swagger.json");
-            httpState.Structure = new DirectoryStructure(null);
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = new DirectoryStructure(null)
+            };
+            httpState.ApiDefinition = apiDefinition;
 
             ListCommand listCommand = new ListCommand(preferences);
 
@@ -54,7 +59,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out IPreferences preferences);
 
             httpState.SwaggerEndpoint = null;
-            httpState.Structure = new DirectoryStructure(null);
+            ApiDefinition apiDefinition = new ApiDefinition()
+            {
+                DirectoryStructure = new DirectoryStructure(null)
+            };
+            httpState.ApiDefinition = apiDefinition;
 
             ListCommand listCommand = new ListCommand(preferences);
 
@@ -78,7 +87,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out IPreferences preferences);
 
             httpState.SwaggerEndpoint = new Uri("http://localhost/swagger.json");
-            httpState.Structure = null;
+            httpState.ApiDefinition = null;
 
             ListCommand listCommand = new ListCommand(preferences);
 
