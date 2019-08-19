@@ -211,8 +211,6 @@ namespace Microsoft.HttpRepl.Tests
         {
             HttpState httpState = SetupHttpState();
 
-            Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
-
             string validToken = "AValidToken";
             httpState.BearerToken = validToken;
 
@@ -224,8 +222,6 @@ namespace Microsoft.HttpRepl.Tests
         public void SetBearer_RemoveToken_ReturnsNull()
         {
             HttpState httpState = SetupHttpState();
-
-            Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
 
             string validToken = "AValidToken";
             httpState.BearerToken = validToken;
