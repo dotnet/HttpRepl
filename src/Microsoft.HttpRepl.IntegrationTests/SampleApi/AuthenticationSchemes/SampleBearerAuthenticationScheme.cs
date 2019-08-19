@@ -25,9 +25,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi.AuthenticationSchemes
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            string[] authHeaderValues = ((string)Context.Request.Headers["Authorization"])?.Split(" ");
-
-            if (authHeaderValues?.Length != 2 || authHeaderValues[0] != "bearer" || authHeaderValues[1] != "validToken")
+            if (Context.Request.Headers["Authorization"] != "bearer validToken")
             {
                 return Task.FromResult(AuthenticateResult.Fail("Invalid authentication"));
             }
