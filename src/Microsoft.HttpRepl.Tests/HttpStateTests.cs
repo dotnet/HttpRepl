@@ -188,6 +188,53 @@ namespace Microsoft.HttpRepl.Tests
             Assert.Null(result);
         }
 
+        [Fact]
+        public void GetBearer_NoTokenSet_ReturnsNull()
+        {
+            HttpState httpState = SetupHttpState();
+
+            Assert.Null(httpState.BearerToken);
+        }
+
+
+        [Fact]
+        public void GetBearer_NoNullSet_ReturnsNull()
+        {
+            HttpState httpState = SetupHttpState();
+            httpState.BearerToken = null;
+
+            Assert.Null(httpState.BearerToken);
+        }
+
+        [Fact]
+        public void SetBearer_ValidToken_ReturnsToken()
+        {
+            HttpState httpState = SetupHttpState();
+
+            Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
+
+            string validToken = "AValidToken";
+            httpState.BearerToken = validToken;
+
+            Assert.Equal(validToken, httpState.BearerToken);
+
+        }
+
+        [Fact]
+        public void SetBearer_RemoveToken_ReturnsNull()
+        {
+            HttpState httpState = SetupHttpState();
+
+            Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
+
+            string validToken = "AValidToken";
+            httpState.BearerToken = validToken;
+            httpState.BearerToken = null;
+
+            Assert.NotEqual(validToken, httpState.BearerToken);
+            Assert.Null(httpState.BearerToken);
+        }
+
         private static HttpState SetupHttpState()
         {
             IFileSystem fileSystem = new FileSystemStub();
