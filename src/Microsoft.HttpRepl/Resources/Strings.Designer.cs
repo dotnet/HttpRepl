@@ -363,7 +363,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sets or clears the bearer authorization. When [token] is empty the bearer authorization is cleared..
+        ///   Looks up a localized string similar to Sets or clears the bearer authorization header. When [token] is empty the bearer authorization is cleared..
         /// </summary>
         internal static string SetBearerCommand_HelpDetails {
             get {
@@ -372,7 +372,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sets or clears the bearer authorization header for all for all request.
+        ///   Looks up a localized string similar to Sets or clears the bearer authorization header for all request.
         /// </summary>
         internal static string SetBearerCommand_HelpSummary {
             get {

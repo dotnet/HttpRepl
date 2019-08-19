@@ -95,7 +95,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string expected = "\u001b[1mUsage: \u001b[39mset bearer [token]"
                                 + Environment.NewLine
                                 + Environment.NewLine
-                                + "Sets or clears the bearer authorization. When [token] is empty the bearer authorization is cleared."
+                                + "Sets or clears the bearer authorization header. When [token] is empty the bearer authorization is cleared."
                                 + Environment.NewLine;
 
             SetBearerCommand setBearerCommand = new SetBearerCommand();
