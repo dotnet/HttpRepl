@@ -363,6 +363,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sets or clears the bearer authorization. When [token] is empty the bearer authorization is cleared..
+        /// </summary>
+        internal static string SetBearerCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("SetBearerCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets or clears the bearer authorization header for all for all request.
+        /// </summary>
+        internal static string SetBearerCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("SetBearerCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets or clears a header. When [value] is empty the header is cleared..
         /// </summary>
         internal static string SetHeaderCommand_HelpDetails {

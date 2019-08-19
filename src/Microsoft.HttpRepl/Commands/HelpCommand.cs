@@ -239,6 +239,7 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine($"{"OPTIONS",navCommandColumn}{dispatcher.GetCommand<OptionsCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine();
             output.AppendLine($"{"set header",navCommandColumn}{dispatcher.GetCommand<SetHeaderCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"set bearer",navCommandColumn}{dispatcher.GetCommand<SetBearerCommand>().GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
             output.AppendLine("Navigation Commands:".Bold().Cyan());

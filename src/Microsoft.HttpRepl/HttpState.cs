@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
@@ -13,6 +14,7 @@ namespace Microsoft.HttpRepl
 {
     public class HttpState
     {
+        private const string BearerSchemeName = "bearer";
         private readonly IFileSystem _fileSystem;
         private readonly IPreferences _preferences;
 
@@ -29,6 +31,30 @@ namespace Microsoft.HttpRepl
         public Uri BaseAddress { get; set; }
 
         public bool EchoRequest { get; set; }
+
+        /// <summary>
+        /// Gets or Sets the authorization bearer token.
+        /// If set to null, the current bearer token (if any) is cleared.
+        /// Returns null if no bearer token was set.
+        /// </summary>
+        public string BearerToken
+        {
+            get
+            {
+                string token = null;
+                if (Client.DefaultRequestHeaders.Authorization?.Scheme == BearerSchemeName)
+                {
+                    token = Client.DefaultRequestHeaders.Authorization.Parameter;
+                }
+                return token;
+            }
+            set
+            {
+                if (value == null && Client.DefaultRequestHeaders.Authorization?.Scheme == BearerSchemeName)
+                    Client.DefaultRequestHeaders.Authorization = null;
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(BearerSchemeName, value);
+            }
+        }
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 

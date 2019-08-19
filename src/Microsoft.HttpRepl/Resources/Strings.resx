@@ -264,4 +264,10 @@ When +history option is specified, commands specified in the text file will be a
     <value>If {0} is not an absolute URI, {1} must be specified.</value>
     <comment>{0} is the name of the commandSpecifiedPath parameter, {1} is the name of the baseAddress uri parameter</comment>
   </data>
+  <data name="SetBearerCommand_HelpSummary" xml:space="preserve">
+    <value>Sets or clears the bearer authorization header for all for all request</value>
+  </data>
+  <data name="SetBearerCommand_HelpDetails" xml:space="preserve">
+    <value>Sets or clears the bearer authorization. When [token] is empty the bearer authorization is cleared.</value>
+  </data>
 </root>
