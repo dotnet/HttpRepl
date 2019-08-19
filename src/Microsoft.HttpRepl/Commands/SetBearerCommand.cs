@@ -33,7 +33,7 @@ namespace Microsoft.HttpRepl.Commands
         public Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
             string token = null;
-            if (parseResult.Sections.Count > 1)
+            if (parseResult.Sections.Count > 2)
             {
                 token = parseResult.Sections[2];
             }
