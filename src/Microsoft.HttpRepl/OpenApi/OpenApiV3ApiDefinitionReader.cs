@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class OpenApiV3EndpointMetadataReader : IEndpointMetadataReader
+    public class OpenApiV3ApiDefinitionReader : IApiDefinitionReader
     {
         private static readonly HashSet<string> _ValidOperationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "get", "put", "post", "delete", "options", "head", "patch", "trace" };
         public bool CanHandle(JObject document)
@@ -17,9 +17,33 @@ namespace Microsoft.HttpRepl.OpenApi
         }
 
         // Based on latest spec at https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
+            ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
+
+            if (document["servers"] is JArray serverArray)
+            {
+                foreach (JObject server in serverArray)
+                {
+                    string url = server["url"]?.Value<string>()?.EnsureTrailingSlash();
+                    string description = server["description"]?.Value<string>();
+
+                    if (url is null)
+                    {
+                        continue;
+                    }
+
+                    if (Uri.IsWellFormedUriString(url, UriKind.Absolute) && Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
+                    {
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = absoluteServerUri, Description = description });
+                    }
+                    else if (Uri.TryCreate(sourceUri, url, out Uri relativeServerUri))
+                    {
+                        apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = relativeServerUri, Description = description });
+                    }
+                }
+            }
 
             if (document["paths"] is JObject paths)
             {
@@ -106,7 +130,16 @@ namespace Microsoft.HttpRepl.OpenApi
                 }
             }
 
-            return metadata;
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            foreach (EndpointMetadata entry in metadata)
+            {
+                ApiDefinitionReader.FillDirectoryInfo(d, entry);
+            }
+
+            apiDefinition.DirectoryStructure = d;
+
+            return apiDefinition;
         }
     }
 }

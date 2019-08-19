@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.HttpRepl.FileSystem;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.ConsoleHandling;
 
@@ -26,9 +27,13 @@ namespace Microsoft.HttpRepl
 
         public Stack<string> PathSections { get; }
 
-        public IDirectoryStructure Structure { get; set; }
+        public ApiDefinition ApiDefinition { get; set; }
 
         public Uri BaseAddress { get; set; }
+
+        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault().Url;
+
+        public IDirectoryStructure Structure => ApiDefinition?.DirectoryStructure;
 
         public bool EchoRequest { get; set; }
 
@@ -68,7 +73,7 @@ namespace Microsoft.HttpRepl
             PathSections = new Stack<string>();
             Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
             {
-                { "User-Agent", new[] { "HTTP-REPL" } }
+                { "User-Agent", new[] { _preferences.GetValue(WellKnownPreference.HttpClientUserAgent, "HTTP-REPL") } }
             };
         }
 

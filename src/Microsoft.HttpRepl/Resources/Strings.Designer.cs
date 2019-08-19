@@ -187,6 +187,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list. Use the &quot;set base&quot; command to set a base address..
+        /// </summary>
+        internal static string ListCommand_Error_NoBaseAddress {
+            get {
+                return ResourceManager.GetString("ListCommand_Error_NoBaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;set swagger&quot; command to set a directory structure based on a swagger definition..
+        /// </summary>
+        internal static string ListCommand_Error_NoDirectoryStructure {
+            get {
+                return ResourceManager.GetString("ListCommand_Error_NoDirectoryStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all endpoints for the current path.
         /// </summary>
         internal static string ListCommand_HelpSummary {
@@ -413,6 +431,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string SetSwaggerCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must specify a valid swagger document.
+        /// </summary>
+        internal static string SetSwaggerCommand_InvalidSwaggerUri {
+            get {
+                return ResourceManager.GetString("SetSwaggerCommand_InvalidSwaggerUri", resourceCulture);
             }
         }
         

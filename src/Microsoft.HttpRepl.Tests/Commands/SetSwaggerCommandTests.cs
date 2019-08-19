@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -233,6 +234,38 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_WithBaseAddress_DoesNotSetHttpStateBaseAddress()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""host"": ""localhost"",
+  ""schemes"": [
+    ""https""
+  ],
+  ""basePath"": ""/api/v2"",
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            ArrangeInputs(commandText: "set swagger http://localhost/swagger.json",
+                baseAddress: "http://localhost/",
+                path: "/",
+                urlsWithResponse: new Dictionary<string, string> { { "http://localhost/swagger.json", response } },
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out _,
+                out _);
+
+            SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
+
+            await setSwaggerCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.NotEqual("https://localhost/api/v2/", httpState.BaseAddress.ToString(), StringComparer.Ordinal);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_WithoutChildDirectories_SetsHttpStateSwaggerStructure()
         {
             string response = @"{
@@ -377,12 +410,72 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Values", childDirectoryNames.First());
         }
 
-        private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections, string baseAddress)
+        [Fact]
+        public async Task ExecuteAsync_WithAbsoluteUrl_SetsApiDefinition()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api/Values"": {
+      ""post"": {
+        
+      }
+    }
+  }
+}";
+
+            string swaggerAddress = "http://localhost/swagger.json";
+            string baseAddress = "https://localhost/v2/";
+            string requestAddress = swaggerAddress;
+            string parseResultSections = "set swagger " + swaggerAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, requestAddress, baseAddress).ConfigureAwait(false);
+
+            Assert.NotNull(directoryStructure);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithRelativeUrlAndBaseAddress_SetsApiDefinition()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api/Values"": {
+      ""post"": {
+        
+      }
+    }
+  }
+}";
+
+            string swaggerAddress = "/swagger.json";
+            string baseAddress = "http://localhost/";
+            string requestAddress = "http://localhost/swagger.json";
+            string parseResultSections = "set swagger " + swaggerAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(response, parseResultSections, requestAddress, baseAddress).ConfigureAwait(false);
+
+            Assert.NotNull(directoryStructure);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithRelativeUrlAndNoBaseAddress_DoesNotSetApiDefinition()
+        {
+            string swaggerAddress = "/swagger.json";
+            string baseAddress = null;
+            string parseResultSections = "set swagger " + swaggerAddress;
+            IDirectoryStructure directoryStructure = await GetDirectoryStructure(null, parseResultSections, null, baseAddress).ConfigureAwait(false);
+
+            Assert.Null(directoryStructure);
+        }
+
+        private async Task<IDirectoryStructure> GetDirectoryStructure(string response, string parseResultSections, string requestAddress, string baseAddress = null)
         {
             MockedShellState shellState = new MockedShellState();
             IDictionary<string, string> urlsWithResponse = new Dictionary<string, string>();
-            urlsWithResponse.Add(baseAddress, response);
-            HttpState httpState = GetHttpState(out _, out _, urlsWithResponse: urlsWithResponse);
+            if (!(requestAddress is null))
+            {
+                urlsWithResponse.Add(requestAddress, response);
+            }
+            HttpState httpState = GetHttpState(out _, out _, baseAddress: baseAddress, urlsWithResponse: urlsWithResponse);
             ICoreParseResult parseResult = CoreParseResultHelper.Create(parseResultSections);
             SetSwaggerCommand setSwaggerCommand = new SetSwaggerCommand();
 

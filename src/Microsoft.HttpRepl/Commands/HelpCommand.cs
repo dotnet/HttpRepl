@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
@@ -97,7 +96,7 @@ namespace Microsoft.HttpRepl.Commands
 
                                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+                                    await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
                                 }
                             }
 

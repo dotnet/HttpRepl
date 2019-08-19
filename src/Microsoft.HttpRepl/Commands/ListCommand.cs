@@ -36,12 +36,19 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                 {
-                    await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+                    await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-            if (programState.Structure == null || programState.BaseAddress == null)
+            if (programState.BaseAddress is null)
             {
+                shellState.ConsoleManager.WriteLine(Resources.Strings.ListCommand_Error_NoBaseAddress.SetColor(programState.WarningColor));
+                return;
+            }
+
+            if (programState.SwaggerEndpoint is null || programState.Structure is null)
+            {
+                shellState.ConsoleManager.WriteLine(Resources.Strings.ListCommand_Error_NoDirectoryStructure.SetColor(programState.WarningColor));
                 return;
             }
 

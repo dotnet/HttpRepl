@@ -142,7 +142,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
             {
-                await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+                await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
             }
         }
 

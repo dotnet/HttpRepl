@@ -8,16 +8,27 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class SwaggerV1EndpointMetadataReader : IEndpointMetadataReader
+    public class SwaggerV1ApiDefinitionReader : IApiDefinitionReader
     {
         public bool CanHandle(JObject document)
         {
             return (document["swaggerVersion"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
-        public IEnumerable<EndpointMetadata> ReadMetadata(JObject document)
+        public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
+            ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
+
+            string basePath = document["basePath"]?.Value<string>()?.EnsureTrailingSlash();
+
+            if (!string.IsNullOrWhiteSpace(basePath))
+            {
+                if (Uri.TryCreate(basePath, UriKind.Absolute, out Uri serverUri))
+                {
+                    apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = serverUri, Description = $"Swagger v1 basePath from {sourceUri.ToString()}" });
+                }
+            }
 
             if (!(document["consumes"] is JArray globalConsumes))
             {
@@ -108,7 +119,16 @@ namespace Microsoft.HttpRepl.OpenApi
                 }
             }
 
-            return metadata;
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            foreach (EndpointMetadata entry in metadata)
+            {
+                ApiDefinitionReader.FillDirectoryInfo(d, entry);
+            }
+
+            apiDefinition.DirectoryStructure = d;
+
+            return apiDefinition;
         }
     }
 }

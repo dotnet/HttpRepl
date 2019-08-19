@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.OpenApi;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -235,7 +236,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  caretPosition: 25);
 
             IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
@@ -255,7 +258,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  caretPosition: 25);
 
             IDirectoryStructure directoryStructure = GetDirectoryStructure("testMethod", "testContentType", "testBody");
-            httpState.Structure = directoryStructure;
+            ApiDefinition apiDefinition = new ApiDefinition();
+            apiDefinition.DirectoryStructure = directoryStructure;
+            httpState.ApiDefinition = apiDefinition;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand();

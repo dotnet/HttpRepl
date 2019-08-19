@@ -20,6 +20,7 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string Name = "set";
         private const string SubCommand = "base";
+        private static readonly string[] SwaggerSearchPaths = new[] { "swagger.json", "swagger/v1/swagger.json" };
 
         public string Description => Strings.SetBaseCommand_HelpSummary;
 
@@ -36,7 +37,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 state.BaseAddress = null;
             }
-            else if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(EnsureTrailingSlash(parseResult.Sections[2]), UriKind.Absolute, out Uri serverUri))
+            else if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(parseResult.Sections[2].EnsureTrailingSlash(), UriKind.Absolute, out Uri serverUri))
             {
                 shellState.ConsoleManager.Error.WriteLine(Strings.SetBaseCommand_MustSpecifyServerError.SetColor(state.ErrorColor));
             }
@@ -54,43 +55,25 @@ namespace Microsoft.HttpRepl.Commands
                 catch { }
             }
 
-            if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger.json", out Uri result))
+            if (state.BaseAddress == null)
             {
-                state.Structure = null;
+                state.ApiDefinition = null;
             }
             else
             {
-                await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
-                if (state.Structure != null)
+                foreach (string swaggerSearchPath in SwaggerSearchPaths)
                 {
-                    shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);
-                }
-                else
-                {
-                    if (state.BaseAddress == null || !Uri.TryCreate(state.BaseAddress, "swagger/v1/swagger.json", out result))
+                    if (Uri.TryCreate(state.BaseAddress, swaggerSearchPath, out Uri result))
                     {
-                        state.Structure = null;
-                    }
-                    else
-                    {
-                        await SetSwaggerCommand.CreateDirectoryStructureForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
-                        if (state.Structure != null)
+                        await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
+                        if (state.ApiDefinition != null)
                         {
                             shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);
+                            break;
                         }
                     }
                 }
             }
-        }
-
-        private string EnsureTrailingSlash(string v)
-        {
-            if (!v.EndsWith("/", StringComparison.Ordinal))
-            {
-                v += "/";
-            }
-
-            return v;
         }
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
