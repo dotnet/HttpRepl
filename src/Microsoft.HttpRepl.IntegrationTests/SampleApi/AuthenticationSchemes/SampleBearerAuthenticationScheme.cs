@@ -25,14 +25,14 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi.AuthenticationSchemes
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (Context.Request.Headers["Authorization"] != "bearer validToken")
+            if (Context.Request.Headers["Authorization"] == "bearer validToken")
             {
-                return Task.FromResult(AuthenticateResult.Fail("Invalid authentication"));
+                ClaimsPrincipal principle = new ClaimsPrincipal(new ClaimsIdentity("local"));
+                return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principle, SchemeName)));
             }
             else
             {
-                var principle = new ClaimsPrincipal(new ClaimsIdentity("local"));
-                return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principle, SchemeName)));
+                return Task.FromResult(AuthenticateResult.Fail("Invalid authentication"));
             }
         }
     }
