@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.HttpRepl.IntegrationTests.SampleApi.AuthenticationSchemes;
 
 namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
 {
@@ -19,6 +21,11 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                            .UseKestrel(options => options.ListenLocalhost(config.Port.Value))
                            .ConfigureServices(services =>
                            {
+
+                               services.AddAuthentication()
+                                        .AddScheme<AuthenticationSchemeOptions, SampleBearerAuthenticationScheme>(
+                                                    SampleBearerAuthenticationScheme.SchemeName, o => { });
+
                                services.AddControllers();
                                if (config.EnableSwagger)
                                {
@@ -32,7 +39,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
                            {
                                app.UseDeveloperExceptionPage();
 
+
                                app.UseRouting();
+                               app.UseAuthorization();
 
                                app.UseEndpoints(endpoints =>
                                {

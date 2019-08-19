@@ -39,9 +39,10 @@ api   []
 /api    []
 
 [BaseUrl]/api~ ls
-.        []
-..       []
-Values   [get|post]
+.                    []
+..                   []
+AuthorizedEndpoint   []
+Values               [get|post]
 
 [BaseUrl]/api~", null);
 
