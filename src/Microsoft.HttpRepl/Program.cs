@@ -65,8 +65,10 @@ namespace Microsoft.HttpRepl
                     return;
                 }
 
+                string combinedArgs = string.Join(' ', args);
+
                 shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
-                shell.ShellState.InputManager.SetInput(shell.ShellState, $"set base \"{args[0]}\"");
+                shell.ShellState.InputManager.SetInput(shell.ShellState, $"connect {combinedArgs}");
                 await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
             }
             Task result = shell.RunAsync(source.Token);
@@ -84,6 +86,7 @@ namespace Microsoft.HttpRepl
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
             dispatcher.AddCommand(new ChangeDirectoryCommand());
             dispatcher.AddCommand(new ClearCommand());
+            dispatcher.AddCommand(new ConnectCommand(preferences));
             dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
             dispatcher.AddCommand(new EchoCommand());
             dispatcher.AddCommand(new ExitCommand());

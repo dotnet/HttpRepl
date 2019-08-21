@@ -273,4 +273,84 @@ When +history option is specified, commands specified in the text file will be a
   <data name="SetSwaggerCommand_InvalidSwaggerUri" xml:space="preserve">
     <value>Must specify a valid swagger document</value>
   </data>
+  <data name="ConnectCommand_Error_InvalidBase" xml:space="preserve">
+    <value>The base address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>
+  </data>
+  <data name="ConnectCommand_Error_InvalidSwagger" xml:space="preserve">
+    <value>The swagger address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>
+  </data>
+  <data name="ConnectCommand_Error_NoRootNoAbsoluteBase" xml:space="preserve">
+    <value>If no root address is specified, the base address must be an absolute url, including scheme</value>
+  </data>
+  <data name="ConnectCommand_Error_NoRootNoAbsoluteSwagger" xml:space="preserve">
+    <value>If no root address is specified, the swagger address must be an absolute url, including scheme</value>
+  </data>
+  <data name="ConnectCommand_Error_NothingSpecified" xml:space="preserve">
+    <value>You must specify either a root address or a base address and a swagger address</value>
+  </data>
+  <data name="ConnectCommand_Error_RootAddressNotValid" xml:space="preserve">
+    <value>If specified, the root address must be a valid absolute url, including scheme</value>
+  </data>
+  <data name="ConnectCommand_Status_Base" xml:space="preserve">
+    <value>Using a base address of {0}</value>
+    <comment>{0} indicates a uri</comment>
+  </data>
+  <data name="ConnectCommand_Status_NoBase" xml:space="preserve">
+    <value>Unable to determine a base address</value>
+  </data>
+  <data name="ConnectCommand_Status_Swagger" xml:space="preserve">
+    <value>Using swagger definition at {0}</value>
+    <comment>{0} indicates a uri</comment>
+  </data>
+  <data name="ConnectCommand_Status_NoSwagger" xml:space="preserve">
+    <value>Unable to find a swagger definition</value>
+  </data>
+  <data name="ConnectCommand_Description" xml:space="preserve">
+    <value>Configures the directory structure and base address of the api server</value>
+  </data>
+  <data name="ConnectCommand_HelpDetails_Line1" xml:space="preserve">
+    <value>Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--swagger swaggerAddress] must be specified</value>
+  </data>
+  <data name="ConnectCommand_HelpDetails_Line2" xml:space="preserve">
+    <value>[rootAddress] will be used to automatically determine the base address and swagger address</value>
+  </data>
+  <data name="ConnectCommand_HelpDetails_Line3" xml:space="preserve">
+    <value>[--base baseAddress] and [--swagger swaggerAddress] allow you to explicitly set those addresses and skip auto detection</value>
+  </data>
+  <data name="HelpCommand_Core_CustomizationCommands" xml:space="preserve">
+    <value>REPL Customization Commands:</value>
+  </data>
+  <data name="HelpCommand_Core_CustomizationCommands_Description" xml:space="preserve">
+    <value>Use these commands to customize the REPL behavior</value>
+  </data>
+  <data name="HelpCommand_Core_Details_Line1" xml:space="preserve">
+    <value>Use `help &lt;COMMAND&gt;` for more detail on an individual command. e.g. `help get`</value>
+  </data>
+  <data name="HelpCommand_Core_Details_Line2" xml:space="preserve">
+    <value>For detailed tool info, see https://aka.ms/http-repl-doc</value>
+  </data>
+  <data name="HelpCommand_Core_HttpCommands" xml:space="preserve">
+    <value>HTTP Commands:</value>
+  </data>
+  <data name="HelpCommand_Core_HttpCommands_Description" xml:space="preserve">
+    <value>Use these commands to execute requests against your application</value>
+  </data>
+  <data name="HelpCommand_Core_NavigationCommands" xml:space="preserve">
+    <value>Navigation Commands:</value>
+  </data>
+  <data name="HelpCommand_Core_NavigationCommands_Description" xml:space="preserve">
+    <value>The REPL allows you to navigate your URL space and focus on specific APIs that you are working on</value>
+  </data>
+  <data name="HelpCommand_Core_SetupCommands" xml:space="preserve">
+    <value>Setup Commands:</value>
+  </data>
+  <data name="HelpCommand_Core_SetupCommands_Description" xml:space="preserve">
+    <value>Use these commands to configure the tool for your API server</value>
+  </data>
+  <data name="HelpCommand_Core_ShellCommands" xml:space="preserve">
+    <value>Shell Commands:</value>
+  </data>
+  <data name="HelpCommand_Core_ShellCommands_Description" xml:space="preserve">
+    <value>Use these commands to interact with the REPL shell</value>
+  </data>
 </root>

@@ -88,6 +88,132 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server.
+        /// </summary>
+        internal static string ConnectCommand_Description {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The base address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified.
+        /// </summary>
+        internal static string ConnectCommand_Error_InvalidBase {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_InvalidBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The swagger address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified.
+        /// </summary>
+        internal static string ConnectCommand_Error_InvalidSwagger {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_InvalidSwagger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If no root address is specified, the base address must be an absolute url, including scheme.
+        /// </summary>
+        internal static string ConnectCommand_Error_NoRootNoAbsoluteBase {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_NoRootNoAbsoluteBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If no root address is specified, the swagger address must be an absolute url, including scheme.
+        /// </summary>
+        internal static string ConnectCommand_Error_NoRootNoAbsoluteSwagger {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_NoRootNoAbsoluteSwagger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must specify either a root address or a base address and a swagger address.
+        /// </summary>
+        internal static string ConnectCommand_Error_NothingSpecified {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_NothingSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If specified, the root address must be a valid absolute url, including scheme.
+        /// </summary>
+        internal static string ConnectCommand_Error_RootAddressNotValid {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Error_RootAddressNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--swagger swaggerAddress] must be specified.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line1 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [rootAddress] will be used to automatically determine the base address and swagger address.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line2 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [--base baseAddress] and [--swagger swaggerAddress] allow you to explicitly set those addresses and skip auto detection.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line3 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using a base address of {0}.
+        /// </summary>
+        internal static string ConnectCommand_Status_Base {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Status_Base", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to determine a base address.
+        /// </summary>
+        internal static string ConnectCommand_Status_NoBase {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Status_NoBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to find a swagger definition.
+        /// </summary>
+        internal static string ConnectCommand_Status_NoSwagger {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Status_NoSwagger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using swagger definition at {0}.
+        /// </summary>
+        internal static string ConnectCommand_Status_Swagger {
+            get {
+                return ResourceManager.GetString("ConnectCommand_Status_Swagger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Turns request echoing on or off, show the request that was made when using request commands.
         /// </summary>
         internal static string EchoCommand_HelpSummary {
@@ -174,6 +300,114 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string Help_Usage {
             get {
                 return ResourceManager.GetString("Help_Usage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REPL Customization Commands:.
+        /// </summary>
+        internal static string HelpCommand_Core_CustomizationCommands {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_CustomizationCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use these commands to customize the REPL behavior.
+        /// </summary>
+        internal static string HelpCommand_Core_CustomizationCommands_Description {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_CustomizationCommands_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use `help &lt;COMMAND&gt;` for more detail on an individual command. e.g. `help get`.
+        /// </summary>
+        internal static string HelpCommand_Core_Details_Line1 {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_Details_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For detailed tool info, see https://aka.ms/http-repl-doc.
+        /// </summary>
+        internal static string HelpCommand_Core_Details_Line2 {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_Details_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HTTP Commands:.
+        /// </summary>
+        internal static string HelpCommand_Core_HttpCommands {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_HttpCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use these commands to execute requests against your application.
+        /// </summary>
+        internal static string HelpCommand_Core_HttpCommands_Description {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_HttpCommands_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigation Commands:.
+        /// </summary>
+        internal static string HelpCommand_Core_NavigationCommands {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_NavigationCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The REPL allows you to navigate your URL space and focus on specific APIs that you are working on.
+        /// </summary>
+        internal static string HelpCommand_Core_NavigationCommands_Description {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_NavigationCommands_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup Commands:.
+        /// </summary>
+        internal static string HelpCommand_Core_SetupCommands {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_SetupCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use these commands to configure the tool for your API server.
+        /// </summary>
+        internal static string HelpCommand_Core_SetupCommands_Description {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_SetupCommands_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shell Commands:.
+        /// </summary>
+        internal static string HelpCommand_Core_ShellCommands {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_ShellCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use these commands to interact with the REPL shell.
+        /// </summary>
+        internal static string HelpCommand_Core_ShellCommands_Description {
+            get {
+                return ResourceManager.GetString("HelpCommand_Core_ShellCommands_Description", resourceCulture);
             }
         }
         

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -219,29 +220,31 @@ namespace Microsoft.HttpRepl.Commands
 
         public void CoreGetHelp(IShellState shellState, ICommandDispatcher<HttpState, ICoreParseResult> dispatcher, HttpState programState)
         {
+            const int navCommandColumn = -15;
             var output = new StringBuilder();
 
             output.AppendLine();
-            output.AppendLine("HTTP Commands:".Bold().Cyan());
-            output.AppendLine("Use these commands to execute requests against your application.");
+            output.AppendLine(Strings.HelpCommand_Core_SetupCommands.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_SetupCommands_Description);
             output.AppendLine();
+            output.AppendLine($"{"connect",navCommandColumn}{dispatcher.GetCommand<ConnectCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"set header",navCommandColumn}{dispatcher.GetCommand<SetHeaderCommand>().GetHelpSummary(shellState, programState)}");
 
-            const int navCommandColumn = -15;
-
-
+            output.AppendLine();
+            output.AppendLine(Strings.HelpCommand_Core_HttpCommands.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_HttpCommands_Description);
+            output.AppendLine();
             output.AppendLine($"{"GET",navCommandColumn}{dispatcher.GetCommand<GetCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"POST",navCommandColumn}{dispatcher.GetCommand<PostCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"PUT",navCommandColumn}{dispatcher.GetCommand<PutCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"DELETE",navCommandColumn}{dispatcher.GetCommand<DeleteCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"PATCH",navCommandColumn}{dispatcher.GetCommand<PatchCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"HEAD",navCommandColumn}{dispatcher.GetCommand<HeadCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"OPTIONS",navCommandColumn}{dispatcher.GetCommand<OptionsCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine();
-            output.AppendLine($"{"set header",navCommandColumn}{dispatcher.GetCommand<SetHeaderCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"OPTIONS",navCommandColumn}{dispatcher.GetCommand<OptionsCommand>().GetHelpSummary(shellState, programState)}");          
 
             output.AppendLine();
-            output.AppendLine("Navigation Commands:".Bold().Cyan());
-            output.AppendLine("The REPL allows you to navigate your URL space and focus on specific APIs that you are working on.");
+            output.AppendLine(Strings.HelpCommand_Core_NavigationCommands.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_NavigationCommands_Description);
             output.AppendLine();
 
             output.AppendLine($"{"set base",navCommandColumn}{dispatcher.GetCommand<SetBaseCommand>().GetHelpSummary(shellState, programState)}");
@@ -250,8 +253,8 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine($"{"cd",navCommandColumn}{dispatcher.GetCommand<ChangeDirectoryCommand>().GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
-            output.AppendLine("Shell Commands:".Bold().Cyan());
-            output.AppendLine("Use these commands to interact with the REPL shell.");
+            output.AppendLine(Strings.HelpCommand_Core_ShellCommands.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_ShellCommands_Description);
             output.AppendLine();
 
             output.AppendLine($"{"clear",navCommandColumn}{dispatcher.GetCommand<ClearCommand>().GetHelpSummary(shellState, programState)}");
@@ -259,16 +262,16 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine($"{"exit",navCommandColumn}{dispatcher.GetCommand<ExitCommand>().GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
-            output.AppendLine("REPL Customization Commands:".Bold().Cyan());
-            output.AppendLine("Use these commands to customize the REPL behavior.");
+            output.AppendLine(Strings.HelpCommand_Core_CustomizationCommands.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_CustomizationCommands_Description);
             output.AppendLine();
 
             output.AppendLine($"{"pref [get/set]",navCommandColumn}{dispatcher.GetCommand<PrefCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"run",navCommandColumn}{dispatcher.GetCommand<RunCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"ui",navCommandColumn}{dispatcher.GetCommand<UICommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine();
-            output.AppendLine("Use `help <COMMAND>` for more detail on an individual command. e.g. `help get`.".Bold().Cyan());
-            output.AppendLine("For detailed tool info, see https://aka.ms/http-repl-doc.".Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_Details_Line1.Bold().Cyan());
+            output.AppendLine(Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
             output.AppendLine();
 
             shellState.ConsoleManager.Write(output.ToString());

@@ -22,6 +22,23 @@ namespace Microsoft.HttpRepl.OpenApi
             _readers.Add(reader);
         }
 
+        public bool CanHandle(JObject document)
+        {
+            if (document is null)
+            {
+                return false;
+            }
+
+            foreach (IApiDefinitionReader reader in _readers)
+            {
+                if (reader.CanHandle(document))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public ApiDefinition Read(JObject document, Uri swaggerUri)
         {
             foreach (IApiDefinitionReader reader in _readers)
