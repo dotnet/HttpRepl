@@ -19,14 +19,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task WithoutParameter_ShowsCorrectOutput()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect {_serverConfig.BaseAddress}
 cd api/values
 get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/values
 /api/values    [get|post]
@@ -52,14 +53,15 @@ Transfer-Encoding: chunked
         [Fact]
         public async Task WithParameter_ShowsCorrectOutput()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect {_serverConfig.BaseAddress}
 cd api/values
 get 5";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/values
 /api/values    [get|post]
@@ -82,14 +84,15 @@ value
         [Fact]
         public async Task InvalidPath_ShowsNotFoundMessage()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect {_serverConfig.BaseAddress}
 cd api/invalidpath
 get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/invalidpath
 Warning: The '/api/invalidpath' endpoint is not present in the Swagger metadata

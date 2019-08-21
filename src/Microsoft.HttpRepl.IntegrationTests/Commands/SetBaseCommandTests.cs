@@ -29,7 +29,6 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~", null);
 

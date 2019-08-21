@@ -21,15 +21,16 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task WithSwagger_ShowsAvailableSubpaths()
         {
-            string scriptText = $@"set base {_swaggerServerConfig.BaseAddress}
+            string scriptText = $@"connect {_swaggerServerConfig.BaseAddress}
 ls
 cd api
 ls";
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ ls
 .     []
@@ -51,13 +52,14 @@ Values   [get|post]
         [Fact]
         public async Task WithSwagger_ShowsControllerActionsWithHttpVerbs()
         {
-            string scriptText = $@"set base {_swaggerServerConfig.BaseAddress}
+            string scriptText = $@"connect {_swaggerServerConfig.BaseAddress}
 cd api/Values
 ls";
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/Values
 /api/Values    [get|post]

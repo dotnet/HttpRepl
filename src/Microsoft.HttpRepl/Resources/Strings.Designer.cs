@@ -606,15 +606,6 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using swagger metadata from .
-        /// </summary>
-        internal static string SetBaseCommand_SwaggerMetadataUriLocation {
-            get {
-                return ResourceManager.GetString("SetBaseCommand_SwaggerMetadataUriLocation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sets or clears a header. When [value] is empty the header is cleared..
         /// </summary>
         internal static string SetHeaderCommand_HelpDetails {

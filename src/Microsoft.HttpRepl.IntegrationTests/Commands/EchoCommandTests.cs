@@ -25,7 +25,6 @@ echo on";
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ echo on
 Request echoing is on
@@ -44,7 +43,6 @@ echo off";
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ echo off
 Request echoing is off

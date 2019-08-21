@@ -204,9 +204,6 @@
   <data name="RunCommand_HelpSummary" xml:space="preserve">
     <value>Runs the script at the given path. A script is a set of commands that can be typed with one command per line</value>
   </data>
-  <data name="SetBaseCommand_HelpSummary" xml:space="preserve">
-    <value>Set the base URI. e.g. `set base http://locahost:5000`</value>
-  </data>
   <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
     <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
   </data>
@@ -232,18 +229,8 @@
     <value>Unable to launch {0}</value>
     <comment>{0} indicates a uri</comment>
   </data>
-  <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
-    <value>Must specify a server</value>
-  </data>
-  <data name="SetBaseCommand_SwaggerMetadataUriLocation" xml:space="preserve">
-    <value>Using swagger metadata from </value>
-  </data>
   <data name="Usage" xml:space="preserve">
     <value>Usage: </value>
-  </data>
-  <data name="SetBaseCommand_HEADRequestUnSuccessful" xml:space="preserve">
-    <value>Warning: HEAD request to the specified address was unsuccessful {0}</value>
-    <comment>{0} is the SocketException message</comment>
   </data>
   <data name="SetHeaderCommand_HelpDetails" xml:space="preserve">
     <value>Sets or clears a header. When [value] is empty the header is cleared.</value>
@@ -352,5 +339,15 @@ When +history option is specified, commands specified in the text file will be a
   </data>
   <data name="HelpCommand_Core_ShellCommands_Description" xml:space="preserve">
     <value>Use these commands to interact with the REPL shell</value>
+  </data>
+  <data name="SetBaseCommand_HEADRequestUnSuccessful" xml:space="preserve">
+    <value>Warning: HEAD request to the specified address was unsuccessful {0}</value>
+    <comment>{0} is the SocketException message</comment>
+  </data>
+  <data name="SetBaseCommand_HelpSummary" xml:space="preserve">
+    <value>Set the base URI. e.g. `set base http://locahost:5000`</value>
+  </data>
+  <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
+    <value>Must specify a server</value>
   </data>
 </root>
