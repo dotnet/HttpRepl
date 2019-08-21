@@ -97,7 +97,13 @@ namespace Microsoft.HttpRepl.Commands
 
                                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+                                    ApiConnection apiConnection = new ApiConnection(_preferences)
+                                    {
+                                        BaseUri = programState.BaseAddress,
+                                        SwaggerUri = programState.SwaggerEndpoint,
+                                        AllowBaseOverrideBySwagger = false
+                                    };
+                                    await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
                                 }
                             }
 
@@ -248,7 +254,6 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine();
 
             output.AppendLine($"{"set base",navCommandColumn}{dispatcher.GetCommand<SetBaseCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"set swagger",navCommandColumn}{dispatcher.GetCommand<SetSwaggerCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"ls",navCommandColumn}{dispatcher.GetCommand<ListCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"cd",navCommandColumn}{dispatcher.GetCommand<ChangeDirectoryCommand>().GetHelpSummary(shellState, programState)}");
 

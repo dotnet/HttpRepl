@@ -3,20 +3,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.Commands
 {
@@ -24,7 +19,6 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
-        private const string SwaggerSearchPaths = "swagger.json|swagger/v1/swagger.json|/swagger.json|/swagger/v1/swagger.json";
         private const string Name = "connect";
 
         private readonly IPreferences _preferences;
@@ -77,68 +71,18 @@ namespace Microsoft.HttpRepl.Commands
             string baseAddress = GetBaseAddressFromCommand(commandInput)?.EnsureTrailingSlash();
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
 
-            ConnectionInfo connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress);
+            ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences);
 
             if (connectionInfo is null)
             {
                 return;
             }
 
-            if (connectionInfo.HasRootUri && !connectionInfo.HasBaseUri)
-            {
-                connectionInfo.BaseUri = connectionInfo.RootUri;
-            }
-
-            if (connectionInfo.HasSwaggerUri)
-            {
-                var result = await TryGetSwaggerDocAsync(programState.Client, connectionInfo.SwaggerUri, cancellationToken);
-                if (result.Success)
-                {
-                    connectionInfo.SwaggerDocument = result.Document;
-                }
-            }
-            else
-            {
-                await FindSwaggerDoc(programState.Client, connectionInfo, GetSwaggerSearchPaths(), cancellationToken);
-            }
-
-            if (connectionInfo.HasSwaggerDocument)
-            {
-                SetupApiDefinition(connectionInfo, programState);
-            }
-
-            // If there's a base address in the api definition and there was no explicit base address, set the
-            // base address to the first one in the api definition
-            if (programState.ApiDefinition?.BaseAddresses?.Any() == true && connectionInfo.AllowBaseOverrideBySwagger)
-            {
-                programState.BaseAddress = programState.ApiDefinition.BaseAddresses[0].Url;
-            }
-            else if (connectionInfo.HasBaseUri)
-            {
-                programState.BaseAddress = connectionInfo.BaseUri;
-            }
+            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
 
             WriteStatus(shellState, programState);
         }
 
-        private IEnumerable<string> GetSwaggerSearchPaths()
-        {
-            string rawValue = _preferences.GetValue(WellKnownPreference.SwaggerSearchPaths, SwaggerSearchPaths);
-
-            string[] paths = rawValue?.Split('|', StringSplitOptions.RemoveEmptyEntries);
-
-            return paths;
-        }
-
-        private static void SetupApiDefinition(ConnectionInfo connectionInfo, HttpState programState)
-        {
-            ApiDefinitionReader reader = new ApiDefinitionReader();
-            programState.ApiDefinition = reader.Read(connectionInfo.SwaggerDocument, connectionInfo.SwaggerUri);
-            if (!(programState.ApiDefinition is null))
-            {
-                programState.SwaggerEndpoint = connectionInfo.SwaggerUri;
-            }
-        }
 
         private static void WriteStatus(IShellState shellState, HttpState programState)
         {
@@ -161,7 +105,7 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        private static ConnectionInfo GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress)
+        private static ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences)
         {
             rootAddress = rootAddress?.Trim();
             baseAddress = baseAddress?.Trim();
@@ -179,23 +123,28 @@ namespace Microsoft.HttpRepl.Commands
                 return null;
             }
 
-            ConnectionInfo args = new ConnectionInfo();
+            ApiConnection apiConnection = new ApiConnection(preferences);
             if (!string.IsNullOrWhiteSpace(rootAddress))
             {
-                args.RootUri = new Uri(rootAddress, UriKind.Absolute);
+                apiConnection.RootUri = new Uri(rootAddress, UriKind.Absolute);
             }
 
-            if (!SetupBaseAddress(shellState, baseAddress, args) || !SetupSwaggerAddress(shellState, swaggerAddress, args))
+            if (!SetupBaseAddress(shellState, baseAddress, apiConnection) || !SetupSwaggerAddress(shellState, swaggerAddress, apiConnection))
             {
                 return null;
             }
 
-            args.AllowBaseOverrideBySwagger = !args.HasBaseUri;
+            apiConnection.AllowBaseOverrideBySwagger = !apiConnection.HasBaseUri;
 
-            return args;
+            if (apiConnection.HasRootUri && !apiConnection.HasBaseUri)
+            {
+                apiConnection.BaseUri = apiConnection.RootUri;
+            }
+
+            return apiConnection;
         }
 
-        private static bool SetupSwaggerAddress(IShellState shellState, string swaggerAddress, ConnectionInfo connectionInfo)
+        private static bool SetupSwaggerAddress(IShellState shellState, string swaggerAddress, ApiConnection connectionInfo)
         {
             if (!string.IsNullOrWhiteSpace(swaggerAddress))
             {
@@ -223,7 +172,7 @@ namespace Microsoft.HttpRepl.Commands
             return true;
         }
 
-        private static bool SetupBaseAddress(IShellState shellState, string baseAddress, ConnectionInfo connectionInfo)
+        private static bool SetupBaseAddress(IShellState shellState, string baseAddress, ApiConnection connectionInfo)
         {
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {
@@ -272,81 +221,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        private static async Task FindSwaggerDoc(HttpClient client, ConnectionInfo connectionInfo, IEnumerable<string> swaggerSearchPaths, CancellationToken cancellationToken)
-        {
-            ApiDefinitionReader reader = new ApiDefinitionReader();
-            HashSet<Uri> checkedUris = new HashSet<Uri>();
-            List<Uri> baseUrisToCheck = new List<Uri>();
-            if (connectionInfo.HasRootUri)
-            {
-                baseUrisToCheck.Add(connectionInfo.RootUri);
-            }
-            if (connectionInfo.HasBaseUri)
-            {
-                baseUrisToCheck.Add(connectionInfo.BaseUri);
-            }
-
-            foreach (Uri baseUriToCheck in baseUrisToCheck)
-            { 
-                foreach (string swaggerSearchPath in swaggerSearchPaths)
-                {
-                    if (Uri.TryCreate(baseUriToCheck, swaggerSearchPath, out Uri swaggerUri) && !checkedUris.Contains(swaggerUri))
-                    {
-                        var result = await TryGetSwaggerDocAsync(client, swaggerUri, cancellationToken);
-                        if (result.Success && reader.CanHandle(result.Document))
-                        {
-                            connectionInfo.SwaggerUri = swaggerUri;
-                            connectionInfo.SwaggerDocument = result.Document;
-                            return;
-                        }
-                        checkedUris.Add(swaggerUri);
-                    }
-                }
-            }
-        }
-
-        private static async Task<JObject> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
-        {
-            var resp = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            resp.EnsureSuccessStatusCode();
-            string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-            JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
-            JObject responseObject = (JObject)serializer.Deserialize(new StringReader(responseString), typeof(JObject));
-            ApiDefinitionReader reader = new ApiDefinitionReader();
-            responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
-
-            return responseObject;
-        }
-
-        private static async Task<(bool Success, JObject Document)> TryGetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
-        {
-            try
-            {
-                JObject document = await GetSwaggerDocAsync(client, uri, cancellationToken);
-                return (true, document);
-            }
-            catch
-            {
-                return (false, null);
-            }
-        }
-
-        private class ConnectionInfo
-        {
-            public Uri RootUri { get; set; }
-            public bool HasRootUri => !(RootUri is null);
-            public Uri BaseUri { get; set; }
-            public bool HasBaseUri => !(BaseUri is null);
-            public Uri SwaggerUri { get; set; }
-            public bool HasSwaggerUri => !(SwaggerUri is null);
-            public JObject SwaggerDocument { get; set; }
-            public bool HasSwaggerDocument => !(SwaggerDocument is null);
-            public bool AllowBaseOverrideBySwagger { get; set; }
-        }
+        
     }
 }

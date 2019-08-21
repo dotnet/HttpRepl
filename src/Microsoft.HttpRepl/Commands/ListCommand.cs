@@ -36,7 +36,13 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                 {
-                    await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, programState, programState.SwaggerEndpoint, cancellationToken).ConfigureAwait(false);
+                    ApiConnection apiConnection = new ApiConnection(_preferences)
+                    {
+                        BaseUri = programState.BaseAddress,
+                        SwaggerUri = programState.SwaggerEndpoint,
+                        AllowBaseOverrideBySwagger = false
+                    };
+                    await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
                 }
             }
 

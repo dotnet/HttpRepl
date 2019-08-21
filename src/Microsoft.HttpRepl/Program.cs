@@ -102,7 +102,6 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new RunCommand(fileSystem));
             dispatcher.AddCommand(new SetBaseCommand());
             dispatcher.AddCommand(new SetHeaderCommand());
-            dispatcher.AddCommand(new SetSwaggerCommand());
             dispatcher.AddCommand(new UICommand(new UriLauncher()));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
