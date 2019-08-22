@@ -80,7 +80,6 @@ namespace Microsoft.HttpRepl
             string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
             JObject responseObject = (JObject)serializer.Deserialize(new StringReader(responseString), typeof(JObject));
-            ApiDefinitionReader reader = new ApiDefinitionReader();
             responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
 
             return responseObject;
