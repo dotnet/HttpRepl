@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task WithNameAndValueSpecified_AddsNewHeaderToListOfHeaders()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect {_serverConfig.BaseAddress}
 cd api/values
 echo on
 set header Accept application/json
@@ -27,8 +27,9 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/values
 /api/values    [get|post]
@@ -68,7 +69,7 @@ Transfer-Encoding: chunked
         [Fact]
         public async Task WithEmptyValue_ClearsHeader()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect {_serverConfig.BaseAddress}
 cd api/values
 echo on
 set header User-Agent
@@ -76,8 +77,9 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
-Using swagger metadata from [BaseUrl]/swagger/v1/swagger.json
+            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+Using a base address of [BaseUrl]/
+Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/~ cd api/values
 /api/values    [get|post]

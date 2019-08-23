@@ -20,7 +20,6 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string Name = "set";
         private const string SubCommand = "base";
-        private static readonly string[] SwaggerSearchPaths = new[] { "swagger.json", "swagger/v1/swagger.json" };
 
         public string Description => Strings.SetBaseCommand_HelpSummary;
 
@@ -53,26 +52,6 @@ namespace Microsoft.HttpRepl.Commands
                     shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.SetBaseCommand_HEADRequestUnSuccessful, se.Message).SetColor(state.WarningColor));
                 }
                 catch { }
-            }
-
-            if (state.BaseAddress == null)
-            {
-                state.ApiDefinition = null;
-            }
-            else
-            {
-                foreach (string swaggerSearchPath in SwaggerSearchPaths)
-                {
-                    if (Uri.TryCreate(state.BaseAddress, swaggerSearchPath, out Uri result))
-                    {
-                        await SetSwaggerCommand.CreateApiDefinitionForSwaggerEndpointAsync(shellState, state, result, cancellationToken).ConfigureAwait(false);
-                        if (state.ApiDefinition != null)
-                        {
-                            shellState.ConsoleManager.WriteLine(Strings.SetBaseCommand_SwaggerMetadataUriLocation + result);
-                            break;
-                        }
-                    }
-                }
             }
         }
 

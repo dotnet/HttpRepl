@@ -170,50 +170,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_IfCancellationIsRequested_SetsSwaggerStructureToNull()
-        {
-            string response = @"{
-  ""swagger"": ""2.0"",
-  ""paths"": {
-    ""/api"": {
-      ""get"": {
-        ""tags"": [ ""Employees"" ],
-        ""operationId"": ""GetEmployee"",
-        ""consumes"": [],
-        ""produces"": [ ""text/plain"", ""application/json"", ""text/json"" ],
-        ""parameters"": [],
-        ""responses"": {
-          ""200"": {
-            ""description"": ""Success"",
-            ""schema"": {
-              ""uniqueItems"": false,
-              ""type"": ""array""
-            }
-          }
-        }
-      }
-    }
-  }
-}";
-            ArrangeInputs(parseResultSections: "set base \"https://localhost:44366/\"",
-                out MockedShellState shellState,
-                out HttpState httpState,
-                out ICoreParseResult parseResult,
-                responseContent: response,
-                baseAddress: "https://localhost:44366/");
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            cts.Cancel();
-
-            httpState.BaseAddress = new Uri("https://localhost:44366/");
-
-            SetBaseCommand setBaseCommand = new SetBaseCommand();
-            await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, cts.Token);
-
-            Assert.Null(httpState.Structure);
-        }
-
-        [Fact]
         public async Task ExecuteAsync_WithEmptyUri_WritesErrorToConsole()
         {
             ArrangeInputs(parseResultSections: "set base ",
@@ -239,55 +195,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             VerifyErrorMessageWasWrittenToConsoleManagerError(shellState);
-        }
-
-        [Fact]
-        public async Task ExecuteAsync_WithValidInput_CreatesDirectoryStructureForSwaggerEndpoint()
-        {
-            string response = @"{
-  ""swagger"": ""2.0"",
-  ""paths"": {
-    ""/api"": {
-      ""get"": {
-        ""tags"": [ ""Employees"" ],
-        ""operationId"": ""GetEmployee"",
-        ""consumes"": [],
-        ""produces"": [ ""text/plain"", ""application/json"", ""text/json"" ],
-        ""parameters"": [],
-        ""responses"": {
-          ""200"": {
-            ""description"": ""Success"",
-            ""schema"": {
-              ""uniqueItems"": false,
-              ""type"": ""array""
-            }
-          }
-        }
-      }
-    }
-  }
-}";
-            ArrangeInputs(parseResultSections: "set base \"https://localhost:44366/\"",
-                out MockedShellState shellState,
-                out HttpState httpState,
-                out ICoreParseResult parseResult,
-                responseContent: response,
-                baseAddress: "https://localhost:44366/swagger.json");
-
-            SetBaseCommand setBaseCommand = new SetBaseCommand();
-            await setBaseCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            IDirectoryStructure directoryStructure = httpState.Structure;
-
-            List<string> directoryNames = directoryStructure.DirectoryNames.ToList();
-            string expectedDirectoryName = "api";
-
-            Assert.Single(directoryNames);
-            Assert.Equal(expectedDirectoryName, directoryNames.First());
-
-            IDirectoryStructure childDirectoryStructure = directoryStructure.GetChildDirectory(expectedDirectoryName);
-
-            Assert.Empty(childDirectoryStructure.DirectoryNames);
         }
     }
 }
