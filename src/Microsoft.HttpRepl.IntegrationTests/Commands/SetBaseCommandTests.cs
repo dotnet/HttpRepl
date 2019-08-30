@@ -28,9 +28,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~", null);
+[BaseUrl]/>", null);
 
             Assert.Equal(expected, output);
         }
@@ -42,9 +42,9 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
 
             string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~", null);
+[BaseUrl]/>", null);
 
             Assert.Equal(expected, output);
         }

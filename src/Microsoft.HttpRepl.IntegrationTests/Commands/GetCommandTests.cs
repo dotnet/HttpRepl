@@ -25,14 +25,14 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/values
+[BaseUrl]/> cd api/values
 /api/values    [get|post]
 
-[BaseUrl]/api/values~ get
+[BaseUrl]/api/values> get
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 Date: [Date]
@@ -45,7 +45,7 @@ Transfer-Encoding: chunked
 ]
 
 
-[BaseUrl]/api/values~", null);
+[BaseUrl]/api/values>", null);
 
             Assert.Equal(expected, output);
         }
@@ -59,14 +59,14 @@ get 5";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/values
+[BaseUrl]/> cd api/values
 /api/values    [get|post]
 
-[BaseUrl]/api/values~ get 5
+[BaseUrl]/api/values> get 5
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 Date: [Date]
@@ -76,7 +76,7 @@ Transfer-Encoding: chunked
 value
 
 
-[BaseUrl]/api/values~", null);
+[BaseUrl]/api/values>", null);
 
             Assert.Equal(expected, output);
         }
@@ -90,15 +90,15 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/invalidpath
+[BaseUrl]/> cd api/invalidpath
 Warning: The '/api/invalidpath' endpoint is not present in the Swagger metadata
 /api/invalidpath    []
 
-[BaseUrl]/api/invalidpath~ get
+[BaseUrl]/api/invalidpath> get
 HTTP/1.1 404 Not Found
 Content-Length: 0
 Date: [Date]
@@ -107,7 +107,7 @@ Server: Kestrel
 
 
 
-[BaseUrl]/api/invalidpath~", null);
+[BaseUrl]/api/invalidpath>", null);
 
             Assert.Equal(expected, output);
         }
@@ -119,7 +119,7 @@ Server: Kestrel
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ get [BaseUrl]/api/values
+            string expected = NormalizeOutput(@"(Disconnected)> get [BaseUrl]/api/values
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 Date: [Date]
@@ -132,7 +132,7 @@ Transfer-Encoding: chunked
 ]
 
 
-(Disconnected)~", null);
+(Disconnected)>", null);
 
             Assert.Equal(expected, output);
         }

@@ -24,12 +24,12 @@ echo on";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~ echo on
+[BaseUrl]/> echo on
 Request echoing is on
 
-[BaseUrl]/~", null);
+[BaseUrl]/>", null);
 
             Assert.Equal(expected, output);
         }
@@ -42,12 +42,12 @@ echo off";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~ echo off
+[BaseUrl]/> echo off
 Request echoing is off
 
-[BaseUrl]/~", null);
+[BaseUrl]/>", null);
 
             Assert.Equal(expected, output);
         }
