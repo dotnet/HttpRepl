@@ -65,11 +65,16 @@ namespace Microsoft.HttpRepl.Suggestions
             "X-Correlation-ID"
         };
 
+        /// <summary>
+        /// Gets a collection of HTTP header names which starts with the prefix value passed in, except the ones present in existingHeaders.
+        /// </summary>
+        /// <param name="existingHeaders">A collection of existing headers.</param>
+        /// <param name="prefix">The prefix value to get completion suggestion items for.</param>
+        /// <returns></returns>
         public static IEnumerable<string> GetCompletions(IReadOnlyCollection<string> existingHeaders, string prefix)
         {
             return CommonHeaders.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) &&
-                                            existingHeaders?.Contains(x) != true)
-                                .ToList();
+                                            existingHeaders?.Contains(x) != true);
         }
 
         public static IEnumerable<string> GetValueCompletions(string method, string path, string header, string prefix, HttpState programState)
