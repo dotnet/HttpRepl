@@ -267,7 +267,14 @@ namespace Microsoft.HttpRepl.Commands
 
             if (echoRequest)
             {
-                await HandleEchoRequest(commandInput, consoleManager, programState, response, cancellationToken);
+                RequestConfig requestConfig = new RequestConfig(_preferences);
+                string hostString = response.RequestMessage.RequestUri.Scheme + "://" + response.RequestMessage.RequestUri.Host + (!response.RequestMessage.RequestUri.IsDefaultPort ? ":" + response.RequestMessage.RequestUri.Port : "");
+                await HandleEchoRequest(commandInput, consoleManager, programState, response, requestConfig, hostString, cancellationToken);
+
+                // Only need to write out this separator if we've echoed the request
+                consoleManager.WriteLine();
+                consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
+                consoleManager.WriteLine();
             }
 
             ResponseConfig responseConfig = new ResponseConfig(_preferences);
@@ -339,12 +346,10 @@ namespace Microsoft.HttpRepl.Commands
             IConsoleManager consoleManager,
             HttpState programState,
             HttpResponseMessage response,
+            RequestConfig requestConfig,
+            string hostString,
             CancellationToken cancellationToken)
         {
-            RequestConfig requestConfig = new RequestConfig(_preferences);
-            ResponseConfig responseConfig = new ResponseConfig(_preferences);
-
-            string hostString = response.RequestMessage.RequestUri.Scheme + "://" + response.RequestMessage.RequestUri.Host + (!response.RequestMessage.RequestUri.IsDefaultPort ? ":" + response.RequestMessage.RequestUri.Port : "");
             consoleManager.WriteLine($"Request to {hostString}...".SetColor(requestConfig.AddressColor));
             consoleManager.WriteLine();
 
@@ -376,10 +381,6 @@ namespace Microsoft.HttpRepl.Commands
             {
                 await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
             }
-
-            consoleManager.WriteLine();
-            consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
-            consoleManager.WriteLine();
         }
 
         private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
