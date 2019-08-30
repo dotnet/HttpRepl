@@ -30,7 +30,7 @@ Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
-/api/values    [get|post]
+/api/values    [GET|POST]
 
 [BaseUrl]/api/values> get
 HTTP/1.1 200 OK
@@ -64,7 +64,7 @@ Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
-/api/values    [get|post]
+/api/values    [GET|POST]
 
 [BaseUrl]/api/values> get 5
 HTTP/1.1 200 OK

@@ -71,7 +71,7 @@ namespace Microsoft.HttpRepl.Commands
                     }
                     else if (hasRequestMethods)
                     {
-                        thisDirMethod = "[" + string.Join("|", s.RequestInfo.Methods) + "]";
+                        thisDirMethod = s.RequestInfo.GetDirectoryMethodListing();
                     }
 
                     shellState.ConsoleManager.WriteLine($"{programState.GetRelativePathString()}    {thisDirMethod}");

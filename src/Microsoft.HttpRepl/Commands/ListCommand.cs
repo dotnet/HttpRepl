@@ -27,7 +27,6 @@ namespace Microsoft.HttpRepl.Commands
             _preferences = preferences;
         }
 
-
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
             if (programState.SwaggerEndpoint != null)
@@ -68,9 +67,7 @@ namespace Microsoft.HttpRepl.Commands
 
             IDirectoryStructure s = programState.Structure.TraverseTo(programState.PathSections.Reverse()).TraverseTo(path);
 
-            string thisDirMethod = s.RequestInfo != null && s.RequestInfo.Methods.Count > 0
-                ? "[" + string.Join("|", s.RequestInfo.Methods) + "]"
-                : "[]";
+            string thisDirMethod = s.RequestInfo.GetDirectoryMethodListing();
 
             List<TreeNode> roots = new List<TreeNode>();
             Formatter formatter = new Formatter();
@@ -79,9 +76,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (s.Parent != null)
             {
-                string parentDirMethod = s.Parent.RequestInfo != null && s.Parent.RequestInfo.Methods.Count > 0
-                    ? "[" + string.Join("|", s.Parent.RequestInfo.Methods) + "]"
-                    : "[]";
+                string parentDirMethod = s.Parent.RequestInfo.GetDirectoryMethodListing();
 
                 roots.Add(new TreeNode(formatter, "..", parentDirMethod));
             }
@@ -104,9 +99,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 IDirectoryStructure dir = s.GetChildDirectory(child);
 
-                string methods = dir.RequestInfo != null && dir.RequestInfo.Methods.Count > 0 
-                    ? "[" + string.Join("|", dir.RequestInfo.Methods) + "]" 
-                    : "[]";
+                string methods = dir.RequestInfo.GetDirectoryMethodListing();
 
                 TreeNode dirNode = new TreeNode(formatter, child, methods);
                 roots.Add(dirNode);

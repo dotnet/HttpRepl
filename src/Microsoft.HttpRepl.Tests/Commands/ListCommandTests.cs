@@ -164,5 +164,40 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Empty(suggestions);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithMethods_MethodsAreUppercase()
+        {
+            string response = @"{
+  ""swagger"": ""2.0"",
+  ""paths"": {
+    ""/api"": {
+      ""get"": {
+      },
+      ""post"": {
+      }
+    }
+  }
+}";
+
+            ArrangeInputs(commandText: "ls",
+                          baseAddress: "http://localhost/",
+                          path: "/api",
+                          urlsWithResponse: new Dictionary<string, string>() { { "http://localhost/swagger.json", response } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            httpState.SwaggerEndpoint = new Uri("http://localhost/swagger.json");
+
+            ListCommand listCommand = new ListCommand(preferences);
+
+            await listCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            string actualOutput = string.Join(Environment.NewLine, shellState.Output);
+            Assert.Contains("[GET|POST]", actualOutput, StringComparison.Ordinal);
+        }
     }
 }
