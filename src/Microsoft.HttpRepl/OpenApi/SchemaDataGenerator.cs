@@ -118,6 +118,11 @@ namespace Microsoft.HttpRepl.OpenApi
                         JObject obj = new JObject();
                         foreach (KeyValuePair<string, Schema> property in schema.Properties)
                         {
+                            if (property.Value.ReadOnly)
+                            {
+                                continue;
+                            }
+
                             JToken data = GenerateData(property.Value) ?? "";
                             obj[property.Key] = data;
                         }

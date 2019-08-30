@@ -1,6 +1,9 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -100,6 +103,36 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             JValue jValue = (JValue)result;
             string stringValue = jValue.Value<string>();
             Assert.Matches(iso8601RegEx, stringValue);
+        }
+
+        [Fact]
+        public void GenerateData_WithObjectWithReadOnlyProperty_DoesNotIncludeReadOnlyProperty()
+        {
+            Schema rootSchema = new Schema()
+            {
+                Type = "object",
+                Properties = new Dictionary<string, Schema>()
+            };
+            Schema readOnlySchema = new Schema()
+            {
+                Type = "integer",
+                ReadOnly = true
+            };
+            Schema writeableSchema = new Schema()
+            {
+                Type = "string"
+            };
+            rootSchema.Properties.Add("Writeable", writeableSchema);
+            rootSchema.Properties.Add("ReadOnly", readOnlySchema);
+
+            JToken result = SchemaDataGenerator.GenerateData(rootSchema);
+
+            Assert.NotNull(result);
+            Assert.True(result is JObject);
+            JObject jObject = (JObject)result;
+            IEnumerable<string> propertyNames = jObject.Properties().Select(j => j.Name);
+            Assert.Contains("Writeable", propertyNames, StringComparer.Ordinal);
+            Assert.DoesNotContain("ReadOnly", propertyNames, StringComparer.Ordinal);
         }
     }
 }
