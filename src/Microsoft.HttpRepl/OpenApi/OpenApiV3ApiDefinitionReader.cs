@@ -98,11 +98,11 @@ namespace Microsoft.HttpRepl.OpenApi
                                 foreach (JProperty contentTypeEntry in contentTypeLookup.Properties())
                                 {
                                     List<Parameter> parametersByContentType = new List<Parameter>(parameters);
-                                    Parameter p = bodyObject.ToObject<Parameter>();
+                                    Parameter p = new Parameter();
                                     p.Location = "body";
                                     p.IsRequired = bodyObject["required"]?.ToObject<bool>() ?? false;
 
-                                    if (!(bodyObject["schema"] is JObject schemaObject))
+                                    if (!(contentTypeEntry.Value is JObject contentTypeObject) || !(contentTypeObject["schema"] is JObject schemaObject))
                                     {
                                         schemaObject = null;
                                     }
