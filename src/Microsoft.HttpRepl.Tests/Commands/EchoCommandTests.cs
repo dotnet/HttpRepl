@@ -4,8 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.Preferences;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -57,6 +60,33 @@ namespace Microsoft.HttpRepl.Tests.Commands
             {
                 Assert.Contains(expectedResults[index], resultList, StringComparer.OrdinalIgnoreCase);
             }
+        }
+
+        [Fact]
+        public async Task PostCommand_WithEchoOn_OnlyPrintsRequestBodyOnce()
+        {
+            string baseAddress = "https://localhost/";
+            string path = "values/5";
+            string content = "Test Post Body";
+            ArrangeInputs(commandText: $"POST --content \"{content}\"",
+                baseAddress: baseAddress,
+                path: path,
+                urlsWithResponse: new Dictionary<string, string>() { { "https://localhost/values/5", "" } },
+                out var shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+            httpState.EchoRequest = true;
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            int countOfOccurrences = result.Count(s => s?.Contains(content, StringComparison.Ordinal) == true);
+
+            Assert.Equal(1, countOfOccurrences);
         }
     }
 }

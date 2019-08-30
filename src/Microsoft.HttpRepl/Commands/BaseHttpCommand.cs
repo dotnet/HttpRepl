@@ -380,11 +380,6 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine();
             consoleManager.WriteLine($"Response from {hostString}...".SetColor(requestConfig.AddressColor));
             consoleManager.WriteLine();
-
-            foreach (string responseLine in responseOutput)
-            {
-                consoleManager.WriteLine(responseLine);
-            }
         }
 
         private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
