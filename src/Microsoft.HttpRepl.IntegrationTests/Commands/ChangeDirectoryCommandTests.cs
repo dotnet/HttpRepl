@@ -27,26 +27,26 @@ cd Values";
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ ls
+[BaseUrl]/> ls
 .     []
 api   []
 
-[BaseUrl]/~ cd api
+[BaseUrl]/> cd api
 /api    []
 
-[BaseUrl]/api~ ls
+[BaseUrl]/api> ls
 .        []
 ..       []
 Values   [GET|POST]
 
-[BaseUrl]/api~ cd Values
+[BaseUrl]/api> cd Values
 /api/Values    [GET|POST]
 
-[BaseUrl]/api/Values~", null);
+[BaseUrl]/api/Values>", null);
 
             Assert.Equal(expected, output);
         }
