@@ -124,5 +124,7 @@ namespace Microsoft.HttpRepl.OpenApi
         public string Type { get; set; }
 
         public bool UniqueItems { get; set; }
+
+        public bool ReadOnly { get; set; }
     }
 }
