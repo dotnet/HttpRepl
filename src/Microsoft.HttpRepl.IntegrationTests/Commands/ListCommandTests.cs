@@ -42,7 +42,7 @@ api   []
 [BaseUrl]/api> ls
 .        []
 ..       []
-Values   [get|post]
+Values   [GET|POST]
 
 [BaseUrl]/api>", null);
 
@@ -62,12 +62,12 @@ Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/Values
-/api/Values    [get|post]
+/api/Values    [GET|POST]
 
 [BaseUrl]/api/Values> ls
-.      [get|post]
+.      [GET|POST]
 ..     []
-{id}   [get|put|delete]
+{id}   [GET|PUT|DELETE]
 
 [BaseUrl]/api/Values>", null);
 

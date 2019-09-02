@@ -32,7 +32,7 @@ Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
-/api/values    [get|post]
+/api/values    [GET|POST]
 
 [BaseUrl]/api/values> echo on
 Request echoing is on
@@ -82,7 +82,7 @@ Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
-/api/values    [get|post]
+/api/values    [GET|POST]
 
 [BaseUrl]/api/values> echo on
 Request echoing is on
