@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.Fakes
             return default;
         }
 
-        public string GetTempFileName()
+        public string GetTempFileName(string fileExtension = null)
         {
             return default;
         }

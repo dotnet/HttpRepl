@@ -1,8 +1,10 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.HttpRepl.Resources;
 
 namespace Microsoft.HttpRepl.FileSystem
 {
@@ -40,9 +42,31 @@ namespace Microsoft.HttpRepl.FileSystem
             File.Delete(path);
         }
 
-        public string GetTempFileName()
+        public string GetTempFileName(string fileExtension = null)
         {
-            return Path.GetTempFileName();
+            // If they don't care about the extension, go the easy route and use the
+            // system-provided way of creating a unique temp file.
+            if (fileExtension is null)
+            {
+                return Path.GetTempFileName();
+            }
+
+            // Otherwise, make sure they supplied a valid extension and create a custom temp file.
+            if (!fileExtension.StartsWith(".", StringComparison.Ordinal))
+            {
+                throw new ArgumentException(string.Format(Strings.RealFileSystem_Error_InvalidExtension, nameof(fileExtension)), nameof(fileExtension));
+            }
+
+            string tempFileName = Path.Combine(Path.GetTempPath(), GetRandomFileName(fileExtension));
+
+            return tempFileName;
+        }
+
+        private static string GetRandomFileName(string fileExtension)
+        {
+            // Start it with HttpRepl so we can easily find it if necessary for debugging, etc
+            // Use a GUID to make it unique enough
+            return "HttpRepl." + Guid.NewGuid().ToString() + fileExtension;
         }
 
         private void VerifyDirectoryExists(string path)

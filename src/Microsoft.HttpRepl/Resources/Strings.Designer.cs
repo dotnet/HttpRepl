@@ -547,6 +547,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If specified, {0} must begin with a period..
+        /// </summary>
+        internal static string RealFileSystem_Error_InvalidExtension {
+            get {
+                return ResourceManager.GetString("RealFileSystem_Error_InvalidExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not find script file {0}.
         /// </summary>
         internal static string RunCommand_CouldNotFindScriptFile {

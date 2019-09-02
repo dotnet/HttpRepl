@@ -350,4 +350,8 @@ When +history option is specified, commands specified in the text file will be a
   <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
     <value>Must specify a server</value>
   </data>
+  <data name="RealFileSystem_Error_InvalidExtension" xml:space="preserve">
+    <value>If specified, {0} must begin with a period.</value>
+    <comment>{0} is the parameter name</comment>
+  </data>
 </root>
