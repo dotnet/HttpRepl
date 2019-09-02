@@ -2,9 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.HttpRepl.OpenApi;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -585,6 +583,47 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             Assert.Single(apiDefinition.BaseAddresses);
             Assert.Equal("https://localhost/api/v2/", apiDefinition.BaseAddresses[0].Url.ToString());
             Assert.Equal("First Server Address", apiDefinition.BaseAddresses[0].Description);
+        }
+
+        [Fact]
+        public void ReadDefinition_WithRequestBody_SchemaIsIncluded()
+        {
+            string contentType = "application/json";
+            string json = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/pets"": {
+      ""post"": {
+        ""requestBody"": {
+          ""content"": {
+            """ + contentType + @""": {
+              ""schema"": {
+                ""type"": ""object"",
+                ""properties"": {
+                  ""date"": {
+                    ""type"": ""string"",
+                    ""format"": ""date-time""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}";
+            JObject jobject = JObject.Parse(json);
+            OpenApiV3ApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiV3ApiDefinitionReader();
+
+            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(jobject, new Uri("https://localhost/swagger.json"));
+            IDirectoryStructure pets = apiDefinition.DirectoryStructure.TraverseTo("pets");
+            string requestBody = pets.RequestInfo.GetRequestBodyForContentType(ref contentType, "post");
+
+            Assert.NotNull(requestBody);
         }
     }
 }
