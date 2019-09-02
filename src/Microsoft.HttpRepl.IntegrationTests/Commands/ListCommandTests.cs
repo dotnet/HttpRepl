@@ -28,23 +28,23 @@ ls";
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ ls
+[BaseUrl]/> ls
 .     []
 api   []
 
-[BaseUrl]/~ cd api
+[BaseUrl]/> cd api
 /api    []
 
-[BaseUrl]/api~ ls
+[BaseUrl]/api> ls
 .        []
 ..       []
 Values   [get|post]
 
-[BaseUrl]/api~", null);
+[BaseUrl]/api>", null);
 
             Assert.Equal(expected, output);
         }
@@ -57,19 +57,19 @@ cd api/Values
 ls";
             string output = await RunTestScript(scriptText, _swaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/Values
+[BaseUrl]/> cd api/Values
 /api/Values    [get|post]
 
-[BaseUrl]/api/Values~ ls
+[BaseUrl]/api/Values> ls
 .      [get|post]
 ..     []
 {id}   [get|put|delete]
 
-[BaseUrl]/api/Values~", null);
+[BaseUrl]/api/Values>", null);
 
             Assert.Equal(expected, output);
         }
@@ -84,17 +84,17 @@ ls";
             string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~ ls
+[BaseUrl]/> ls
 No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
-[BaseUrl]/~ cd api
+[BaseUrl]/> cd api
 
-[BaseUrl]/api~ ls
+[BaseUrl]/api> ls
 No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
-[BaseUrl]/api~", null);
+[BaseUrl]/api>", null);
 
             Assert.Equal(expected, output);
         }
@@ -107,14 +107,14 @@ cd api/Values
 ls";
             string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
-[BaseUrl]/~ cd api/Values
+[BaseUrl]/> cd api/Values
 
-[BaseUrl]/api/Values~ ls
+[BaseUrl]/api/Values> ls
 No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
 
-[BaseUrl]/api/Values~", null);
+[BaseUrl]/api/Values>", null);
 
             Assert.Equal(expected, output);
         }

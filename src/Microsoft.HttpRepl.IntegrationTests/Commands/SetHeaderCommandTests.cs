@@ -27,19 +27,19 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/values
+[BaseUrl]/> cd api/values
 /api/values    [get|post]
 
-[BaseUrl]/api/values~ echo on
+[BaseUrl]/api/values> echo on
 Request echoing is on
 
-[BaseUrl]/api/values~ set header Accept application/json
+[BaseUrl]/api/values> set header Accept application/json
 
-[BaseUrl]/api/values~ get
+[BaseUrl]/api/values> get
 Request to [BaseUrl]...
 
 GET /api/values HTTP/1.1
@@ -61,7 +61,7 @@ Transfer-Encoding: chunked
 ]
 
 
-[BaseUrl]/api/values~", null);
+[BaseUrl]/api/values>", null);
 
             Assert.Equal(expected, output);
         }
@@ -77,19 +77,19 @@ get";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)~ connect [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
 
-[BaseUrl]/~ cd api/values
+[BaseUrl]/> cd api/values
 /api/values    [get|post]
 
-[BaseUrl]/api/values~ echo on
+[BaseUrl]/api/values> echo on
 Request echoing is on
 
-[BaseUrl]/api/values~ set header User-Agent
+[BaseUrl]/api/values> set header User-Agent
 
-[BaseUrl]/api/values~ get
+[BaseUrl]/api/values> get
 Request to [BaseUrl]...
 
 GET /api/values HTTP/1.1
@@ -109,7 +109,7 @@ Transfer-Encoding: chunked
 ]
 
 
-[BaseUrl]/api/values~", null);
+[BaseUrl]/api/values>", null);
 
             Assert.Equal(expected, output);
         }

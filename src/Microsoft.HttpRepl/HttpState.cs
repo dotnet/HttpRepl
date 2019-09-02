@@ -53,7 +53,7 @@ namespace Microsoft.HttpRepl
 
         public string GetPrompt()
         {
-            return $"{GetEffectivePathForPrompt()?.ToString() ?? "(Disconnected)"}~ ";
+            return $"{GetEffectivePathForPrompt()?.ToString() ?? "(Disconnected)"}> ";
         }
 
         public IEnumerable<string> GetApplicableContentTypes(string method, string path)

@@ -34,8 +34,8 @@ namespace Microsoft.HttpRepl.IntegrationTests
         {
             // The console implementation uses trailing whitespace when a new line's text is shorter than the previous
             // line.  For example (the trailing * represent spaces):
-            // Line 1: (Disconnected)~ run C:\path\to\a\test\script\file.txt
-            // Line 2: (Disconnected)~ set base http://localhost:12345******
+            // Line 1: (Disconnected)> run C:\path\to\a\test\script\file.txt
+            // Line 2: (Disconnected)> set base http://localhost:12345******
             // This having this whitespace makes it harder to read/write test baselines, so here we'll trim each line
             string result = string.Join(Environment.NewLine, output.Split(Environment.NewLine).Select(l => l.TrimEnd()));
 
