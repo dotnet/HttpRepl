@@ -350,4 +350,8 @@ When +history option is specified, commands specified in the text file will be a
   <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
     <value>Must specify a server</value>
   </data>
+  <data name="UICommand_InvalidParameter" xml:space="preserve">
+    <value>The parameter '{0}' could not be converted into a valid uri.</value>
+    <comment>{0} is a string parameter to the UI command</comment>
+  </data>
 </root>

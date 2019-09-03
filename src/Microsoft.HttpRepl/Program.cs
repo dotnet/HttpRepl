@@ -102,7 +102,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommand(new RunCommand(fileSystem));
             dispatcher.AddCommand(new SetBaseCommand());
             dispatcher.AddCommand(new SetHeaderCommand());
-            dispatcher.AddCommand(new UICommand(new UriLauncher()));
+            dispatcher.AddCommand(new UICommand(new UriLauncher(), preferences));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
         }
