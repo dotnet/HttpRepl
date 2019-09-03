@@ -42,16 +42,13 @@ namespace Microsoft.HttpRepl.FileSystem
             File.Delete(path);
         }
 
-        public string GetTempFileName(string fileExtension = null)
+        public string GetTempFileName(string fileExtension)
         {
-            // If they don't care about the extension, go the easy route and use the
-            // system-provided way of creating a unique temp file.
             if (fileExtension is null)
             {
-                return Path.GetTempFileName();
+                throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            // Otherwise, make sure they supplied a valid extension and create a custom temp file.
             if (!fileExtension.StartsWith(".", StringComparison.Ordinal))
             {
                 throw new ArgumentException(string.Format(Strings.RealFileSystem_Error_InvalidExtension, nameof(fileExtension)), nameof(fileExtension));

@@ -10,26 +10,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.FileSystem
 {
     public class RealFileSystemTests
     {
-        [Fact]
-        public void GetTempFileName_WithoutExtension_ReturnsTmpFile()
-        {
-            RealFileSystem realFileSystem = new RealFileSystem();
-
-            string fileName = realFileSystem.GetTempFileName();
-
-            Assert.NotNull(fileName);
-            Assert.EndsWith(".TMP", fileName, StringComparison.OrdinalIgnoreCase);
-
-            // Since the default case creates the file, we need to delete it.
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
-        }
-
         [Theory]
         [InlineData(".json")]
         [InlineData(".xml")]
+        [InlineData(".tmp")]
         public void GetTempFileName_WithExtension_ReturnsFileNameWithExtension(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();
@@ -40,20 +24,10 @@ namespace Microsoft.HttpRepl.IntegrationTests.FileSystem
             Assert.EndsWith(extension, fullName, StringComparison.OrdinalIgnoreCase);
         }
 
-        [Fact]
-        public void GetTempFileName_WithoutExtension_ReturnsFileInTempPath()
-        {
-            RealFileSystem realFileSystem = new RealFileSystem();
-            string expectedPath = Path.GetTempPath();
-
-            string actualPath = realFileSystem.GetTempFileName();
-
-            Assert.StartsWith(expectedPath, actualPath, StringComparison.OrdinalIgnoreCase);
-        }
-
         [Theory]
         [InlineData(".json")]
         [InlineData(".xml")]
+        [InlineData(".tmp")]
         public void GetTempFileName_WithExtension_ReturnsFileInTempPath(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();
@@ -67,6 +41,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.FileSystem
         [Theory]
         [InlineData(".json")]
         [InlineData(".xml")]
+        [InlineData(".tmp")]
         public void GetTempFileName_WithExtension_ReturnsFileThatStartsWithHttpRepl(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();

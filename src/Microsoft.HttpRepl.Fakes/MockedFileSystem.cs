@@ -74,7 +74,7 @@ namespace Microsoft.HttpRepl.Fakes
             _files[path] = contents;
         }
 
-        public string GetTempFileName(string fileExtension = null)
+        public string GetTempFileName(string fileExtension)
         {
             string path = GetRandomFileName();
             _files[path] = "";

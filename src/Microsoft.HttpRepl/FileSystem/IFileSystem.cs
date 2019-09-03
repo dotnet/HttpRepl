@@ -9,7 +9,7 @@ namespace Microsoft.HttpRepl.FileSystem
     {
         void DeleteFile(string path);
         bool FileExists(string path);
-        string GetTempFileName(string fileExtension = null);
+        string GetTempFileName(string fileExtension);
         byte[] ReadAllBytesFromFile(string path);
         string[] ReadAllLinesFromFile(string path);
         void WriteAllTextToFile(string path, string contents);

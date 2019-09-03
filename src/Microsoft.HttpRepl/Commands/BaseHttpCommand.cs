@@ -261,7 +261,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 return extension;
             }
-            return null;
+            return ".tmp";
         }
 
         private void AddHttpContentHeaders(HttpContent content, HttpState programState, Dictionary<string, string> requestHeaders)
