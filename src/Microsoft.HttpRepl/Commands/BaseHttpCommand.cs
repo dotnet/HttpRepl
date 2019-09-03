@@ -40,6 +40,7 @@ namespace Microsoft.HttpRepl.Commands
         private static readonly Dictionary<string, string> FileExtensionLookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "application/json", ".json" },
+            { "text/json", ".json" },
             { "application/xml", ".xml" },
             { "text/xml", ".xml" },
         };

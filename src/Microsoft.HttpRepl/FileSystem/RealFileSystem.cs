@@ -8,7 +8,7 @@ using Microsoft.HttpRepl.Resources;
 
 namespace Microsoft.HttpRepl.FileSystem
 {
-    internal class RealFileSystem : IFileSystem
+    public class RealFileSystem : IFileSystem
     {
         public bool FileExists(string path)
         {
