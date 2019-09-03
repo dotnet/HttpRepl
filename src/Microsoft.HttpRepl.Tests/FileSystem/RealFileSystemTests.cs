@@ -6,7 +6,7 @@ using System.IO;
 using Microsoft.HttpRepl.FileSystem;
 using Xunit;
 
-namespace Microsoft.HttpRepl.IntegrationTests.FileSystem
+namespace Microsoft.HttpRepl.Tests.FileSystem
 {
     public class RealFileSystemTests
     {
