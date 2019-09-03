@@ -687,6 +687,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; could not be converted into a valid uri..
+        /// </summary>
+        internal static string UICommand_InvalidParameter {
+            get {
+                return ResourceManager.GetString("UICommand_InvalidParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must be connected to a server to launch Swagger UI.
         /// </summary>
         internal static string UICommand_NotConnectedToServerError {

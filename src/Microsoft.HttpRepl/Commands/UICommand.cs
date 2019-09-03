@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -16,16 +17,18 @@ namespace Microsoft.HttpRepl.Commands
     public class UICommand : ICommand<HttpState, ICoreParseResult>
     {
         private static readonly string Name = "ui";
-        private IUriLauncher UriLauncher;
+        private IUriLauncher _uriLauncher;
+        private IPreferences _preferences;
 
-        public UICommand(IUriLauncher uriLauncher)
+        public UICommand(IUriLauncher uriLauncher, IPreferences preferences)
         {
-            UriLauncher = uriLauncher ?? throw new ArgumentNullException(nameof(uriLauncher));
+            _uriLauncher = uriLauncher ?? throw new ArgumentNullException(nameof(uriLauncher));
+            _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.ContainsExactly(Name)
+            return parseResult.ContainsAtLeast(Name)
                 ? (bool?)true
                 : null;
         }
@@ -38,14 +41,50 @@ namespace Microsoft.HttpRepl.Commands
                 return Task.CompletedTask;
             }
 
-            Uri uri = new Uri(programState.BaseAddress, "swagger");
+            Uri uri = null;
 
-            return UriLauncher.LaunchUriAsync(uri);
+            // Try to use the parameter first, if there was one.
+            if (parseResult.Sections.Count > 1)
+            {
+                string parameter = parseResult.Sections[1];
+
+                if (Uri.IsWellFormedUriString(parameter, UriKind.Absolute))
+                {
+                    uri = new Uri(parameter, UriKind.Absolute);
+                }
+                else if (!Uri.TryCreate(programState.BaseAddress, parameter, out uri))
+                {
+                    uri = null;
+                }
+
+                // If they specified a parameter and it failed, bail out
+                if (uri is null)
+                {
+                    shellState.ConsoleManager.Error.WriteLine(string.Format(Strings.UICommand_InvalidParameter, parameter).SetColor(programState.ErrorColor));
+                    return Task.CompletedTask;
+                }
+            }
+
+            // If no parameter specified, check the preferences or use the default
+            if (uri is null)
+            {
+                string uiEndpoint = _preferences.GetValue(WellKnownPreference.SwaggerUIEndpoint, "swagger");
+                if (Uri.IsWellFormedUriString(uiEndpoint, UriKind.Absolute))
+                {
+                    uri = new Uri(uiEndpoint, UriKind.Absolute);
+                }
+                else
+                {
+                    uri = new Uri(programState.BaseAddress, uiEndpoint);
+                }
+            }
+
+            return _uriLauncher.LaunchUriAsync(uri);
         }
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult.ContainsExactly(Name))
+            if (parseResult.ContainsAtLeast(Name))
             {
                 return Strings.UICommand_Description;
             }
