@@ -4,6 +4,11 @@
 
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
 
+  <PropertyGroup>
+    <RepoRoot Condition=" '$(RepoRoot)' == '' ">$(MSBuildThisFileDirectory)</RepoRoot>
+    <RepoSource Condition=" '$(RepoSource)' == '' ">$(RepoRoot)\src</RepoSource>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(CopyrightNetFoundation)' != ''">
     <Copyright>$(CopyrightMicrosoft)</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

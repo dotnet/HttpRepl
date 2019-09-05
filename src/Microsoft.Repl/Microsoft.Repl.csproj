@@ -5,7 +5,7 @@
     <Description>A framework for creating REPLs in .NET Standard.</Description>
     <PackageTags>dotnet;repl</PackageTags>
     <PackageId>Microsoft.Repl</PackageId>
-    <PackageIconUrl>https://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <PackageIcon>PackageIcon.png</PackageIcon>
     
     <IsPackable>true</IsPackable>
   </PropertyGroup>
@@ -13,6 +13,10 @@
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.Process" />
     <PackageReference Include="System.Threading.Thread" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(RepoSource)\PackageIcon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
