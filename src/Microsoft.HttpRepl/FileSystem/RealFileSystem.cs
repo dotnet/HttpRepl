@@ -49,7 +49,7 @@ namespace Microsoft.HttpRepl.FileSystem
                 throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            if (!fileExtension.StartsWith(".", StringComparison.Ordinal))
+            if (!fileExtension.StartsWith(".", StringComparison.Ordinal) || fileExtension.Length < 2)
             {
                 throw new ArgumentException(string.Format(Strings.RealFileSystem_Error_InvalidExtension, nameof(fileExtension)), nameof(fileExtension));
             }

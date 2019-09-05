@@ -14,7 +14,8 @@ namespace Microsoft.HttpRepl.Tests.FileSystem
         [InlineData(".json")]
         [InlineData(".xml")]
         [InlineData(".tmp")]
-        public void GetTempFileName_WithExtension_ReturnsFileNameWithExtension(string extension)
+        [InlineData(".a")]
+        public void GetTempFileName_WithValidInput_ReturnsFileNameWithExtension(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();
 
@@ -28,7 +29,8 @@ namespace Microsoft.HttpRepl.Tests.FileSystem
         [InlineData(".json")]
         [InlineData(".xml")]
         [InlineData(".tmp")]
-        public void GetTempFileName_WithExtension_ReturnsFileInTempPath(string extension)
+        [InlineData(".a")]
+        public void GetTempFileName_WithValidInput_ReturnsFileInTempPath(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();
             string expectedPath = Path.GetTempPath();
@@ -42,7 +44,8 @@ namespace Microsoft.HttpRepl.Tests.FileSystem
         [InlineData(".json")]
         [InlineData(".xml")]
         [InlineData(".tmp")]
-        public void GetTempFileName_WithExtension_ReturnsFileThatStartsWithHttpRepl(string extension)
+        [InlineData(".a")]
+        public void GetTempFileName_WithValidInput_ReturnsFileThatStartsWithHttpRepl(string extension)
         {
             RealFileSystem realFileSystem = new RealFileSystem();
             string expectedStart = "HttpRepl.";
@@ -51,6 +54,25 @@ namespace Microsoft.HttpRepl.Tests.FileSystem
             string actualFileName = Path.GetFileName(fullName);
 
             Assert.StartsWith(expectedStart, actualFileName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetTempFileName_WithNullExtension_ThrowsArgumentNullException()
+        {
+            RealFileSystem realFileSystem = new RealFileSystem();
+
+            Assert.Throws<ArgumentNullException>(() => realFileSystem.GetTempFileName(null));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(".")]
+        [InlineData(",a")]
+        public void GetTEmpFileName_WithInvalidInput_ThrowsArgumentException(string extension)
+        {
+            RealFileSystem realFileSystem = new RealFileSystem();
+
+            Assert.Throws<ArgumentException>(() => realFileSystem.GetTempFileName(extension));
         }
     }
 }

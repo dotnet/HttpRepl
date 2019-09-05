@@ -547,7 +547,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If specified, {0} must begin with a period..
+        ///   Looks up a localized string similar to If specified, {0} must begin with a period and have at least one character after the period..
         /// </summary>
         internal static string RealFileSystem_Error_InvalidExtension {
             get {
