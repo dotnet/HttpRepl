@@ -37,6 +37,13 @@ namespace Microsoft.HttpRepl.Commands
         private const string StreamingOption = nameof(StreamingOption);
         private const string BodyContentOption = nameof(BodyContentOption);
         private static readonly char[] HeaderSeparatorChars = new[] { '=', ':' };
+        private static readonly Dictionary<string, string> FileExtensionLookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "application/json", ".json" },
+            { "text/json", ".json" },
+            { "application/xml", ".xml" },
+            { "text/xml", ".xml" },
+        };
 
         private CommandInputSpecification _inputSpec;
 
@@ -199,7 +206,7 @@ namespace Microsoft.HttpRepl.Commands
                     }
 
                     deleteFile = true;
-                    filePath = _fileSystem.GetTempFileName();
+                    filePath = _fileSystem.GetTempFileName(GetFileExtensionFromContentType(contentType));
 
                     string exampleBody = GetExampleBody(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, ref contentType, Verb, programState);
 
@@ -246,6 +253,15 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             AddHttpContentHeaders(content, programState, requestHeaders);
+        }
+
+        private static string GetFileExtensionFromContentType(string contentType)
+        {
+            if (FileExtensionLookup.TryGetValue(contentType, out string extension))
+            {
+                return extension;
+            }
+            return ".tmp";
         }
 
         private void AddHttpContentHeaders(HttpContent content, HttpState programState, Dictionary<string, string> requestHeaders)
