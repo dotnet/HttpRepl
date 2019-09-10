@@ -371,7 +371,7 @@ When +history option is specified, commands specified in the text file will be a
     <comment>{0} is the name of the preference, e.g. swagger.uiEndpoint</comment>
   </data>
   <data name="UICommand_HelpText_Line4" xml:space="preserve">
-    <value>  3. A default url of {0}</value>
+    <value>  3. A default URL of {0}</value>
     <comment>{0} is the default address, e.g. [BaseAddress]/swagger</comment>
   </data>
 </root>
