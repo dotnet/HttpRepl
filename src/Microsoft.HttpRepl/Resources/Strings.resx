@@ -359,7 +359,7 @@ When +history option is specified, commands specified in the text file will be a
     <comment>{0} is a string parameter to the UI command</comment>
   </data>
   <data name="UICommand_HelpText_Line1" xml:space="preserve">
-    <value>The {0} command uses multiple sources to determine the swagger ui endpoint. In order of precedence:</value>
+    <value>The {0} command uses multiple sources to determine the Swagger UI endpoint. In order of precedence:</value>
     <comment>{0} is the name of the ui command (ui)</comment>
   </data>
   <data name="UICommand_HelpText_Line2" xml:space="preserve">
