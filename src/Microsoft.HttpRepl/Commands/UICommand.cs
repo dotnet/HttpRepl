@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
@@ -82,11 +83,37 @@ namespace Microsoft.HttpRepl.Commands
             return _uriLauncher.LaunchUriAsync(uri);
         }
 
+        private string _HelpText;
+        private string HelpText
+        {
+            get
+            {
+                if (_HelpText is null)
+                {
+                    string parameter = "{swaggerUIAddress}";
+                    string defaultAddress = "[BaseAddress]/swagger";
+                    var helpText = new StringBuilder();
+                    helpText.Append(Strings.Usage.Bold());
+                    helpText.AppendLine("ui [{swaggerUIAddress}]");
+                    helpText.AppendLine();
+                    helpText.AppendLine(Strings.UICommand_Description);
+                    helpText.AppendLine();
+                    helpText.AppendLine(string.Format(Strings.UICommand_HelpText_Line1, Name));
+                    helpText.AppendLine(string.Format(Strings.UICommand_HelpText_Line2, parameter));
+                    helpText.AppendLine(string.Format(Strings.UICommand_HelpText_Line3, WellKnownPreference.SwaggerUIEndpoint));
+                    helpText.AppendLine(string.Format(Strings.UICommand_HelpText_Line4, defaultAddress));
+
+                    _HelpText = helpText.ToString();
+                }
+                return _HelpText;
+            }
+        }
+
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
             if (parseResult.ContainsAtLeast(Name))
             {
-                return Strings.UICommand_Description;
+                return HelpText;
             }
 
             return null;

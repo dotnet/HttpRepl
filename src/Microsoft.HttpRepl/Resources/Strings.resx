@@ -220,7 +220,7 @@
     <value>Must specify a swagger document</value>
   </data>
   <data name="UICommand_Description" xml:space="preserve">
-    <value>ui - Launches the Swagger UI page (if available) in the default browser</value>
+    <value>Launches the Swagger UI page (if available) in the default browser</value>
   </data>
   <data name="UICommand_NotConnectedToServerError" xml:space="preserve">
     <value>Must be connected to a server to launch Swagger UI</value>
@@ -357,5 +357,21 @@ When +history option is specified, commands specified in the text file will be a
   <data name="UICommand_InvalidParameter" xml:space="preserve">
     <value>The parameter '{0}' could not be converted into a valid uri.</value>
     <comment>{0} is a string parameter to the UI command</comment>
+  </data>
+  <data name="UICommand_HelpText_Line1" xml:space="preserve">
+    <value>The {0} command uses multiple sources to determine the swagger ui endpoint. In order of precedence:</value>
+    <comment>{0} is the name of the ui command (ui)</comment>
+  </data>
+  <data name="UICommand_HelpText_Line2" xml:space="preserve">
+    <value>  1. The {0} parameter, if specified</value>
+    <comment>{0} is the syntax for the parameter, e.g. {swaggerUIAddress}</comment>
+  </data>
+  <data name="UICommand_HelpText_Line3" xml:space="preserve">
+    <value>  2. The {0} preference, if set</value>
+    <comment>{0} is the name of the preference, e.g. swagger.uiEndpoint</comment>
+  </data>
+  <data name="UICommand_HelpText_Line4" xml:space="preserve">
+    <value>  3. A default url of {0}</value>
+    <comment>{0} is the default address, e.g. [BaseAddress]/swagger</comment>
   </data>
 </root>

@@ -669,7 +669,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ui - Launches the Swagger UI page (if available) in the default browser.
+        ///   Looks up a localized string similar to Launches the Swagger UI page (if available) in the default browser.
         /// </summary>
         internal static string UICommand_Description {
             get {
@@ -683,6 +683,42 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string UICommand_HelpSummary {
             get {
                 return ResourceManager.GetString("UICommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} command uses multiple sources to determine the swagger ui endpoint. In order of precedence:.
+        /// </summary>
+        internal static string UICommand_HelpText_Line1 {
+            get {
+                return ResourceManager.GetString("UICommand_HelpText_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   1. The {0} parameter, if specified.
+        /// </summary>
+        internal static string UICommand_HelpText_Line2 {
+            get {
+                return ResourceManager.GetString("UICommand_HelpText_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   2. The {0} preference, if set.
+        /// </summary>
+        internal static string UICommand_HelpText_Line3 {
+            get {
+                return ResourceManager.GetString("UICommand_HelpText_Line3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   3. A default url of {0}.
+        /// </summary>
+        internal static string UICommand_HelpText_Line4 {
+            get {
+                return ResourceManager.GetString("UICommand_HelpText_Line4", resourceCulture);
             }
         }
         
