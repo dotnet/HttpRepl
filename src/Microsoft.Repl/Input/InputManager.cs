@@ -289,7 +289,7 @@ namespace Microsoft.Repl.Input
                             state.ConsoleManager.MoveCaret(i - state.ConsoleManager.CaretPosition);
                         }
                     }
-                    else if (!keyPress.Modifiers.HasFlag(ConsoleModifiers.Alt) && !keyPress.Modifiers.HasFlag(ConsoleModifiers.Control))
+                    else
                     {
                         if (state.ConsoleManager.IsKeyAvailable)
                         {
