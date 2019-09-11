@@ -123,7 +123,11 @@ namespace Microsoft.HttpRepl.Commands
 
             if (RequiresBody)
             {
-                HandleRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
+                if (!HandleRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders))
+                {
+                    // HandleRequiresBody failed for some reason, abort the command execution.
+                    return;
+                }
             }
 
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
@@ -159,7 +163,7 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        private void HandleRequiresBody(DefaultCommandInput<ICoreParseResult> commandInput,
+        private bool HandleRequiresBody(DefaultCommandInput<ICoreParseResult> commandInput,
             IShellState shellState,
             HttpState programState,
             HttpRequestMessage request,
@@ -189,7 +193,7 @@ namespace Microsoft.HttpRepl.Commands
                     if (!_fileSystem.FileExists(filePath))
                     {
                         shellState.ConsoleManager.Error.WriteLine($"Content file {filePath} does not exist".SetColor(programState.ErrorColor));
-                        return;
+                        return false;
                     }
                 }
                 else if (commandInput.Options[BodyContentOption].Count > 0)
@@ -202,7 +206,13 @@ namespace Microsoft.HttpRepl.Commands
                     if (defaultEditorCommand == null)
                     {
                         shellState.ConsoleManager.Error.WriteLine($"The default editor must be configured using the command `pref set {WellKnownPreference.DefaultEditorCommand} \"{{commandline}}\"`".SetColor(programState.ErrorColor));
-                        return;
+                        return false;
+                    }
+
+                    if (!File.Exists(defaultEditorCommand))
+                    {
+                        shellState.ConsoleManager.Error.WriteLine($"The configured default editor '{defaultEditorCommand}' could not be found. Make sure you have configured the editor, with the full path, using the command `pref set {WellKnownPreference.DefaultEditorCommand} \"{{commandline}}\"`".SetColor(programState.ErrorColor));
+                        return false;
                     }
 
                     deleteFile = true;
@@ -253,6 +263,8 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             AddHttpContentHeaders(content, programState, requestHeaders);
+
+            return true;
         }
 
         private static string GetFileExtensionFromContentType(string contentType)
