@@ -25,10 +25,29 @@ resources:
     options: --init # This ensures all the stray defunct processes are reaped.
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+    - release/*
+  paths:
+    include:
+    - /
+    exclude:
+    - CONTRIBUTING.md
+    - README.md
+    - SECURITY.md
 
 pr:
-- "*"
+  branches:
+    include:
+    - "*"
+  paths:
+    include:
+    - /
+    exclude:
+    - CONTRIBUTING.md
+    - README.md
+    - SECURITY.md
 
 stages:
 - stage: build
