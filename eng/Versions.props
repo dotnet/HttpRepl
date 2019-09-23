@@ -5,9 +5,7 @@
     <UsingToolXliff>false</UsingToolXliff>
   </PropertyGroup>
   <PropertyGroup>
-    <MajorVersion>3</MajorVersion>
-    <MinorVersion>1</MinorVersion>
+    <VersionPrefix>3.1.0</VersionPrefix>
     <PreReleaseVersionLabel>preview</PreReleaseVersionLabel>
-    <DotNetFinalVersionKind>prerelease</DotNetFinalVersionKind>
   </PropertyGroup>
 </Project>
