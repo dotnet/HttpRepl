@@ -8,6 +8,7 @@
     <PackageIcon>PackageIcon.png</PackageIcon>
     
     <IsPackable>true</IsPackable>
+    <IsShipping>false</IsShipping>
   </PropertyGroup>
 
   <ItemGroup>
