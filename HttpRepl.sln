@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29006.145
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl.Tests", "Microsoft.HttpRepl.Tests\Microsoft.HttpRepl.Tests.csproj", "{84E7BEDA-9064-4B11-A84B-3011C6A97A8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl.Tests", "test\Microsoft.HttpRepl.Tests\Microsoft.HttpRepl.Tests.csproj", "{84E7BEDA-9064-4B11-A84B-3011C6A97A8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl", "Microsoft.HttpRepl\Microsoft.HttpRepl.csproj", "{798BD900-DFF5-46CD-A422-5B0B2495A943}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl", "src\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj", "{798BD900-DFF5-46CD-A422-5B0B2495A943}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Repl.Tests", "Microsoft.Repl.Tests\Microsoft.Repl.Tests.csproj", "{218B878C-5856-4B1F-99B7-8D98AB4C1B03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Repl.Tests", "test\Microsoft.Repl.Tests\Microsoft.Repl.Tests.csproj", "{218B878C-5856-4B1F-99B7-8D98AB4C1B03}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Repl", "Microsoft.Repl\Microsoft.Repl.csproj", "{AC0BF0EE-FF72-4BD8-BF18-3322BE5FA695}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Repl", "src\Microsoft.Repl\Microsoft.Repl.csproj", "{AC0BF0EE-FF72-4BD8-BF18-3322BE5FA695}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl.IntegrationTests", "Microsoft.HttpRepl.IntegrationTests\Microsoft.HttpRepl.IntegrationTests.csproj", "{A1B13133-8F4D-42D5-B470-D6349C71AFD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.HttpRepl.IntegrationTests", "test\Microsoft.HttpRepl.IntegrationTests\Microsoft.HttpRepl.IntegrationTests.csproj", "{A1B13133-8F4D-42D5-B470-D6349C71AFD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.HttpRepl.Fakes", "Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj", "{32DEC29F-4FFB-4AFB-8E9E-A88B44739CC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.HttpRepl.Fakes", "test\Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj", "{32DEC29F-4FFB-4AFB-8E9E-A88B44739CC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

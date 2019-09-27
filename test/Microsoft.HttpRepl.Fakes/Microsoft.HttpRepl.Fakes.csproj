@@ -11,15 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="Moq" />
-    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
-    <ProjectReference Include="..\Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj" />
-    <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
+    <ProjectReference Include="$(RepoSource)Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
   </ItemGroup>
 
 </Project>

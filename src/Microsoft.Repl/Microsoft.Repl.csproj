@@ -6,7 +6,7 @@
     <PackageTags>dotnet;repl</PackageTags>
     <PackageId>Microsoft.Repl</PackageId>
     <PackageIcon>PackageIcon.png</PackageIcon>
-    
+
     <IsPackable>true</IsPackable>
     <IsShipping>false</IsShipping>
   </PropertyGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(RepoSource)\PackageIcon.png" Pack="true" PackagePath="" />
+    <None Include="$(RepoSource)PackageIcon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

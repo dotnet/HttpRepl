@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Repl\Microsoft.Repl.csproj" />
+    <ProjectReference Include="$(RepoSource)Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(RepoSource)\PackageIcon.png" Pack="true" PackagePath="" />
+    <None Include="$(RepoSource)PackageIcon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Specify the solutions to build. Add all new solutions/projects here as necessary or the main build won't build them! -->
   <ItemGroup>
-    <ProjectToBuild Include="$(MSBuildThisFileDirectory)..\src\HttpRepl.sln" />
+    <ProjectToBuild Include="$(MSBuildThisFileDirectory)..\HttpRepl.sln" />
   </ItemGroup>
 </Project>
