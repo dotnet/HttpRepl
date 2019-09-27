@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Common diagnostic rules to run during build for all Web Tools projects" ToolsVersion="15.0">
+  <!--
+    Note: Don't edit/save this file using VS, since it would remove all comments.
+  -->
+  <Include Path="sdl7.0.ruleset" Action="Default" />
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
+    <Rule Id="RS1001" Action="None" />                        <!-- All RS analizers here are specific to Analyzer authoring. -->
+    <Rule Id="RS1004" Action="None" />
+    <Rule Id="RS1009" Action="None" />
+    <Rule Id="RS1010" Action="None" />
+    <Rule Id="RS1011" Action="None" />
+    <Rule Id="RS1016" Action="None" />
+    <Rule Id="RS1017" Action="None" />
+    <Rule Id="RS1018" Action="None" />
+    <Rule Id="RS1019" Action="None" />
+    <Rule Id="RS1021" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="AD0001" Action="None" />                        <!-- Analyzer failure. -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA1000" Action="Hidden" />                      <!-- Do not declare static members on generic types. -->
+    <Rule Id="CA1001" Action="Error" />                       <!-- Types that own disposable fields should be disposable. -->
+    <Rule Id="CA1002" Action="Info" />                        <!-- Do not expose generic lists. -->
+    <Rule Id="CA1003" Action="Warning" />                     <!-- Use generic event handler instances. -->
+    <Rule Id="CA1004" Action="Info" />                        <!-- Generic methods should provide type parameter. -->
+    <Rule Id="CA1005" Action="Info" />                        <!-- Avoid excessive parameters on generic types. -->
+    <Rule Id="CA1007" Action="Warning" />                     <!-- Use generics where appropriate. An externally visible method contains a reference parameter of type System.Object. -->
+    <Rule Id="CA1008" Action="Warning" />                     <!-- Enums should have zero value. -->
+    <Rule Id="CA1010" Action="Info" />                        <!-- Collections should implement generic interface. -->
+    <Rule Id="CA1011" Action="Warning" />                     <!-- Consider passing base types as parameters. A method declaration includes a formal parameter that is a derived type, and the method calls only members of the base type of the parameter. -->
+    <Rule Id="CA1012" Action="Warning" />                     <!-- Abstract types should not have constructors. -->
+    <Rule Id="CA1013" Action="Warning" />                     <!-- Overload operator equals on overloading add and subtract. -->
+    <Rule Id="CA1019" Action="Warning" />                     <!-- Define accessors for attribute arguments. -->
+    <Rule Id="CA1023" Action="Warning" />                     <!-- Indexers should not be multidimensional. -->
+    <Rule Id="CA1026" Action="Info" />                        <!-- Default parameters should not be used. An externally visible type contains an externally visible method that uses a default parameter. -->
+    <Rule Id="CA1027" Action="Info" />                        <!-- Mark enums with FlagsAttribute. -->
+    <Rule Id="CA1034" Action="Info" />                        <!-- Nested types should not be visible. -->
+    <Rule Id="CA1035" Action="Warning" />                     <!-- ICollection implementations have strongly typed members. A public or protected type implements System.Collections.ICollection but does not provide a strongly typed method for ICollection.CopyTo. -->
+    <Rule Id="CA1038" Action="Warning" />                     <!-- Enumerators should be strongly typed. A public or protected type implements System.Collections.IEnumerator but does not provide a strongly typed version of the IEnumerator.Current property. -->
+    <Rule Id="CA1039" Action="Warning" />                     <!-- Lists are strongly typed. -->
+    <Rule Id="CA1041" Action="Info" />                        <!-- Provide ObsoleteAttribute message. -->
+    <Rule Id="CA1045" Action="Info" />                        <!-- Do not pass types by reference. -->
+    <Rule Id="CA1047" Action="Error" />                       <!-- Do not declare protected members in sealed types. -->
+    <Rule Id="CA1048" Action="Error" />                       <!-- Do not declare virtual members in sealed types. -->
+    <Rule Id="CA1050" Action="Error" />                       <!-- Declare types in namespaces. -->
+    <Rule Id="CA1052" Action="Info" />                        <!-- Static holder types should be sealed. -->
+    <Rule Id="CA1053" Action="Info" />                        <!-- Static holder types should not have constructors. -->
+    <Rule Id="CA1054" Action="None" />                        <!-- URI parameters should not be strings. -->
+    <Rule Id="CA1055" Action="None" />                        <!-- URI return values should not be strings. -->
+    <Rule Id="CA1056" Action="None" />                        <!-- URI properties should not be strings. -->
+    <Rule Id="CA1057" Action="None" />                        <!-- String URI overloads call System.Uri overloads. -->
+    <Rule Id="CA1058" Action="Info" />                        <!-- Types should not extend certain base types (non-generic old collections). -->
+    <Rule Id="CA1063" Action="None" />                        <!-- The System.IDisposable interface is not implemented correctly. Note: Warning when https://github.com/dotnet/roslyn-analyzers/issues/1432 is fixed. -->
+    <Rule Id="CA1304" Action="Warning" />                     <!-- Specify CultureInfo. -->
+    <Rule Id="CA1710" Action="None" />                        <!-- Identifiers should have correct suffix. Attribute, EventArgs etc. -->
+    <Rule Id="CA1720" Action="None" />                        <!-- Identifiers should not contain type names. -->
+    <Rule Id="CA1801" Action="Info" />                        <!-- A method signature includes a parameter that is not used in the method body. -->
+    <Rule Id="CA1802" Action="Info" />                        <!-- Use Literals Where Appropriate. -->
+    <Rule Id="CA1806" Action="Info" />                        <!-- Do not ignore method results. COM and IVs -->
+    <Rule Id="CA1822" Action="Info" />                        <!-- Mark members as static. It changed incorrectly to complain about internal types too. TODO: make it warning later and followup with changes. -->
+    <Rule Id="CA2007" Action="None" />                        <!-- Alway use ConfigureAwait -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.CSharp.Analyzers" RuleNamespace="Microsoft.CodeQuality.CSharp.Analyzers">
+    <Rule Id="Async001" Action="Warning" />                   <!-- Avoid async void. -->
+    <Rule Id="Async002" Action="Warning" />                   <!-- Async method should end with Async. -->
+    <Rule Id="Async003" Action="Warning" />                   <!-- Don't Pass Async Lambdas as Void Returning Delegate Types. -->
+    <Rule Id="Async004" Action="Warning" />                   <!-- Don't Store Async Lambdas as Void Returning Delegate Types. -->
+    <Rule Id="Async005" Action="Info" />                      <!-- Propagate cancellation token when possible. -->
+    <Rule Id="CA1001" Action="Error" />                       <!-- Types that own disposable fields should be disposable. -->
+    <Rule Id="CA1003" Action="Warning" />                     <!-- Use generic event handler instances. -->
+    <Rule Id="CA1019" Action="Warning" />                     <!-- Define accessors for attribute arguments. -->
+    <Rule Id="CA1500" Action="Info" />                        <!-- Variable names should not match field names -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Composition.Analyzers" RuleNamespace="Microsoft.Composition.Analyzers">
+    <Rule Id="RS0006" Action="None" />                        <!-- Do not mix attributes from different versions of MEF. -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
+    <Rule Id="CA1305" Action="None" />                        <!-- A method or constructor calls one or more members that have overloads that accept a System.IFormatProvider parameter. -->
+    <Rule Id="CA1307" Action="Warning" />                     <!-- A string comparison operation uses a method overload that does not set a StringComparison parameter. -->
+    <Rule Id="CA1308" Action="Warning" />                     <!-- Normalize strings to uppercase -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.VisualStudio.Threading.Analyzers" RuleNamespace="Microsoft.VisualStudio.Threading.Analyzers">
+    <Rule Id="VSTHRD010" Action="None" />                     <!-- Visual Studio service should be used on main thread explicitly. -->
+    <Rule Id="VSTHRD103" Action="None" />                     <!-- Call async methods when in an async method.-->
+    <Rule Id="VSTHRD108" Action="None" />                     <!-- Thread affinity checks should be unconditional. -->
+    <Rule Id="VSTHRD200" Action="None" />                     <!-- Naming styles                              Task Open()                                         Task OpenAsync()                       -->
+  </Rules>
+  <Rules AnalyzerId="Roslyn.Diagnostics.Analyzers" RuleNamespace="Roslyn.Diagnostics.Analyzers">
+    <Rule Id="RS0006" Action="None" />                        <!-- Do not mix attributes from different versions of MEF. -->
+  </Rules>
+  <Rules AnalyzerId="System.Runtime.Analyzers" RuleNamespace="System.Runtime.Analyzers">
+    <Rule Id="CA1305" Action="None" />                        <!-- A method or constructor calls one or more members that have overloads that accept a System.IFormatProvider parameter. -->
+    <Rule Id="CA1307" Action="Warning" />                     <!-- A string comparison operation uses a method overload that does not set a StringComparison parameter. -->
+    <Rule Id="CA1308" Action="Warning" />                     <!-- Normalize strings to uppercase -->
+  </Rules>
+</RuleSet>
