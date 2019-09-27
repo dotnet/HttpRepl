@@ -77,7 +77,7 @@ namespace Microsoft.Repl.Commanding
                 return null;
             }
 
-            if (normalCompletionString.StartsWith(InputSpec.OptionPreamble.ToString()))
+            if (normalCompletionString.StartsWith(InputSpec.OptionPreamble.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 return GetOptionCompletions(commandInput, normalCompletionString);
             }
@@ -164,6 +164,11 @@ namespace Microsoft.Repl.Commanding
 
         public bool? CanHandle(IShellState shellState, TProgramState programState, TParseResult parseResult)
         {
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues))
             {
                 //If this is the right command, just not the right syntax, report the usage errors
@@ -193,6 +198,11 @@ namespace Microsoft.Repl.Commanding
 
         protected virtual string GetStringForIssue(CommandInputProcessingIssue issue)
         {
+            if (issue is null)
+            {
+                throw new ArgumentNullException(nameof(issue));
+            }
+
             //TODO: Make this nicer
             return issue.Kind + " -- " + issue.Text;
         }

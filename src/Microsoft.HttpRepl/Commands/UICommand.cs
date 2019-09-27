@@ -36,6 +36,21 @@ namespace Microsoft.HttpRepl.Commands
 
         public Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
+            if (programState is null)
+            {
+                throw new ArgumentNullException(nameof(programState));
+            }
+
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             if (programState.BaseAddress == null)
             {
                 shellState.ConsoleManager.Error.WriteLine(Strings.UICommand_NotConnectedToServerError.SetColor(programState.ErrorColor));
@@ -126,6 +141,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.SelectedSection == 0 &&
                 (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
             {

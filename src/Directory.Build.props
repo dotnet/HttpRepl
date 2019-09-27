@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>$(RepoRoot)\build\analyzers\rulesets\Default.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

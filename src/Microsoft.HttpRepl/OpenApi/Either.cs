@@ -25,10 +25,20 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public static implicit operator Either<TOption1, TOption2>(TOption1 value)
         {
-            return new Either<TOption1, TOption2>(value);
+            return ToEither(value);
         }
 
         public static implicit operator Either<TOption1, TOption2>(TOption2 value)
+        {
+            return ToEither(value);
+        }
+
+        public static Either<TOption1, TOption2> ToEither(TOption1 value)
+        {
+            return new Either<TOption1, TOption2>(value);
+        }
+
+        public static Either<TOption1, TOption2> ToEither(TOption2 value)
         {
             return new Either<TOption1, TOption2>(value);
         }

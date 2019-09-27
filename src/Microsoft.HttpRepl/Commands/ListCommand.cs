@@ -29,6 +29,21 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            if (programState is null)
+            {
+                throw new ArgumentNullException(nameof(programState));
+            }
+
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
+            if (commandInput is null)
+            {
+                throw new ArgumentNullException(nameof(commandInput));
+            }
+
             if (programState.SwaggerEndpoint != null)
             {
                 string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
@@ -156,6 +171,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
+            if (programState is null)
+            {
+                throw new ArgumentNullException(nameof(programState));
+            }
+
             if (programState.Structure == null || programState.BaseAddress == null)
             {
                 return null;
@@ -165,6 +185,11 @@ namespace Microsoft.HttpRepl.Commands
             if (Uri.TryCreate(normalCompletionString, UriKind.Absolute, out Uri _))
             {
                 return null;
+            }
+
+            if (normalCompletionString is null)
+            {
+                throw new ArgumentNullException(nameof(normalCompletionString));
             }
 
             string path = normalCompletionString.Replace('\\', '/');

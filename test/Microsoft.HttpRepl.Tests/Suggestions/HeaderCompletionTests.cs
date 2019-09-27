@@ -68,7 +68,9 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
         [InlineData("X-Requested-With")]
         public void GetValueCompletions_NoHeaderMatch_ReturnsNull(string header)
         {
-            IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: null, path: null, header, prefix: null, programState: null);
+            HttpState httpState = SetupHttpState();
+
+            IEnumerable<string> result = HeaderCompletion.GetValueCompletions(method: null, path: null, header, prefix: null, httpState);
 
             Assert.Null(result);
         }

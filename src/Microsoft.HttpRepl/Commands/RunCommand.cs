@@ -29,6 +29,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             return parseResult.ContainsAtLeast(minimumLength: 2, Name) && parseResult.Sections.Count < 4
                 ? (bool?)true
                 : null;
@@ -36,6 +41,16 @@ namespace Microsoft.HttpRepl.Commands
 
         public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
                 shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.RunCommand_CouldNotFindScriptFile, parseResult.Sections[1]));
@@ -45,7 +60,7 @@ namespace Microsoft.HttpRepl.Commands
             bool suppressScriptLinesInHistory = true;
             if (parseResult.Sections.Count == 3)
             {
-                suppressScriptLinesInHistory = !string.Equals(parseResult.Sections[2], "+history");
+                suppressScriptLinesInHistory = !string.Equals(parseResult.Sections[2], "+history", StringComparison.OrdinalIgnoreCase);
             }
 
             string[] lines = _fileSystem.ReadAllLinesFromFile(parseResult.Sections[1]);
@@ -73,6 +88,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.SelectedSection == 0 &&
                 (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
             {

@@ -15,7 +15,9 @@ namespace Microsoft.HttpRepl.Commands
         private readonly List<TreeNode> _children = new List<TreeNode>();
 
         public TreeNode(Formatter formatter, string prefix, string entry)
-            : this(formatter, prefix, entry, 0)
+            : this(formatter ?? throw new ArgumentNullException(nameof(formatter)),
+                   prefix ?? throw new ArgumentNullException(nameof(prefix)),
+                   entry, 0)
         {
         }
 
@@ -30,7 +32,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public TreeNode AddChild(string prefix, string entry)
         {
-            TreeNode child = new TreeNode(_formatter, prefix, entry, _depth + 1);
+            TreeNode child = new TreeNode(_formatter, prefix ?? throw new ArgumentNullException(nameof(prefix)), entry, _depth + 1);
             _children.Add(child);
             return child;
         }

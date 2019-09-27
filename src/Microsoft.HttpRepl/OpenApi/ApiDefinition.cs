@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
@@ -12,6 +13,7 @@ namespace Microsoft.HttpRepl.OpenApi
         public IList<Server> BaseAddresses { get; } = new List<Server>();
         public IDirectoryStructure DirectoryStructure { get; set; }
 
+        [SuppressMessage("Design", "CA1724:Type names should not match namespaces", Justification = "This is a valid name for this type.")]
         public class Server
         {
             public Uri Url { get; set; }

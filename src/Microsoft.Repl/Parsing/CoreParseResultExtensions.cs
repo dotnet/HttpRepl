@@ -10,6 +10,11 @@ namespace Microsoft.Repl.Parsing
     {
         public static bool ContainsExactly(this ICoreParseResult parseResult, int length, StringComparison stringComparison, params string[] sections)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.Sections.Count != length || parseResult.Sections.Count < sections.Length)
             {
                 return false;
@@ -30,6 +35,11 @@ namespace Microsoft.Repl.Parsing
 
         public static bool ContainsAtLeast(this ICoreParseResult parseResult, int minimumLength, StringComparison stringComparison, params string[] sections)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.Sections.Count < minimumLength || parseResult.Sections.Count < sections.Length)
             {
                 return false;

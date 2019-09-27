@@ -2,12 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
+    [SuppressMessage("Design", "CA1819:Properties should not return arrays", Justification = "Arrays are valid in this scenario.")]
+    [SuppressMessage("Design", "CA1724:Type names should not match namespaces", Justification = "This is a valid name for this type.")]
     public class Schema
     {
         public void PrepareForUsage(JToken document)
@@ -72,7 +75,9 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public Schema[] AllOf { get; set; }
 
+
         public Schema[] AnyOf { get; set; }
+
 
         public object Default { get; set; }
 
@@ -114,7 +119,9 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public string Pattern { get; set; }
 
+#pragma warning disable CA2227 // Collection properties should be read only
         public Dictionary<string, Schema> Properties { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
 
         [JsonConverter(typeof(EitherConverter<string[], bool>))]
         public Either<string[], bool> Required { get; set; }

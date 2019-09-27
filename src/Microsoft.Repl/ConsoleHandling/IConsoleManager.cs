@@ -14,7 +14,9 @@ namespace Microsoft.Repl.ConsoleHandling
 
         int CaretPosition { get; }
 
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IWritable Error { get; }
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         bool IsKeyAvailable { get; }
 

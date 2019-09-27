@@ -79,10 +79,13 @@ namespace Microsoft.HttpRepl
             resp.EnsureSuccessStatusCode();
             string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
-            JObject responseObject = (JObject)serializer.Deserialize(new StringReader(responseString), typeof(JObject));
-            responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
+            using (StringReader stringReader = new StringReader(responseString))
+            {
+                JObject responseObject = (JObject)serializer.Deserialize(stringReader, typeof(JObject));
+                responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
 
-            return responseObject;
+                return responseObject;
+            }
         }
 
         public async Task<(bool Success, JObject Document)> TryGetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)

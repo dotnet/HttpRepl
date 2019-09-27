@@ -81,6 +81,11 @@ namespace Microsoft.Repl.Commanding
 
         public IReadOnlyList<string> CollectSuggestions(IShellState shellState)
         {
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             string line = shellState.InputManager.GetCurrentBuffer();
             TParseResult parseResult = _parser.Parse(line, shellState.ConsoleManager.CaretPosition);
             HashSet<string> suggestions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -100,6 +105,11 @@ namespace Microsoft.Repl.Commanding
 
         public async Task ExecuteCommandAsync(IShellState shellState, CancellationToken cancellationToken)
         {
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             _isReady = false;
             shellState.ConsoleManager.WriteLine();
             string commandText = shellState.InputManager.GetCurrentBuffer();
@@ -162,6 +172,11 @@ namespace Microsoft.Repl.Commanding
 
         public void OnReady(IShellState shellState)
         {
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
             if (!_isReady && !shellState.IsExiting)
             {
                 _onReady(shellState);

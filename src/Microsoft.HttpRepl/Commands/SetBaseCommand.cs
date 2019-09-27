@@ -30,26 +30,44 @@ namespace Microsoft.HttpRepl.Commands
                 : null;
         }
 
-        public async Task ExecuteAsync(IShellState shellState, HttpState state, ICoreParseResult parseResult, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            if (shellState is null)
+            {
+                throw new ArgumentNullException(nameof(shellState));
+            }
+
+            if (programState is null)
+            {
+                throw new ArgumentNullException(nameof(programState));
+            }
+
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.Sections.Count == 2)
             {
-                state.BaseAddress = null;
+                programState.BaseAddress = null;
             }
             else if (parseResult.Sections.Count != 3 || string.IsNullOrEmpty(parseResult.Sections[2]) || !Uri.TryCreate(parseResult.Sections[2].EnsureTrailingSlash(), UriKind.Absolute, out Uri serverUri))
             {
-                shellState.ConsoleManager.Error.WriteLine(Strings.SetBaseCommand_MustSpecifyServerError.SetColor(state.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Strings.SetBaseCommand_MustSpecifyServerError.SetColor(programState.ErrorColor));
             }
             else
             {
-                state.BaseAddress = serverUri;
+                programState.BaseAddress = serverUri;
                 try
                 {
-                    await state.Client.SendAsync(new HttpRequestMessage(HttpMethod.Head, serverUri)).ConfigureAwait(false);
+                    using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, serverUri))
+                    {
+                        await programState.Client.SendAsync(request).ConfigureAwait(false);
+                    }
                 }
                 catch (Exception ex) when (ex.InnerException is SocketException se)
                 {
-                    shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.SetBaseCommand_HEADRequestUnSuccessful, se.Message).SetColor(state.WarningColor));
+                    shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.SetBaseCommand_HEADRequestUnSuccessful, se.Message).SetColor(programState.WarningColor));
                 }
                 catch { }
             }
@@ -77,6 +95,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            if (parseResult is null)
+            {
+                throw new ArgumentNullException(nameof(parseResult));
+            }
+
             if (parseResult.Sections.Count == 0)
             {
                 return new[] { Name };

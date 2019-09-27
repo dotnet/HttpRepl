@@ -42,7 +42,7 @@ namespace Microsoft.HttpRepl
             {
                 string uriLaunchErrorMessage = string.Format(Strings.UICommand_UnableToLaunchUriError, uri);
 
-                return Task.FromException(new Exception(uriLaunchErrorMessage));
+                return Task.FromException(new InvalidOperationException(uriLaunchErrorMessage));
             }
         }
     }

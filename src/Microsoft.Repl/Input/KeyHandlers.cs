@@ -12,6 +12,11 @@ namespace Microsoft.Repl.Input
     {
         public static void RegisterDefaultKeyHandlers(IInputManager inputManager)
         {
+            if (inputManager is null)
+            {
+                throw new ArgumentNullException(nameof(inputManager));
+            }
+
             //Navigation in line
             inputManager.RegisterKeyHandler(ConsoleKey.LeftArrow, LeftArrow);
             inputManager.RegisterKeyHandler(ConsoleKey.LeftArrow, ConsoleModifiers.Control, LeftArrow);
@@ -89,12 +94,22 @@ namespace Microsoft.Repl.Input
 
         public static Task Home(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             state.ConsoleManager.MoveCaret(-state.ConsoleManager.CaretPosition);
             return Task.CompletedTask;
         }
 
         public static Task LeftArrow(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             if (state.ConsoleManager.CaretPosition > 0)
             {
                 if (!keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
@@ -122,6 +137,11 @@ namespace Microsoft.Repl.Input
 
         public static Task RightArrow(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             string line = state.InputManager.GetCurrentBuffer();
 
             if (state.ConsoleManager.CaretPosition < line.Length)
@@ -152,6 +172,11 @@ namespace Microsoft.Repl.Input
 
         public static Task UpArrow(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             string line = state.CommandHistory.GetPreviousCommand();
             state.InputManager.SetInput(state, line);
             return Task.CompletedTask;
@@ -159,6 +184,11 @@ namespace Microsoft.Repl.Input
 
         public static Task DownArrow(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             string line = state.CommandHistory.GetNextCommand();
             state.InputManager.SetInput(state, line);
             return Task.CompletedTask;
@@ -166,11 +196,21 @@ namespace Microsoft.Repl.Input
 
         public static Task Enter(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             return state.CommandDispatcher.ExecuteCommandAsync(state, cancellationToken);
         }
 
         public static Task Backspace(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             state.InputManager.RemovePreviousCharacter(state);
             return Task.CompletedTask;
         }
@@ -182,12 +222,22 @@ namespace Microsoft.Repl.Input
 
         public static Task Escape(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             state.InputManager.SetInput(state, string.Empty);
             return Task.CompletedTask;
         }
 
         public static Task Tab(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             if (keyInfo.Modifiers.HasFlag(ConsoleModifiers.Shift))
             {
                 state.SuggestionManager.PreviousSuggestion(state);
@@ -202,12 +252,22 @@ namespace Microsoft.Repl.Input
 
         public static Task Delete(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             state.InputManager.RemoveCurrentCharacter(state);
             return Task.CompletedTask;
         }
 
         public static Task Insert(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
+            if (state is null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+
             state.InputManager.IsOverwriteMode = !state.InputManager.IsOverwriteMode;
             return Task.CompletedTask;
         }
