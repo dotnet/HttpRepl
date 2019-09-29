@@ -61,6 +61,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Headers must be formatted as {header}={value} or {header}:{value}.
+        /// </summary>
+        internal static string BaseHttpCommand_Error_HeaderFormatting {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_Error_HeaderFormatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Streaming the response, press any key to stop....
+        /// </summary>
+        internal static string BaseHttpCommand_FormatBodyAsync_Streaming {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_FormatBodyAsync_Streaming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Append the given directory to the currently selected path, or move up a path when using `cd ..`.
         /// </summary>
         internal static string ChangeDirectoryCommand_HelpSummary {
@@ -210,6 +228,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ConnectCommand_Status_Swagger {
             get {
                 return ResourceManager.GetString("ConnectCommand_Status_Swagger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed echo modes are &apos;on&apos; and &apos;off&apos;.
+        /// </summary>
+        internal static string EchoCommand_Error_AllowedModes {
+            get {
+                return ResourceManager.GetString("EchoCommand_Error_AllowedModes", resourceCulture);
             }
         }
         
@@ -444,6 +471,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ListCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("ListCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options:.
+        /// </summary>
+        internal static string Options {
+            get {
+                return ResourceManager.GetString("Options", resourceCulture);
             }
         }
         
@@ -687,7 +723,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The {0} command uses multiple sources to determine the swagger ui endpoint. In order of precedence:.
+        ///   Looks up a localized string similar to The {0} command uses multiple sources to determine the Swagger UI endpoint. In order of precedence:.
         /// </summary>
         internal static string UICommand_HelpText_Line1 {
             get {
@@ -714,7 +750,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to   3. A default url of {0}.
+        ///   Looks up a localized string similar to   3. A default URL of {0}.
         /// </summary>
         internal static string UICommand_HelpText_Line4 {
             get {

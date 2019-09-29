@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Formatting;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -127,7 +128,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (equalsIndex < 0)
                 {
-                    shellState.ConsoleManager.Error.WriteLine("Headers must be formatted as {header}={value} or {header}:{value}".SetColor(programState.ErrorColor));
+                    shellState.ConsoleManager.Error.WriteLine(Strings.BaseHttpCommand_Error_HeaderFormatting.SetColor(programState.ErrorColor));
                     return;
                 }
 
@@ -428,7 +429,7 @@ namespace Microsoft.HttpRepl.Commands
                 Stream s = await content.ReadAsStreamAsync().ConfigureAwait(false);
                 using (StreamReader reader = new StreamReader(s))
                 {
-                    consoleManager.WriteLine("Streaming the response, press any key to stop...".SetColor(programState.WarningColor));
+                    consoleManager.WriteLine(Resources.Strings.BaseHttpCommand_FormatBodyAsync_Streaming.SetColor(programState.WarningColor));
 
                     while (!cancellationToken.IsCancellationRequested)
                     {
@@ -565,7 +566,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"{Verb.ToUpperInvariant()} [Options]");
             helpText.AppendLine();
             helpText.AppendLine($"Issues a {Verb.ToUpperInvariant()} request.");

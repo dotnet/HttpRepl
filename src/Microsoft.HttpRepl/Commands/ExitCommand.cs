@@ -30,7 +30,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, object programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"exit");
             helpText.AppendLine();
             helpText.AppendLine($"Exits the shell");

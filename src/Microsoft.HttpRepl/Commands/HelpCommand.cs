@@ -79,7 +79,7 @@ namespace Microsoft.HttpRepl.Commands
                                 if (structuredCommand != null && structuredCommand.InputSpec.Options.Any())
                                 {
                                     output.AppendLine();
-                                    output.AppendLine("Options:".Bold());
+                                    output.AppendLine(Resources.Strings.Options.Bold());
                                     foreach (var option in structuredCommand.InputSpec.Options)
                                     {
                                         var optionText = string.Empty;

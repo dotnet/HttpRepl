@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -103,7 +104,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var help = new StringBuilder();
-            help.Append("Usage:".Bold());
+            help.Append(Strings.Usage.Bold());
             help.AppendLine("cd [directory]");
             help.AppendLine();
             help.AppendLine("Prints the current directory if no argument is specified, otherwise changes to the specified directory");

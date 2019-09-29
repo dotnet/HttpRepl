@@ -129,7 +129,7 @@ namespace Microsoft.Repl.Commanding
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    shellState.ConsoleManager.Error.WriteLine("Execution was cancelled".Bold().Red());
+                    shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_ExecutionWasCancelled.Bold().Red());
                 }
             }
 
@@ -165,8 +165,8 @@ namespace Microsoft.Repl.Commanding
                     }
                 }
 
-                shellState.ConsoleManager.Error.WriteLine("No matching command found".Red().Bold());
-                shellState.ConsoleManager.Error.WriteLine("Execute 'help' to see available commands".Red().Bold());
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_NoMatchingCommand.Red().Bold());
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_SeeHelp.Red().Bold());
             }
         }
 

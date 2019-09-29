@@ -157,7 +157,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"ls [Options]");
             helpText.AppendLine();
             helpText.AppendLine($"Displays the known routes at the current location. Requires a Swagger document to be set.");
