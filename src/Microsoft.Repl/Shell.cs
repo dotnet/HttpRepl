@@ -15,10 +15,7 @@ namespace Microsoft.Repl
     {
         public Shell(IShellState shellState)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             KeyHandlers.RegisterDefaultKeyHandlers(shellState.InputManager);
             ShellState = shellState;

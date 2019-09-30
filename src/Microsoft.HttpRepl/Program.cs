@@ -26,10 +26,7 @@ namespace Microsoft.HttpRepl
 
         public async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null)
         {
-            if (args is null)
-            {
-                throw new ArgumentNullException(nameof(args));
-            }
+            args = args ?? throw new ArgumentNullException(nameof(args));
 
             ComposeDependencies(ref consoleManager, ref preferences, out HttpState state, out Shell shell);
 

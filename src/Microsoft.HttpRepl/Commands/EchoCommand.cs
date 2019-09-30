@@ -20,20 +20,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             if (commandInput.Arguments.Count == 0 || !_allowedModes.Contains(commandInput.Arguments[0]?.Text))
             {
@@ -46,20 +37,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             bool turnOn = string.Equals(commandInput.Arguments[0].Text, "on", StringComparison.OrdinalIgnoreCase);
             programState.EchoRequest = turnOn;

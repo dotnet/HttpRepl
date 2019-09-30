@@ -55,21 +55,15 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public static void FillDirectoryInfo(DirectoryStructure parent, EndpointMetadata entry)
         {
-            if (entry is null)
-            {
-                throw new ArgumentNullException(nameof(entry));
-            }
+            entry = entry ?? throw new ArgumentNullException(nameof(entry));
 
-            if (parent is null)
-            {
-                throw new ArgumentNullException(nameof(parent));
-            }
+            parent = parent ?? throw new ArgumentNullException(nameof(parent));
 
             string[] parts = entry.Path.Split('/');
 
             foreach (string part in parts)
             {
-                if (!string.IsNullOrEmpty(part) && !(parent is null))
+                if (!string.IsNullOrEmpty(part) && parent is object)
                 {
                     parent = parent.DeclareDirectory(part);
                 }
@@ -94,7 +88,7 @@ namespace Microsoft.HttpRepl.OpenApi
                 dirRequestInfo.AddMethod(method);
             }
 
-            if (dirRequestInfo.Methods.Count > 0 && !(parent is null))
+            if (dirRequestInfo.Methods.Count > 0 && parent is object)
             {
                 parent.RequestInfo = dirRequestInfo;
             }

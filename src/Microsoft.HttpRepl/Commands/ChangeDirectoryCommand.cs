@@ -20,20 +20,11 @@ namespace Microsoft.HttpRepl.Commands
     {
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             if (commandInput.Arguments.Count == 0 || string.IsNullOrEmpty(commandInput.Arguments[0]?.Text))
             {

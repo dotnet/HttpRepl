@@ -16,10 +16,7 @@ namespace Microsoft.HttpRepl
 
         public static IDirectoryStructure TraverseTo(this IDirectoryStructure structure, string path)
         {
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
+            path = path ?? throw new ArgumentNullException(nameof(path));
 
             string[] parts = path.Replace('\\', '/').Split('/');
             return structure.TraverseTo(parts);
@@ -27,10 +24,7 @@ namespace Microsoft.HttpRepl
 
         public static IDirectoryStructure TraverseTo(this IDirectoryStructure structure, IEnumerable<string> pathParts)
         {
-            if (structure is null)
-            {
-                throw new ArgumentNullException(nameof(structure));
-            }
+            structure = structure ?? throw new ArgumentNullException(nameof(structure));
 
             IDirectoryStructure s = structure;
             IReadOnlyList<string> parts = pathParts.ToList();
@@ -59,7 +53,7 @@ namespace Microsoft.HttpRepl
                 {
                     s = s?.Parent ?? s;
                 }
-                else if (!string.IsNullOrEmpty(part) && !(s is null))
+                else if (!string.IsNullOrEmpty(part) && s is object)
                 {
                     s = s.GetChildDirectory(part);
                 }

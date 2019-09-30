@@ -29,20 +29,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
             if (programState.SwaggerEndpoint != null)
             {
@@ -171,10 +162,7 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             if (programState.Structure == null || programState.BaseAddress == null)
             {
@@ -187,10 +175,7 @@ namespace Microsoft.HttpRepl.Commands
                 return null;
             }
 
-            if (normalCompletionString is null)
-            {
-                throw new ArgumentNullException(nameof(normalCompletionString));
-            }
+            normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
 
             string path = normalCompletionString.Replace('\\', '/');
             int searchFrom = normalCompletionString.Length - 1;

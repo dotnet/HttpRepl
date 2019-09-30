@@ -25,10 +25,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public Task ExecuteAsync(IShellState shellState, object programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             shellState.ConsoleManager.Clear();
             shellState.CommandDispatcher.OnReady(shellState);
@@ -52,10 +49,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.SelectedSection == 0)
             {

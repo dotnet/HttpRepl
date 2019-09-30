@@ -22,15 +22,9 @@ namespace Microsoft.Repl.Scripting
 
         public async Task ExecuteScriptAsync(IShellState shellState, IEnumerable<string> commandTexts, CancellationToken cancellationToken)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (commandTexts is null)
-            {
-                throw new ArgumentNullException(nameof(commandTexts));
-            }
+            commandTexts = commandTexts ?? throw new ArgumentNullException(nameof(commandTexts));
 
             if (shellState.CommandDispatcher is ICommandDispatcher<TProgramState, TParseResult> dispatcher)
             {

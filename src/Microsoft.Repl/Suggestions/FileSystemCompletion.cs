@@ -12,10 +12,7 @@ namespace Microsoft.Repl.Suggestions
     {
         public static IEnumerable<string> GetCompletions(string prefix)
         {
-            if (prefix is null)
-            {
-                throw new ArgumentNullException(nameof(prefix));
-            }
+            prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
 
             if (prefix.StartsWith("\"", StringComparison.Ordinal))
             {

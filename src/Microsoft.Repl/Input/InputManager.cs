@@ -68,10 +68,7 @@ namespace Microsoft.Repl.Input
 
         public void RemoveCurrentCharacter(IShellState state)
         {
-            if (state is null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
+            state = state ?? throw new ArgumentNullException(nameof(state));
 
             int caret = state.ConsoleManager.CaretPosition;
 
@@ -90,10 +87,7 @@ namespace Microsoft.Repl.Input
 
         public void RemovePreviousCharacter(IShellState state)
         {
-            if (state is null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
+            state = state ?? throw new ArgumentNullException(nameof(state));
 
             int caret = state.ConsoleManager.CaretPosition;
             if (caret == 0)
@@ -111,15 +105,9 @@ namespace Microsoft.Repl.Input
 
         public void SetInput(IShellState state, string input)
         {
-            if (state is null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
+            state = state ?? throw new ArgumentNullException(nameof(state));
 
-            if (input is null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
+            input = input ?? throw new ArgumentNullException(nameof(input));
 
             SetInput(state, input.ToCharArray());
         }

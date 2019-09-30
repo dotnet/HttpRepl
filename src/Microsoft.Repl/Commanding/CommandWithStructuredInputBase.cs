@@ -164,10 +164,7 @@ namespace Microsoft.Repl.Commanding
 
         public bool? CanHandle(IShellState shellState, TProgramState programState, TParseResult parseResult)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues))
             {
@@ -198,10 +195,7 @@ namespace Microsoft.Repl.Commanding
 
         protected virtual string GetStringForIssue(CommandInputProcessingIssue issue)
         {
-            if (issue is null)
-            {
-                throw new ArgumentNullException(nameof(issue));
-            }
+            issue = issue ?? throw new ArgumentNullException(nameof(issue));
 
             //TODO: Make this nicer
             return issue.Kind + " -- " + issue.Text;

@@ -15,10 +15,7 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (serializer is null)
-            {
-                throw new ArgumentNullException(nameof(serializer));
-            }
+            serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
 
             try
             {

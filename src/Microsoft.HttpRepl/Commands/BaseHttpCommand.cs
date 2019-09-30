@@ -94,20 +94,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             if (programState.BaseAddress == null && (commandInput.Arguments.Count == 0 || !Uri.TryCreate(commandInput.Arguments[0].Text, UriKind.Absolute, out _)))
             {
@@ -588,19 +579,13 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             List<string> results = new List<string>();
 
-            if (!(programState.Structure is null) && !(programState.BaseAddress is null))
+            if (programState.Structure is object && programState.BaseAddress is object)
             {
-                if (parseResult is null)
-                {
-                    throw new ArgumentNullException(nameof(parseResult));
-                }
+                parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
                 //If it's an absolute URI, nothing to suggest
                 if (Uri.TryCreate(parseResult.Sections[1], UriKind.Absolute, out Uri _))
@@ -608,10 +593,7 @@ namespace Microsoft.HttpRepl.Commands
                     return null;
                 }
 
-                if (normalCompletionString is null)
-                {
-                    throw new ArgumentNullException(nameof(normalCompletionString));
-                }
+                normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
 
                 string path = normalCompletionString.Replace('\\', '/');
                 int searchFrom = normalCompletionString.Length - 1;
@@ -652,15 +634,9 @@ namespace Microsoft.HttpRepl.Commands
 
             if (string.Equals(optionId, HeaderOption, StringComparison.Ordinal))
             {
-                if (commandInput is null)
-                {
-                    throw new ArgumentNullException(nameof(commandInput));
-                }
+                commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-                if (normalizedCompletionText is null)
-                {
-                    throw new ArgumentNullException(nameof(normalizedCompletionText));
-                }
+                normalizedCompletionText = normalizedCompletionText ?? throw new ArgumentNullException(nameof(normalizedCompletionText));
 
                 HashSet<string> alreadySpecifiedHeaders = new HashSet<string>(StringComparer.Ordinal);
                 IReadOnlyList<InputElement> options = commandInput.Options[HeaderOption];

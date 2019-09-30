@@ -41,10 +41,7 @@ namespace Microsoft.HttpRepl
 
         public HttpState(IFileSystem fileSystem, IPreferences preferences, HttpClient httpClient)
         {
-            if (preferences is null)
-            {
-                throw new ArgumentNullException(nameof(preferences));
-            }
+            preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
 
             _fileSystem = fileSystem;
             _preferences = preferences;
@@ -107,10 +104,7 @@ namespace Microsoft.HttpRepl
                 throw new ArgumentNullException(nameof(baseAddress), string.Format(Resources.Strings.HttpState_Error_NoAbsoluteUriNoBaseAddress, nameof(commandSpecifiedPath), nameof(baseAddress)));
             }
 
-            if (pathSections is null)
-            {
-                throw new ArgumentNullException(nameof(pathSections));
-            }
+            pathSections = pathSections ?? throw new ArgumentNullException(nameof(pathSections));
 
             UriBuilder builder = GetUriBuilderFromBaseAddressAndPath(baseAddress, pathSections, out string baseAndPathQuery);
 

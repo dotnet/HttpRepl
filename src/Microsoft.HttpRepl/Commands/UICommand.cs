@@ -36,20 +36,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             if (programState.BaseAddress == null)
             {
@@ -141,10 +132,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.SelectedSection == 0 &&
                 (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))

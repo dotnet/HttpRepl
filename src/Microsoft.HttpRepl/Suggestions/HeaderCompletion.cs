@@ -79,15 +79,9 @@ namespace Microsoft.HttpRepl.Suggestions
 
         public static IEnumerable<string> GetValueCompletions(string method, string path, string header, string prefix, HttpState programState)
         {
-            if (header is null)
-            {
-                throw new ArgumentNullException(nameof(header));
-            }
+            header = header ?? throw new ArgumentNullException(nameof(header));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             switch (header.ToUpperInvariant())
             {

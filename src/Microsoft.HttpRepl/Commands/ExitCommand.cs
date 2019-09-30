@@ -16,10 +16,7 @@ namespace Microsoft.HttpRepl.Commands
     {
         protected override Task ExecuteAsync(IShellState shellState, object programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             shellState.IsExiting = true;
             return Task.CompletedTask;

@@ -17,15 +17,9 @@ namespace Microsoft.HttpRepl.Suggestions
                 return null;
             }
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            if (normalCompletionString is null)
-            {
-                throw new ArgumentNullException(nameof(normalCompletionString));
-            }
+            normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
 
             if (programState.Structure is null)
             {

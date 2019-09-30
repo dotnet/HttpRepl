@@ -35,15 +35,9 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
@@ -65,10 +59,7 @@ namespace Microsoft.HttpRepl.Commands
             var helpText = new StringBuilder();
             helpText.Append(Resources.Strings.Help_Usage.Bold());
 
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
@@ -151,20 +142,11 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (commandInput is null)
-            {
-                throw new ArgumentNullException(nameof(commandInput));
-            }
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             if (string.Equals(commandInput.Arguments[0].Text, "get", StringComparison.OrdinalIgnoreCase))
             {
@@ -223,10 +205,7 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.SelectedSection == 1)
             {

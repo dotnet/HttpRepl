@@ -11,10 +11,7 @@ namespace Microsoft.Repl.Parsing
     {
         public ICoreParseResult Parse(string commandText, int caretPosition)
         {
-            if (commandText is null)
-            {
-                throw new ArgumentNullException(nameof(commandText));
-            }
+            commandText = commandText ?? throw new ArgumentNullException(nameof(commandText));
 
             List<string> sections = commandText.Split(' ').ToList();
             Dictionary<int, int> sectionStartLookup = new Dictionary<int, int>();

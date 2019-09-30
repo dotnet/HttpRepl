@@ -15,10 +15,7 @@ namespace Microsoft.HttpRepl.Formatting
 #pragma warning disable CA1308 // Normalize strings to uppercase
         public static string FormatAndColorize(IJsonConfig config, string jsonData)
         {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
+            config = config ?? throw new ArgumentNullException(nameof(config));
 
             if (jsonData == null)
             {

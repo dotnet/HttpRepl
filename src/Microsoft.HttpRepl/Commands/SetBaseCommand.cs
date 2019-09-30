@@ -32,20 +32,11 @@ namespace Microsoft.HttpRepl.Commands
 
         public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
-            if (programState is null)
-            {
-                throw new ArgumentNullException(nameof(programState));
-            }
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.Sections.Count == 2)
             {
@@ -95,10 +86,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.Sections.Count == 0)
             {

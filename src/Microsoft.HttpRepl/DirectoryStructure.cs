@@ -39,7 +39,7 @@ namespace Microsoft.HttpRepl
 
             IDirectoryStructure parameterizedTarget = _childDirectories.FirstOrDefault(x => x.Key.StartsWith('{') && x.Key.EndsWith('}')).Value;
 
-            if (!(parameterizedTarget is null))
+            if (parameterizedTarget is object)
             {
                 return parameterizedTarget;
             }

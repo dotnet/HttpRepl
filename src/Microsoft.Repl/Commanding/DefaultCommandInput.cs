@@ -21,10 +21,7 @@ namespace Microsoft.Repl.Commanding
 
         public static bool TryProcess(CommandInputSpecification spec, TParseResult parseResult, out DefaultCommandInput<TParseResult> result, out IReadOnlyList<CommandInputProcessingIssue> processingIssues)
         {
-            if (spec is null)
-            {
-                throw new ArgumentNullException(nameof(spec));
-            }
+            spec = spec ?? throw new ArgumentNullException(nameof(spec));
 
             List<CommandInputProcessingIssue> issues = null;
             List<InputElement> commandNameElements = null;
@@ -101,7 +98,7 @@ namespace Microsoft.Repl.Commanding
                 else
                 {
                     //Otherwise, check to see whether the previous option had a required argument before committing it
-                    if (!(currentOption is null))
+                    if (currentOption is object)
                     {
                         options[currentOption] = null;
 
@@ -130,7 +127,7 @@ namespace Microsoft.Repl.Commanding
             }
 
             //Clear any option in progress
-            if (!(currentOption is null))
+            if (currentOption is object)
             {
                 options[currentOption] = null;
 

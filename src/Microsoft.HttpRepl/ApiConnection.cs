@@ -21,13 +21,13 @@ namespace Microsoft.HttpRepl
         private const string SwaggerSearchPaths = "swagger.json|swagger/v1/swagger.json|/swagger.json|/swagger/v1/swagger.json";
 
         public Uri RootUri { get; set; }
-        public bool HasRootUri => !(RootUri is null);
+        public bool HasRootUri => RootUri is object;
         public Uri BaseUri { get; set; }
-        public bool HasBaseUri => !(BaseUri is null);
+        public bool HasBaseUri => BaseUri is object;
         public Uri SwaggerUri { get; set; }
-        public bool HasSwaggerUri => !(SwaggerUri is null);
+        public bool HasSwaggerUri => SwaggerUri is object;
         public JObject SwaggerDocument { get; set; }
-        public bool HasSwaggerDocument => !(SwaggerDocument is null);
+        public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
         public ApiConnection(IPreferences preferences)
@@ -105,7 +105,7 @@ namespace Microsoft.HttpRepl
         {
             ApiDefinitionReader reader = new ApiDefinitionReader();
             programState.ApiDefinition = reader.Read(SwaggerDocument, SwaggerUri);
-            if (!(programState.ApiDefinition is null))
+            if (programState.ApiDefinition is object)
             {
                 programState.SwaggerEndpoint = SwaggerUri;
             }

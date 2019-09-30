@@ -44,10 +44,7 @@ namespace Microsoft.HttpRepl.FileSystem
 
         public string GetTempFileName(string fileExtension)
         {
-            if (fileExtension is null)
-            {
-                throw new ArgumentNullException(nameof(fileExtension));
-            }
+            fileExtension = fileExtension ?? throw new ArgumentNullException(nameof(fileExtension));
 
             if (!fileExtension.StartsWith(".", StringComparison.Ordinal) || fileExtension.Length < 2)
             {

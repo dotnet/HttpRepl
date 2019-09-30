@@ -29,10 +29,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             return parseResult.ContainsAtLeast(minimumLength: 2, Name) && parseResult.Sections.Count < 4
                 ? (bool?)true
@@ -41,15 +38,9 @@ namespace Microsoft.HttpRepl.Commands
 
         public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
-            if (shellState is null)
-            {
-                throw new ArgumentNullException(nameof(shellState));
-            }
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
@@ -88,10 +79,7 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult is null)
-            {
-                throw new ArgumentNullException(nameof(parseResult));
-            }
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
 
             if (parseResult.SelectedSection == 0 &&
                 (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
