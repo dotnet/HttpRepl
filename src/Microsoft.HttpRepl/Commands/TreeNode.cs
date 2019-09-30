@@ -15,24 +15,22 @@ namespace Microsoft.HttpRepl.Commands
         private readonly List<TreeNode> _children = new List<TreeNode>();
 
         public TreeNode(Formatter formatter, string prefix, string entry)
-            : this(formatter ?? throw new ArgumentNullException(nameof(formatter)),
-                   prefix ?? throw new ArgumentNullException(nameof(prefix)),
-                   entry, 0)
+            : this(formatter, prefix, entry, 0)
         {
         }
 
         private TreeNode(Formatter formatter, string prefix, string entry, int depth)
         {
-            _formatter = formatter;
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
             formatter.RegisterEntry(prefix.Length, depth);
-            _prefix = prefix;
+            _prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
             _entry = entry;
             _depth = depth;
         }
 
         public TreeNode AddChild(string prefix, string entry)
         {
-            TreeNode child = new TreeNode(_formatter, prefix ?? throw new ArgumentNullException(nameof(prefix)), entry, _depth + 1);
+            TreeNode child = new TreeNode(_formatter, prefix, entry, _depth + 1);
             _children.Add(child);
             return child;
         }
