@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepoSource)Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
-    <ProjectReference Include="$(RepoTest)Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj" />
-    <ProjectReference Include="$(RepoSource)Microsoft.Repl\Microsoft.Repl.csproj" />
+    <ProjectReference Include="$(RepoSource)\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
+    <ProjectReference Include="$(RepoTest)\Microsoft.HttpRepl.Fakes\Microsoft.HttpRepl.Fakes.csproj" />
+    <ProjectReference Include="$(RepoSource)\Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
 
 </Project>

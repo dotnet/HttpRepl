@@ -6,8 +6,8 @@
 
   <PropertyGroup>
     <RepoRoot Condition=" '$(RepoRoot)' == '' ">$(MSBuildThisFileDirectory)</RepoRoot>
-    <RepoSource Condition=" '$(RepoSource)' == '' ">$(RepoRoot)src\</RepoSource>
-    <RepoTest Condition=" '$(RepoTest)' == '' ">$(RepoRoot)test\</RepoTest>
+    <RepoSource Condition=" '$(RepoSource)' == '' ">$(RepoRoot)src</RepoSource>
+    <RepoTest Condition=" '$(RepoTest)' == '' ">$(RepoRoot)test</RepoTest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CopyrightNetFoundation)' != ''">

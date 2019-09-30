@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepoSource)Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
+    <ProjectReference Include="$(RepoSource)\Microsoft.HttpRepl\Microsoft.HttpRepl.csproj" />
   </ItemGroup>
 
 </Project>
