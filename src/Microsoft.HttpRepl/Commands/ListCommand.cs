@@ -29,6 +29,12 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
             if (programState.SwaggerEndpoint != null)
             {
                 string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
@@ -142,7 +148,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"ls [Options]");
             helpText.AppendLine();
             helpText.AppendLine($"Displays the known routes at the current location. Requires a Swagger document to be set.");
@@ -156,6 +162,8 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             if (programState.Structure == null || programState.BaseAddress == null)
             {
                 return null;
@@ -166,6 +174,8 @@ namespace Microsoft.HttpRepl.Commands
             {
                 return null;
             }
+
+            normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
 
             string path = normalCompletionString.Replace('\\', '/');
             int searchFrom = normalCompletionString.Length - 1;

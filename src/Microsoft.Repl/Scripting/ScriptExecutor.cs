@@ -22,6 +22,10 @@ namespace Microsoft.Repl.Scripting
 
         public async Task ExecuteScriptAsync(IShellState shellState, IEnumerable<string> commandTexts, CancellationToken cancellationToken)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            commandTexts = commandTexts ?? throw new ArgumentNullException(nameof(commandTexts));
+
             if (shellState.CommandDispatcher is ICommandDispatcher<TProgramState, TParseResult> dispatcher)
             {
                 IDisposable suppressor = _hideScriptLinesFromHistory ? shellState.CommandHistory.SuspendHistory() : null;

@@ -185,10 +185,10 @@ namespace Microsoft.Repl.ConsoleHandling
             }
         }
 
-        public IDisposable AddBreakHandler(Action handler)
+        public IDisposable AddBreakHandler(Action onBreak)
         {
-            Disposable result = new Disposable(() => ReleaseBreakHandler(handler));
-            _breakHandlers.Add(handler);
+            Disposable result = new Disposable(() => ReleaseBreakHandler(onBreak));
+            _breakHandlers.Add(onBreak);
             return result;
         }
 

@@ -11,9 +11,17 @@ namespace Microsoft.HttpRepl.Suggestions
     {
         public static IEnumerable<string> GetCompletions(HttpState programState, string normalCompletionString)
         {
-
             //If it's an absolute URI, nothing to suggest
             if (Uri.IsWellFormedUriString(normalCompletionString, UriKind.Absolute))
+            {
+                return null;
+            }
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
+            normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
+
+            if (programState.Structure is null)
             {
                 return null;
             }

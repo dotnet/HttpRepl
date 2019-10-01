@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,8 @@ namespace Microsoft.Repl.Parsing
     {
         public ICoreParseResult Parse(string commandText, int caretPosition)
         {
+            commandText = commandText ?? throw new ArgumentNullException(nameof(commandText));
+
             List<string> sections = commandText.Split(' ').ToList();
             Dictionary<int, int> sectionStartLookup = new Dictionary<int, int>();
             HashSet<int> quotedSections = new HashSet<int>();

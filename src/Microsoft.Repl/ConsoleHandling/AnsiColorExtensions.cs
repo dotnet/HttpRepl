@@ -62,11 +62,11 @@ namespace Microsoft.Repl.ConsoleHandling
             return $"{_ansiControlSequenceIntroducer}{sgrParameter}{_ansiSgrCode}{text}{_ansiSgrDefaultForegroundColor}";
         }
 
-        public static string SetColor(this string text, AllowedColors color)
+        public static string SetColor(this string textToColor, AllowedColors color)
         {
             if (color.HasFlag(AllowedColors.Bold))
             {
-                text = text.Bold();
+                textToColor = textToColor.Bold();
                 color = color & ~AllowedColors.Bold;
             }
 
@@ -80,9 +80,9 @@ namespace Microsoft.Repl.ConsoleHandling
                 case AllowedColors.Magenta:
                 case AllowedColors.Cyan:
                 case AllowedColors.White:
-                    return SetColorInternal(text, color);
+                    return SetColorInternal(textToColor, color);
                 default:
-                    return text;
+                    return textToColor;
             }
         }
     }

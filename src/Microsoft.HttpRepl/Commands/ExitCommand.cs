@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Microsoft.HttpRepl.Commands
     {
         protected override Task ExecuteAsync(IShellState shellState, object programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             shellState.IsExiting = true;
             return Task.CompletedTask;
         }
@@ -24,7 +27,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, object programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"exit");
             helpText.AppendLine();
             helpText.AppendLine($"Exits the shell");

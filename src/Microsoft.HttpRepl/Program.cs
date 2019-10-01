@@ -25,7 +25,9 @@ namespace Microsoft.HttpRepl
         }
 
         public async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null)
-        {           
+        {
+            args = args ?? throw new ArgumentNullException(nameof(args));
+
             ComposeDependencies(ref consoleManager, ref preferences, out HttpState state, out Shell shell);
 
             if (Console.IsOutputRedirected && !consoleManager.AllowOutputRedirection)
@@ -34,45 +36,46 @@ namespace Microsoft.HttpRepl
                 return;
             }
 
-            CancellationTokenSource source = new CancellationTokenSource();
-
-            shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
-            if (args.Length > 0)
+            using (CancellationTokenSource source = new CancellationTokenSource())
             {
-                if (string.Equals(args[0], "--help", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "-h", StringComparison.OrdinalIgnoreCase))
+                shell.ShellState.ConsoleManager.AddBreakHandler(() => source.Cancel());
+                if (args.Length > 0)
                 {
-                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Usage);
-                    shell.ShellState.ConsoleManager.WriteLine("  dotnet httprepl [<BASE_ADDRESS>] [options]");
-                    shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Arguments);
-                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_BaseAddress, "<BASE_ADDRESS>"));
-                    shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Options);
-                    shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_Help, "-h|--help"));
+                    if (string.Equals(args[0], "--help", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "-h", StringComparison.OrdinalIgnoreCase))
+                    {
+                        shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Usage);
+                        shell.ShellState.ConsoleManager.WriteLine("  dotnet httprepl [<BASE_ADDRESS>] [options]");
+                        shell.ShellState.ConsoleManager.WriteLine();
+                        shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Arguments);
+                        shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_BaseAddress, "<BASE_ADDRESS>"));
+                        shell.ShellState.ConsoleManager.WriteLine();
+                        shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Options);
+                        shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_Help, "-h|--help"));
 
-                    shell.ShellState.ConsoleManager.WriteLine();
-                    shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
-                    new HelpCommand(preferences).CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
-                    return;
-                }
+                        shell.ShellState.ConsoleManager.WriteLine();
+                        shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
+                        new HelpCommand(preferences).CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
+                        return;
+                    }
 
-                // allow running a script file directly.
-                if (string.Equals(args[0], "run"))
-                {
+                    // allow running a script file directly.
+                    if (string.Equals(args[0], "run", StringComparison.OrdinalIgnoreCase))
+                    {
+                        shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
+                        shell.ShellState.InputManager.SetInput(shell.ShellState, string.Join(' ', args));
+                        await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
+                        return;
+                    }
+
+                    string combinedArgs = string.Join(' ', args);
+
                     shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
-                    shell.ShellState.InputManager.SetInput(shell.ShellState, string.Join(' ', args));
+                    shell.ShellState.InputManager.SetInput(shell.ShellState, $"connect {combinedArgs}");
                     await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
-                    return;
                 }
 
-                string combinedArgs = string.Join(' ', args);
-
-                shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
-                shell.ShellState.InputManager.SetInput(shell.ShellState, $"connect {combinedArgs}");
-                await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
+                await shell.RunAsync(source.Token).ConfigureAwait(false);
             }
-            Task result = shell.RunAsync(source.Token);
-            await result.ConfigureAwait(false);
         }
 
         private static void ComposeDependencies(ref IConsoleManager consoleManager, ref IPreferences preferences, out HttpState state, out Shell shell)
@@ -127,7 +130,9 @@ namespace Microsoft.HttpRepl
         {
             if (preferences.GetBoolValue(WellKnownPreference.UseDefaultCredentials))
             {
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 return new HttpClient(new HttpClientHandler { UseDefaultCredentials = true });
+#pragma warning restore CA2000 // Dispose objects before losing scope
             }
 
             return new HttpClient();

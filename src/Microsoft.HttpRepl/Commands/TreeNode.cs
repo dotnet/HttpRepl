@@ -14,6 +14,8 @@ namespace Microsoft.HttpRepl.Commands
         private readonly string _entry;
         private readonly List<TreeNode> _children = new List<TreeNode>();
 
+        public IReadOnlyList<TreeNode> Children => _children;
+
         public TreeNode(Formatter formatter, string prefix, string entry)
             : this(formatter, prefix, entry, 0)
         {
@@ -21,9 +23,9 @@ namespace Microsoft.HttpRepl.Commands
 
         private TreeNode(Formatter formatter, string prefix, string entry, int depth)
         {
-            _formatter = formatter;
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
+            _prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
             formatter.RegisterEntry(prefix.Length, depth);
-            _prefix = prefix;
             _entry = entry;
             _depth = depth;
         }

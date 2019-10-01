@@ -21,6 +21,8 @@ namespace Microsoft.Repl.Commanding
 
         public static bool TryProcess(CommandInputSpecification spec, TParseResult parseResult, out DefaultCommandInput<TParseResult> result, out IReadOnlyList<CommandInputProcessingIssue> processingIssues)
         {
+            spec = spec ?? throw new ArgumentNullException(nameof(spec));
+
             List<CommandInputProcessingIssue> issues = null;
             List<InputElement> commandNameElements = null;
 
@@ -49,7 +51,7 @@ namespace Microsoft.Repl.Commanding
             for (int i = spec.CommandName.Count; i < parseResult.Sections.Count; ++i)
             {
                 //If we're not looking at an option name
-                if (!parseResult.Sections[i].StartsWith(spec.OptionPreamble.ToString()) || parseResult.IsQuotedSection(i))
+                if (!parseResult.Sections[i].StartsWith(spec.OptionPreamble.ToString(), StringComparison.OrdinalIgnoreCase) || parseResult.IsQuotedSection(i))
                 {
                     if (currentOption is null)
                     {
@@ -96,7 +98,7 @@ namespace Microsoft.Repl.Commanding
                 else
                 {
                     //Otherwise, check to see whether the previous option had a required argument before committing it
-                    if (!(currentOption is null))
+                    if (currentOption is object)
                     {
                         options[currentOption] = null;
 
@@ -125,7 +127,7 @@ namespace Microsoft.Repl.Commanding
             }
 
             //Clear any option in progress
-            if (!(currentOption is null))
+            if (currentOption is object)
             {
                 options[currentOption] = null;
 

@@ -13,12 +13,16 @@ namespace Microsoft.HttpRepl.OpenApi
         private static readonly HashSet<string> _ValidOperationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "get", "put", "post", "delete", "options", "head", "patch", "trace" };
         public bool CanHandle(JObject document)
         {
+            document = document ?? throw new ArgumentNullException(nameof(document));
+
             return (document["openapi"]?.ToString() ?? "").StartsWith("3.", StringComparison.Ordinal);
         }
 
         // Based on latest spec at https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md
         public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
+            document = document ?? throw new ArgumentNullException(nameof(document));
+
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 

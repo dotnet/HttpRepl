@@ -12,11 +12,15 @@ namespace Microsoft.HttpRepl.OpenApi
     {
         public bool CanHandle(JObject document)
         {
+            document = document ?? throw new ArgumentNullException(nameof(document));
+
             return (document["swagger"]?.ToString() ?? "").StartsWith("2.", StringComparison.Ordinal);
         }
 
         public ApiDefinition ReadDefinition(JObject document, Uri sourceUri)
         {
+            document = document ?? throw new ArgumentNullException(nameof(document));
+
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 
@@ -31,6 +35,8 @@ namespace Microsoft.HttpRepl.OpenApi
 
             if (!string.IsNullOrWhiteSpace(host))
             {
+                sourceUri = sourceUri ?? throw new ArgumentNullException(nameof(sourceUri));
+
                 if (schemes == null)
                 {
                     schemes = new[] { sourceUri.Scheme }; 

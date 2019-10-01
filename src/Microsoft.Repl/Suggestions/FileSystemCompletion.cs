@@ -12,7 +12,9 @@ namespace Microsoft.Repl.Suggestions
     {
         public static IEnumerable<string> GetCompletions(string prefix)
         {
-            if (prefix.StartsWith("\""))
+            prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
+
+            if (prefix.StartsWith("\"", StringComparison.Ordinal))
             {
                 prefix = prefix.Substring(1);
 
@@ -23,7 +25,7 @@ namespace Microsoft.Repl.Suggestions
                     prefix = prefix.Remove(lastQuote, 1);
                 }
 
-                while (prefix.EndsWith($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}"))
+                while (prefix.EndsWith($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
                 {
                     prefix = prefix.Substring(0, prefix.Length - 1);
                 }

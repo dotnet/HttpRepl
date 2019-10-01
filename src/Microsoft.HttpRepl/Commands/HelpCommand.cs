@@ -37,6 +37,12 @@ namespace Microsoft.HttpRepl.Commands
 
         public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             if (shellState.CommandDispatcher is ICommandDispatcher<HttpState, ICoreParseResult> dispatcher)
             {
                 if (parseResult.Sections.Count == 1)
@@ -64,7 +70,7 @@ namespace Microsoft.HttpRepl.Commands
                                 if (structuredCommand != null && structuredCommand.InputSpec.Options.Any())
                                 {
                                     output.AppendLine();
-                                    output.AppendLine("Options:".Bold());
+                                    output.AppendLine(Resources.Strings.Options.Bold());
                                     foreach (var option in structuredCommand.InputSpec.Options)
                                     {
                                         var optionText = string.Empty;
@@ -162,6 +168,8 @@ namespace Microsoft.HttpRepl.Commands
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
+
             if (parseResult.ContainsAtLeast(Name))
             {
                 if (parseResult.Sections.Count > 1)
@@ -184,6 +192,10 @@ namespace Microsoft.HttpRepl.Commands
 
         public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             if (parseResult.SelectedSection == 0 &&
                 (string.IsNullOrEmpty(parseResult.Sections[parseResult.SelectedSection]) || Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
             {
@@ -226,6 +238,10 @@ namespace Microsoft.HttpRepl.Commands
 
         public void CoreGetHelp(IShellState shellState, ICommandDispatcher<HttpState, ICoreParseResult> dispatcher, HttpState programState)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
             const int navCommandColumn = -15;
             var output = new StringBuilder();
 

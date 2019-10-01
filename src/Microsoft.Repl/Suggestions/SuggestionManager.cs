@@ -15,6 +15,8 @@ namespace Microsoft.Repl.Suggestions
 
         public void NextSuggestion(IShellState shellState)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             string line = shellState.InputManager.GetCurrentBuffer();
             ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.ConsoleManager.CaretPosition);
             string currentSuggestion;
@@ -56,6 +58,8 @@ namespace Microsoft.Repl.Suggestions
 
         public void PreviousSuggestion(IShellState shellState)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             string line = shellState.InputManager.GetCurrentBuffer();
             ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.ConsoleManager.CaretPosition);
             string currentSuggestion;

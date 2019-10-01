@@ -41,9 +41,9 @@ namespace Microsoft.Repl.ConsoleHandling
             }
         }
 
-        public void WriteLine(string message)
+        public void WriteLine(string s)
         {
-            if (message is null)
+            if (s is null)
             {
                 return;
             }
@@ -52,11 +52,11 @@ namespace Microsoft.Repl.ConsoleHandling
             {
                 if (ShouldPassAnsiCodesThrough)
                 {
-                    _console?.Writer?.WriteLine(message);
+                    _console?.Writer?.WriteLine(s);
                 }
                 else
                 {
-                    _console?.WriteLine(message);
+                    _console?.WriteLine(s);
                 }
             }
         }
@@ -69,32 +69,32 @@ namespace Microsoft.Repl.ConsoleHandling
             }
         }
 
-        public void Write(char message)
+        public void Write(char c)
         {
             lock (Sync)
             {
                 if (ShouldPassAnsiCodesThrough)
                 {
-                    _console?.Writer?.Write(message);
+                    _console?.Writer?.Write(c);
                 }
                 else
                 {
-                    _console?.Write(message);
+                    _console?.Write(c);
                 }
             }
         }
 
-        public void Write(string message)
+        public void Write(string s)
         {
             lock (Sync)
             {
                 if (ShouldPassAnsiCodesThrough)
                 {
-                    _console?.Writer?.Write(message);
+                    _console?.Writer?.Write(s);
                 }
                 else
                 {
-                    _console?.Write(message);
+                    _console?.Write(s);
                 }
             }
         }

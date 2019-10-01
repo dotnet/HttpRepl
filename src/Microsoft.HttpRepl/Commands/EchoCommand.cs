@@ -20,9 +20,15 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             if (commandInput.Arguments.Count == 0 || !_allowedModes.Contains(commandInput.Arguments[0]?.Text))
             {
-                shellState.ConsoleManager.Error.WriteLine("Allowed echo modes are 'on' and 'off'".SetColor(programState.ErrorColor));
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.EchoCommand_Error_AllowedModes.SetColor(programState.ErrorColor));
                 return false;
             }
 
@@ -31,6 +37,12 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             bool turnOn = string.Equals(commandInput.Arguments[0].Text, "on", StringComparison.OrdinalIgnoreCase);
             programState.EchoRequest = turnOn;
 
@@ -43,7 +55,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"echo [on|off]");
             helpText.AppendLine();
             helpText.AppendLine($"Turns request echoing on or off. When request echoing is on we will display a text representation of requests made by the CLI.");

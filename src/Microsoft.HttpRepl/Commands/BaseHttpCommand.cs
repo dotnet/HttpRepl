@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,6 +16,7 @@ using System.Xml.Linq;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Formatting;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -54,7 +56,7 @@ namespace Microsoft.HttpRepl.Commands
 
         protected abstract bool RequiresBody { get; }
 
-        public BaseHttpCommand(IFileSystem fileSystem, IPreferences preferences)
+        protected BaseHttpCommand(IFileSystem fileSystem, IPreferences preferences)
         {
             _fileSystem = fileSystem;
             _preferences = preferences;
@@ -92,6 +94,12 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             if (programState.BaseAddress == null && (commandInput.Arguments.Count == 0 || !Uri.TryCreate(commandInput.Arguments[0].Text, UriKind.Absolute, out _)))
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.Error_NoBasePath.SetColor(programState.ErrorColor));
@@ -111,7 +119,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (equalsIndex < 0)
                 {
-                    shellState.ConsoleManager.Error.WriteLine("Headers must be formatted as {header}={value} or {header}:{value}".SetColor(programState.ErrorColor));
+                    shellState.ConsoleManager.Error.WriteLine(Strings.BaseHttpCommand_Error_HeaderFormatting.SetColor(programState.ErrorColor));
                     return;
                 }
 
@@ -119,28 +127,33 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             Uri effectivePath = programState.GetEffectivePath(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty);
-            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(Verb.ToUpperInvariant()), effectivePath);
-
-            if (RequiresBody)
+            using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(Verb.ToUpperInvariant()), effectivePath))
             {
-                HandleRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
+                if (RequiresBody)
+                {
+                    HandleRequiresBody(commandInput, shellState, programState, request, thisRequestHeaders);
+                }
+
+                foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+
+                foreach (KeyValuePair<string, string> header in thisRequestHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+
+                var responseFileOption = commandInput.Options[ResponseFileOption].Any() ? commandInput.Options[ResponseFileOption][0] : null;
+                var responseHeadersFileOption = commandInput.Options[ResponseHeadersFileOption].Any() ? commandInput.Options[ResponseHeadersFileOption][0] : null;
+                var responseBodyFileOption = commandInput.Options[ResponseBodyFileOption].Any() ? commandInput.Options[ResponseBodyFileOption][0] : null;
+
+                string headersTarget = responseHeadersFileOption?.Text ?? responseFileOption?.Text;
+                string bodyTarget = responseBodyFileOption?.Text ?? responseFileOption?.Text;
+
+                HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
             }
-
-            foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
-            {
-                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            foreach (KeyValuePair<string, string> header in thisRequestHeaders)
-            {
-                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            string headersTarget = commandInput.Options[ResponseHeadersFileOption].FirstOrDefault()?.Text ?? commandInput.Options[ResponseFileOption].FirstOrDefault()?.Text;
-            string bodyTarget = commandInput.Options[ResponseBodyFileOption].FirstOrDefault()?.Text ?? commandInput.Options[ResponseFileOption].FirstOrDefault()?.Text;
-
-            HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-            await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
         }
 
         internal async Task CreateDirectoryStructureForSwaggerEndpointAsync(HttpState programState, CancellationToken cancellationToken)
@@ -219,7 +232,7 @@ namespace Microsoft.HttpRepl.Commands
                     string original = defaultEditorArguments;
                     string pathString = $"\"{filePath}\"";
 
-                    defaultEditorArguments = defaultEditorArguments.Replace("{filename}", pathString);
+                    defaultEditorArguments = defaultEditorArguments.Replace("{filename}", pathString, StringComparison.OrdinalIgnoreCase);
 
                     if (string.Equals(defaultEditorArguments, original, StringComparison.Ordinal))
                     {
@@ -238,7 +251,7 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             byte[] data = noBody
-                ? new byte[0]
+                ? Array.Empty<byte>()
                 : string.IsNullOrEmpty(bodyContent)
                     ? _fileSystem.ReadAllBytesFromFile(filePath)
                     : Encoding.UTF8.GetBytes(bodyContent);
@@ -405,32 +418,34 @@ namespace Microsoft.HttpRepl.Commands
             {
                 Memory<char> buffer = new Memory<char>(new char[2048]);
                 Stream s = await content.ReadAsStreamAsync().ConfigureAwait(false);
-                StreamReader reader = new StreamReader(s);
-                consoleManager.WriteLine("Streaming the response, press any key to stop...".SetColor(programState.WarningColor));
-
-                while (!cancellationToken.IsCancellationRequested)
+                using (StreamReader reader = new StreamReader(s))
                 {
-                    try
+                    consoleManager.WriteLine(Resources.Strings.BaseHttpCommand_FormatBodyAsync_Streaming.SetColor(programState.WarningColor));
+
+                    while (!cancellationToken.IsCancellationRequested)
                     {
-                        ValueTask<int> readTask = reader.ReadAsync(buffer, cancellationToken);
-                        if (await WaitForCompletionAsync(readTask, cancellationToken).ConfigureAwait(false))
+                        try
                         {
-                            if (readTask.Result == 0)
+                            ValueTask<int> readTask = reader.ReadAsync(buffer, cancellationToken);
+                            if (await WaitForCompletionAsync(readTask, cancellationToken).ConfigureAwait(false))
+                            {
+                                if (readTask.Result == 0)
+                                {
+                                    break;
+                                }
+
+                                string str = new string(buffer.Span.Slice(0, readTask.Result));
+                                consoleManager.Write(str);
+                                bodyFileOutput.Add(str);
+                            }
+                            else
                             {
                                 break;
                             }
-
-                            string str = new string(buffer.Span.Slice(0, readTask.Result));
-                            consoleManager.Write(str);
-                            bodyFileOutput.Add(str);
                         }
-                        else
+                        catch (OperationCanceledException)
                         {
-                            break;
                         }
-                    }
-                    catch (OperationCanceledException)
-                    {
                     }
                 }
 
@@ -542,7 +557,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             var helpText = new StringBuilder();
-            helpText.Append("Usage: ".Bold());
+            helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"{Verb.ToUpperInvariant()} [Options]");
             helpText.AppendLine();
             helpText.AppendLine($"Issues a {Verb.ToUpperInvariant()} request.");
@@ -557,20 +572,28 @@ namespace Microsoft.HttpRepl.Commands
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
         {
+#pragma warning disable CA1308 // Normalize strings to uppercase
             return $"{Verb.ToLowerInvariant()} - Issues a {Verb.ToUpperInvariant()} request";
+#pragma warning restore CA1308 // Normalize strings to uppercase
         }
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             List<string> results = new List<string>();
 
-            if (programState.Structure != null && programState.BaseAddress != null)
+            if (programState.Structure is object && programState.BaseAddress is object)
             {
+                parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
+
                 //If it's an absolute URI, nothing to suggest
                 if (Uri.TryCreate(parseResult.Sections[1], UriKind.Absolute, out Uri _))
                 {
                     return null;
                 }
+
+                normalCompletionString = normalCompletionString ?? throw new ArgumentNullException(nameof(normalCompletionString));
 
                 string path = normalCompletionString.Replace('\\', '/');
                 int searchFrom = normalCompletionString.Length - 1;
@@ -611,6 +634,10 @@ namespace Microsoft.HttpRepl.Commands
 
             if (string.Equals(optionId, HeaderOption, StringComparison.Ordinal))
             {
+                commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+                normalizedCompletionText = normalizedCompletionText ?? throw new ArgumentNullException(nameof(normalizedCompletionText));
+
                 HashSet<string> alreadySpecifiedHeaders = new HashSet<string>(StringComparer.Ordinal);
                 IReadOnlyList<InputElement> options = commandInput.Options[HeaderOption];
                 for (int i = 0; i < options.Count; ++i)

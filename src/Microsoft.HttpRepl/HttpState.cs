@@ -41,6 +41,8 @@ namespace Microsoft.HttpRepl
 
         public HttpState(IFileSystem fileSystem, IPreferences preferences, HttpClient httpClient)
         {
+            preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
+
             _fileSystem = fileSystem;
             _preferences = preferences;
             Client = httpClient;
@@ -101,6 +103,8 @@ namespace Microsoft.HttpRepl
             {
                 throw new ArgumentNullException(nameof(baseAddress), string.Format(Resources.Strings.HttpState_Error_NoAbsoluteUriNoBaseAddress, nameof(commandSpecifiedPath), nameof(baseAddress)));
             }
+
+            pathSections = pathSections ?? throw new ArgumentNullException(nameof(pathSections));
 
             UriBuilder builder = GetUriBuilderFromBaseAddressAndPath(baseAddress, pathSections, out string baseAndPathQuery);
 
@@ -184,7 +188,7 @@ namespace Microsoft.HttpRepl
                     }
 
                     // Split the parameter between the path and the query string
-                    int queryIndex = argPath.IndexOf('?');
+                    int queryIndex = argPath.IndexOf('?', StringComparison.Ordinal);
                     string path = argPath;
 
                     if (queryIndex > -1)
@@ -200,7 +204,7 @@ namespace Microsoft.HttpRepl
                 else
                 {
                     // Split the parameter between the path and the query string
-                    int queryIndex = commandSpecifiedPath.IndexOf('?');
+                    int queryIndex = commandSpecifiedPath.IndexOf('?', StringComparison.Ordinal);
                     string path = commandSpecifiedPath;
 
                     if (queryIndex > -1)

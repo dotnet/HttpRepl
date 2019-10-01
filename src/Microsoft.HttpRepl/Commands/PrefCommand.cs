@@ -35,13 +35,17 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_NoGetOrSet);
                 return false;
             }
 
-            if (!string.Equals("get", commandInput.Arguments[0].Text) && (commandInput.Arguments.Count < 2 || string.IsNullOrEmpty(commandInput.Arguments[1]?.Text)))
+            if (!string.Equals("get", commandInput.Arguments[0].Text, StringComparison.OrdinalIgnoreCase) && (commandInput.Arguments.Count < 2 || string.IsNullOrEmpty(commandInput.Arguments[1]?.Text)))
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_NoPreferenceName);
                 return false;
@@ -54,6 +58,8 @@ namespace Microsoft.HttpRepl.Commands
         {
             var helpText = new StringBuilder();
             helpText.Append(Resources.Strings.Help_Usage.Bold());
+
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
 
             if (commandInput.Arguments.Count == 0 || !_allowedSubcommands.Contains(commandInput.Arguments[0]?.Text))
             {
@@ -73,7 +79,7 @@ namespace Microsoft.HttpRepl.Commands
             foreach (var pref in _preferences.DefaultPreferences)
             {
                 var val = pref.Value;
-                if (pref.Key.Contains("colors"))
+                if (pref.Key.Contains("colors", StringComparison.OrdinalIgnoreCase))
                 {
                     val = GetColor(val);
                 }
@@ -84,7 +90,7 @@ namespace Microsoft.HttpRepl.Commands
             foreach (var pref in _preferences.CurrentPreferences)
             {
                 var val = pref.Value;
-                if (pref.Key.Contains("colors"))
+                if (pref.Key.Contains("colors", StringComparison.OrdinalIgnoreCase))
                 {
                     val = GetColor(val);
                 }
@@ -96,37 +102,37 @@ namespace Microsoft.HttpRepl.Commands
 
         private static string GetColor(string value)
         {
-            if (value.Contains("Bold"))
+            if (value.Contains("Bold", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Bold();
             }
 
-            if (value.Contains("Yellow"))
+            if (value.Contains("Yellow", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Yellow();
             }
 
-            if (value.Contains("Cyan"))
+            if (value.Contains("Cyan", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Cyan();
             }
 
-            if (value.Contains("Magenta"))
+            if (value.Contains("Magenta", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Magenta();
             }
 
-            if (value.Contains("Green"))
+            if (value.Contains("Green", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Green();
             }
 
-            if (value.Contains("White"))
+            if (value.Contains("White", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.White();
             }
 
-            if (value.Contains("Black"))
+            if (value.Contains("Black", StringComparison.OrdinalIgnoreCase))
             {
                 value = value.Black();
             }
@@ -136,6 +142,12 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             if (string.Equals(commandInput.Arguments[0].Text, "get", StringComparison.OrdinalIgnoreCase))
             {
                 GetSetting(shellState, programState, commandInput);
@@ -193,6 +205,8 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetArgumentSuggestionsForText(IShellState shellState, HttpState programState, ICoreParseResult parseResult, DefaultCommandInput<ICoreParseResult> commandInput, string normalCompletionString)
         {
+            parseResult = parseResult ?? throw new ArgumentNullException(nameof(parseResult));
+
             if (parseResult.SelectedSection == 1)
             {
                 return _allowedSubcommands.Where(x => x.StartsWith(normalCompletionString, StringComparison.OrdinalIgnoreCase));

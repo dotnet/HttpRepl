@@ -139,7 +139,7 @@ namespace Microsoft.HttpRepl.Preferences
 
                 foreach (string line in prefsFile)
                 {
-                    int equalsIndex = line.IndexOf('=');
+                    int equalsIndex = line.IndexOf('=', StringComparison.Ordinal);
 
                     // If there's no = or = is the first character on the line
                     // (meaning no preference name), move to the next line

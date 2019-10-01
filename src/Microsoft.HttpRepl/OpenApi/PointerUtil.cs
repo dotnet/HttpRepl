@@ -15,6 +15,10 @@ namespace Microsoft.HttpRepl.OpenApi
     {
         public static Task<JToken> ResolvePointersAsync(Uri loadLocation, JToken root, HttpClient client)
         {
+            client = client ?? throw new ArgumentNullException(nameof(client));
+
+            loadLocation = loadLocation ?? throw new ArgumentNullException(nameof(loadLocation));
+
             return ResolvePointersAsync(loadLocation, root, root, client, new HashSet<JToken>());
         }
 

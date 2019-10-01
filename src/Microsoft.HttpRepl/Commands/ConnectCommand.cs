@@ -67,6 +67,12 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override async Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
+            commandInput = commandInput ?? throw new ArgumentNullException(nameof(commandInput));
+
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
+            programState = programState ?? throw new ArgumentNullException(nameof(programState));
+
             string rootAddress = commandInput.Arguments.SingleOrDefault()?.Text?.EnsureTrailingSlash();
             string baseAddress = GetBaseAddressFromCommand(commandInput)?.EnsureTrailingSlash();
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
@@ -214,7 +220,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (commandInput.Options.TryGetValue(optionId, out IReadOnlyList<InputElement> inputElements))
             {
-                InputElement inputElement = inputElements.FirstOrDefault();
+                InputElement inputElement = inputElements.Any() ? inputElements[0] : null;
                 return inputElement?.Text;
             }
 

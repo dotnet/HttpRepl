@@ -17,6 +17,7 @@ namespace Microsoft.Repl
         {
             _onDispose?.Invoke();
             _onDispose = null;
+            GC.SuppressFinalize(this);
         }
     }
 
@@ -40,6 +41,7 @@ namespace Microsoft.Repl
             }
 
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

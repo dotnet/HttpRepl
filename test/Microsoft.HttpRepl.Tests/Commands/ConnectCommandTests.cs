@@ -523,7 +523,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out parseResult,
                           out _,
                           out preferences,
-                          readBodyFromFile: !(fileContents is null),
+                          readBodyFromFile: fileContents is object,
                           fileContents: fileContents);
         }
     }

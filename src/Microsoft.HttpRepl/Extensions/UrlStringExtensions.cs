@@ -9,6 +9,8 @@ namespace Microsoft.HttpRepl
     {
         public static string EnsureTrailingSlash(this string url)
         {
+            url = url ?? throw new ArgumentNullException(nameof(url));
+
             if (!url.EndsWith("/", StringComparison.Ordinal))
             {
                 url += "/";

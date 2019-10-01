@@ -374,4 +374,16 @@ When +history option is specified, commands specified in the text file will be a
     <value>  3. A default URL of {0}</value>
     <comment>{0} is the default address, e.g. [BaseAddress]/swagger</comment>
   </data>
+  <data name="BaseHttpCommand_Error_HeaderFormatting" xml:space="preserve">
+    <value>Headers must be formatted as {header}={value} or {header}:{value}</value>
+  </data>
+  <data name="BaseHttpCommand_FormatBodyAsync_Streaming" xml:space="preserve">
+    <value>Streaming the response, press any key to stop...</value>
+  </data>
+  <data name="EchoCommand_Error_AllowedModes" xml:space="preserve">
+    <value>Allowed echo modes are 'on' and 'off'</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options:</value>
+  </data>
 </root>

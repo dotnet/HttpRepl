@@ -81,6 +81,8 @@ namespace Microsoft.Repl.Commanding
 
         public IReadOnlyList<string> CollectSuggestions(IShellState shellState)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             string line = shellState.InputManager.GetCurrentBuffer();
             TParseResult parseResult = _parser.Parse(line, shellState.ConsoleManager.CaretPosition);
             HashSet<string> suggestions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -100,6 +102,8 @@ namespace Microsoft.Repl.Commanding
 
         public async Task ExecuteCommandAsync(IShellState shellState, CancellationToken cancellationToken)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             _isReady = false;
             shellState.ConsoleManager.WriteLine();
             string commandText = shellState.InputManager.GetCurrentBuffer();
@@ -119,7 +123,7 @@ namespace Microsoft.Repl.Commanding
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    shellState.ConsoleManager.Error.WriteLine("Execution was cancelled".Bold().Red());
+                    shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_ExecutionWasCancelled.Bold().Red());
                 }
             }
 
@@ -155,13 +159,15 @@ namespace Microsoft.Repl.Commanding
                     }
                 }
 
-                shellState.ConsoleManager.Error.WriteLine("No matching command found".Red().Bold());
-                shellState.ConsoleManager.Error.WriteLine("Execute 'help' to see available commands".Red().Bold());
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_NoMatchingCommand.Red().Bold());
+                shellState.ConsoleManager.Error.WriteLine(Resources.Strings.DefaultCommandDispatcher_Error_SeeHelp.Red().Bold());
             }
         }
 
         public void OnReady(IShellState shellState)
         {
+            shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
+
             if (!_isReady && !shellState.IsExiting)
             {
                 _onReady(shellState);
