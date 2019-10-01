@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using Microsoft.HttpRepl.Preferences;
@@ -12,7 +13,7 @@ namespace Microsoft.HttpRepl.Formatting
 {
     public static class JsonVisitor
     {
-#pragma warning disable CA1308 // Normalize strings to uppercase
+        [SuppressMessage("Design", "CA1308:Normalize strings to uppercase", Justification = "JSON is case-sensitive.")]
         public static string FormatAndColorize(IJsonConfig config, string jsonData)
         {
             config = config ?? throw new ArgumentNullException(nameof(config));
@@ -115,6 +116,5 @@ namespace Microsoft.HttpRepl.Formatting
             }
             return result.ToString();
         }
-#pragma warning restore CA1308 // Normalize strings to uppercase
     }
 }
