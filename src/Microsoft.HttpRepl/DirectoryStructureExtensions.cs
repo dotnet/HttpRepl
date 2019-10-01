@@ -11,11 +11,13 @@ namespace Microsoft.HttpRepl
     {
         public static IEnumerable<string> GetDirectoryListingAtPath(this IDirectoryStructure structure, string path)
         {
+            structure = structure ?? throw new ArgumentNullException(nameof(structure));
             return structure.TraverseTo(path).DirectoryNames;
         }
 
         public static IDirectoryStructure TraverseTo(this IDirectoryStructure structure, string path)
         {
+            structure = structure ?? throw new ArgumentNullException(nameof(structure));
             path = path ?? throw new ArgumentNullException(nameof(path));
 
             string[] parts = path.Replace('\\', '/').Split('/');
@@ -27,8 +29,13 @@ namespace Microsoft.HttpRepl
             structure = structure ?? throw new ArgumentNullException(nameof(structure));
 
             IDirectoryStructure s = structure;
-            IReadOnlyList<string> parts = pathParts.ToList();
+            
+            if (pathParts is null)
+            {
+                return s;
+            }
 
+            IReadOnlyList<string> parts = pathParts.ToList();
             if (parts.Count == 0)
             {
                 return s;
