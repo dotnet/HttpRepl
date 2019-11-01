@@ -154,5 +154,30 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(fileContents, result);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithContentTypeHeader_HeaderNotDuplicated()
+        {
+            ArrangeInputs(commandText: $"POST --header content-type:application/test --content Test=Value",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            httpState.EchoRequest = true;
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(8, result.Count);
+            Assert.Contains("Content-Type: application/test", result);
+        }
     }
 }

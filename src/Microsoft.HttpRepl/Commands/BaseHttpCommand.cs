@@ -136,11 +136,15 @@ namespace Microsoft.HttpRepl.Commands
 
                 foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
                 {
+                    if (string.Equals("content-type", header.Key, StringComparison.OrdinalIgnoreCase))
+                        continue;
                     request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
 
                 foreach (KeyValuePair<string, string> header in thisRequestHeaders)
                 {
+                    if (string.Equals("content-type", header.Key, StringComparison.OrdinalIgnoreCase))
+                        continue;
                     request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
 
@@ -281,11 +285,15 @@ namespace Microsoft.HttpRepl.Commands
         {
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
             {
+                if (string.Equals("content-type", header.Key, StringComparison.OrdinalIgnoreCase))
+                    continue;
                 content.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
             foreach (KeyValuePair<string, string> header in requestHeaders)
             {
+                if (string.Equals("content-type", header.Key, StringComparison.OrdinalIgnoreCase))
+                    continue;
                 content.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
         }
