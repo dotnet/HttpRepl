@@ -28,6 +28,7 @@ get";
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> cd api/values
 /api/values    [GET|POST]
@@ -62,6 +63,7 @@ get 5";
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> cd api/values
 /api/values    [GET|POST]
@@ -93,6 +95,7 @@ get";
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> cd api/invalidpath
 Warning: The '/api/invalidpath' endpoint is not present in the Swagger metadata
