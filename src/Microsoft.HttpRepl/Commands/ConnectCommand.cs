@@ -109,6 +109,8 @@ namespace Microsoft.HttpRepl.Commands
             {
                 shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, programState.SwaggerEndpoint));
             }
+
+            shellState.ConsoleManager.WriteLine(Resources.Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
         }
 
         private static ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences)
