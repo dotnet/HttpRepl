@@ -29,7 +29,7 @@ get";
 
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
-Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
 /api/values    [GET|POST]
@@ -79,7 +79,7 @@ get";
 
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
-Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
 
 [BaseUrl]/> cd api/values
 /api/values    [GET|POST]

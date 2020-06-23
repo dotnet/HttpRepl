@@ -80,6 +80,22 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_WithNoRootAndRelativeOpenApi_ShowsError()
+        {
+            ArrangeInputs("connect --openapi /v1/openapi.json",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Equal(Resources.Strings.ConnectCommand_Error_NoRootNoAbsoluteSwagger, shellState.ErrorMessage);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_WithRootAndNoBase_SetsBaseToRoot()
         {
             string rootAddress = "https://localhost/";
