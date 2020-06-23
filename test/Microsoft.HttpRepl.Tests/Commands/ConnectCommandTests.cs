@@ -354,6 +354,92 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_WithRootAndBase_FindsOpenApiFromRoot()
+        {
+            string rootAddress = "https://localhost/";
+            string baseAddress = "https://localhost/v2/";
+            string swaggerAddress = "https://localhost/openapi.json";
+            string swaggerContent = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""servers"": [
+    {
+      ""url"": ""https://example.com/"",
+      ""description"": ""First Server Address""
+    }
+  ],
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            ArrangeInputs(commandText: $"connect {rootAddress} --base {baseAddress}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>() { { swaggerAddress, swaggerContent } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.NotNull(httpState.BaseAddress);
+            Assert.Equal(baseAddress, httpState.BaseAddress.ToString());
+            Assert.NotNull(httpState.SwaggerEndpoint);
+            Assert.Equal(swaggerAddress, httpState.SwaggerEndpoint.ToString());
+            Assert.NotNull(httpState.ApiDefinition);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithRootAndBase_FindsOpenApiFromBase()
+        {
+            string rootAddress = "https://localhost/";
+            string baseAddress = "https://localhost/v2/";
+            string swaggerAddress = "https://localhost/v2/openapi.json";
+            string swaggerContent = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""version"": ""v1""
+  },
+  ""servers"": [
+    {
+      ""url"": ""https://example.com/"",
+      ""description"": ""First Server Address""
+    }
+  ],
+  ""paths"": {
+    ""/pets"": {
+    }
+  }
+}";
+            ArrangeInputs(commandText: $"connect {rootAddress} --base {baseAddress}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>() { { swaggerAddress, swaggerContent } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.NotNull(httpState.BaseAddress);
+            Assert.Equal(baseAddress, httpState.BaseAddress.ToString());
+            Assert.NotNull(httpState.SwaggerEndpoint);
+            Assert.Equal(swaggerAddress, httpState.SwaggerEndpoint.ToString());
+            Assert.NotNull(httpState.ApiDefinition);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_WithRootAndSwaggerWithoutBase_SetsBaseToRoot()
         {
             string rootAddress = "https://localhost/";
