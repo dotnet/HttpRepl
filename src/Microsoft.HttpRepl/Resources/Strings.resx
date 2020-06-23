@@ -207,17 +207,8 @@
   <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
     <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
   </data>
-  <data name="SetSwaggerCommand_HelpSummary" xml:space="preserve">
-    <value>Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`</value>
-  </data>
   <data name="UICommand_HelpSummary" xml:space="preserve">
     <value>Displays the Swagger UI page, if available, in the default browser</value>
-  </data>
-  <data name="SetSwaggerCommand_Description" xml:space="preserve">
-    <value>Sets the swagger document to use for information about the current server</value>
-  </data>
-  <data name="SetSwaggerCommand_SpecifySwaggerDocument" xml:space="preserve">
-    <value>Must specify a swagger document</value>
   </data>
   <data name="UICommand_Description" xml:space="preserve">
     <value>Launches the Swagger UI page (if available) in the default browser</value>
@@ -255,10 +246,7 @@ When +history option is specified, commands specified in the text file will be a
     <value>No base address has been set, so there is nothing to list. Use the "set base" command to set a base address.</value>
   </data>
   <data name="ListCommand_Error_NoDirectoryStructure" xml:space="preserve">
-    <value>No directory structure has been set, so there is nothing to list. Use the "set swagger" command to set a directory structure based on a swagger definition.</value>
-  </data>
-  <data name="SetSwaggerCommand_InvalidSwaggerUri" xml:space="preserve">
-    <value>Must specify a valid swagger document</value>
+    <value>No directory structure has been set, so there is nothing to list. Use the "connect" command to set a directory structure based on an OpenAPI description.</value>
   </data>
   <data name="ConnectCommand_Error_InvalidBase" xml:space="preserve">
     <value>The base address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>

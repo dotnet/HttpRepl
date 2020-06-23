@@ -457,7 +457,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;set swagger&quot; command to set a directory structure based on a swagger definition..
+        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;connect&quot; command to set a directory structure based on an OpenAPI description..
         /// </summary>
         internal static string ListCommand_Error_NoDirectoryStructure {
             get {
@@ -665,42 +665,6 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string SetHeaderCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("SetHeaderCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
-        /// </summary>
-        internal static string SetSwaggerCommand_Description {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
-        /// </summary>
-        internal static string SetSwaggerCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must specify a valid swagger document.
-        /// </summary>
-        internal static string SetSwaggerCommand_InvalidSwaggerUri {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_InvalidSwaggerUri", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must specify a swagger document.
-        /// </summary>
-        internal static string SetSwaggerCommand_SpecifySwaggerDocument {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_SpecifySwaggerDocument", resourceCulture);
             }
         }
         
