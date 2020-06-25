@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -75,6 +76,87 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(expectedResponse, result);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithContentTypeHeader_NotDuplicated()
+        {
+            string expectedHeader = "Content-Type: application/test";
+            ArrangeInputs(commandText: "POST --header content-type:application/test --content \"Test Post Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            httpState.EchoRequest = true;
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(8, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithOtherContentHeader_NotDuplicated()
+        {
+            string expectedHeader = "Content-Disposition: inline";
+            ArrangeInputs(commandText: "POST --header content-disposition:inline --content \"Test Post Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            httpState.EchoRequest = true;
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(9, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithNonContentHeader_NotDuplicated()
+        {
+            string expectedHeader = "TE: compress";
+            ArrangeInputs(commandText: "POST --header te:compress --content \"Test Post Body\"",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            httpState.EchoRequest = true;
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+
+            List<string> result = shellState.Output;
+
+            Assert.Equal(9, result.Count);
+            Assert.Contains("HTTP/1.1 200 OK", result);
+            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
         }
 
         [Fact]
@@ -154,5 +236,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(fileContents, result);
         }
+
+
     }
 }
