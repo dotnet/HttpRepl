@@ -236,7 +236,5 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(fileContents, result);
         }
-
-
     }
 }
