@@ -88,7 +88,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the Swagger metadata.
+        ///   Looks up a localized string similar to Warning: The &apos;{0}&apos; endpoint is not present in the OpenAPI description.
         /// </summary>
         internal static string ChangeDirectoryCommand_Warning_UnknownEndpoint {
             get {
@@ -124,7 +124,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The swagger address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified.
+        ///   Looks up a localized string similar to The OpenAPI description address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified.
         /// </summary>
         internal static string ConnectCommand_Error_InvalidSwagger {
             get {
@@ -142,7 +142,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If no root address is specified, the swagger address must be an absolute url, including scheme.
+        ///   Looks up a localized string similar to If no root address is specified, the OpenAPI description address must be an absolute url, including scheme.
         /// </summary>
         internal static string ConnectCommand_Error_NoRootNoAbsoluteSwagger {
             get {
@@ -151,7 +151,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must specify either a root address or a base address and a swagger address.
+        ///   Looks up a localized string similar to You must specify either a root address or a base address and an OpenAPI description address.
         /// </summary>
         internal static string ConnectCommand_Error_NothingSpecified {
             get {
@@ -169,7 +169,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--swagger swaggerAddress] must be specified.
+        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified.
         /// </summary>
         internal static string ConnectCommand_HelpDetails_Line1 {
             get {
@@ -178,7 +178,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [rootAddress] will be used to automatically determine the base address and swagger address.
+        ///   Looks up a localized string similar to [rootAddress] will be used to automatically determine the base address and OpenAPI description address.
         /// </summary>
         internal static string ConnectCommand_HelpDetails_Line2 {
             get {
@@ -187,7 +187,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [--base baseAddress] and [--swagger swaggerAddress] allow you to explicitly set those addresses and skip auto detection.
+        ///   Looks up a localized string similar to [--base baseAddress] and [--openapi openApiDescriptionAddress] allow you to explicitly set those addresses and skip auto detection.
         /// </summary>
         internal static string ConnectCommand_HelpDetails_Line3 {
             get {
@@ -214,7 +214,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to find a swagger definition.
+        ///   Looks up a localized string similar to Unable to find an OpenAPI description.
         /// </summary>
         internal static string ConnectCommand_Status_NoSwagger {
             get {
@@ -223,7 +223,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using swagger definition at {0}.
+        ///   Looks up a localized string similar to Using OpenAPI description at {0}.
         /// </summary>
         internal static string ConnectCommand_Status_Swagger {
             get {
@@ -457,7 +457,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;set swagger&quot; command to set a directory structure based on a swagger definition..
+        ///   Looks up a localized string similar to No directory structure has been set, so there is nothing to list. Use the &quot;connect&quot; command to set a directory structure based on an OpenAPI description..
         /// </summary>
         internal static string ListCommand_Error_NoDirectoryStructure {
             get {
@@ -665,42 +665,6 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string SetHeaderCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("SetHeaderCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sets the swagger document to use for information about the current server.
-        /// </summary>
-        internal static string SetSwaggerCommand_Description {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`.
-        /// </summary>
-        internal static string SetSwaggerCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must specify a valid swagger document.
-        /// </summary>
-        internal static string SetSwaggerCommand_InvalidSwaggerUri {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_InvalidSwaggerUri", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must specify a swagger document.
-        /// </summary>
-        internal static string SetSwaggerCommand_SpecifySwaggerDocument {
-            get {
-                return ResourceManager.GetString("SetSwaggerCommand_SpecifySwaggerDocument", resourceCulture);
             }
         }
         
