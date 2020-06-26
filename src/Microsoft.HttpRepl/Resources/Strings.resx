@@ -386,4 +386,16 @@ When +history option is specified, commands specified in the text file will be a
   <data name="Options" xml:space="preserve">
     <value>Options:</value>
   </data>
+  <data name="BaseHttpCommand_Error_ContentFileDoesNotExist" xml:space="preserve">
+    <value>The specified content file, "{0}", does not exist.</value>
+    <comment>{0} is the user supplied content file path</comment>
+  </data>
+  <data name="BaseHttpCommand_Error_DefaultEditorDoesNotExist" xml:space="preserve">
+    <value>The specified default editor, "{0}", does not exist.</value>
+    <comment>{0} is the user supplied default editor preference value</comment>
+  </data>
+  <data name="BaseHttpCommand_Error_DefaultEditorNotConfigured" xml:space="preserve">
+    <value>The default editor must be configured using the command `pref set {0} "{{commandLine}}"`.</value>
+    <comment>{0} is the name of the default editor preference</comment>
+  </data>
 </root>

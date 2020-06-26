@@ -61,6 +61,33 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified content file, &quot;{0}&quot;, does not exist..
+        /// </summary>
+        internal static string BaseHttpCommand_Error_ContentFileDoesNotExist {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_Error_ContentFileDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified default editor, &quot;{0}&quot;, does not exist..
+        /// </summary>
+        internal static string BaseHttpCommand_Error_DefaultEditorDoesNotExist {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_Error_DefaultEditorDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The default editor must be configured using the command `pref set {0} &quot;{{commandLine}}&quot;`..
+        /// </summary>
+        internal static string BaseHttpCommand_Error_DefaultEditorNotConfigured {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_Error_DefaultEditorNotConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Headers must be formatted as {header}={value} or {header}:{value}.
         /// </summary>
         internal static string BaseHttpCommand_Error_HeaderFormatting {

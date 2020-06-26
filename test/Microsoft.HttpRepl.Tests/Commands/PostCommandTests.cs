@@ -2,12 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
+using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
+using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
@@ -153,6 +156,79 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal(2, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(fileContents, result);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_NonExistentContentFile_VerifyResponse()
+        {
+            string filePath = "someFilePath.txt";
+            string fileContents = "This is a test response from a POST: \"Test Post Body From File\"";
+
+            ArrangeInputs(commandText: $"POST --file " + filePath,
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences,
+                readBodyFromFile: true,
+                fileContents: fileContents);
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Empty(shellState.Output);
+            Assert.Contains(string.Format(Strings.BaseHttpCommand_Error_ContentFileDoesNotExist, filePath), shellState.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithEditorNotConfigured_VerifyResponse()
+        {
+            ArrangeInputs(commandText: $"POST",
+                baseAddress: _baseAddress,
+                path: _testPath,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            preferences.SetValue(WellKnownPreference.DefaultEditorCommand, "");
+
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Empty(shellState.Output);
+            Assert.Contains(string.Format(Strings.BaseHttpCommand_Error_DefaultEditorNotConfigured, WellKnownPreference.DefaultEditorCommand), shellState.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithEditorDoesNotExist_VerifyResponse()
+        {
+            // Arrange
+            string editorPath = "FileThatDoesNotExist.exe";
+            string commandText = "POST https://localhost/";
+
+            MockedShellState shellState = new MockedShellState();
+            IFileSystem fileSystem = new MockedFileSystem();
+            IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
+            ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
+            HttpClient httpClient = new HttpClient();
+            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
+
+            preferences.SetValue(WellKnownPreference.DefaultEditorCommand, editorPath);
+
+            // Act
+            await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            // Execute
+            Assert.Empty(shellState.Output);
+            Assert.Contains(string.Format(Strings.BaseHttpCommand_Error_DefaultEditorDoesNotExist, editorPath), shellState.ErrorMessage);
         }
     }
 }
