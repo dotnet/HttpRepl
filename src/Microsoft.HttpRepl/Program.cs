@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -28,6 +29,7 @@ namespace Microsoft.HttpRepl
         {
             args = args ?? throw new ArgumentNullException(nameof(args));
 
+            RegisterEncodingProviders();
             ComposeDependencies(ref consoleManager, ref preferences, out HttpState state, out Shell shell);
 
             if (Console.IsOutputRedirected && !consoleManager.AllowOutputRedirection)
@@ -136,6 +138,12 @@ namespace Microsoft.HttpRepl
             }
 
             return new HttpClient();
+        }
+
+        private static void RegisterEncodingProviders()
+        {
+            // Adds Windows-1252, among others
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
     }
 }
