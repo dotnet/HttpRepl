@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl
     internal class ApiConnection
     {
         private readonly IPreferences _preferences;
-        private const string SwaggerSearchPaths = "swagger.json|swagger/v1/swagger.json|/swagger.json|/swagger/v1/swagger.json";
+        private const string SwaggerSearchPaths = "swagger.json|swagger/v1/swagger.json|openapi.json|/swagger.json|/swagger/v1/swagger.json|/openapi.json";
 
         public Uri RootUri { get; set; }
         public bool HasRootUri => RootUri is object;
