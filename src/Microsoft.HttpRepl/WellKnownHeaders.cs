@@ -85,7 +85,6 @@ namespace Microsoft.HttpRepl
             "Content-Range",
             ContentType,
             "Expires",
-
             "Last-Modified",
         };
     }

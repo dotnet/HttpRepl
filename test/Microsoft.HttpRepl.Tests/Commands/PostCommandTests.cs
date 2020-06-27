@@ -97,7 +97,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-
             List<string> result = shellState.Output;
 
             Assert.Equal(8, result.Count);
@@ -123,7 +122,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
 
             List<string> result = shellState.Output;
 
