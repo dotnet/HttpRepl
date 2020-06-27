@@ -141,12 +141,20 @@ namespace Microsoft.HttpRepl.Commands
 
                 foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
                 {
-                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    // We only want to add headers that are not content headers
+                    if (!WellKnownHeaders.ContentHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase))
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
                 }
 
                 foreach (KeyValuePair<string, string> header in thisRequestHeaders)
                 {
-                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    // We only want to add headers that are not content headers
+                    if (!WellKnownHeaders.ContentHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase))
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
                 }
 
                 var responseFileOption = commandInput.Options[ResponseFileOption].Any() ? commandInput.Options[ResponseFileOption][0] : null;
@@ -293,12 +301,22 @@ namespace Microsoft.HttpRepl.Commands
         {
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
             {
-                content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                // We only want to add content headers, except for Content-Type, which is handled elsewhere
+                if (WellKnownHeaders.ContentHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase) &&
+                    !string.Equals(WellKnownHeaders.ContentType, header.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
             }
 
             foreach (KeyValuePair<string, string> header in requestHeaders)
             {
-                content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                // We only want to add content headers, except for Content-Type, which is handled elsewhere
+                if (WellKnownHeaders.ContentHeaders.Contains(header.Key, StringComparer.OrdinalIgnoreCase) &&
+                    !string.Equals(WellKnownHeaders.ContentType, header.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
             }
         }
 
