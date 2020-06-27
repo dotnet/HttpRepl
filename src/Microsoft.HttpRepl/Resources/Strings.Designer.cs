@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified default editor, &quot;{0}&quot;, does not exist..
+        ///   Looks up a localized string similar to The specified default editor path, &quot;{0}&quot;, does not exist..
         /// </summary>
         internal static string BaseHttpCommand_Error_DefaultEditorDoesNotExist {
             get {
