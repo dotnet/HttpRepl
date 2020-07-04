@@ -30,6 +30,7 @@ cd Values";
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
 Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> ls
 .     []

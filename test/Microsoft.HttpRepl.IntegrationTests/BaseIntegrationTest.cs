@@ -48,6 +48,9 @@ namespace Microsoft.HttpRepl.IntegrationTests
             // next, normalize the date
             result = _dateRegex.Replace(result, _dateReplacement);
 
+            // strip ansi begin/end formatting (bold, color)
+            result = Regex.Replace(result, @"\u001b\[[0-9]*m", string.Empty);
+
             return result;
         }
 
