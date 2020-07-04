@@ -29,8 +29,9 @@ cd Values";
             // make sure to normalize newlines in the expected output
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
-Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
 For detailed tool info, see https://aka.ms/http-repl-doc
+
 
 [BaseUrl]/> ls
 .     []

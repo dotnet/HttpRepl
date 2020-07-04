@@ -30,7 +30,7 @@ ls";
             // make sure to normalize newlines in the expected output
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
-Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
 For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> ls
@@ -60,7 +60,7 @@ ls";
 
             string expected = NormalizeOutput(@"(Disconnected)> connect [BaseUrl]
 Using a base address of [BaseUrl]/
-Using swagger definition at [BaseUrl]/swagger/v1/swagger.json
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
 For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> cd api/Values
@@ -89,12 +89,12 @@ ls";
             string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
 
 [BaseUrl]/> ls
-No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
+No directory structure has been set, so there is nothing to list. Use the ""connect"" command to set a directory structure based on an OpenAPI description.
 
 [BaseUrl]/> cd api
 
 [BaseUrl]/api> ls
-No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
+No directory structure has been set, so there is nothing to list. Use the ""connect"" command to set a directory structure based on an OpenAPI description.
 
 [BaseUrl]/api>", null);
 
@@ -114,7 +114,7 @@ ls";
 [BaseUrl]/> cd api/Values
 
 [BaseUrl]/api/Values> ls
-No directory structure has been set, so there is nothing to list. Use the ""set swagger"" command to set a directory structure based on a swagger definition.
+No directory structure has been set, so there is nothing to list. Use the ""connect"" command to set a directory structure based on an OpenAPI description.
 
 [BaseUrl]/api/Values>", null);
 

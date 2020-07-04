@@ -70,7 +70,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
             List<string> result = shellState.Output;
 
-            Assert.Equal(2, result.Count);
+            Assert.True(result.Count >= 2);
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(expectedHeader, result);
         }
@@ -95,7 +95,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";
             List<string> result = shellState.Output;
 
-            Assert.Equal(2, result.Count);
+            Assert.True(result.Count >= 2);
             Assert.Contains("HTTP/1.1 200 OK", result);
             Assert.Contains(expectedHeader, result);
         }

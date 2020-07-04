@@ -40,7 +40,8 @@ namespace Microsoft.HttpRepl.Commands
                                                                                                                                    requiresValue: true,
                                                                                                                                    minimumOccurrences: 0,
                                                                                                                                    maximumOccurrences: 1,
-                                                                                                                                   forms: new[] { "--swagger", "-s" }))
+                                                                                                                                   forms: new[] { "--openapi", "-o",
+                                                                                                                                                  "--swagger", "-s" }))
                                                                                         .Finish();
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
@@ -54,7 +55,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 var helpText = new StringBuilder();
                 helpText.Append(Resources.Strings.Usage.Bold());
-                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--swagger swaggerAddress]");
+                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--openapi openApiDescriptionAddress]");
                 helpText.AppendLine();
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line1);
                 helpText.AppendLine();
@@ -229,6 +230,6 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        
+
     }
 }

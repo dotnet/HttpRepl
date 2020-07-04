@@ -121,7 +121,7 @@
     <value>Append the given directory to the currently selected path, or move up a path when using `cd ..`</value>
   </data>
   <data name="ChangeDirectoryCommand_Warning_UnknownEndpoint" xml:space="preserve">
-    <value>Warning: The '{0}' endpoint is not present in the Swagger metadata</value>
+    <value>Warning: The '{0}' endpoint is not present in the OpenAPI description</value>
     <comment>{0} is the path to the referenced endpoint</comment>
   </data>
   <data name="ClearCommand_HelpSummary" xml:space="preserve">
@@ -207,17 +207,8 @@
   <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
     <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
   </data>
-  <data name="SetSwaggerCommand_HelpSummary" xml:space="preserve">
-    <value>Set the URI, relative to your base if set, of the Swagger document for this API. e.g. `set swagger /swagger/v1/swagger.json`</value>
-  </data>
   <data name="UICommand_HelpSummary" xml:space="preserve">
     <value>Displays the Swagger UI page, if available, in the default browser</value>
-  </data>
-  <data name="SetSwaggerCommand_Description" xml:space="preserve">
-    <value>Sets the swagger document to use for information about the current server</value>
-  </data>
-  <data name="SetSwaggerCommand_SpecifySwaggerDocument" xml:space="preserve">
-    <value>Must specify a swagger document</value>
   </data>
   <data name="UICommand_Description" xml:space="preserve">
     <value>Launches the Swagger UI page (if available) in the default browser</value>
@@ -255,25 +246,22 @@ When +history option is specified, commands specified in the text file will be a
     <value>No base address has been set, so there is nothing to list. Use the "set base" command to set a base address.</value>
   </data>
   <data name="ListCommand_Error_NoDirectoryStructure" xml:space="preserve">
-    <value>No directory structure has been set, so there is nothing to list. Use the "set swagger" command to set a directory structure based on a swagger definition.</value>
-  </data>
-  <data name="SetSwaggerCommand_InvalidSwaggerUri" xml:space="preserve">
-    <value>Must specify a valid swagger document</value>
+    <value>No directory structure has been set, so there is nothing to list. Use the "connect" command to set a directory structure based on an OpenAPI description.</value>
   </data>
   <data name="ConnectCommand_Error_InvalidBase" xml:space="preserve">
     <value>The base address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>
   </data>
   <data name="ConnectCommand_Error_InvalidSwagger" xml:space="preserve">
-    <value>The swagger address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>
+    <value>The OpenAPI description address must be a valid absolute url or relative url. If it is a relative url, the root address must be specified</value>
   </data>
   <data name="ConnectCommand_Error_NoRootNoAbsoluteBase" xml:space="preserve">
     <value>If no root address is specified, the base address must be an absolute url, including scheme</value>
   </data>
   <data name="ConnectCommand_Error_NoRootNoAbsoluteSwagger" xml:space="preserve">
-    <value>If no root address is specified, the swagger address must be an absolute url, including scheme</value>
+    <value>If no root address is specified, the OpenAPI description address must be an absolute url, including scheme</value>
   </data>
   <data name="ConnectCommand_Error_NothingSpecified" xml:space="preserve">
-    <value>You must specify either a root address or a base address and a swagger address</value>
+    <value>You must specify either a root address or a base address and an OpenAPI description address</value>
   </data>
   <data name="ConnectCommand_Error_RootAddressNotValid" xml:space="preserve">
     <value>If specified, the root address must be a valid absolute url, including scheme</value>
@@ -286,23 +274,23 @@ When +history option is specified, commands specified in the text file will be a
     <value>Unable to determine a base address</value>
   </data>
   <data name="ConnectCommand_Status_Swagger" xml:space="preserve">
-    <value>Using swagger definition at {0}</value>
+    <value>Using OpenAPI description at {0}</value>
     <comment>{0} indicates a uri</comment>
   </data>
   <data name="ConnectCommand_Status_NoSwagger" xml:space="preserve">
-    <value>Unable to find a swagger definition</value>
+    <value>Unable to find an OpenAPI description</value>
   </data>
   <data name="ConnectCommand_Description" xml:space="preserve">
     <value>Configures the directory structure and base address of the api server</value>
   </data>
   <data name="ConnectCommand_HelpDetails_Line1" xml:space="preserve">
-    <value>Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--swagger swaggerAddress] must be specified</value>
+    <value>Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified</value>
   </data>
   <data name="ConnectCommand_HelpDetails_Line2" xml:space="preserve">
-    <value>[rootAddress] will be used to automatically determine the base address and swagger address</value>
+    <value>[rootAddress] will be used to automatically determine the base address and OpenAPI description address</value>
   </data>
   <data name="ConnectCommand_HelpDetails_Line3" xml:space="preserve">
-    <value>[--base baseAddress] and [--swagger swaggerAddress] allow you to explicitly set those addresses and skip auto detection</value>
+    <value>[--base baseAddress] and [--openapi openApiDescriptionAddress] allow you to explicitly set those addresses and skip auto detection</value>
   </data>
   <data name="HelpCommand_Core_CustomizationCommands" xml:space="preserve">
     <value>REPL Customization Commands:</value>
@@ -385,5 +373,17 @@ When +history option is specified, commands specified in the text file will be a
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options:</value>
+  </data>
+  <data name="BaseHttpCommand_Error_ContentFileDoesNotExist" xml:space="preserve">
+    <value>The specified content file, "{0}", does not exist.</value>
+    <comment>{0} is the user supplied content file path</comment>
+  </data>
+  <data name="BaseHttpCommand_Error_DefaultEditorDoesNotExist" xml:space="preserve">
+    <value>The specified default editor path, "{0}", does not exist.</value>
+    <comment>{0} is the user supplied default editor preference value</comment>
+  </data>
+  <data name="BaseHttpCommand_Error_DefaultEditorNotConfigured" xml:space="preserve">
+    <value>The default editor must be configured using the command `pref set {0} "{{commandLine}}"`.</value>
+    <comment>{0} is the name of the default editor preference</comment>
   </data>
 </root>
