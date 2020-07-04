@@ -111,6 +111,7 @@ namespace Microsoft.HttpRepl.Commands
                 shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, programState.SwaggerEndpoint));
             }
 
+            // Always show help link after connecting
             shellState.ConsoleManager.WriteLine(Resources.Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
         }
 
