@@ -17,8 +17,24 @@ namespace Microsoft.HttpRepl
 {
     internal class ApiConnection
     {
+        // OpenAPI description search paths are appended to the base url to
+        // attempt to find the description document. A search path is a
+        // relative url that is appended to the base url using Uri.TryCreate,
+        // so the semantics of relative urls matter here.
+        // Example: Base path https://localhost/v1/ and search path openapi.json
+        //          will result in https://localhost/v1/openapi.json being tested.
+        // Example: Base path https://localhost/v1/ and search path /openapi.json
+        //          will result in https://localhost/openapi.json being tested.
+        private static readonly string[] OpenApiDescriptionSearchPaths = new[] {
+            "swagger.json",
+            "/swagger.json",
+            "swagger/v1/swagger.json",
+            "/swagger/v1/swagger.json",
+            "openapi.json",
+            "/openapi.json",
+        };
+
         private readonly IPreferences _preferences;
-        private const string SwaggerSearchPaths = "swagger.json|swagger/v1/swagger.json|openapi.json|/swagger.json|/swagger/v1/swagger.json|/openapi.json";
 
         public Uri RootUri { get; set; }
         public bool HasRootUri => RootUri is object;
@@ -145,11 +161,17 @@ namespace Microsoft.HttpRepl
 
         private IEnumerable<string> GetSwaggerSearchPaths()
         {
-            string rawValue = _preferences.GetValue(WellKnownPreference.SwaggerSearchPaths, SwaggerSearchPaths);
+            string rawValue = _preferences.GetValue(WellKnownPreference.SwaggerSearchPaths);
 
-            string[] paths = rawValue?.Split('|', StringSplitOptions.RemoveEmptyEntries);
-
-            return paths;
+            if (rawValue is null)
+            {
+                return OpenApiDescriptionSearchPaths;
+            }
+            else
+            {
+                string[] paths = rawValue?.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                return paths;
+            }
         }
     }
 }
