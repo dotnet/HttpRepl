@@ -80,5 +80,20 @@ namespace Microsoft.Repl.Tests.Parsing
 
             Assert.Equal(expectedSelectedSection, result.SelectedSection);
         }
+
+        [Theory]
+        [InlineData("set base  https://localhost", 3)]
+        [InlineData("run  c:\\script.txt", 2)]
+        [InlineData("help  connect", 2)]
+        [InlineData("set base ", 3)]
+        [InlineData("", 1)]
+        [InlineData(" set base https://localhost", 3)]
+        public void Parse_WithDoubleSpace_RemovesEmptySections(string commandText, int expectedSectionCount)
+        {
+            CoreParser parser = new CoreParser();
+            ICoreParseResult parseResult = parser.Parse(commandText, commandText.Length + 1);
+
+            Assert.Equal(expectedSectionCount, parseResult.Sections.Count);
+        }
     }
 }
