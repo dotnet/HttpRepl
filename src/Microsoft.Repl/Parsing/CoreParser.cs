@@ -14,6 +14,9 @@ namespace Microsoft.Repl.Parsing
             commandText = commandText ?? throw new ArgumentNullException(nameof(commandText));
 
             List<string> sections = commandText.Split(' ').ToList();
+            // We can't use StringSplitOptions.RemoveEmptyEntries because it
+            // is more aggressive than we need, so we need to do it ourselves.
+            RemoveEmptyEntries(sections);
             Dictionary<int, int> sectionStartLookup = new Dictionary<int, int>();
             HashSet<int> quotedSections = new HashSet<int>();
             int runningIndex = 0;
@@ -130,6 +133,24 @@ namespace Microsoft.Repl.Parsing
             }
 
             return new CoreParseResult(caretPosition, caretPositionWithinSelectedSection, commandText, sections, selectedSection, sectionStartLookup, quotedSections);
+        }
+
+        private static void RemoveEmptyEntries(List<string> sections)
+        {
+            if (sections.Count < 2)
+            {
+                return;
+            }
+
+            // We want to remove empty spaces from the beginning, and from the middle
+            // but not from the end.
+            for (int index = 0; index < sections.Count - 1; index++)
+            {
+                if (sections[index].Length == 0)
+                {
+                    sections.RemoveAt(index);
+                }
+            }
         }
     }
 }
