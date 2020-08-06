@@ -120,6 +120,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerAddress = "https://localhost/swagger.json";
             string swaggerContent = @"{
   ""swagger"": ""2.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v2 Spec"",
+    ""version"": ""v1""
+  },
   ""paths"": {
     ""/api/Values"": {
       ""post"": {
@@ -155,6 +159,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerAddress = "https://localhost/swagger.json";
             string swaggerContent = @"{
   ""swagger"": ""2.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v2 Spec"",
+    ""version"": ""v1""
+  },
   ""paths"": {
     ""/api/Values"": {
       ""post"": {
@@ -191,6 +199,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -233,6 +242,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -276,6 +286,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -319,6 +330,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -362,6 +374,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -405,6 +418,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -447,6 +461,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""paths"": {
@@ -484,6 +499,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [
@@ -525,6 +541,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""paths"": {
@@ -581,6 +598,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             string swaggerContent = @"{
   ""openapi"": ""3.0.0"",
   ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
     ""version"": ""v1""
   },
   ""servers"": [

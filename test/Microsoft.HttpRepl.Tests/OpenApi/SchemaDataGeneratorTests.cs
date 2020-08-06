@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.HttpRepl.OpenApi;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Writers;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -25,8 +29,8 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         {
             string stringValue = "string value";
             int intValue = 5;
-            Schema schema = new Schema();
-            schema.Example = new { StringProperty = stringValue, IntProperty = intValue };
+            OpenApiSchema schema = new OpenApiSchema();
+            schema.Example = new StringAndIntClass() { StringProperty = stringValue, IntProperty = intValue,};
 
             JToken result = SchemaDataGenerator.GenerateData(schema);
 
@@ -42,8 +46,8 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         {
             string stringValue = "string value";
             int intValue = 5;
-            Schema schema = new Schema();
-            schema.Default = new { StringProperty = stringValue, IntProperty = intValue };
+            OpenApiSchema schema = new OpenApiSchema();
+            schema.Default = new StringAndIntClass() { StringProperty = stringValue, IntProperty = intValue };
 
             JToken result = SchemaDataGenerator.GenerateData(schema);
 
@@ -59,9 +63,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         {
             string stringValue = "string value";
             int intValue = 5;
-            Schema schema = new Schema();
-            schema.Example = new { StringProperty = stringValue, IntProperty = intValue };
-            schema.Default = new { ADifferentStringProperty = "a different string value", ADifferentIntProperty = 7 };
+            OpenApiSchema schema = new OpenApiSchema();
+            schema.Example = new StringAndIntClass() { StringProperty = stringValue, IntProperty = intValue };
+            schema.Default = new StringAndIntClass() { StringProperty = "a different string value", IntProperty = 7 };
 
             JToken result = SchemaDataGenerator.GenerateData(schema);
 
@@ -75,7 +79,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [Fact]
         public void GenerateData_WithStringNoFormat_ReturnsEmptyString()
         {
-            Schema schema = new Schema();
+            OpenApiSchema schema = new OpenApiSchema();
             schema.Type = "string";
             schema.Format = null;
 
@@ -90,7 +94,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [Fact]
         public void GenerateData_WithStringDateTimeFormat_ReturnsDateTimeString()
         {
-            Schema schema = new Schema();
+            OpenApiSchema schema = new OpenApiSchema();
             schema.Type = "string";
             schema.Format = "date-time";
             // Format we are looking for is ISO8601 - YYYY-MM-DDTHH:MM:SS.MMMMMMM-HH:MM
@@ -108,17 +112,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [Fact]
         public void GenerateData_WithObjectWithReadOnlyProperty_DoesNotIncludeReadOnlyProperty()
         {
-            Schema rootSchema = new Schema()
+            OpenApiSchema rootSchema = new OpenApiSchema()
             {
                 Type = "object",
-                Properties = new Dictionary<string, Schema>()
+                Properties = new Dictionary<string, OpenApiSchema>()
             };
-            Schema readOnlySchema = new Schema()
+            OpenApiSchema readOnlySchema = new OpenApiSchema()
             {
                 Type = "integer",
                 ReadOnly = true
             };
-            Schema writeableSchema = new Schema()
+            OpenApiSchema writeableSchema = new OpenApiSchema()
             {
                 Type = "string"
             };
@@ -133,6 +137,18 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             IEnumerable<string> propertyNames = jObject.Properties().Select(j => j.Name);
             Assert.Contains("Writeable", propertyNames, StringComparer.Ordinal);
             Assert.DoesNotContain("ReadOnly", propertyNames, StringComparer.Ordinal);
+        }
+
+        private class StringAndIntClass : IOpenApiAny
+        {
+            public AnyType AnyType => AnyType.Object;
+            public string StringProperty { get; set; }
+            public int IntProperty { get; set; }
+
+            public void Write(IOpenApiWriter writer, OpenApiSpecVersion specVersion)
+            {
+                // Nothing to do here
+            }
         }
     }
 }

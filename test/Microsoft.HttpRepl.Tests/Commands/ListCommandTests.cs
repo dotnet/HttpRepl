@@ -102,6 +102,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             string response = @"{
   ""swagger"": ""2.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v2 Spec"",
+    ""version"": ""v1""
+  },
   ""paths"": {
     ""/api"": {
       ""get"": {
@@ -170,6 +174,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
         {
             string response = @"{
   ""swagger"": ""2.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v2 Spec"",
+    ""version"": ""v1""
+  },
   ""paths"": {
     ""/api"": {
       ""get"": {

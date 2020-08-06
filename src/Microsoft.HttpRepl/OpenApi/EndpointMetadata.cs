@@ -2,19 +2,51 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using Microsoft.OpenApi.Models;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class EndpointMetadata
+    internal class EndpointMetadata
     {
-        public EndpointMetadata(string path, IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> requestsByMethodAndContentType)
+        public EndpointMetadata(string path)//, IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> requestsByMethodAndContentType)
         {
             Path = path;
-            AvailableRequests = requestsByMethodAndContentType ?? new Dictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>>();
+            //AvailableRequests = requestsByMethodAndContentType ?? new Dictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>>();
         }
 
         public string Path { get; }
 
-        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> AvailableRequests { get; }
+        //public IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> AvailableRequests { get; }
+        public ICollection<RequestMetadata> AvailableRequests { get; } = new List<RequestMetadata>();
+    }
+
+    internal class RequestMetadata
+    {
+        public RequestMetadata(OperationType operation)
+        {
+            Operation = operation;
+        }
+
+        public OperationType Operation { get; }
+
+        public ICollection<RequestContentMetadata> Content { get; } = new List<RequestContentMetadata>();
+
+        public ICollection<OpenApiParameter> Parameters { get; } = new List<OpenApiParameter>();
+    }
+
+    internal class RequestContentMetadata
+    {
+        public RequestContentMetadata(string contentType, bool isRequired, OpenApiSchema bodySchema)
+        {
+            ContentType = contentType;
+            IsRequired = isRequired;
+            BodySchema = bodySchema;
+        }
+
+        public string ContentType { get; }
+
+        public bool IsRequired { get; }
+
+        public OpenApiSchema BodySchema { get; }
     }
 }

@@ -3,17 +3,14 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public class ApiDefinitionReader
+    internal class ApiDefinitionReader
     {
         private readonly List<IApiDefinitionReader> _readers = new List<IApiDefinitionReader>
         {
-            new OpenApiV3ApiDefinitionReader(),
-            new SwaggerV2ApiDefinitionReader(),
-            new SwaggerV1ApiDefinitionReader()
+            new OpenApiDotNetApiDefinitionReader(),
         };
 
         internal void RegisterReader(IApiDefinitionReader reader)
@@ -21,7 +18,7 @@ namespace Microsoft.HttpRepl.OpenApi
             _readers.Add(reader);
         }
 
-        public bool CanHandle(JObject document)
+        public bool CanHandle(string document)
         {
             if (document is null)
             {
@@ -38,7 +35,7 @@ namespace Microsoft.HttpRepl.OpenApi
             return false;
         }
 
-        public ApiDefinition Read(JObject document, Uri swaggerUri)
+        public ApiDefinition Read(string document, Uri swaggerUri)
         {
             foreach (IApiDefinitionReader reader in _readers)
             {
@@ -71,21 +68,21 @@ namespace Microsoft.HttpRepl.OpenApi
 
             RequestInfo dirRequestInfo = new RequestInfo();
 
-            foreach (KeyValuePair<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> requestInfo in entry.AvailableRequests)
+            foreach (RequestMetadata requestMetadata in entry.AvailableRequests)
             {
-                string method = requestInfo.Key;
+                string method = requestMetadata.Operation.ToString();
 
-                foreach (KeyValuePair<string, IReadOnlyList<Parameter>> parameterSetsByContentType in requestInfo.Value)
+                foreach (RequestContentMetadata content in requestMetadata.Content)
                 {
-                    if (string.IsNullOrEmpty(parameterSetsByContentType.Key))
+                    if (string.IsNullOrWhiteSpace(content.ContentType))
                     {
-                        dirRequestInfo.SetFallbackRequestBody(method, parameterSetsByContentType.Key, SchemaDataGenerator.GetBodyString(parameterSetsByContentType.Value));
+                        dirRequestInfo.SetFallbackRequestBody(method, content.ContentType, SchemaDataGenerator.GetBodyString(content.BodySchema));
                     }
 
-                    dirRequestInfo.SetRequestBody(method, parameterSetsByContentType.Key, SchemaDataGenerator.GetBodyString(parameterSetsByContentType.Value));
+                    dirRequestInfo.SetRequestBody(method, content.ContentType, SchemaDataGenerator.GetBodyString(content.BodySchema));
                 }
 
-                dirRequestInfo.AddMethod(method);
+                dirRequestInfo.AddMethod(requestMetadata.Operation.ToString());
             }
 
             if (dirRequestInfo.Methods.Count > 0 && parent is object)

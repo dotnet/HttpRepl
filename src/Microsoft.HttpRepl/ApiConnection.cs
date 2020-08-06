@@ -3,15 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl
 {
@@ -42,7 +39,7 @@ namespace Microsoft.HttpRepl
         public bool HasBaseUri => BaseUri is object;
         public Uri SwaggerUri { get; set; }
         public bool HasSwaggerUri => SwaggerUri is object;
-        public JObject SwaggerDocument { get; set; }
+        public string SwaggerDocument { get; set; }
         public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
@@ -84,7 +81,7 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        public async Task<JObject> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
+        public async Task<string> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
         {
             var resp = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             if (cancellationToken.IsCancellationRequested)
@@ -94,21 +91,15 @@ namespace Microsoft.HttpRepl
 
             resp.EnsureSuccessStatusCode();
             string responseString = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-            JsonSerializer serializer = new JsonSerializer { PreserveReferencesHandling = PreserveReferencesHandling.All };
-            using (StringReader stringReader = new StringReader(responseString))
-            {
-                JObject responseObject = (JObject)serializer.Deserialize(stringReader, typeof(JObject));
-                responseObject = await PointerUtil.ResolvePointersAsync(uri, responseObject, client).ConfigureAwait(false) as JObject;
 
-                return responseObject;
-            }
+            return responseString;
         }
 
-        public async Task<(bool Success, JObject Document)> TryGetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Document)> TryGetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
         {
             try
             {
-                JObject document = await GetSwaggerDocAsync(client, uri, cancellationToken);
+                string document = await GetSwaggerDocAsync(client, uri, cancellationToken);
                 return (true, document);
             }
             catch
