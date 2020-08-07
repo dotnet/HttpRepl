@@ -81,6 +81,11 @@ namespace Microsoft.Repl.Input
             inputManager.RegisterKeyHandler(ConsoleKey.Select, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Separator, Unhandled);
             inputManager.RegisterKeyHandler(ConsoleKey.Sleep, Unhandled);
+
+            inputManager.RegisterKeyHandler(ConsoleKey.LeftWindows, Unhandled);
+            inputManager.RegisterKeyHandler(ConsoleKey.RightWindows, Unhandled);
+            inputManager.RegisterKeyHandler(ConsoleKey.Applications, Unhandled);
+
         }
 
         private static Task End(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)

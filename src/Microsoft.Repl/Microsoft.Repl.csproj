@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>A framework for creating REPLs in .NET Standard.</Description>
     <PackageTags>dotnet;repl</PackageTags>
     <PackageId>Microsoft.Repl</PackageId>
