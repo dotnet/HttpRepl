@@ -12,11 +12,11 @@ namespace Microsoft.HttpRepl.OpenApi
     {
         public bool CanHandle(string document)
         {
-            var reader = new OpenApiStringReader();
+            OpenApiStringReader reader = new();
 
             try
             {
-                var openApiDocument = reader.Read(document, out _);
+                OpenApiDocument openApiDocument = reader.Read(document, out _);
 
                 return openApiDocument is not null;
             }
@@ -28,9 +28,9 @@ namespace Microsoft.HttpRepl.OpenApi
 
         public ApiDefinition ReadDefinition(string document, Uri sourceUri)
         {
-            var reader = new OpenApiStringReader();
+            OpenApiStringReader reader = new();
 
-            var openApiDocument = reader.Read(document, out _);
+            OpenApiDocument openApiDocument = reader.Read(document, out _);
 
             ApiDefinition apiDefinition = new ApiDefinition();
             List<EndpointMetadata> metadata = new List<EndpointMetadata>();
