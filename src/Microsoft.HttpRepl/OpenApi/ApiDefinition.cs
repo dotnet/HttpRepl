@@ -9,7 +9,6 @@ namespace Microsoft.HttpRepl.OpenApi
 {
     public class ApiDefinition
     {
-        public Uri SourceEndpoint { get; set; }
         public IList<Server> BaseAddresses { get; } = new List<Server>();
         public IDirectoryStructure DirectoryStructure { get; set; }
 
