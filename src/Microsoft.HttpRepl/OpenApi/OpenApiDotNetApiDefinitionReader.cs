@@ -78,7 +78,7 @@ namespace Microsoft.HttpRepl.OpenApi
                             {
                                 string contentType = content.Key;
                                 bool isRequired = operation.Value.RequestBody.Required;
-                                OpenApiSchema schema = content.Value.Schema;
+                                OpenApiSchema schema = content.Value?.Schema;
 
                                 requestMetadata.Content.Add(new RequestContentMetadata(contentType, isRequired, schema));
                             }
