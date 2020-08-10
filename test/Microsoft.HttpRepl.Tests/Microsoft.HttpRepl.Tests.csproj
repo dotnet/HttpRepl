@@ -1,20 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.json" />
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.yml" />
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.json" />
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.yml" />
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.json" />
-    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.yml" />
-    <None Remove="Resources\OpenApiDescriptions\xkcd.json" />
-    <None Remove="Resources\OpenApiDescriptions\xkcd.yml" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.json" />

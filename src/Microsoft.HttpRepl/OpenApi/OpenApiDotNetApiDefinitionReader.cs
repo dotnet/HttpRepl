@@ -33,8 +33,18 @@ namespace Microsoft.HttpRepl.OpenApi
             OpenApiDocument openApiDocument = reader.Read(document, out _);
 
             ApiDefinition apiDefinition = new ApiDefinition();
-            List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 
+            ReadServers(apiDefinition, sourceUri, openApiDocument);
+
+            IList<EndpointMetadata> metadata = ReadPaths(openApiDocument);
+
+            apiDefinition.DirectoryStructure = BuildDirectoryStructure(metadata);
+
+            return apiDefinition;
+        }
+
+        private static void ReadServers(ApiDefinition apiDefinition, Uri sourceUri, OpenApiDocument openApiDocument)
+        {
             foreach (OpenApiServer server in openApiDocument.Servers)
             {
                 string url = server.Url?.EnsureTrailingSlash();
@@ -54,6 +64,11 @@ namespace Microsoft.HttpRepl.OpenApi
                     apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = relativeServerUri, Description = description });
                 }
             }
+        }
+
+        private static IList<EndpointMetadata> ReadPaths(OpenApiDocument openApiDocument)
+        {
+            List<EndpointMetadata> metadata = new List<EndpointMetadata>();
 
             if (openApiDocument.Paths is not null)
             {
@@ -61,48 +76,64 @@ namespace Microsoft.HttpRepl.OpenApi
                 {
                     string relativeUrl = path.Key;
 
-                    EndpointMetadata endpointMetadata = new EndpointMetadata(relativeUrl);
-
-                    foreach (KeyValuePair<OperationType, OpenApiOperation> operation in path.Value.Operations)
-                    {
-                        RequestMetadata requestMetadata = new RequestMetadata(operation.Key);
-
-                        foreach (OpenApiParameter parameter in operation.Value.Parameters)
-                        {
-                            requestMetadata.Parameters.Add(parameter);
-                        }
-
-                        if (operation.Value.RequestBody?.Content is not null)
-                        {
-                            foreach (KeyValuePair<string, OpenApiMediaType> content in operation.Value.RequestBody.Content)
-                            {
-                                string contentType = content.Key;
-                                bool isRequired = operation.Value.RequestBody.Required;
-                                OpenApiSchema schema = content.Value?.Schema;
-
-                                requestMetadata.Content.Add(new RequestContentMetadata(contentType, isRequired, schema));
-                            }
-                        }
-
-                        endpointMetadata.AvailableRequests.Add(requestMetadata);
-                    }
+                    EndpointMetadata endpointMetadata = ReadOperations(relativeUrl, path.Value.Operations);
 
                     metadata.Add(endpointMetadata);
                 }
             }
 
-            DirectoryStructure d = new DirectoryStructure(null);
+            return metadata;
+        }
 
-            for (int index = 0; index < metadata.Count; index++)
+        private static EndpointMetadata ReadOperations(string path, IDictionary<OperationType, OpenApiOperation> operations)
+        {
+            EndpointMetadata endpointMetadata = new EndpointMetadata(path);
+
+            if (operations is not null)
             {
-                System.Diagnostics.Debug.WriteLine(index);
-                EndpointMetadata entry = metadata[index];
-                ApiDefinitionReader.FillDirectoryInfo(d, entry);
+                foreach (KeyValuePair<OperationType, OpenApiOperation> operation in operations)
+                {
+                    RequestMetadata requestMetadata = new RequestMetadata(operation.Key);
+
+                    foreach (OpenApiParameter parameter in operation.Value.Parameters)
+                    {
+                        requestMetadata.Parameters.Add(parameter);
+                    }
+
+                    if (operation.Value.RequestBody?.Content is not null)
+                    {
+                        foreach (KeyValuePair<string, OpenApiMediaType> content in operation.Value.RequestBody.Content)
+                        {
+                            string contentType = content.Key;
+                            bool isRequired = operation.Value.RequestBody.Required;
+                            OpenApiSchema schema = content.Value?.Schema;
+
+                            requestMetadata.Content.Add(new RequestContentMetadata(contentType, isRequired, schema));
+                        }
+                    }
+
+                    endpointMetadata.AvailableRequests.Add(requestMetadata);
+                }
             }
 
-            apiDefinition.DirectoryStructure = d;
+            return endpointMetadata;
+        }
 
-            return apiDefinition;
+        private static DirectoryStructure BuildDirectoryStructure(IList<EndpointMetadata> metadata)
+        {
+            DirectoryStructure d = new DirectoryStructure(null);
+
+            if (metadata is not null)
+            {
+                for (int index = 0; index < metadata.Count; index++)
+                {
+                    System.Diagnostics.Debug.WriteLine(index);
+                    EndpointMetadata entry = metadata[index];
+                    ApiDefinitionReader.FillDirectoryInfo(d, entry);
+                }
+            }
+
+            return d;
         }
     }
 }

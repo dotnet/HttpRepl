@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.OpenApi
 {
-    public static class SchemaDataGenerator
+    internal static class SchemaDataGenerator
     {
         // TODO: Make this a setting?
         private const int MaxExampleDataDepth = 3;
@@ -26,7 +26,7 @@ namespace Microsoft.HttpRepl.OpenApi
 
         internal static JToken GenerateData(OpenApiSchema schema, int depth = 0)
         {
-            if (schema == null)
+            if (schema is null)
             {
                 return null;
             }
@@ -74,7 +74,7 @@ namespace Microsoft.HttpRepl.OpenApi
                             return (schema.Maximum.Value + schema.Minimum.Value) / 2;
                         }
 
-                        if (schema.ExclusiveMinimum == true)
+                        if (schema.ExclusiveMinimum is true)
                         {
                             return schema.Minimum.Value + 1;
                         }
@@ -90,7 +90,7 @@ namespace Microsoft.HttpRepl.OpenApi
                             return (int)((schema.Maximum.Value + schema.Minimum.Value) / 2);
                         }
 
-                        if (schema.ExclusiveMinimum == true)
+                        if (schema.ExclusiveMinimum is true)
                         {
                             return schema.Minimum.Value + 1;
                         }

@@ -8,15 +8,13 @@ namespace Microsoft.HttpRepl.OpenApi
 {
     internal class EndpointMetadata
     {
-        public EndpointMetadata(string path)//, IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> requestsByMethodAndContentType)
+        public EndpointMetadata(string path)
         {
             Path = path;
-            //AvailableRequests = requestsByMethodAndContentType ?? new Dictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>>();
         }
 
         public string Path { get; }
 
-        //public IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<Parameter>>> AvailableRequests { get; }
         public ICollection<RequestMetadata> AvailableRequests { get; } = new List<RequestMetadata>();
     }
 
