@@ -1,9 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.json" />
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.yml" />
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.json" />
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.yml" />
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.json" />
+    <None Remove="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.yml" />
+    <None Remove="Resources\OpenApiDescriptions\xkcd.json" />
+    <None Remove="Resources\OpenApiDescriptions\xkcd.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.json" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Analytics.yml" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.json" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.CloudCommunications.yml" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.json" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\MicrosoftGraph.PowershellSdk.Subscriptions.yml" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\xkcd.json" />
+    <EmbeddedResource Include="Resources\OpenApiDescriptions\xkcd.yml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Moq" />
