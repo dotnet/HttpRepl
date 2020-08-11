@@ -1,8 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <!-- Leave this file here, even if it's empty. It stops chaining imports. -->
 
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
 
   <PropertyGroup>
     <RepoRoot Condition=" '$(RepoRoot)' == '' ">$(MSBuildThisFileDirectory)</RepoRoot>

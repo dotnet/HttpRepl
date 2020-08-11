@@ -3,7 +3,6 @@
 
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.OpenApi;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.HttpRepl.Tests.OpenApi
@@ -19,10 +18,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     ""title"": ""My API""
   }
 }";
-            JObject jobject = JObject.Parse(json);
+
             ApiDefinitionReader apiDefinitionReader = new ApiDefinitionReader();
 
-            ApiDefinition definition = apiDefinitionReader.Read(jobject, null);
+            ApiDefinition definition = apiDefinitionReader.Read(json, null);
 
             Assert.Null(definition);
         }
@@ -36,14 +35,14 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
     ""version"": ""v1""
   }
 }";
-            JObject jobject = JObject.Parse(json);
+
             ApiDefinition apiDefinition = new ApiDefinition() { DirectoryStructure = new DirectoryStructure(null) };
             ApiDefinitionReaderStub apiDefinitionReaderStub = new ApiDefinitionReaderStub(apiDefinition);
 
             ApiDefinitionReader reader = new ApiDefinitionReader();
             reader.RegisterReader(apiDefinitionReaderStub);
 
-            ApiDefinition result = reader.Read(jobject, null);
+            ApiDefinition result = reader.Read(json, null);
 
             Assert.Same(apiDefinition, result);
         }

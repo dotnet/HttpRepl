@@ -2,7 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using Microsoft.HttpRepl.OpenApi;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.HttpRepl.Fakes
@@ -16,12 +18,19 @@ namespace Microsoft.HttpRepl.Fakes
             _apiDefinition = apiDefinition;
         }
 
-        public bool CanHandle(JObject document)
+        public bool CanHandle(string document)
         {
-            return (document["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
+            JObject doc;
+            using (StringReader stringReader = new StringReader(document))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                doc = (JObject)serializer.Deserialize(stringReader, typeof(JObject));
+            }
+
+            return (doc["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
         }
 
-        public ApiDefinition ReadDefinition(JObject document, Uri swsourceUri)
+        public ApiDefinition ReadDefinition(string document, Uri sourceUri)
         {
             return _apiDefinition;
         }
