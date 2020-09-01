@@ -293,7 +293,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         private IShellState GetShellState(string inputBuffer, HttpState httpState)
         {
             DefaultCommandDispatcher<HttpState> defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, httpState);
-            defaultCommandDispatcher.AddCommand(new SetHeaderCommand());
+            defaultCommandDispatcher.AddCommand(new SetHeaderCommand(new NullTelemetry()));
 
             Mock<IConsoleManager> mockConsoleManager = new Mock<IConsoleManager>();
             MockInputManager mockInputManager = new MockInputManager(inputBuffer);

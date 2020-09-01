@@ -386,4 +386,13 @@ When +history option is specified, commands specified in the text file will be a
     <value>The default editor must be configured using the command `pref set {0} "{{commandLine}}"`.</value>
     <comment>{0} is the name of the default editor preference</comment>
   </data>
+  <data name="Telemetry_WelcomeMessage" xml:space="preserve">
+    <value>Welcome to HttpRepl {0}!
+---------------------
+Telemetry
+---------
+The .NET Core tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+</value>
+    <comment>{0} is the major.minor version of the current build</comment>
+  </data>
 </root>

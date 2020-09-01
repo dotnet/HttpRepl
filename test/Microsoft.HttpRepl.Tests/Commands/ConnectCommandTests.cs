@@ -25,7 +25,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out ICoreParseResult parseResult,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -41,7 +41,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out ICoreParseResult parseResult,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -57,7 +57,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out ICoreParseResult parseResult,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -73,7 +73,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out ICoreParseResult parseResult,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -89,7 +89,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out ICoreParseResult parseResult,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -107,7 +107,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out IPreferences preferences,
                           fileContents: "");
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -142,7 +142,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -181,7 +181,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -224,7 +224,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -267,7 +267,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -311,7 +311,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -355,7 +355,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -399,7 +399,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -443,7 +443,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -480,7 +480,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -524,7 +524,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -560,7 +560,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -583,7 +583,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -623,7 +623,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -661,7 +661,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           out _,
                           out IPreferences preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
@@ -703,12 +703,38 @@ namespace Microsoft.HttpRepl.Tests.Commands
                           ref fileSystem,
                           ref preferences);
 
-            ConnectCommand connectCommand = new ConnectCommand(preferences);
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
 
             await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Base, expectedBaseAddress), shellState.Output, StringComparer.Ordinal);
             Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, expectedSwaggerAddress), shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithOnlyRoot_SendsTelemetry()
+        {
+            string rootAddress = "https://localhost/";
+            ArrangeInputs($"connect {rootAddress}",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences,
+                          fileContents: "");
+
+            TelemetryCollector telemetry = new TelemetryCollector();
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences, telemetry);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(telemetry.Telemetry);
+            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
+            Assert.Equal("connect", collectedTelemetry.EventName, ignoreCase: true);
+            Assert.Equal("True", collectedTelemetry.Properties["RootSpecified"]);
+            Assert.Equal("False", collectedTelemetry.Properties["BaseSpecified"]);
+            Assert.Equal("False", collectedTelemetry.Properties["OpenApiSpecified"]);
+            Assert.Equal("False", collectedTelemetry.Properties["OpenApiFound"]);
         }
 
         private void ArrangeInputs(string commandText, out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult, out IPreferences preferences, string fileContents = null)

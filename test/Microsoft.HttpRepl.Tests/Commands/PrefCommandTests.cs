@@ -78,7 +78,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HttpClient httpClient = new HttpClient();
             HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
             MockedShellState shellState = new MockedShellState();
-            PrefCommand command = new PrefCommand(preferences);
+            PrefCommand command = new PrefCommand(preferences, new NullTelemetry());
 
             // First, set it to something other than the default and make sure that works.
             string firstCommandExpectedValue = "BoldMagenta";
@@ -187,6 +187,50 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("pref set {setting} [{value}]", output);
         }
 
+        [Fact]
+        public async Task ExecuteAsync_WithGet_SendsTelemetry()
+        {
+            Arrange("pref get preferenceName",
+                    out HttpState httpState,
+                    out MockedShellState shellState,
+                    out ICoreParseResult parseResult,
+                    out UserFolderPreferences preferences);
+
+            TelemetryCollector telemetry = new TelemetryCollector();
+
+            PrefCommand command = new PrefCommand(preferences, telemetry);
+
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(telemetry.Telemetry);
+            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
+            Assert.Equal("Preference", collectedTelemetry.EventName);
+            Assert.Equal("Get", collectedTelemetry.Properties["GetOrSet"]);
+            Assert.Equal("preferenceName", collectedTelemetry.Properties["PreferenceName"]);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithSet_SendsTelemetry()
+        {
+            Arrange("pref set preferenceName value",
+                    out HttpState httpState,
+                    out MockedShellState shellState,
+                    out ICoreParseResult parseResult,
+                    out UserFolderPreferences preferences);
+
+            TelemetryCollector telemetry = new TelemetryCollector();
+
+            PrefCommand command = new PrefCommand(preferences, telemetry);
+
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(telemetry.Telemetry);
+            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
+            Assert.Equal("Preference", collectedTelemetry.EventName);
+            Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
+            Assert.Equal("preferenceName", collectedTelemetry.Properties["PreferenceName"]);
+        }
+
         private static async Task ValidatePreference(string commandText, string preferenceName, Func<HttpState, string> expectedValueCallback)
         {
             Arrange(commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out PrefCommand command, out UserFolderPreferences preferences);
@@ -216,8 +260,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
             httpState = new HttpState(fileSystem, preferences, httpClient);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
-            command = new PrefCommand(preferences);
+            command = new PrefCommand(preferences, new NullTelemetry());
         }
 
+        private static void Arrange(string commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out UserFolderPreferences preferences)
+        {
+            Arrange(commandText, out httpState, out shellState, out parseResult, out _, out preferences);
+        }
     }
 }

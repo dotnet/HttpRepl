@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
+using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -19,14 +21,16 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
-        private const string Name = "connect";
+        public override string Name => "connect";
         private const string WebApiDefaultPathSuffix = "/swagger/"; 
 
         private readonly IPreferences _preferences;
+        private readonly ITelemetry _telemetry;
 
-        public ConnectCommand(IPreferences preferences)
+        public ConnectCommand(IPreferences preferences, ITelemetry telemetry)
         {
             _preferences = preferences;
+            _telemetry = telemetry;
         }
 
         public override CommandInputSpecification InputSpec => CommandInputSpecification.Create("connect")
@@ -81,12 +85,21 @@ namespace Microsoft.HttpRepl.Commands
 
             ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences);
 
+            bool rootSpecified = !string.IsNullOrWhiteSpace(rootAddress);
+            bool baseSpecified = !string.IsNullOrWhiteSpace(baseAddress);
+            bool openApiSpecified = !string.IsNullOrWhiteSpace(swaggerAddress);
+
             if (connectionInfo is null)
             {
+                _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound: false));
                 return;
             }
 
             await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
+
+            bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
+
+            _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound));
 
             WriteStatus(shellState, programState);
         }

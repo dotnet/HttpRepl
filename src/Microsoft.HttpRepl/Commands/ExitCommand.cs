@@ -14,6 +14,8 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class ExitCommand : CommandWithStructuredInputBase<object, ICoreParseResult>
     {
+        public override string Name => "exit";
+
         protected override Task ExecuteAsync(IShellState shellState, object programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));

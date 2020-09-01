@@ -19,12 +19,15 @@ namespace Microsoft.HttpRepl.IntegrationTests.Commands
         [Fact]
         public async Task WithEchoOn_ShowsCorrectOutput()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect --base {_serverConfig.BaseAddress}
 echo on";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect --base [BaseUrl]
+Using a base address of [BaseUrl]/
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> echo on
 Request echoing is on
@@ -37,12 +40,15 @@ Request echoing is on
         [Fact]
         public async Task WithEchoOff_ShowsCorrectOutput()
         {
-            string scriptText = $@"set base {_serverConfig.BaseAddress}
+            string scriptText = $@"connect --base {_serverConfig.BaseAddress}
 echo off";
 
             string output = await RunTestScript(scriptText, _serverConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect --base [BaseUrl]
+Using a base address of [BaseUrl]/
+Using OpenAPI description at [BaseUrl]/swagger/v1/swagger.json
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> echo off
 Request echoing is off

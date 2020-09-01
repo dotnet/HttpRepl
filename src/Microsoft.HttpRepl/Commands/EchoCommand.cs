@@ -16,6 +16,8 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class EchoCommand : CommandWithStructuredInputBase<HttpState, ICoreParseResult>
     {
+        public override string Name => "echo";
+
         private readonly HashSet<string> _allowedModes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {"on", "off"};
 
         protected override bool CanHandle(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)

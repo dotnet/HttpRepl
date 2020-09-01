@@ -60,7 +60,7 @@ namespace Microsoft.HttpRepl.IntegrationTests
             preferences = preferences ?? new NullPreferences();
             using (var script = new TestScript(scriptText))
             {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console, preferences);
+                await Program.Start($"run {script.FilePath}".Split(' '), console, preferences);
             }
 
             string output = console.LoggedOutput;

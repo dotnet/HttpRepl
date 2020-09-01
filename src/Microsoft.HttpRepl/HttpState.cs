@@ -8,6 +8,7 @@ using System.Net.Http;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl
