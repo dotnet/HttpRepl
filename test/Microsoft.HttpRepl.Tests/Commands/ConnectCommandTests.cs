@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -630,6 +631,84 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Base, httpState.BaseAddress), shellState.Output, StringComparer.Ordinal);
             Assert.NotNull(httpState.SwaggerEndpoint);
             Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, httpState.SwaggerEndpoint), shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_RootWithSwaggerSuffix_FixesBase()
+        {
+            string rootAddress = "https://localhost:44368/swagger";
+            string expectedBaseAddress = "https://localhost:44368/";
+            string expectedSwaggerAddress = "https://localhost:44368/swagger/v1/swagger.json";
+            string swaggerContent = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/WeatherForecast"": {
+    }
+  }
+}";
+
+            ArrangeInputs(commandText: $"connect {rootAddress}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>() { { expectedSwaggerAddress, swaggerContent } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Base, expectedBaseAddress), shellState.Output, StringComparer.Ordinal);
+            Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, expectedSwaggerAddress), shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_RootWithSwaggerSuffixAndOverride_DoesNotFixBase()
+        {
+            string rootAddress = "https://localhost:44368/swagger";
+            string expectedBaseAddress = rootAddress + "/";
+            string expectedSwaggerAddress = "https://localhost:44368/swagger/v1/swagger.json";
+            string swaggerContent = @"{
+  ""openapi"": ""3.0.0"",
+  ""info"": {
+    ""title"": ""OpenAPI v3 Spec"",
+    ""version"": ""v1""
+  },
+  ""paths"": {
+    ""/WeatherForecast"": {
+    }
+  }
+}";
+
+            MockedFileSystem fileSystem = new MockedFileSystem();
+            UserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
+            IPreferences preferences = new UserFolderPreferences(fileSystem,
+                                                                 userProfileDirectoryProvider,
+                                                                 new Dictionary<string, string> { { WellKnownPreference.ConnectCommandSkipRootFix, "true"}});
+
+            ArrangeInputsWithOptional(commandText: $"connect {rootAddress}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>() { { expectedSwaggerAddress, swaggerContent } },
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          ref fileSystem,
+                          ref preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences);
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Base, expectedBaseAddress), shellState.Output, StringComparer.Ordinal);
+            Assert.Contains(string.Format(Resources.Strings.ConnectCommand_Status_Swagger, expectedSwaggerAddress), shellState.Output, StringComparer.Ordinal);
         }
 
         private void ArrangeInputs(string commandText, out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult, out IPreferences preferences, string fileContents = null)
