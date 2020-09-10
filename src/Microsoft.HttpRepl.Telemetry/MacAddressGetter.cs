@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -19,6 +20,7 @@ namespace Microsoft.HttpRepl.Telemetry
         private const string ZeroRegex = @"(?:00[:\-]){5}00";
         private const int ErrorFileNotFound = 0x2;
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't want any errors in telemetry to cause failures in the product.")]
         public static string GetMacAddress()
         {
             try

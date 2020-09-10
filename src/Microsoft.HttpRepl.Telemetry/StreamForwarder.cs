@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.HttpRepl.Telemetry
 {
+    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Not doing localization for telemetry yet.")]
     public sealed class StreamForwarder : IDisposable
     {
         private static readonly char[] s_ignoreCharacters = new char[] { '\r' };
@@ -51,6 +53,7 @@ namespace Microsoft.HttpRepl.Telemetry
             return Task.Run(() => Read(reader));
         }
 
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "CA1062 doesn't understand `is not null`.")]
         public void Read(TextReader reader)
         {
             var bufferSize = 1;

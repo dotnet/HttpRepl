@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
@@ -11,6 +12,8 @@ using Microsoft.DotNet.PlatformAbstractions;
 
 namespace Microsoft.HttpRepl.Telemetry
 {
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't want any errors in telemetry to cause failures in the product.")]
+    [SuppressMessage("Naming", "CA1724: Type names should not match namespaces", Justification = "Keeping it consistent with source implementations.")]
     public sealed class Telemetry : ITelemetry
     {
         internal static string CurrentSessionId = null;
@@ -119,7 +122,9 @@ namespace Microsoft.HttpRepl.Telemetry
         {
             try
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 _client = new TelemetryClient();
+#pragma warning restore CS0618 // Type or member is obsolete
                 _client.InstrumentationKey = InstrumentationKey;
                 _client.Context.Session.Id = CurrentSessionId;
                 _client.Context.Device.OperatingSystem = RuntimeEnvironment.OperatingSystem;
