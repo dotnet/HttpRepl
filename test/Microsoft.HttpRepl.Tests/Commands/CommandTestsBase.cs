@@ -59,6 +59,34 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 contentType);
         }
 
+        protected void ArrangeInputsWithOptional(string commandText,
+            string baseAddress,
+            string path,
+            IDictionary<string, string> urlsWithResponse,
+            out MockedShellState shellState,
+            out HttpState httpState,
+            out ICoreParseResult parseResult,
+            ref MockedFileSystem fileSystem,
+            ref IPreferences preferences,
+            string header = "",
+            bool readBodyFromFile = false,
+            string fileContents = "",
+            string contentType = "")
+        {
+            parseResult = CoreParseResultHelper.Create(commandText);
+            shellState = new MockedShellState();
+
+            httpState = GetHttpStateWithOptional(ref fileSystem,
+                ref preferences,                
+                baseAddress,
+                header,
+                path,
+                urlsWithResponse,
+                readBodyFromFile,
+                fileContents,
+                contentType);
+        }
+
         protected static void VerifyErrorMessageWasWrittenToConsoleManagerError(IShellState shellState)
         {
             Mock<IWritable> error = Mock.Get(shellState.ConsoleManager.Error);
@@ -66,8 +94,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             error.Verify(s => s.WriteLine(It.IsAny<string>()), Times.Once);
         }
 
-        protected static HttpState GetHttpState(out MockedFileSystem fileSystem,
-            out IPreferences preferences,
+        protected static HttpState GetHttpStateWithOptional(ref MockedFileSystem fileSystem,
+            ref IPreferences preferences,
             string baseAddress = "",
             string header = "",
             string path = "",
@@ -80,8 +108,8 @@ namespace Microsoft.HttpRepl.Tests.Commands
             responseMessage.Content = new MockHttpContent(string.Empty);
             MockHttpMessageHandler messageHandler = new MockHttpMessageHandler(urlsWithResponse, header, readFromFile, fileContents, contentType);
             HttpClient httpClient = new HttpClient(messageHandler);
-            fileSystem = new MockedFileSystem();
-            preferences = new NullPreferences();
+            fileSystem ??= new MockedFileSystem();
+            preferences ??= new NullPreferences();
 
             HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
 
@@ -105,6 +133,30 @@ namespace Microsoft.HttpRepl.Tests.Commands
             }
 
             return httpState;
+        }
+
+        protected static HttpState GetHttpState(out MockedFileSystem fileSystem,
+            out IPreferences preferences,
+            string baseAddress = "",
+            string header = "",
+            string path = "",
+            IDictionary<string, string> urlsWithResponse = null,
+            bool readFromFile = false,
+            string fileContents = "",
+            string contentType = "")
+        {
+            fileSystem = new MockedFileSystem();
+            preferences = new NullPreferences();
+
+            return GetHttpStateWithOptional(ref fileSystem,
+                ref preferences,
+                baseAddress,
+                header,
+                path,
+                urlsWithResponse,
+                readFromFile,
+                fileContents,
+                contentType);
         }
 
         protected ICoreParseResult CreateCoreParseResult(string commandText)

@@ -20,6 +20,7 @@ namespace Microsoft.HttpRepl.Commands
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
         private const string Name = "connect";
+        private const string WebApiDefaultPathSuffix = "/swagger/"; 
 
         private readonly IPreferences _preferences;
 
@@ -136,6 +137,18 @@ namespace Microsoft.HttpRepl.Commands
             ApiConnection apiConnection = new ApiConnection(preferences);
             if (!string.IsNullOrWhiteSpace(rootAddress))
             {
+                // The `dotnet new webapi` template now has a default start url of `swagger`. Because
+                // the default Swashbuckle-generated OpenAPI description doesn't contain a Servers element
+                // this will put HttpRepl users into a pit of failure by having a base address of
+                // https://localhost:{port}/swagger/, even though the API is, by default, based at the root.
+                // Since it is unlikely a user would put their API inside the /swagger path, we will
+                // special-case this scenario and remove that from the url. We will give the user an escape
+                // hatch via the preference if they do put their API under that path.
+                if (!preferences.GetBoolValue(WellKnownPreference.ConnectCommandSkipRootFix) &&
+                    rootAddress.EndsWith(WebApiDefaultPathSuffix, StringComparison.OrdinalIgnoreCase))
+                {
+                    rootAddress = rootAddress.Substring(0, rootAddress.Length - WebApiDefaultPathSuffix.Length);
+                }
                 apiConnection.RootUri = new Uri(rootAddress, UriKind.Absolute);
             }
 
