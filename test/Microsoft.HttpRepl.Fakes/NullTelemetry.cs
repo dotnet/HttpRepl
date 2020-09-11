@@ -8,13 +8,22 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class NullTelemetry : ITelemetry
     {
+        private readonly IFirstTimeUseNoticeSentinel _firstTimeUseNoticeSentinel = new NullFirstTimeUseNoticeSentinel();
+
         public bool Enabled => false;
 
-        public IFirstTimeUseNoticeSentinel FirstTimeUseNoticeSentinel => null;
+        public IFirstTimeUseNoticeSentinel FirstTimeUseNoticeSentinel => _firstTimeUseNoticeSentinel;
 
         public void TrackEvent(string eventName, IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, double> measurements)
         {
 
         }
+    }
+
+    public class NullFirstTimeUseNoticeSentinel : IFirstTimeUseNoticeSentinel
+    {
+        public void CreateIfNotExists() { }
+
+        public bool Exists() => true;
     }
 }
