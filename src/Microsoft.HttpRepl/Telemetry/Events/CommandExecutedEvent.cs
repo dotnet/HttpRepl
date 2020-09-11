@@ -5,10 +5,10 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 {
     internal class CommandExecutedEvent : TelemetryEventBase
     {
-        public CommandExecutedEvent(string commandName, bool wasSuccessful) : base("CommandExecuted")
+        public CommandExecutedEvent(string commandName, bool wasSuccessful) : base(TelemetryEventNames.CommandExecuted)
         {
-            SetProperty("CommandName", commandName);
-            SetProperty("WasSuccessful", wasSuccessful);
+            SetProperty(TelemetryPropertyNames.CommandExecuted_CommandName, commandName);
+            SetProperty(TelemetryPropertyNames.CommandExecuted_WasSuccessful, wasSuccessful);
         }
     }
 }

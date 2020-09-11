@@ -2,9 +2,9 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 {
     internal class WebApiF5FixEvent : TelemetryEventBase
     {
-        public WebApiF5FixEvent(bool skippedByPreference = false) : base("WebApiF5Fix")
+        public WebApiF5FixEvent(bool skippedByPreference = false) : base(TelemetryEventNames.WebApiF5Fix)
         {
-            SetProperty("SkippedByPreference", skippedByPreference);
+            SetProperty(TelemetryPropertyNames.WebApiF5Fix_SkippedByPreference, skippedByPreference);
         }
     }
 }

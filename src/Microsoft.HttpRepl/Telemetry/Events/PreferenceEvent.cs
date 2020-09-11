@@ -9,10 +9,10 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 {
     internal class PreferenceEvent : TelemetryEventBase
     {
-        public PreferenceEvent(string getOrSet, string preferenceName) : base("Preference")
+        public PreferenceEvent(string getOrSet, string preferenceName) : base(TelemetryEventNames.Preference)
         {
-            SetProperty("GetOrSet", getOrSet);
-            SetProperty("PreferenceName", SanitizePreferenceName(preferenceName));
+            SetProperty(TelemetryPropertyNames.Preference_GetOrSet, getOrSet);
+            SetProperty(TelemetryPropertyNames.Preference_PreferenceName, SanitizePreferenceName(preferenceName));
         }
 
         private static string SanitizePreferenceName(string preferenceName)

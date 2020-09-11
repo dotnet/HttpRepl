@@ -5,12 +5,12 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 {
     internal class StartedEvent : TelemetryEventBase
     {
-        public StartedEvent(bool withHelp, bool withRun, bool withOtherArgs, bool withOutputRedirection) : base("Started")
+        public StartedEvent(bool withHelp, bool withRun, bool withOtherArgs, bool withOutputRedirection) : base(TelemetryEventNames.Started)
         {
-            SetProperty("WithHelp", withHelp);
-            SetProperty("WithRun", withRun);
-            SetProperty("WithOtherArgs", withOtherArgs);
-            SetProperty("WithOutputRedirection", withOutputRedirection);
+            SetProperty(TelemetryPropertyNames.Started_WithHelp, withHelp);
+            SetProperty(TelemetryPropertyNames.Started_WithRun, withRun);
+            SetProperty(TelemetryPropertyNames.Started_WithOtherArgs, withOtherArgs);
+            SetProperty(TelemetryPropertyNames.Started_WithOutputRedirection, withOutputRedirection);
         }
     }
 }

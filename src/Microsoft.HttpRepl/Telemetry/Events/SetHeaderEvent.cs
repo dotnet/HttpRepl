@@ -8,10 +8,10 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 {
     internal class SetHeaderEvent : TelemetryEventBase
     {
-        public SetHeaderEvent(string headerName, bool isValueEmpty) : base("SetHeader")
+        public SetHeaderEvent(string headerName, bool isValueEmpty) : base(TelemetryEventNames.SetHeader)
         {
-            SetProperty("HeaderName", SanitizeHeaderName(headerName));
-            SetProperty("IsValueEmpty", isValueEmpty);
+            SetProperty(TelemetryPropertyNames.SetHeader_HeaderName, SanitizeHeaderName(headerName));
+            SetProperty(TelemetryPropertyNames.SetHeader_IsValueEmpty, isValueEmpty);
         }
 
         private static string SanitizeHeaderName(string headerName)
