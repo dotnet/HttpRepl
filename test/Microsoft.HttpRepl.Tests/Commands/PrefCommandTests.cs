@@ -9,6 +9,7 @@ using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
 using Microsoft.HttpRepl.Tests.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.Parsing;
@@ -190,7 +191,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public async Task ExecuteAsync_WithGet_SendsTelemetry()
         {
-            Arrange("pref get preferenceName",
+            Arrange($"pref get {WellKnownPreference.DefaultEditorCommand}",
                     out HttpState httpState,
                     out MockedShellState shellState,
                     out ICoreParseResult parseResult,
@@ -206,11 +207,33 @@ namespace Microsoft.HttpRepl.Tests.Commands
             TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
             Assert.Equal("Preference", collectedTelemetry.EventName);
             Assert.Equal("Get", collectedTelemetry.Properties["GetOrSet"]);
-            Assert.Equal("preferenceName", collectedTelemetry.Properties["PreferenceName"]);
+            Assert.Equal(WellKnownPreference.DefaultEditorCommand, collectedTelemetry.Properties["PreferenceName"]);
         }
 
         [Fact]
         public async Task ExecuteAsync_WithSet_SendsTelemetry()
+        {
+            Arrange($"pref set {WellKnownPreference.DefaultEditorCommand} value",
+                    out HttpState httpState,
+                    out MockedShellState shellState,
+                    out ICoreParseResult parseResult,
+                    out UserFolderPreferences preferences);
+
+            TelemetryCollector telemetry = new TelemetryCollector();
+
+            PrefCommand command = new PrefCommand(preferences, telemetry);
+
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(telemetry.Telemetry);
+            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
+            Assert.Equal("Preference", collectedTelemetry.EventName);
+            Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
+            Assert.Equal(WellKnownPreference.DefaultEditorCommand, collectedTelemetry.Properties["PreferenceName"]);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithGetAndUnknownName_SendsTelemetryWithHashedName()
         {
             Arrange("pref set preferenceName value",
                     out HttpState httpState,
@@ -228,7 +251,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
             Assert.Equal("Preference", collectedTelemetry.EventName);
             Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
-            Assert.Equal("preferenceName", collectedTelemetry.Properties["PreferenceName"]);
+            Assert.Equal(Sha256Hasher.Hash("preferenceName"), collectedTelemetry.Properties["PreferenceName"]);
         }
 
         private static async Task ValidatePreference(string commandText, string preferenceName, Func<HttpState, string> expectedValueCallback)
