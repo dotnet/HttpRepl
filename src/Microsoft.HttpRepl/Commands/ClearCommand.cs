@@ -13,8 +13,9 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class ClearCommand : ICommand<object, ICoreParseResult>
     {
-        public string Name => "clear";
         private static readonly string AlternateName = "cls";
+
+        public string Name => "clear";
 
         public bool? CanHandle(IShellState shellState, object programState, ICoreParseResult parseResult)
         {

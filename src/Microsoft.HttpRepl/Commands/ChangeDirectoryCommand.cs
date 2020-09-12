@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class ChangeDirectoryCommand : CommandWithStructuredInputBase<HttpState, ICoreParseResult>
     {
-        public override string Name => "ChangeDirectory";
+        public override string Name => "changeDirectory";
 
         protected override Task ExecuteAsync(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {

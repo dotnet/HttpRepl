@@ -25,7 +25,7 @@ namespace Microsoft.HttpRepl.Commands
 
         private readonly ITelemetry _telemetry;
 
-        public string Name => "SetHeader";
+        public string Name => "setHeader";
         public string Description => Strings.SetHeaderCommand_HelpSummary;
 
         public SetHeaderCommand(ITelemetry telemetry)

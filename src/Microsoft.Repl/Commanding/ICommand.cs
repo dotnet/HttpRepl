@@ -11,6 +11,9 @@ namespace Microsoft.Repl.Commanding
     public interface ICommand<in TProgramState, in TParseResult>
         where TParseResult : ICoreParseResult
     {
+        /// <summary>
+        /// Identifies the command in telemetry events.
+        /// </summary>
         string Name { get; }
 
         string GetHelpSummary(IShellState shellState, TProgramState programState);

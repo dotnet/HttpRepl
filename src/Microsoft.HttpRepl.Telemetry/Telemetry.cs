@@ -32,7 +32,7 @@ namespace Microsoft.HttpRepl.Telemetry
             bool blockThreadInitialization = false)
         {
             FirstTimeUseNoticeSentinel = sentinel ?? new FirstTimeUseNoticeSentinel(productVersion);
-            Enabled = !GetEnvironmentVariableAsBool(TelemetryOptout) && PermissionExists(FirstTimeUseNoticeSentinel);
+            Enabled = !EnvironmentHelper.GetEnvironmentVariableAsBool(TelemetryOptout) && PermissionExists(FirstTimeUseNoticeSentinel);
 
             if (!Enabled)
             {
@@ -57,32 +57,7 @@ namespace Microsoft.HttpRepl.Telemetry
 
         public IFirstTimeUseNoticeSentinel FirstTimeUseNoticeSentinel { get; }
 
-        public static bool SkipFirstTimeExperience => GetEnvironmentVariableAsBool(HttpRepl.Telemetry.FirstTimeUseNoticeSentinel.SkipFirstTimeExperienceEnvironmentVariableName, false);
-
-        public static bool IsRunningInDockerContainer => GetEnvironmentVariableAsBool("DOTNET_RUNNING_IN_CONTAINER", false);
-
-        private static bool GetEnvironmentVariableAsBool(string name, bool defaultValue = false)
-        {
-            var str = Environment.GetEnvironmentVariable(name);
-            if (string.IsNullOrEmpty(str))
-            {
-                return defaultValue;
-            }
-
-            switch (str.ToUpperInvariant())
-            {
-                case "TRUE":
-                case "1":
-                case "YES":
-                    return true;
-                case "FALSE":
-                case "0":
-                case "NO":
-                    return false;
-                default:
-                    return defaultValue;
-            }
-        }
+        public static bool SkipFirstTimeExperience => EnvironmentHelper.GetEnvironmentVariableAsBool(HttpRepl.Telemetry.FirstTimeUseNoticeSentinel.SkipFirstTimeExperienceEnvironmentVariableName, false);
 
         private bool PermissionExists(IFirstTimeUseNoticeSentinel sentinel)
         {

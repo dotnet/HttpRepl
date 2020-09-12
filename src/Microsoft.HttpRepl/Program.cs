@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -26,7 +27,8 @@ namespace Microsoft.HttpRepl
             await Start(args);
         }
 
-        internal static async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null, ITelemetry telemetry = null)
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "CA1062 Doesn't understand that ComposeDependencies ensures `consoleManager`, `preferences` and `telemetry` are non-null before use.")]
+        public static async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null, ITelemetry telemetry = null)
         {
             args = args ?? throw new ArgumentNullException(nameof(args));
 

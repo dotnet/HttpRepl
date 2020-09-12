@@ -68,20 +68,14 @@ namespace Microsoft.HttpRepl.Telemetry
 
         private static string ParseMACAddress(string shelloutput)
         {
-            string macAddress = null;
             foreach (Match match in Regex.Matches(shelloutput, MacRegex, RegexOptions.IgnoreCase))
             {
                 if (!Regex.IsMatch(match.Value, ZeroRegex))
                 {
-                    macAddress = match.Value;
-                    break;
+                    return match.Value;
                 }
             }
 
-            if (macAddress != null)
-            {
-                return macAddress;
-            }
             return null;
         }
 
@@ -92,7 +86,7 @@ namespace Microsoft.HttpRepl.Telemetry
                 FileName = "ip",
                 Arguments = "link",
                 UseShellExecute = false
-            }.ExecuteAndCaptureOutput(out string ipStdOut, out string ipStdErr);
+            }.ExecuteAndCaptureOutput(out string ipStdOut, out _);
 
             if (ipResult == 0)
             {
@@ -112,7 +106,7 @@ namespace Microsoft.HttpRepl.Telemetry
                 {
                     FileName = "getmac.exe",
                     UseShellExecute = false
-                }.ExecuteAndCaptureOutput(out string stdOut, out string stdErr);
+                }.ExecuteAndCaptureOutput(out string stdOut, out _);
 
                 if (result == 0)
                 {

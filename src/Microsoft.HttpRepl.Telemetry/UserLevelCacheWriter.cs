@@ -9,7 +9,7 @@ namespace Microsoft.HttpRepl.Telemetry
     public sealed class UserLevelCacheWriter : IUserLevelCacheWriter
     {
         private readonly string _productVersion;
-        private readonly string _dotnetTryUserProfileFolderPath;
+        private readonly string _dotnetHttpReplUserProfileFolderPath;
         private readonly Func<string, bool> _fileExists;
         private readonly Func<string, bool> _directoryExists;
         private readonly Action<string> _createDirectory;
@@ -30,7 +30,7 @@ namespace Microsoft.HttpRepl.Telemetry
 
         public UserLevelCacheWriter(
             string productVersion,
-            string dotnetTryUserProfileFolderPath,
+            string dotnetHttpReplUserProfileFolderPath,
             Func<string, bool> fileExists,
             Func<string, bool> directoryExists,
             Action<string> createDirectory,
@@ -38,7 +38,7 @@ namespace Microsoft.HttpRepl.Telemetry
             Func<string, string> readAllText)
         {
             _productVersion = productVersion;
-            _dotnetTryUserProfileFolderPath = dotnetTryUserProfileFolderPath;
+            _dotnetHttpReplUserProfileFolderPath = dotnetHttpReplUserProfileFolderPath;
             _fileExists = fileExists;
             _directoryExists = directoryExists;
             _createDirectory = createDirectory;
@@ -53,9 +53,9 @@ namespace Microsoft.HttpRepl.Telemetry
             {
                 if (!_fileExists(cacheFilepath))
                 {
-                    if (!_directoryExists(_dotnetTryUserProfileFolderPath))
+                    if (!_directoryExists(_dotnetHttpReplUserProfileFolderPath))
                     {
-                        _createDirectory(_dotnetTryUserProfileFolderPath);
+                        _createDirectory(_dotnetHttpReplUserProfileFolderPath);
                     }
 
                     var runResult = getValueToCache();
@@ -83,7 +83,7 @@ namespace Microsoft.HttpRepl.Telemetry
 
         private string GetCacheFilePath(string cacheKey)
         {
-            return Path.Combine(_dotnetTryUserProfileFolderPath, $"{_productVersion}_{cacheKey}.dotnetTryUserLevelCache");
+            return Path.Combine(_dotnetHttpReplUserProfileFolderPath, $"{_productVersion}_{cacheKey}.dotnetHttpReplUserLevelCache");
         }
     }
 }
