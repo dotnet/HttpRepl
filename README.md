@@ -21,6 +21,10 @@ A [.NET Core Global Tool](https://docs.microsoft.com/en-us/dotnet/core/tools/glo
 
 See the [documentation](https://aka.ms/http-repl-doc) for how to use and configure HttpRepl.
 
+## Telemetry
+
+HttpRepl collects usage data. See [Telemetry](/TELEMETRY.md) for more details.
+
 ## Building
 
 To build this repo, run the `build.cmd` or `build.sh` in the root of this repo. This repo uses the .NET [Arcade toolset](https://github.com/dotnet/arcade).
