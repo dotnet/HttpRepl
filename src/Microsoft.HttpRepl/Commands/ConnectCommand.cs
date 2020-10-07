@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
+using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -19,14 +21,16 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
-        private const string Name = "connect";
+        public override string Name => "connect";
         private const string WebApiDefaultPathSuffix = "/swagger/"; 
 
         private readonly IPreferences _preferences;
+        private readonly ITelemetry _telemetry;
 
-        public ConnectCommand(IPreferences preferences)
+        public ConnectCommand(IPreferences preferences, ITelemetry telemetry)
         {
             _preferences = preferences;
+            _telemetry = telemetry;
         }
 
         public override CommandInputSpecification InputSpec => CommandInputSpecification.Create("connect")
@@ -81,12 +85,21 @@ namespace Microsoft.HttpRepl.Commands
 
             ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences);
 
+            bool rootSpecified = !string.IsNullOrWhiteSpace(rootAddress);
+            bool baseSpecified = !string.IsNullOrWhiteSpace(baseAddress);
+            bool openApiSpecified = !string.IsNullOrWhiteSpace(swaggerAddress);
+
             if (connectionInfo is null)
             {
+                _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound: false));
                 return;
             }
 
             await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
+
+            bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
+
+            _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound));
 
             WriteStatus(shellState, programState);
         }
@@ -116,7 +129,7 @@ namespace Microsoft.HttpRepl.Commands
             shellState.ConsoleManager.WriteLine(Resources.Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
         }
 
-        private static ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences)
+        private ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences)
         {
             rootAddress = rootAddress?.Trim();
             baseAddress = baseAddress?.Trim();
@@ -144,11 +157,22 @@ namespace Microsoft.HttpRepl.Commands
                 // Since it is unlikely a user would put their API inside the /swagger path, we will
                 // special-case this scenario and remove that from the url. We will give the user an escape
                 // hatch via the preference if they do put their API under that path.
-                if (!preferences.GetBoolValue(WellKnownPreference.ConnectCommandSkipRootFix) &&
-                    rootAddress.EndsWith(WebApiDefaultPathSuffix, StringComparison.OrdinalIgnoreCase))
+                if (rootAddress.EndsWith(WebApiDefaultPathSuffix, StringComparison.OrdinalIgnoreCase))
                 {
-                    rootAddress = rootAddress.Substring(0, rootAddress.Length - WebApiDefaultPathSuffix.Length);
+                    WebApiF5FixEvent fixEvent;
+                    if (preferences.GetBoolValue(WellKnownPreference.ConnectCommandSkipRootFix))
+                    {
+                        fixEvent = new WebApiF5FixEvent(skippedByPreference: true);
+                    }
+                    else
+                    {
+                        rootAddress = rootAddress.Substring(0, rootAddress.Length - WebApiDefaultPathSuffix.Length);
+                        fixEvent = new WebApiF5FixEvent();
+                    }
+
+                    _telemetry.TrackEvent(fixEvent);
                 }
+                
                 apiConnection.RootUri = new Uri(rootAddress, UriKind.Absolute);
             }
 

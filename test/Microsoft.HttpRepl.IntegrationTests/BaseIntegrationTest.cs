@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.IntegrationTests.Utilities;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
 
 namespace Microsoft.HttpRepl.IntegrationTests
 {
@@ -54,13 +55,15 @@ namespace Microsoft.HttpRepl.IntegrationTests
             return result;
         }
 
-        protected static async Task<string> RunTestScript(string scriptText, string baseAddress, IPreferences preferences = null)
+        protected static async Task<string> RunTestScript(string scriptText, string baseAddress, IPreferences preferences = null, ITelemetry telemetry = null)
         {
             LoggingConsoleManagerDecorator console = new LoggingConsoleManagerDecorator(new NullConsoleManager());
-            preferences = preferences ?? new NullPreferences();
+            preferences ??= new NullPreferences();
+            telemetry ??= new NullTelemetry();
+            
             using (var script = new TestScript(scriptText))
             {
-                await new Program().Start($"run {script.FilePath}".Split(' '), console, preferences);
+                await Program.Start($"run {script.FilePath}".Split(' '), console, preferences, telemetry);
             }
 
             string output = console.LoggedOutput;

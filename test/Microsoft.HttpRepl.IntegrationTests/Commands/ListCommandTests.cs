@@ -79,14 +79,17 @@ For detailed tool info, see https://aka.ms/http-repl-doc
         [Fact]
         public async Task WithoutSwagger_ShowsNoSubpaths()
         {
-            string scriptText = $@"set base {_nonSwaggerServerConfig.BaseAddress}
+            string scriptText = $@"connect --base {_nonSwaggerServerConfig.BaseAddress}
 ls
 cd api
 ls";
             string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
             // make sure to normalize newlines in the expected output
-            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect --base [BaseUrl]
+Using a base address of [BaseUrl]/
+Unable to find an OpenAPI description
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> ls
 No directory structure has been set, so there is nothing to list. Use the ""connect"" command to set a directory structure based on an OpenAPI description.
@@ -104,12 +107,15 @@ No directory structure has been set, so there is nothing to list. Use the ""conn
         [Fact]
         public async Task WithoutSwagger_ShowsNoActionsOrVerbs()
         {
-            string scriptText = $@"set base {_nonSwaggerServerConfig.BaseAddress}
+            string scriptText = $@"connect --base {_nonSwaggerServerConfig.BaseAddress}
 cd api/Values
 ls";
             string output = await RunTestScript(scriptText, _nonSwaggerServerConfig.BaseAddress);
 
-            string expected = NormalizeOutput(@"(Disconnected)> set base [BaseUrl]
+            string expected = NormalizeOutput(@"(Disconnected)> connect --base [BaseUrl]
+Using a base address of [BaseUrl]/
+Unable to find an OpenAPI description
+For detailed tool info, see https://aka.ms/http-repl-doc
 
 [BaseUrl]/> cd api/Values
 

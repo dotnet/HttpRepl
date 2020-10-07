@@ -17,7 +17,7 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class UICommand : ICommand<HttpState, ICoreParseResult>
     {
-        private static readonly string Name = "ui";
+        public string Name => "ui";
         private IUriLauncher _uriLauncher;
         private IPreferences _preferences;
 

@@ -12,11 +12,11 @@ namespace Microsoft.HttpRepl.Fakes
 {
     public class MockCommand : ICommand<object, ICoreParseResult>
     {
-        private string _commandName;
+        public string Name { get; }
 
         public MockCommand(string commandName)
         {
-            _commandName = commandName;
+            Name = commandName;
         }
 
         public bool? CanHandle(IShellState shellState, object programState, ICoreParseResult parseResult)
@@ -41,7 +41,7 @@ namespace Microsoft.HttpRepl.Fakes
 
         public IEnumerable<string> Suggest(IShellState shellState, object programState, ICoreParseResult parseResult)
         {
-            return new[] { _commandName };
+            return new[] { Name };
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class RunCommand : ICommand<HttpState, ICoreParseResult>
     {
-        private static readonly string Name = "run";
+        public string Name => "run";
 
         private IFileSystem _fileSystem;
         public RunCommand(IFileSystem fileSystem)

@@ -696,6 +696,20 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Welcome to HttpRepl {0}!
+        ///---------------------
+        ///Telemetry
+        ///---------
+        ///The .NET Core tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to &apos;1&apos; or &apos;true&apos; using your favorite shell.
+        ///.
+        /// </summary>
+        internal static string Telemetry_WelcomeMessage {
+            get {
+                return ResourceManager.GetString("Telemetry_WelcomeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launches the Swagger UI page (if available) in the default browser.
         /// </summary>
         internal static string UICommand_Description {

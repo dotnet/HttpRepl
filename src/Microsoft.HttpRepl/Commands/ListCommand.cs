@@ -22,6 +22,8 @@ namespace Microsoft.HttpRepl.Commands
 
         private readonly IPreferences _preferences;
 
+        public override string Name => "list";
+
         public ListCommand(IPreferences preferences)
         {
             _preferences = preferences;

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -51,6 +50,8 @@ namespace Microsoft.HttpRepl.Commands
 
         private readonly IFileSystem _fileSystem;
         private readonly IPreferences _preferences;
+
+        public override string Name => Verb;
 
         protected abstract string Verb { get; }
 

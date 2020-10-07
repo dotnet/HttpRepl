@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class HelpCommand : ICommand<HttpState, ICoreParseResult>
     {
-        private static readonly string Name = "help";
+        public string Name => "help";
 
         private readonly IPreferences _preferences;
 
@@ -269,7 +269,6 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine(Strings.HelpCommand_Core_NavigationCommands_Description);
             output.AppendLine();
 
-            output.AppendLine($"{"set base",navCommandColumn}{dispatcher.GetCommand<SetBaseCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"ls",navCommandColumn}{dispatcher.GetCommand<ListCommand>().GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"cd",navCommandColumn}{dispatcher.GetCommand<ChangeDirectoryCommand>().GetHelpSummary(shellState, programState)}");
 

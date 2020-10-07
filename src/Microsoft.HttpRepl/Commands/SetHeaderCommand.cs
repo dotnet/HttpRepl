@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
+using Microsoft.HttpRepl.Telemetry;
+using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -18,14 +20,22 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class SetHeaderCommand : ICommand<HttpState, ICoreParseResult>
     {
-        private static readonly string Name = "set";
+        private static readonly string CommandName = "set";
         private static readonly string SubCommand = "header";
 
+        private readonly ITelemetry _telemetry;
+
+        public string Name => "setHeader";
         public string Description => Strings.SetHeaderCommand_HelpSummary;
+
+        public SetHeaderCommand(ITelemetry telemetry)
+        {
+            _telemetry = telemetry;
+        }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            return parseResult.ContainsAtLeast(minimumLength: 3, Name, SubCommand)
+            return parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
                 ? (bool?)true
                 : null;
         }
@@ -36,21 +46,26 @@ namespace Microsoft.HttpRepl.Commands
 
             programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
+            bool isValueEmpty;
             if (parseResult.Sections.Count == 3)
             {
                 programState.Headers.Remove(parseResult.Sections[2]);
+                isValueEmpty = true;
             }
             else
             {
                 programState.Headers[parseResult.Sections[2]] = parseResult.Sections.Skip(3).ToList();
+                isValueEmpty = false;
             }
+
+            _telemetry.TrackEvent(new SetHeaderEvent(parseResult.Sections[2], isValueEmpty));
 
             return Task.CompletedTask;
         }
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
-            if (parseResult.ContainsAtLeast(Name, SubCommand))
+            if (parseResult.ContainsAtLeast(CommandName, SubCommand))
             {
                 var helpText = new StringBuilder();
                 helpText.Append(Strings.Usage.Bold());
@@ -74,21 +89,21 @@ namespace Microsoft.HttpRepl.Commands
 
             if (parseResult.Sections.Count == 0)
             {
-                return new[] { Name };
+                return new[] { CommandName };
             }
 
-            if (parseResult.Sections.Count > 0 && parseResult.SelectedSection == 0 && Name.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase))
+            if (parseResult.Sections.Count > 0 && parseResult.SelectedSection == 0 && CommandName.StartsWith(parseResult.Sections[0].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase))
             {
-                return new[] { Name };
+                return new[] { CommandName };
             }
 
-            if (string.Equals(Name, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase) && parseResult.SelectedSection == 1 && (parseResult.Sections.Count < 2 || SubCommand.StartsWith(parseResult.Sections[1].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
+            if (string.Equals(CommandName, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase) && parseResult.SelectedSection == 1 && (parseResult.Sections.Count < 2 || SubCommand.StartsWith(parseResult.Sections[1].Substring(0, parseResult.CaretPositionWithinSelectedSection), StringComparison.OrdinalIgnoreCase)))
             {
                 return new[] { SubCommand };
             }
 
             if (parseResult.Sections.Count > 2
-                && string.Equals(Name, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase)
+                && string.Equals(CommandName, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase)
                 && string.Equals(SubCommand, parseResult.Sections[1], StringComparison.OrdinalIgnoreCase) && parseResult.SelectedSection == 2)
             {
                 string prefix = parseResult.Sections[2].Substring(0, parseResult.CaretPositionWithinSelectedSection);
@@ -96,7 +111,7 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             if (parseResult.Sections.Count > 3
-                && string.Equals(Name, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase)
+                && string.Equals(CommandName, parseResult.Sections[0], StringComparison.OrdinalIgnoreCase)
                 && string.Equals(SubCommand, parseResult.Sections[1], StringComparison.OrdinalIgnoreCase) && parseResult.SelectedSection == 3)
             {
                 string prefix = parseResult.Sections[3].Substring(0, parseResult.CaretPositionWithinSelectedSection);

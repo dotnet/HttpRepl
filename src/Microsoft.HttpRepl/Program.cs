@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
@@ -22,18 +24,26 @@ namespace Microsoft.HttpRepl
     {
         public static async Task Main(string[] args)
         {
-            await new Program().Start(args);
+            await Start(args);
         }
 
-        public async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null)
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "CA1062 Doesn't understand that ComposeDependencies ensures `consoleManager`, `preferences` and `telemetry` are non-null before use.")]
+        public static async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null, ITelemetry telemetry = null)
         {
             args = args ?? throw new ArgumentNullException(nameof(args));
 
             RegisterEncodingProviders();
-            ComposeDependencies(ref consoleManager, ref preferences, out HttpState state, out Shell shell);
+            ComposeDependencies(ref consoleManager, ref preferences, ref telemetry, out HttpState state, out Shell shell);
+
+            if (!telemetry.FirstTimeUseNoticeSentinel.Exists() && !Telemetry.Telemetry.SkipFirstTimeExperience)
+            {
+                Reporter.Output.WriteLine(string.Format(Resources.Strings.Telemetry_WelcomeMessage, VersionSensor.AssemblyVersion.ToString(2)));
+                telemetry.FirstTimeUseNoticeSentinel.CreateIfNotExists();
+            }
 
             if (Console.IsOutputRedirected && !consoleManager.AllowOutputRedirection)
             {
+                telemetry.TrackStartedEvent(withOutputRedirection: true);
                 Reporter.Error.WriteLine(Resources.Strings.Error_OutputRedirected.SetColor(preferences.GetColorValue(WellKnownPreference.ErrorColor)));
                 return;
             }
@@ -45,6 +55,7 @@ namespace Microsoft.HttpRepl
                 {
                     if (string.Equals(args[0], "--help", StringComparison.OrdinalIgnoreCase) || string.Equals(args[0], "-h", StringComparison.OrdinalIgnoreCase))
                     {
+                        telemetry.TrackStartedEvent(withHelp: true);
                         shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Usage);
                         shell.ShellState.ConsoleManager.WriteLine("  dotnet httprepl [<BASE_ADDRESS>] [options]");
                         shell.ShellState.ConsoleManager.WriteLine();
@@ -63,11 +74,14 @@ namespace Microsoft.HttpRepl
                     // allow running a script file directly.
                     if (string.Equals(args[0], "run", StringComparison.OrdinalIgnoreCase))
                     {
+                        telemetry.TrackStartedEvent(withRun: true);
                         shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
                         shell.ShellState.InputManager.SetInput(shell.ShellState, string.Join(' ', args));
                         await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
                         return;
                     }
+
+                    telemetry.TrackStartedEvent(withOtherArgs: args.Length > 0);
 
                     string combinedArgs = string.Join(' ', args);
 
@@ -75,39 +89,43 @@ namespace Microsoft.HttpRepl
                     shell.ShellState.InputManager.SetInput(shell.ShellState, $"connect {combinedArgs}");
                     await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
                 }
+                else
+                {
+                    telemetry.TrackStartedEvent();
+                }
 
                 await shell.RunAsync(source.Token).ConfigureAwait(false);
             }
         }
 
-        private static void ComposeDependencies(ref IConsoleManager consoleManager, ref IPreferences preferences, out HttpState state, out Shell shell)
+        private static void ComposeDependencies(ref IConsoleManager consoleManager, ref IPreferences preferences, ref ITelemetry telemetry, out HttpState state, out Shell shell)
         {
-            consoleManager = consoleManager ?? new ConsoleManager();
+            consoleManager ??= new ConsoleManager();
             IFileSystem fileSystem = new RealFileSystem();
-            preferences = preferences ?? new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), CreateDefaultPreferences());
+            preferences ??= new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), CreateDefaultPreferences());
+            telemetry ??= new Telemetry.Telemetry(VersionSensor.AssemblyInformationalVersion);
             var httpClient = GetHttpClientWithPreferences(preferences);
             state = new HttpState(fileSystem, preferences, httpClient);
 
             var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
-            dispatcher.AddCommand(new ChangeDirectoryCommand());
-            dispatcher.AddCommand(new ClearCommand());
-            dispatcher.AddCommand(new ConnectCommand(preferences));
-            dispatcher.AddCommand(new DeleteCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new EchoCommand());
-            dispatcher.AddCommand(new ExitCommand());
-            dispatcher.AddCommand(new HeadCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new HelpCommand(preferences));
-            dispatcher.AddCommand(new GetCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new ListCommand(preferences));
-            dispatcher.AddCommand(new OptionsCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PatchCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PrefCommand(preferences));
-            dispatcher.AddCommand(new PostCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new PutCommand(fileSystem, preferences));
-            dispatcher.AddCommand(new RunCommand(fileSystem));
-            dispatcher.AddCommand(new SetBaseCommand());
-            dispatcher.AddCommand(new SetHeaderCommand());
-            dispatcher.AddCommand(new UICommand(new UriLauncher(), preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new ChangeDirectoryCommand());
+            dispatcher.AddCommandWithTelemetry(telemetry, new ClearCommand());
+            dispatcher.AddCommandWithTelemetry(telemetry, new ConnectCommand(preferences, telemetry));
+            dispatcher.AddCommandWithTelemetry(telemetry, new DeleteCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new EchoCommand());
+            dispatcher.AddCommandWithTelemetry(telemetry, new ExitCommand());
+            dispatcher.AddCommandWithTelemetry(telemetry, new HeadCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new HelpCommand(preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new GetCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new ListCommand(preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new OptionsCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new PatchCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new PrefCommand(preferences, telemetry));
+            dispatcher.AddCommandWithTelemetry(telemetry, new PostCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new PutCommand(fileSystem, preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new RunCommand(fileSystem));
+            dispatcher.AddCommandWithTelemetry(telemetry, new SetHeaderCommand(telemetry));
+            dispatcher.AddCommandWithTelemetry(telemetry, new UICommand(new UriLauncher(), preferences));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
         }
