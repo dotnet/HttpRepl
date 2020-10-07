@@ -41,10 +41,6 @@ The telemetry feature collects the following data:
 | >=5.0        | For the `set header` command, the header name being set. If not a well-known header, the name is hashed. The value is not collected. |
 | >=5.0        | For the `connect` command, whether or not a specific special-case for `dotnet new webapi` was used and, whether or not it was bypassed via preference. |
 
-## .NET Core CLI/SDK crash exception telemetry collected
-
-If the .NET Core CLI/SDK crashes, it collects the name of the exception and stack trace of the CLI/SDK code. This information is collected to assess problems and improve the quality of the .NET Core SDK and CLI. This article provides information about the data we collect. It also provides tips on how users building their own version of the .NET Core SDK can avoid inadvertent disclosure of personal or sensitive information.
-
 ## See also
 
 - [.NET Core SDK telemetry](https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry)
