@@ -13,12 +13,12 @@ variables:
   # Variables for public PR builds
   - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
     - name: _HelixSource
-      value: pr/aspnet/HttpRepl/$(Build.SourceBranch)
+      value: pr/dotnet/HttpRepl/$(Build.SourceBranch)
 
   # Variables for internal Official builds
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - name: _HelixSource
-      value: official/aspnet/HttpRepl/$(Build.SourceBranch)
+      value: official/dotnet/HttpRepl/$(Build.SourceBranch)
 
 resources:
   containers:
@@ -61,7 +61,7 @@ stages:
       enablePublishBuildArtifacts: true
       enablePublishTestResults: true
       enableTelemetry: true
-      helixRepo: aspnet/HttpRepl
+      helixRepo: dotnet/HttpRepl
       # enableMicrobuild can't be read from a user-defined variable (Azure DevOps limitation)
       ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
         enableMicrobuild: true
@@ -111,13 +111,6 @@ stages:
           name: Build
           displayName: Build
           condition: succeeded()
-        - task: PublishTestResults@2
-          displayName: Publish xUnit Test Results
-          condition: always()
-          continueOnError: true
-          inputs:
-            testRunner: xunit
-            testResultsFiles: 'artifacts/TestResults/$(_BuildConfig)/*.xml'
         - task: PublishBuildArtifacts@1
           displayName: Publish Packages
           condition: and(eq(variables['system.pullrequest.isfork'], false), eq(variables['_BuildConfig'], 'Release'))
@@ -159,13 +152,6 @@ stages:
           name: Build
           displayName: Build
           condition: succeeded()
-        - task: PublishTestResults@2
-          displayName: Publish xUnit Test Results
-          condition: always()
-          continueOnError: true
-          inputs:
-            testRunner: xunit
-            testResultsFiles: 'artifacts/TestResults/$(_BuildConfig)/*.xml'
         - task: PublishBuildArtifacts@1
           displayName: Publish Logs
           condition: always()
@@ -199,13 +185,6 @@ stages:
           name: Build
           displayName: Build
           condition: succeeded()
-        - task: PublishTestResults@2
-          displayName: Publish xUnit Test Results
-          condition: always()
-          continueOnError: true
-          inputs:
-            testRunner: xunit
-            testResultsFiles: 'artifacts/TestResults/$(_BuildConfig)/*.xml'
         - task: PublishBuildArtifacts@1
           displayName: Publish Logs
           condition: always()
