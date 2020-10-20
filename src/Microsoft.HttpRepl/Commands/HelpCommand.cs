@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
+using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -66,11 +67,11 @@ namespace Microsoft.HttpRepl.Commands
                                 output.AppendLine();
                                 output.AppendLine(help);
 
-                                var structuredCommand = command as CommandWithStructuredInputBase<HttpState, ICoreParseResult>;
-                                if (structuredCommand != null && structuredCommand.InputSpec.Options.Any())
+                                var structuredCommand = GetStructuredCommand(command);
+                                if (structuredCommand is not null && structuredCommand.InputSpec.Options.Any())
                                 {
                                     output.AppendLine();
-                                    output.AppendLine(Resources.Strings.Options.Bold());
+                                    output.AppendLine(Strings.Options.Bold());
                                     foreach (var option in structuredCommand.InputSpec.Options)
                                     {
                                         var optionText = string.Empty;
@@ -203,7 +204,7 @@ namespace Microsoft.HttpRepl.Commands
             }
             else if (parseResult.ContainsAtLeast(minimumLength: 2, Name))
             {
-                if (shellState.CommandDispatcher is ICommandDispatcher<HttpState, ICoreParseResult> dispatcher 
+                if (shellState.CommandDispatcher is ICommandDispatcher<HttpState, ICoreParseResult> dispatcher
                     && parseResult.Slice(1) is ICoreParseResult continuationParseResult)
                 {
                     HashSet<string> suggestions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -249,52 +250,78 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine(Strings.HelpCommand_Core_SetupCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_SetupCommands_Description);
             output.AppendLine();
-            output.AppendLine($"{"connect",navCommandColumn}{dispatcher.GetCommand<ConnectCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"set header",navCommandColumn}{dispatcher.GetCommand<SetHeaderCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"connect",navCommandColumn}{GetCommand<ConnectCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"set header",navCommandColumn}{GetCommand<SetHeaderCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_HttpCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_HttpCommands_Description);
             output.AppendLine();
-            output.AppendLine($"{"GET",navCommandColumn}{dispatcher.GetCommand<GetCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"POST",navCommandColumn}{dispatcher.GetCommand<PostCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"PUT",navCommandColumn}{dispatcher.GetCommand<PutCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"DELETE",navCommandColumn}{dispatcher.GetCommand<DeleteCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"PATCH",navCommandColumn}{dispatcher.GetCommand<PatchCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"HEAD",navCommandColumn}{dispatcher.GetCommand<HeadCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"OPTIONS",navCommandColumn}{dispatcher.GetCommand<OptionsCommand>().GetHelpSummary(shellState, programState)}");          
+            output.AppendLine($"{"GET",navCommandColumn}{GetCommand<GetCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"POST",navCommandColumn}{GetCommand<PostCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"PUT",navCommandColumn}{GetCommand<PutCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"DELETE",navCommandColumn}{GetCommand<DeleteCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"PATCH",navCommandColumn}{GetCommand<PatchCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"HEAD",navCommandColumn}{GetCommand<HeadCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"OPTIONS",navCommandColumn}{GetCommand<OptionsCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_NavigationCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_NavigationCommands_Description);
             output.AppendLine();
 
-            output.AppendLine($"{"ls",navCommandColumn}{dispatcher.GetCommand<ListCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"cd",navCommandColumn}{dispatcher.GetCommand<ChangeDirectoryCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"ls",navCommandColumn}{GetCommand<ListCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"cd",navCommandColumn}{GetCommand<ChangeDirectoryCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_ShellCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_ShellCommands_Description);
             output.AppendLine();
 
-            output.AppendLine($"{"clear",navCommandColumn}{dispatcher.GetCommand<ClearCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"echo [on/off]",navCommandColumn}{dispatcher.GetCommand<EchoCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"exit",navCommandColumn}{dispatcher.GetCommand<ExitCommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"clear",navCommandColumn}{GetCommand<ClearCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"echo [on/off]",navCommandColumn}{GetCommand<EchoCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"exit",navCommandColumn}{GetCommand<ExitCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
 
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_CustomizationCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_CustomizationCommands_Description);
             output.AppendLine();
 
-            output.AppendLine($"{"pref [get/set]",navCommandColumn}{dispatcher.GetCommand<PrefCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"run",navCommandColumn}{dispatcher.GetCommand<RunCommand>().GetHelpSummary(shellState, programState)}");
-            output.AppendLine($"{"ui",navCommandColumn}{dispatcher.GetCommand<UICommand>().GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"pref [get/set]",navCommandColumn}{GetCommand<PrefCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"run",navCommandColumn}{GetCommand<RunCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"ui",navCommandColumn}{GetCommand<UICommand>(dispatcher).GetHelpSummary(shellState, programState)}");
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_Details_Line1.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
             output.AppendLine();
 
             shellState.ConsoleManager.Write(output.ToString());
+        }
+
+        private CommandWithStructuredInputBase<HttpState, ICoreParseResult> GetStructuredCommand(ICommand<HttpState, ICoreParseResult> rawCommand)
+        {
+            return rawCommand switch
+            {
+                CommandWithStructuredInputBase<HttpState, ICoreParseResult> structuredCommand => structuredCommand,
+                TelemetryCommandWrapper telemetryWrapper when telemetryWrapper.Command is CommandWithStructuredInputBase<HttpState, ICoreParseResult> structuredCommand => structuredCommand,
+                _ => null
+            };
+        }
+
+        private static ICommand<HttpState, ICoreParseResult> GetCommand<T>(ICommandDispatcher<HttpState, ICoreParseResult> dispatcher) where T : ICommand<HttpState, ICoreParseResult>
+        {
+            foreach (ICommand<HttpState, ICoreParseResult> command in dispatcher.Commands)
+            {
+                switch (command)
+                {
+                    case T directMatch:
+                        return directMatch;
+                    case TelemetryCommandWrapper telemetryWrapper when telemetryWrapper.Command?.GetType() == typeof(T):
+                        return telemetryWrapper;
+                }
+            }
+
+            return null;
         }
     }
 }
