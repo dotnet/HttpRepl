@@ -141,7 +141,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
   }
 }";
 
-            string[] expectedResponseLines = expectedResponse.Split("\r\n");
+            string[] expectedResponseLines = expectedResponse.Split(Environment.NewLine);
 
             List<string> result = shellState.Output;
 
