@@ -21,6 +21,7 @@ namespace Microsoft.HttpRepl.Commands
     {
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
+        private const string VerbosityOption = nameof(VerbosityOption);
         public override string Name => "connect";
         private const string WebApiDefaultPathSuffix = "/swagger/"; 
 
@@ -47,6 +48,11 @@ namespace Microsoft.HttpRepl.Commands
                                                                                                                                    maximumOccurrences: 1,
                                                                                                                                    forms: new[] { "--openapi", "-o",
                                                                                                                                                   "--swagger", "-s" }))
+                                                                                        .WithOption(new CommandOptionSpecification(id: VerbosityOption,
+                                                                                                                                   acceptsValue: false,
+                                                                                                                                   minimumOccurrences: 0,
+                                                                                                                                   maximumOccurrences: 1,
+                                                                                                                                   forms: new[] { "--verbose", "-v" }))
                                                                                         .Finish();
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
@@ -60,12 +66,13 @@ namespace Microsoft.HttpRepl.Commands
             {
                 var helpText = new StringBuilder();
                 helpText.Append(Resources.Strings.Usage.Bold());
-                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--openapi openApiDescriptionAddress]");
+                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--openapi openApiDescriptionAddress] [--verbose]");
                 helpText.AppendLine();
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line1);
                 helpText.AppendLine();
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line2);
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line3);
+                helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line4);
                 return helpText.ToString();
             }
             return null;
@@ -82,6 +89,7 @@ namespace Microsoft.HttpRepl.Commands
             string rootAddress = commandInput.Arguments.SingleOrDefault()?.Text?.EnsureTrailingSlash();
             string baseAddress = GetBaseAddressFromCommand(commandInput)?.EnsureTrailingSlash();
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
+            bool isVerbosityEnabled = GetOptionExistsFromCommand(commandInput, VerbosityOption);
 
             ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences);
 
@@ -95,7 +103,8 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
+            VerbosityLogger logger = VerbosityLogger.FromConsoleManager(shellState.ConsoleManager, isVerbosityEnabled);
+            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, logger, cancellationToken);
 
             bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
 
@@ -268,6 +277,9 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-
+        private static bool GetOptionExistsFromCommand(DefaultCommandInput<ICoreParseResult> commandInput, string optionId)
+        {
+            return commandInput.Options[optionId].Count > 0;
+        }
     }
 }

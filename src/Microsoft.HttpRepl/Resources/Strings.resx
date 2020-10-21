@@ -408,4 +408,26 @@ The .NET Core tools collect usage data in order to help us improve your experien
   <data name="HelpCommand_Error_UnableToLocateHelpInfo" xml:space="preserve">
     <value>Unable to locate any help information for the specified command</value>
   </data>
+  <data name="ConnectCommand_HelpDetails_Line4" xml:space="preserve">
+    <value>[--verbose] provides more detail about OpenAPI Description discovery and parsing</value>
+  </data>
+  <data name="ApiConnection_Logging_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ApiConnection_Logging_Checking" xml:space="preserve">
+    <value>Checking {0}... </value>
+    <comment>{0} indicates a uri</comment>
+  </data>
+  <data name="ApiConnection_Logging_Failed" xml:space="preserve">
+    <value>Failed!</value>
+  </data>
+  <data name="ApiConnection_Logging_Found" xml:space="preserve">
+    <value>Found</value>
+  </data>
+  <data name="ApiConnection_Logging_Parsing" xml:space="preserve">
+    <value>Parsing... </value>
+  </data>
+  <data name="ApiConnection_Logging_Successful" xml:space="preserve">
+    <value>Successful</value>
+  </data>
 </root>

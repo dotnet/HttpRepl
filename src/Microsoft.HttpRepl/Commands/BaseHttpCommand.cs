@@ -109,7 +109,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (programState.SwaggerEndpoint != null)
             {
-                await CreateDirectoryStructureForSwaggerEndpointAsync(programState, cancellationToken).ConfigureAwait(false);
+                await CreateDirectoryStructureForSwaggerEndpointAsync(shellState, programState, cancellationToken).ConfigureAwait(false);
             }
 
             Dictionary<string, string> thisRequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -170,7 +170,7 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        internal async Task CreateDirectoryStructureForSwaggerEndpointAsync(HttpState programState, CancellationToken cancellationToken)
+        private async Task CreateDirectoryStructureForSwaggerEndpointAsync(IShellState shellState, HttpState programState, CancellationToken cancellationToken)
         {
             string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
 
@@ -182,7 +182,7 @@ namespace Microsoft.HttpRepl.Commands
                     SwaggerUri = programState.SwaggerEndpoint,
                     AllowBaseOverrideBySwagger = false
                 };
-                await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
+                await apiConnection.SetupHttpState(programState, performAutoDetect: false, VerbosityLogger.FromConsoleManager(shellState.ConsoleManager), cancellationToken).ConfigureAwait(false);
             }
         }
 

@@ -634,6 +634,50 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_RootOnlyWithVerbose_OutputContainsAttempts()
+        {
+            string rootAddress = "https://localhost/v2";
+
+            ArrangeInputs(commandText: $"connect {rootAddress} --verbose",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>(),
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Contains(Resources.Strings.ApiConnection_Logging_Parsing + Resources.Strings.ApiConnection_Logging_Failed, shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_RootOnlyWithoutVerbose_OutputDoesNotContainAttempts()
+        {
+            string rootAddress = "https://localhost/v2";
+
+            ArrangeInputs(commandText: $"connect {rootAddress}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>(),
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.DoesNotContain(Resources.Strings.ApiConnection_Logging_Parsing + Resources.Strings.ApiConnection_Logging_Failed, shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_RootWithSwaggerSuffix_FixesBase()
         {
             string rootAddress = "https://localhost:44368/swagger";

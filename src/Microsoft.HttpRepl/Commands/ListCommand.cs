@@ -50,7 +50,7 @@ namespace Microsoft.HttpRepl.Commands
                         SwaggerUri = programState.SwaggerEndpoint,
                         AllowBaseOverrideBySwagger = false
                     };
-                    await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
+                    await apiConnection.SetupHttpState(programState, performAutoDetect: false, VerbosityLogger.FromConsoleManager(shellState.ConsoleManager), cancellationToken).ConfigureAwait(false);
                 }
             }
 

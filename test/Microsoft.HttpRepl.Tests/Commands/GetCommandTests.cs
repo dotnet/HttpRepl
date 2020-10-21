@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -139,12 +140,18 @@ namespace Microsoft.HttpRepl.Tests.Commands
     }
   }
 }";
+
+            string[] expectedResponseLines = expectedResponse.Split("\r\n");
+
             List<string> result = shellState.Output;
 
-            Assert.Equal(3, result.Count);
+            Assert.Equal(2 + expectedResponseLines.Length, result.Count);
             Assert.Equal("HTTP/1.1 200 OK", result[0]);
             Assert.Equal("Content-Type: application/json", result[1]);
-            Assert.Equal(expectedResponse, result[2]);
+            for (int expectedIndex = 0; expectedIndex < expectedResponseLines.Length; expectedIndex++)
+            {
+                Assert.Equal(expectedResponseLines[expectedIndex], result[expectedIndex + 2], StringComparer.Ordinal);
+            }
         }
 
         [Fact]
