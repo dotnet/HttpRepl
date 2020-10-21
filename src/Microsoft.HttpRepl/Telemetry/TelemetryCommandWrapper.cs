@@ -18,6 +18,8 @@ namespace Microsoft.HttpRepl.Telemetry
 
         public string Name => _command.Name;
 
+        public ICommand<HttpState, ICoreParseResult> Command => _command;
+
         public TelemetryCommandWrapper(ITelemetry telemetry, ICommand<HttpState, ICoreParseResult> command)
         {
             _telemetry = telemetry;
