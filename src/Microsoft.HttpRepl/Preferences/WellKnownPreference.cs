@@ -178,6 +178,8 @@ namespace Microsoft.HttpRepl.Preferences
 
         public static string HttpClientUserAgent { get; } = "httpClient.userAgent";
 
+        public static string ProxyUseDefaultCredentials => "httpClient.proxy.useDefaultCredentials";
+
         public static string ConnectCommandSkipRootFix => "connectCommand.skipRootFix";
     }
 }

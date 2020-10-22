@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -148,10 +149,19 @@ namespace Microsoft.HttpRepl
 
         private static HttpClient GetHttpClientWithPreferences(IPreferences preferences)
         {
-            if (preferences.GetBoolValue(WellKnownPreference.UseDefaultCredentials))
+            bool useDefaultCredentials = preferences.GetBoolValue(WellKnownPreference.UseDefaultCredentials);
+            bool proxyUseDefaultCredentials = preferences.GetBoolValue(WellKnownPreference.ProxyUseDefaultCredentials);
+
+            if (useDefaultCredentials || proxyUseDefaultCredentials)
             {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                return new HttpClient(new HttpClientHandler { UseDefaultCredentials = true });
+                HttpClientHandler handler = new HttpClientHandler()
+                {
+                    UseDefaultCredentials = useDefaultCredentials,
+                    DefaultProxyCredentials = proxyUseDefaultCredentials ? CredentialCache.DefaultCredentials : null
+                };
+
+                return new HttpClient(handler);
 #pragma warning restore CA2000 // Dispose objects before losing scope
             }
 
