@@ -91,7 +91,7 @@ namespace Microsoft.HttpRepl.Commands
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
             bool isVerbosityEnabled = GetOptionExistsFromCommand(commandInput, VerbosityOption);
 
-            ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences);
+            ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences, isVerbosityEnabled);
 
             bool rootSpecified = !string.IsNullOrWhiteSpace(rootAddress);
             bool baseSpecified = !string.IsNullOrWhiteSpace(baseAddress);
@@ -103,8 +103,7 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            VerbosityLogger logger = VerbosityLogger.FromConsoleManager(shellState.ConsoleManager, isVerbosityEnabled);
-            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, logger, cancellationToken);
+            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
 
             bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
 
@@ -138,7 +137,7 @@ namespace Microsoft.HttpRepl.Commands
             shellState.ConsoleManager.WriteLine(Resources.Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
         }
 
-        private ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences)
+        private ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences, bool isVerbosityEnabled)
         {
             rootAddress = rootAddress?.Trim();
             baseAddress = baseAddress?.Trim();
@@ -156,7 +155,7 @@ namespace Microsoft.HttpRepl.Commands
                 return null;
             }
 
-            ApiConnection apiConnection = new ApiConnection(preferences);
+            ApiConnection apiConnection = new ApiConnection(preferences, shellState.ConsoleManager, logVerboseMessages: isVerbosityEnabled);
             if (!string.IsNullOrWhiteSpace(rootAddress))
             {
                 // The `dotnet new webapi` template now has a default start url of `swagger`. Because

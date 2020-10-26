@@ -130,6 +130,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             GetCommand getCommand = new GetCommand(fileSystem, preferences);
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
+            int expectedHeaderLength = 2;
             string expectedResponse = @"{
   ""swagger"": ""2.0"",
   ""info"": {
@@ -142,15 +143,16 @@ namespace Microsoft.HttpRepl.Tests.Commands
 }";
 
             string[] expectedResponseLines = expectedResponse.Split(Environment.NewLine);
+            
 
             List<string> result = shellState.Output;
 
-            Assert.Equal(2 + expectedResponseLines.Length, result.Count);
+            Assert.Equal(expectedHeaderLength + expectedResponseLines.Length, result.Count);
             Assert.Equal("HTTP/1.1 200 OK", result[0]);
             Assert.Equal("Content-Type: application/json", result[1]);
             for (int expectedIndex = 0; expectedIndex < expectedResponseLines.Length; expectedIndex++)
             {
-                Assert.Equal(expectedResponseLines[expectedIndex], result[expectedIndex + 2], StringComparer.Ordinal);
+                Assert.Equal(expectedResponseLines[expectedIndex], result[expectedIndex + expectedHeaderLength], StringComparer.Ordinal);
             }
         }
 

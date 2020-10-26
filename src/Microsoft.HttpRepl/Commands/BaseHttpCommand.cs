@@ -176,13 +176,13 @@ namespace Microsoft.HttpRepl.Commands
 
             if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
             {
-                ApiConnection apiConnection = new ApiConnection(_preferences)
+                ApiConnection apiConnection = new ApiConnection(_preferences, shellState.ConsoleManager, false)
                 {
                     BaseUri = programState.BaseAddress,
                     SwaggerUri = programState.SwaggerEndpoint,
                     AllowBaseOverrideBySwagger = false
                 };
-                await apiConnection.SetupHttpState(programState, performAutoDetect: false, VerbosityLogger.FromConsoleManager(shellState.ConsoleManager), cancellationToken).ConfigureAwait(false);
+                await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
             }
         }
 

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl
 {
@@ -32,6 +33,8 @@ namespace Microsoft.HttpRepl
         };
 
         private readonly IPreferences _preferences;
+        private readonly IWritable _logger;
+        private readonly bool _logVerboseMessages;
 
         public Uri RootUri { get; set; }
         public bool HasRootUri => RootUri is object;
@@ -43,12 +46,14 @@ namespace Microsoft.HttpRepl
         public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
-        public ApiConnection(IPreferences preferences)
+        public ApiConnection(IPreferences preferences, IWritable logger, bool logVerboseMessages)
         {
-            _preferences = preferences;
+            _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logVerboseMessages = logVerboseMessages;
         }
 
-        private async Task FindSwaggerDoc(HttpClient client, IEnumerable<string> swaggerSearchPaths, VerbosityLogger logger, CancellationToken cancellationToken)
+        private async Task FindSwaggerDoc(HttpClient client, IEnumerable<string> swaggerSearchPaths, CancellationToken cancellationToken)
         {
             HashSet<Uri> checkedUris = new HashSet<Uri>();
             List<Uri> baseUrisToCheck = new List<Uri>();
@@ -67,7 +72,7 @@ namespace Microsoft.HttpRepl
                 {
                     if (Uri.TryCreate(baseUriToCheck, swaggerSearchPath, out Uri swaggerUri) && !checkedUris.Contains(swaggerUri))
                     {
-                        var result = await GetSwaggerDocAsync(client, swaggerUri, logger, cancellationToken);
+                        var result = await GetSwaggerDocAsync(client, swaggerUri, cancellationToken);
                         if (result.Success)
                         {
                             SwaggerUri = swaggerUri;
@@ -80,50 +85,50 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        private async Task<(bool Success, string Document)> GetSwaggerDocAsync(HttpClient client, Uri uri, VerbosityLogger logger, CancellationToken cancellationToken)
+        private async Task<(bool Success, string Document)> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
         {
             try
             {
-                logger.WriteVerbose(Resources.Strings.ApiConnection_Logging_Checking, uri);
+                WriteVerbose(string.Format(Resources.Strings.ApiConnection_Logging_Checking, uri));
                 var response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    logger.WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Cancelled);
+                    _logger.WriteLine(Resources.Strings.ApiConnection_Logging_Cancelled);
                     return (false, null);
                 }
 
                 if (response.IsSuccessStatusCode)
                 {
-                    logger.WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found);
+                    WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found);
                     string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                    logger.WriteVerbose(Resources.Strings.ApiConnection_Logging_Parsing);
+                    WriteVerbose(Resources.Strings.ApiConnection_Logging_Parsing);
                     ApiDefinitionReader reader = new ApiDefinitionReader();
                     if (reader.CanHandle(responseString))
                     {
-                        logger.WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Successful);
+                        WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Successful);
                         return (true, responseString);
                     }
                     else
                     {
-                        logger.WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Failed);
+                        WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Failed);
                         return (false, null);
                     }
                 }
                 else
                 {
-                    logger.WriteLineVerbose(response.StatusCode.ToString());
+                    WriteLineVerbose(response.StatusCode.ToString());
                     return (false, null);
                 }
             }
             catch (Exception e)
             {
-                logger.WriteLineVerbose(e.Message);
+                WriteLineVerbose(e.Message);
                 return (false, null);
             }
             finally
             {
-                logger.WriteLineVerbose();
+                WriteLineVerbose();
             }
         }
 
@@ -137,11 +142,11 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        public async Task SetupHttpState(HttpState httpState, bool performAutoDetect, VerbosityLogger logger, CancellationToken cancellationToken)
+        public async Task SetupHttpState(HttpState httpState, bool performAutoDetect, CancellationToken cancellationToken)
         {
             if (HasSwaggerUri)
             {
-                var result = await GetSwaggerDocAsync(httpState.Client, SwaggerUri, logger, cancellationToken);
+                var result = await GetSwaggerDocAsync(httpState.Client, SwaggerUri, cancellationToken);
                 if (result.Success)
                 {
                     SwaggerDocument = result.Document;
@@ -149,7 +154,7 @@ namespace Microsoft.HttpRepl
             }
             else if (performAutoDetect)
             {
-                await FindSwaggerDoc(httpState.Client, GetSwaggerSearchPaths(), logger, cancellationToken);
+                await FindSwaggerDoc(httpState.Client, GetSwaggerSearchPaths(), cancellationToken);
             }
 
             if (HasSwaggerDocument)
@@ -181,6 +186,30 @@ namespace Microsoft.HttpRepl
             {
                 string[] paths = rawValue?.Split('|', StringSplitOptions.RemoveEmptyEntries);
                 return paths;
+            }
+        }
+
+        private void WriteVerbose(string s)
+        {
+            if (_logVerboseMessages)
+            {
+                _logger.Write(s);
+            }
+        }
+
+        private void WriteLineVerbose(string s)
+        {
+            if (_logVerboseMessages)
+            {
+                _logger.WriteLine(s);
+            }
+        }
+
+        private void WriteLineVerbose()
+        {
+            if (_logVerboseMessages)
+            {
+                _logger.WriteLine();
             }
         }
     }
