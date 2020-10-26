@@ -2,7 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -12,6 +14,7 @@ using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Telemetry;
 using Microsoft.HttpRepl.Tests.Preferences;
 using Microsoft.HttpRepl.UserProfile;
+using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -253,6 +256,43 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
             Assert.Equal(Sha256Hasher.Hash("preferenceName"), collectedTelemetry.Properties["PreferenceName"]);
         }
+
+        [Theory]
+        [MemberData(nameof(ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning_Data))]
+        public async Task ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning(string commandText, OSPlatform intendedPlatform)
+        {
+            // Arrange
+            Arrange($"pref set {WellKnownPreference.DefaultEditorCommand} \"{commandText}\"",
+                    out HttpState httpState,
+                    out MockedShellState shellState,
+                    out ICoreParseResult parseResult,
+                    out UserFolderPreferences preferences);
+
+            PrefCommand command = new PrefCommand(preferences, new NullTelemetry());
+
+            string expectedWarning = string.Format(Resources.Strings.PrefCommand_Set_VSCode, WellKnownPreference.DefaultEditorArguments).SetColor(httpState.WarningColor);
+
+            // Act
+            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            // Assert
+            if (RuntimeInformation.IsOSPlatform(intendedPlatform))
+            {
+                Assert.Contains(expectedWarning, shellState.Output, StringComparer.CurrentCulture);
+            }
+            else
+            {
+                Assert.DoesNotContain(expectedWarning, shellState.Output, StringComparer.CurrentCulture);
+            }
+        }
+
+        public static IEnumerable<object[]> ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning_Data { get; } = new List<object[]>()
+        {
+            new object[] { "c:\\users\\username\\appdata\\local\\programs\\Microsoft VS Code\\Code.exe", OSPlatform.Windows },
+            new object[] { "C:\\Program Files\\Microsoft VS Code\\Code.exe", OSPlatform.Windows },
+            new object[] { "/usr/bin/code", OSPlatform.Linux },
+            new object[] { "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code", OSPlatform.OSX },
+        };
 
         private static async Task ValidatePreference(string commandText, string preferenceName, Func<HttpState, string> expectedValueCallback)
         {
