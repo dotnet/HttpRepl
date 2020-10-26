@@ -475,6 +475,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accepts:.
+        /// </summary>
+        internal static string ListCommand_Accepts {
+            get {
+                return ResourceManager.GetString("ListCommand_Accepts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available methods:.
+        /// </summary>
+        internal static string ListCommand_AvailableMethods {
+            get {
+                return ResourceManager.GetString("ListCommand_AvailableMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No base address has been set, so there is nothing to list. Use the &quot;set base&quot; command to set a base address..
         /// </summary>
         internal static string ListCommand_Error_NoBaseAddress {

@@ -395,6 +395,12 @@ The .NET Core tools collect usage data in order to help us improve your experien
 </value>
     <comment>{0} is the major.minor version of the current build</comment>
   </data>
+  <data name="ListCommand_Accepts" xml:space="preserve">
+    <value>Accepts:</value>
+  </data>
+  <data name="ListCommand_AvailableMethods" xml:space="preserve">
+    <value>Available methods:</value>
+  </data>
   <data name="PrefCommand_Set_VSCode" xml:space="preserve">
     <value>If your default editor is Visual Studio Code, you should set the default command arguments (`{0}`) to include `-w` or `--wait` to ensure proper integration between HttpRepl and Visual Studio Code.</value>
     <comment>{0} indicates the preference name for the default editor arguments</comment>

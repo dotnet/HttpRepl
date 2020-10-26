@@ -36,7 +36,7 @@ namespace Microsoft.HttpRepl.Commands
                 : null;
         }
 
-        public async Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
+        public Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
@@ -94,77 +94,14 @@ namespace Microsoft.HttpRepl.Commands
 
                     if (!anyHelp)
                     {
-                        //Maybe the input is an URL
-                        if (parseResult.Sections.Count == 2)
-                        {
-
-                            if (programState.SwaggerEndpoint != null)
-                            {
-                                string swaggerRequeryBehaviorSetting = _preferences.GetValue(WellKnownPreference.SwaggerRequeryBehavior, "auto");
-
-                                if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    ApiConnection apiConnection = new ApiConnection(_preferences)
-                                    {
-                                        BaseUri = programState.BaseAddress,
-                                        SwaggerUri = programState.SwaggerEndpoint,
-                                        AllowBaseOverrideBySwagger = false
-                                    };
-                                    await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
-                                }
-                            }
-
-                            //Structure is null because, for example, SwaggerEndpoint exists but is not reachable.
-                            if (programState.Structure != null)
-                            {
-                                IDirectoryStructure structure = programState.Structure.TraverseTo(parseResult.Sections[1]);
-                                if (structure.DirectoryNames.Any())
-                                {
-                                    output.AppendLine("Child directories:");
-
-                                    foreach (string name in structure.DirectoryNames)
-                                    {
-                                        output.AppendLine("  " + name + "/");
-                                    }
-                                    anyHelp = true;
-                                }
-
-                                if (structure.RequestInfo != null)
-                                {
-                                    if (structure.RequestInfo.Methods.Count > 0)
-                                    {
-                                        if (anyHelp)
-                                        {
-                                            output.AppendLine();
-                                        }
-
-                                        anyHelp = true;
-                                        output.AppendLine("Available methods:");
-
-                                        foreach (string method in structure.RequestInfo.Methods)
-                                        {
-                                            output.AppendLine("  " + method.ToUpperInvariant());
-                                            IReadOnlyList<string> accepts = structure.RequestInfo.ContentTypesByMethod[method];
-                                            string acceptsString = string.Join(", ", accepts.Where(x => !string.IsNullOrEmpty(x)));
-                                            if (!string.IsNullOrEmpty(acceptsString))
-                                            {
-                                                output.AppendLine("    Accepts: " + acceptsString);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!anyHelp)
-                        {
-                            output.AppendLine("Unable to locate any help information for the specified command");
-                        }
+                        output.AppendLine("Unable to locate any help information for the specified command");
                     }
 
                     shellState.ConsoleManager.Write(output.ToString());
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         public string GetHelpDetails(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
