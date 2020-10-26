@@ -678,6 +678,28 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
+        public async Task ExecuteAsync_SwaggerOnlyWithoutVerbose_OutputContainsAttempts()
+        {
+            string openApiDescriptionUrl = "https://localhost/v2/swagger.json";
+
+            ArrangeInputs(commandText: $"connect --openapi {openApiDescriptionUrl}",
+                          baseAddress: null,
+                          path: null,
+                          urlsWithResponse: new Dictionary<string, string>(),
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out _,
+                          out IPreferences preferences);
+
+            ConnectCommand connectCommand = new ConnectCommand(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Contains(Resources.Strings.ApiConnection_Logging_Parsing + Resources.Strings.ApiConnection_Logging_Failed, shellState.Output, StringComparer.Ordinal);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_RootWithSwaggerSuffix_FixesBase()
         {
             string rootAddress = "https://localhost:44368/swagger";

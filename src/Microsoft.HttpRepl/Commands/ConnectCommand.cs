@@ -155,7 +155,11 @@ namespace Microsoft.HttpRepl.Commands
                 return null;
             }
 
-            ApiConnection apiConnection = new ApiConnection(preferences, shellState.ConsoleManager, logVerboseMessages: isVerbosityEnabled);
+            // Even if verbosity is not enabled, we still want to be verbose about finding OpenAPI Descriptions
+            // if they specified one directly.
+            bool logVerboseMessages = isVerbosityEnabled || !string.IsNullOrWhiteSpace(swaggerAddress);
+
+            ApiConnection apiConnection = new ApiConnection(preferences, shellState.ConsoleManager, logVerboseMessages);
             if (!string.IsNullOrWhiteSpace(rootAddress))
             {
                 // The `dotnet new webapi` template now has a default start url of `swagger`. Because
