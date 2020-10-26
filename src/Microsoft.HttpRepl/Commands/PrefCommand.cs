@@ -276,15 +276,18 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return path.Contains("Code.exe", StringComparison.OrdinalIgnoreCase);
+                return path.Contains("Code.exe", StringComparison.OrdinalIgnoreCase) ||
+                       path.Contains("Code - Insiders.exe", StringComparison.OrdinalIgnoreCase);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return path.Contains("Visual Studio Code.app", StringComparison.Ordinal);
+                return path.Contains("Visual Studio Code.app", StringComparison.Ordinal) ||
+                       path.Contains("Visual Studio Code - Insiders.app", StringComparison.Ordinal);
             }
             else //  Linux
             {
-                return string.Equals(path, "/usr/bin/code", StringComparison.Ordinal);
+                return string.Equals(path, "/usr/bin/code", StringComparison.Ordinal) ||
+                       string.Equals(path, "/usr/bin/code-insiders", StringComparison.Ordinal);
             }
         }
     }

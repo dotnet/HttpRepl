@@ -289,9 +289,12 @@ namespace Microsoft.HttpRepl.Tests.Commands
         public static IEnumerable<object[]> ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning_Data { get; } = new List<object[]>()
         {
             new object[] { "c:\\users\\username\\appdata\\local\\programs\\Microsoft VS Code\\Code.exe", OSPlatform.Windows },
+            new object[] { "c:\\users\\username\\appdata\\local\\programs\\Microsoft VS Code Insiders\\Code - Insiders.exe", OSPlatform.Windows },
             new object[] { "C:\\Program Files\\Microsoft VS Code\\Code.exe", OSPlatform.Windows },
             new object[] { "/usr/bin/code", OSPlatform.Linux },
+            new object[] { "/usr/bin/code-insiders", OSPlatform.Linux },
             new object[] { "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code", OSPlatform.OSX },
+            new object[] { "/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code-insiders", OSPlatform.OSX },
         };
 
         private static async Task ValidatePreference(string commandText, string preferenceName, Func<HttpState, string> expectedValueCallback)
