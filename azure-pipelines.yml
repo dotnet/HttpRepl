@@ -142,15 +142,6 @@ stages:
           name: Build
           displayName: Build
           condition: succeeded()
-        - task: PublishBuildArtifacts@1
-          displayName: Publish Logs
-          condition: always()
-          continueOnError: true
-          inputs:
-            artifactName: Logs_$(Agent.Os)_$(Agent.JobName)
-            parallel: true
-            pathtoPublish: '$(Build.SourcesDirectory)/artifacts/log/$(_BuildConfig)'
-            publishLocation: Container
 
       - job: Linux
         pool:
@@ -175,12 +166,3 @@ stages:
           name: Build
           displayName: Build
           condition: succeeded()
-        - task: PublishBuildArtifacts@1
-          displayName: Publish Logs
-          condition: always()
-          continueOnError: true
-          inputs:
-            artifactName: Logs_$(Agent.Os)_$(Agent.JobName)
-            parallel: true
-            pathtoPublish: '$(Build.SourcesDirectory)/artifacts/log/$(_BuildConfig)'
-            publishLocation: Container
