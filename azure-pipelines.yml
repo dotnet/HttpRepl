@@ -57,9 +57,8 @@ stages:
   jobs:
   - template: /eng/common/templates/jobs/jobs.yml
     parameters:
-      enablePublishUsingPipelines: true
       enablePublishBuildArtifacts: true
-      enablePublishTestResults: true
+      testResultsFormat: xunit
       enableTelemetry: true
       helixRepo: dotnet/HttpRepl
       # enableMicrobuild can't be read from a user-defined variable (Azure DevOps limitation)
@@ -119,15 +118,6 @@ stages:
             artifactName: Packages_$(Agent.Os)_$(Agent.JobName)
             parallel: true
             pathtoPublish: '$(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)'
-            publishLocation: Container
-        - task: PublishBuildArtifacts@1
-          displayName: Publish Logs
-          condition: always()
-          continueOnError: true
-          inputs:
-            artifactName: Logs_$(Agent.Os)_$(Agent.JobName)
-            parallel: true
-            pathtoPublish: '$(Build.SourcesDirectory)/artifacts/log/$(_BuildConfig)'
             publishLocation: Container
 
       - job: macOS
