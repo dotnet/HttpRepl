@@ -101,7 +101,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
             HttpClient httpClient = new HttpClient();
 
-            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
+            HttpState httpState = new HttpState(preferences, httpClient);
 
             DirectoryStructure structure = new DirectoryStructure(null);
             DirectoryStructure child1 = structure.DeclareDirectory("child1");

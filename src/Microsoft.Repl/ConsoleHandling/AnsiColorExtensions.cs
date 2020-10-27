@@ -7,8 +7,8 @@ namespace Microsoft.Repl.ConsoleHandling
     {
         // For reference on these codes and values, see:
         // https://en.wikipedia.org/wiki/ANSI_escape_code#Escape_sequences
-        private static readonly string _ansiControlSequenceIntroducer = "\x1B[";
-        private static readonly string _ansiSgrCode = "m";
+        private const string _ansiControlSequenceIntroducer = "\x1B[";
+        private const string _ansiSgrCode = "m";
         private static readonly string _ansiSgrDefaultForegroundColor = $"{_ansiControlSequenceIntroducer}39{_ansiSgrCode}";
         private static readonly string _ansiSgrBold = $"{_ansiControlSequenceIntroducer}1{_ansiSgrCode}";
 
@@ -67,7 +67,7 @@ namespace Microsoft.Repl.ConsoleHandling
             if (color.HasFlag(AllowedColors.Bold))
             {
                 textToColor = textToColor.Bold();
-                color = color & ~AllowedColors.Bold;
+                color &= ~AllowedColors.Bold;
             }
 
             switch (color)

@@ -18,8 +18,8 @@ namespace Microsoft.HttpRepl.Commands
     public class UICommand : ICommand<HttpState, ICoreParseResult>
     {
         public string Name => "ui";
-        private IUriLauncher _uriLauncher;
-        private IPreferences _preferences;
+        private readonly IUriLauncher _uriLauncher;
+        private readonly IPreferences _preferences;
 
         public UICommand(IUriLauncher uriLauncher, IPreferences preferences)
         {
@@ -98,7 +98,7 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     string parameter = "{swaggerUIAddress}";
                     string defaultAddress = "[BaseAddress]/swagger";
-                    var helpText = new StringBuilder();
+                    StringBuilder helpText = new StringBuilder();
                     helpText.Append(Strings.Usage.Bold());
                     helpText.AppendLine("ui [{swaggerUIAddress}]");
                     helpText.AppendLine();

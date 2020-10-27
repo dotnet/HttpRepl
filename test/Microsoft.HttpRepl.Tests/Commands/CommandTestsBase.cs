@@ -111,7 +111,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             fileSystem ??= new MockedFileSystem();
             preferences ??= new NullPreferences();
 
-            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
+            HttpState httpState = new HttpState(preferences, httpClient);
 
             if (!string.IsNullOrWhiteSpace(baseAddress))
             {

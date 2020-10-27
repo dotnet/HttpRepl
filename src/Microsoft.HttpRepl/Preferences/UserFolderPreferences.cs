@@ -131,7 +131,7 @@ namespace Microsoft.HttpRepl.Preferences
 
         private Dictionary<string, string> ReadPreferences(IReadOnlyDictionary<string, string> defaultPreferences)
         {
-            var preferences = new Dictionary<string, string>(defaultPreferences);
+            Dictionary<string, string> preferences = new Dictionary<string, string>(defaultPreferences);
 
             if (_fileSystem.FileExists(PreferencesFilePath))
             {
@@ -178,13 +178,13 @@ namespace Microsoft.HttpRepl.Preferences
             }
         }
 
-        private IReadOnlyDictionary<string, string> SetupDefaults(IDictionary<string, string> defaults)
+        private static IReadOnlyDictionary<string, string> SetupDefaults(IDictionary<string, string> defaults)
         {
             Dictionary<string, string> tempDictionary = new Dictionary<string, string>();
 
             if (defaults != null)
             {
-                foreach (var kvp in defaults)
+                foreach (KeyValuePair<string, string> kvp in defaults)
                 {
                     tempDictionary.Add(kvp.Key, kvp.Value);
                 }

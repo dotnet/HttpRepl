@@ -158,9 +158,9 @@ namespace Microsoft.HttpRepl.Commands
                     }
                 }
 
-                var responseFileOption = commandInput.Options[ResponseFileOption].Any() ? commandInput.Options[ResponseFileOption][0] : null;
-                var responseHeadersFileOption = commandInput.Options[ResponseHeadersFileOption].Any() ? commandInput.Options[ResponseHeadersFileOption][0] : null;
-                var responseBodyFileOption = commandInput.Options[ResponseBodyFileOption].Any() ? commandInput.Options[ResponseBodyFileOption][0] : null;
+                InputElement responseFileOption = commandInput.Options[ResponseFileOption].Any() ? commandInput.Options[ResponseFileOption][0] : null;
+                InputElement responseHeadersFileOption = commandInput.Options[ResponseHeadersFileOption].Any() ? commandInput.Options[ResponseHeadersFileOption][0] : null;
+                InputElement responseBodyFileOption = commandInput.Options[ResponseBodyFileOption].Any() ? commandInput.Options[ResponseBodyFileOption][0] : null;
 
                 string headersTarget = responseHeadersFileOption?.Text ?? responseFileOption?.Text;
                 string bodyTarget = responseBodyFileOption?.Text ?? responseFileOption?.Text;
@@ -298,7 +298,7 @@ namespace Microsoft.HttpRepl.Commands
             return ".tmp";
         }
 
-        private void AddHttpContentHeaders(HttpContent content, HttpState programState, Dictionary<string, string> requestHeaders)
+        private static void AddHttpContentHeaders(HttpContent content, HttpState programState, Dictionary<string, string> requestHeaders)
         {
             foreach (KeyValuePair<string, IEnumerable<string>> header in programState.Headers)
             {
@@ -448,7 +448,13 @@ namespace Microsoft.HttpRepl.Commands
             if (commandInput.Options[StreamingOption].Count > 0)
             {
                 Memory<char> buffer = new Memory<char>(new char[2048]);
+
+#if NET5_0
+                Stream s = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#else
                 Stream s = await content.ReadAsStreamAsync().ConfigureAwait(false);
+#endif
+
                 using (StreamReader reader = new StreamReader(s))
                 {
                     consoleManager.WriteLine(Resources.Strings.BaseHttpCommand_FormatBodyAsync_Streaming.SetColor(programState.WarningColor));
@@ -457,7 +463,7 @@ namespace Microsoft.HttpRepl.Commands
                     {
                         try
                         {
-                            ValueTask<int> readTask = reader.ReadAsync(buffer, cancellationToken);
+                            Task<int> readTask = reader.ReadAsync(buffer, cancellationToken).AsTask();
                             if (await WaitForCompletionAsync(readTask, cancellationToken).ConfigureAwait(false))
                             {
                                 if (readTask.Result == 0)
@@ -533,7 +539,7 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine(responseContent);
         }
 
-        private static async Task<bool> WaitForCompletionAsync(ValueTask<int> readTask, CancellationToken cancellationToken)
+        private static async Task<bool> WaitForCompletionAsync(Task<int> readTask, CancellationToken cancellationToken)
         {
             while (!readTask.IsCompleted && !cancellationToken.IsCancellationRequested && !Console.KeyAvailable)
             {
@@ -587,7 +593,7 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
-            var helpText = new StringBuilder();
+            StringBuilder helpText = new StringBuilder();
             helpText.Append(Resources.Strings.Usage.Bold());
             helpText.AppendLine($"{Verb.ToUpperInvariant()} [Options]");
             helpText.AppendLine();
@@ -727,7 +733,7 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        private string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
+        private static string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
         {
             Uri effectivePath = httpState.GetEffectivePath(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(httpState.BaseAddress.LocalPath.Length).TrimStart('/');

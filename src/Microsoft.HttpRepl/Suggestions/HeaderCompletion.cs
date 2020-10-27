@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Microsoft.HttpRepl.Suggestions
 {
-    public class HeaderCompletion
+    public static class HeaderCompletion
     {
         /// <summary>
         /// Gets a collection of HTTP header names which starts with the prefix value passed in, except the ones present in existingHeaders.

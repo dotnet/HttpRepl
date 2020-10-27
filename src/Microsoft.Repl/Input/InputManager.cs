@@ -37,11 +37,11 @@ namespace Microsoft.Repl.Input
 
             if (handler == null)
             {
-                handlers.Remove(default(ConsoleModifiers));
+                handlers.Remove(default);
             }
             else
             {
-                handlers[default(ConsoleModifiers)] = handler;
+                handlers[default] = handler;
             }
 
             return this;
@@ -200,6 +200,8 @@ namespace Microsoft.Repl.Input
 
         public async Task StartAsync(IShellState state, CancellationToken cancellationToken)
         {
+            _ = state ?? throw new ArgumentNullException(nameof(state));
+
             StashEchoState();
 
             try

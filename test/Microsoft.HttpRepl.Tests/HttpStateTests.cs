@@ -232,7 +232,7 @@ namespace Microsoft.HttpRepl.Tests
             }
             
             HttpClient client = new HttpClient();
-            HttpState state = new HttpState(fileSystem, preferences, client);
+            HttpState state = new HttpState(preferences, client);
 
             return state;
         }

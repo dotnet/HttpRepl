@@ -20,13 +20,13 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class SetHeaderCommand : ICommand<HttpState, ICoreParseResult>
     {
-        private static readonly string CommandName = "set";
-        private static readonly string SubCommand = "header";
+        private const string CommandName = "set";
+        private const string SubCommand = "header";
 
         private readonly ITelemetry _telemetry;
 
         public string Name => "setHeader";
-        public string Description => Strings.SetHeaderCommand_HelpSummary;
+        public static string Description => Strings.SetHeaderCommand_HelpSummary;
 
         public SetHeaderCommand(ITelemetry telemetry)
         {
@@ -67,7 +67,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (parseResult.ContainsAtLeast(CommandName, SubCommand))
             {
-                var helpText = new StringBuilder();
+                StringBuilder helpText = new StringBuilder();
                 helpText.Append(Strings.Usage.Bold());
                 helpText.AppendLine("set header {name} [value]");
                 helpText.AppendLine();

@@ -21,7 +21,7 @@ namespace Microsoft.HttpRepl.Commands
     {
         public string Name => "run";
 
-        private IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
         public RunCommand(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -44,7 +44,7 @@ namespace Microsoft.HttpRepl.Commands
 
             if (!_fileSystem.FileExists(parseResult.Sections[1]))
             {
-                shellState.ConsoleManager.Error.WriteLine(String.Format(Strings.RunCommand_CouldNotFindScriptFile, parseResult.Sections[1]));
+                shellState.ConsoleManager.Error.WriteLine(string.Format(Strings.RunCommand_CouldNotFindScriptFile, parseResult.Sections[1]));
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace Microsoft.HttpRepl.Commands
         {
             if (parseResult.ContainsAtLeast(Name))
             {
-                var helpText = new StringBuilder();
+                StringBuilder helpText = new StringBuilder();
                 helpText.Append(Strings.Usage.Bold());
                 helpText.AppendLine(Strings.RunCommand_HelpDetails);
                 return helpText.ToString();

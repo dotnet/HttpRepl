@@ -50,7 +50,7 @@ namespace Microsoft.HttpRepl.Commands
                 else
                 {
                     bool anyHelp = false;
-                    var output = new StringBuilder();
+                    StringBuilder output = new StringBuilder();
 
                     if (parseResult.Slice(1) is ICoreParseResult continuationParseResult)
                     {
@@ -64,15 +64,15 @@ namespace Microsoft.HttpRepl.Commands
                                 output.AppendLine();
                                 output.AppendLine(help);
 
-                                var structuredCommand = GetStructuredCommand(command);
+                                CommandWithStructuredInputBase<HttpState, ICoreParseResult> structuredCommand = GetStructuredCommand(command);
                                 if (structuredCommand is not null && structuredCommand.InputSpec.Options.Any())
                                 {
                                     output.AppendLine();
                                     output.AppendLine(Strings.Options.Bold());
-                                    foreach (var option in structuredCommand.InputSpec.Options)
+                                    foreach (CommandOptionSpecification option in structuredCommand.InputSpec.Options)
                                     {
-                                        var optionText = string.Empty;
-                                        foreach (var form in option.Forms)
+                                        string optionText = string.Empty;
+                                        foreach (string form in option.Forms)
                                         {
                                             if (!string.IsNullOrEmpty(optionText))
                                             {
@@ -171,14 +171,14 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public void CoreGetHelp(IShellState shellState, ICommandDispatcher<HttpState, ICoreParseResult> dispatcher, HttpState programState)
+        public static void CoreGetHelp(IShellState shellState, ICommandDispatcher<HttpState, ICoreParseResult> dispatcher, HttpState programState)
         {
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
             const int navCommandColumn = -15;
-            var output = new StringBuilder();
+            StringBuilder output = new StringBuilder();
 
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_SetupCommands.Bold().Cyan());
@@ -232,7 +232,7 @@ namespace Microsoft.HttpRepl.Commands
             shellState.ConsoleManager.Write(output.ToString());
         }
 
-        private CommandWithStructuredInputBase<HttpState, ICoreParseResult> GetStructuredCommand(ICommand<HttpState, ICoreParseResult> rawCommand)
+        private static CommandWithStructuredInputBase<HttpState, ICoreParseResult> GetStructuredCommand(ICommand<HttpState, ICoreParseResult> rawCommand)
         {
             return rawCommand switch
             {
