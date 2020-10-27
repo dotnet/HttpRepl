@@ -16,11 +16,11 @@ namespace Microsoft.HttpRepl.Telemetry
     [SuppressMessage("Naming", "CA1724: Type names should not match namespaces", Justification = "Keeping it consistent with source implementations.")]
     public sealed class Telemetry : ITelemetry
     {
-        internal static string CurrentSessionId = null;
-        private TelemetryClient _client = null;
-        private Dictionary<string, string> _commonProperties = null;
-        private Dictionary<string, double> _commonMeasurements = null;
-        private Task _trackEventTask = null;
+        internal static string CurrentSessionId;
+        private TelemetryClient _client;
+        private Dictionary<string, string> _commonProperties;
+        private Dictionary<string, double> _commonMeasurements;
+        private Task _trackEventTask;
 
         private const string InstrumentationKey = "469489a6-628b-4bb9-80db-ec670f70d874";
         public const string TelemetryOptout = "DOTNET_HTTPREPL_TELEMETRY_OPTOUT";

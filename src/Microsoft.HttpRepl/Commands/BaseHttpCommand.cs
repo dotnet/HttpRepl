@@ -463,7 +463,9 @@ namespace Microsoft.HttpRepl.Commands
                     {
                         try
                         {
+#pragma warning disable CA2012 // Use ValueTasks correctly
                             ValueTask<int> readTask = reader.ReadAsync(buffer, cancellationToken);
+#pragma warning restore CA2012 // Use ValueTasks correctly
                             if (await WaitForCompletionAsync(readTask, cancellationToken).ConfigureAwait(false))
                             {
                                 if (readTask.Result == 0)
