@@ -101,7 +101,7 @@ namespace Microsoft.Repl.ConsoleHandling
 
         private static bool IsVerbose => bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_CLI_CONTEXT_VERBOSE") ?? "false", out bool value) && value;
 
-        private bool ShouldPassAnsiCodesThrough => bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_CLI_CONTEXT_ANSI_PASS_THRU") ?? "false", out bool value) && value;
+        private static bool ShouldPassAnsiCodesThrough => bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_CLI_CONTEXT_ANSI_PASS_THRU") ?? "false", out bool value) && value;
 
         private bool _isCaretVisible = true;
 

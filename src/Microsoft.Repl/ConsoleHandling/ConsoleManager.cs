@@ -135,7 +135,7 @@ namespace Microsoft.Repl.ConsoleHandling
 
             if (cancellationToken.IsCancellationRequested)
             {
-                return default(ConsoleKeyInfo);
+                return default;
             }
             else
             {

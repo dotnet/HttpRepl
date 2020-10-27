@@ -63,7 +63,7 @@ namespace Microsoft.HttpRepl.FileSystem
             return "HttpRepl." + Guid.NewGuid().ToString() + fileExtension;
         }
 
-        private void VerifyDirectoryExists(string path)
+        private static void VerifyDirectoryExists(string path)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));   
         }

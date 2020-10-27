@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -21,14 +20,13 @@ using Microsoft.Repl.Parsing;
 
 namespace Microsoft.HttpRepl
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
             await Start(args);
         }
 
-        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "CA1062 Doesn't understand that ComposeDependencies ensures `consoleManager`, `preferences` and `telemetry` are non-null before use.")]
         public static async Task Start(string[] args, IConsoleManager consoleManager = null, IPreferences preferences = null, ITelemetry telemetry = null)
         {
             args = args ?? throw new ArgumentNullException(nameof(args));
@@ -68,7 +66,7 @@ namespace Microsoft.HttpRepl
 
                         shell.ShellState.ConsoleManager.WriteLine();
                         shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
-                        new HelpCommand().CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
+                        HelpCommand.CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
                         return;
                     }
 
@@ -105,10 +103,10 @@ namespace Microsoft.HttpRepl
             IFileSystem fileSystem = new RealFileSystem();
             preferences ??= new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), CreateDefaultPreferences());
             telemetry ??= new Telemetry.Telemetry(VersionSensor.AssemblyInformationalVersion);
-            var httpClient = GetHttpClientWithPreferences(preferences);
-            state = new HttpState(fileSystem, preferences, httpClient);
+            HttpClient httpClient = GetHttpClientWithPreferences(preferences);
+            state = new HttpState(preferences, httpClient);
 
-            var dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
+            DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
             dispatcher.AddCommandWithTelemetry(telemetry, new ChangeDirectoryCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new ClearCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new ConnectCommand(preferences, telemetry));

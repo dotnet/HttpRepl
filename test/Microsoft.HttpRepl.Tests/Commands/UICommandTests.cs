@@ -290,7 +290,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             MockedFileSystem fileSystem = new MockedFileSystem();
             UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), null);
             preferences.SetValue(WellKnownPreference.SwaggerUIEndpoint, "/mySwaggerPath");
-            HttpState httpState = new HttpState(fileSystem, preferences, new HttpClient());
+            HttpState httpState = new HttpState(preferences, new HttpClient());
             httpState.BaseAddress = new Uri("https://localhost:44366", UriKind.Absolute);
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();
@@ -313,7 +313,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             MockedFileSystem fileSystem = new MockedFileSystem();
             UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, new UserProfileDirectoryProvider(), null);
             preferences.SetValue(WellKnownPreference.SwaggerUIEndpoint, "https://localhost:12345/mySwaggerPath");
-            HttpState httpState = new HttpState(fileSystem, preferences, new HttpClient());
+            HttpState httpState = new HttpState(preferences, new HttpClient());
             httpState.BaseAddress = new Uri("https://localhost:44366", UriKind.Absolute);
 
             Mock<IUriLauncher> mockLauncher = new Mock<IUriLauncher>();

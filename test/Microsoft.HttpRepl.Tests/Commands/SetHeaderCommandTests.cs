@@ -84,7 +84,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
             string result = setHeaderCommand.GetHelpSummary(shellState, httpState);
 
-            Assert.Equal(setHeaderCommand.Description, result);
+            Assert.Equal(SetHeaderCommand.Description, result);
         }
 
         [Fact]

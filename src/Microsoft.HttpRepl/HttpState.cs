@@ -8,14 +8,12 @@ using System.Net.Http;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl
 {
     public class HttpState
     {
-        private readonly IFileSystem _fileSystem;
         private readonly IPreferences _preferences;
 
         public HttpClient Client { get; }
@@ -30,8 +28,6 @@ namespace Microsoft.HttpRepl
 
         public Uri BaseAddress { get; set; }
 
-        private Uri ApiDefinitionBaseAddress => ApiDefinition?.BaseAddresses?.FirstOrDefault().Url;
-
         public IDirectoryStructure Structure => ApiDefinition?.DirectoryStructure;
 
         public bool EchoRequest { get; set; }
@@ -40,11 +36,10 @@ namespace Microsoft.HttpRepl
 
         public Uri SwaggerEndpoint { get; set; }
 
-        public HttpState(IFileSystem fileSystem, IPreferences preferences, HttpClient httpClient)
+        public HttpState(IPreferences preferences, HttpClient httpClient)
         {
             preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
 
-            _fileSystem = fileSystem;
             _preferences = preferences;
             Client = httpClient;
             PathSections = new Stack<string>();

@@ -80,7 +80,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
             HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
+            HttpState httpState = new HttpState(preferences, httpClient);
             MockedShellState shellState = new MockedShellState();
             PrefCommand command = new PrefCommand(preferences, new NullTelemetry());
 
@@ -323,7 +323,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
             preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, TestDefaultPreferences.GetDefaultPreferences());
             HttpClient httpClient = new HttpClient();
-            httpState = new HttpState(fileSystem, preferences, httpClient);
+            httpState = new HttpState(preferences, httpClient);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
             command = new PrefCommand(preferences, new NullTelemetry());

@@ -99,7 +99,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             parseResult = CoreParseResultHelper.Create(commandText);
             HttpClient httpClient = new HttpClient();
 
-            httpState = new HttpState(fileSystem, preferences, httpClient);
+            httpState = new HttpState(preferences, httpClient);
         }
     }
 }

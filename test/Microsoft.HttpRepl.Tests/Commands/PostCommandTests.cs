@@ -298,7 +298,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
             ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
             HttpClient httpClient = new HttpClient();
-            HttpState httpState = new HttpState(fileSystem, preferences, httpClient);
+            HttpState httpState = new HttpState(preferences, httpClient);
             PostCommand postCommand = new PostCommand(fileSystem, preferences);
 
             preferences.SetValue(WellKnownPreference.DefaultEditorCommand, editorPath);

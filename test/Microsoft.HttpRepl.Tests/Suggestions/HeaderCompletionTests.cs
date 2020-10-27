@@ -203,7 +203,7 @@ namespace Microsoft.HttpRepl.Tests.Suggestions
             IPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, null);
             HttpClient httpClient = new HttpClient();
 
-            return new HttpState(fileSystem, preferences, httpClient);
+            return new HttpState(preferences, httpClient);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Microsoft.HttpRepl.Commands
 {
     public class ClearCommand : ICommand<object, ICoreParseResult>
     {
-        private static readonly string AlternateName = "cls";
+        private const string AlternateName = "cls";
 
         public string Name => "clear";
 

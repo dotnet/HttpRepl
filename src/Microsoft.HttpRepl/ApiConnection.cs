@@ -74,7 +74,7 @@ namespace Microsoft.HttpRepl
                 {
                     if (Uri.TryCreate(baseUriToCheck, swaggerSearchPath, out Uri? swaggerUri) && !checkedUris.Contains(swaggerUri))
                     {
-                        var document = await GetSwaggerDocAsync(client, swaggerUri, cancellationToken);
+                        string? document = await GetSwaggerDocAsync(client, swaggerUri, cancellationToken);
                         if (document is not null)
                         {
                             SwaggerUri = swaggerUri;
@@ -92,7 +92,7 @@ namespace Microsoft.HttpRepl
             try
             {
                 WriteVerbose(string.Format(Resources.Strings.ApiConnection_Logging_Checking, uri));
-                var response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+                HttpResponseMessage? response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     _logger.WriteLine(Resources.Strings.ApiConnection_Logging_Cancelled);
@@ -102,7 +102,12 @@ namespace Microsoft.HttpRepl
                 if (response.IsSuccessStatusCode)
                 {
                     WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found);
+
+#if NET5_0
+                    string responseString = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
                     string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
 
                     WriteVerbose(Resources.Strings.ApiConnection_Logging_Parsing);
                     ApiDefinitionReader reader = new ApiDefinitionReader();
