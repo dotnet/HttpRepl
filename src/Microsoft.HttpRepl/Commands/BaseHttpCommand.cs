@@ -165,8 +165,21 @@ namespace Microsoft.HttpRepl.Commands
                 string headersTarget = responseHeadersFileOption?.Text ?? responseFileOption?.Text;
                 string bodyTarget = responseBodyFileOption?.Text ?? responseFileOption?.Text;
 
-                HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
+                }
+                catch (HttpRequestException httpRequestException)
+                {
+                    shellState.ConsoleManager.Error.WriteLine(httpRequestException.Message.SetColor(programState.ErrorColor));
+                }
+                catch (OperationCanceledException)
+                {
+                    // We just want to eat this exception because the cancellation actually occurs for the entire command,
+                    // not just the HTTP Request. So the cancellation is handled further down the stack by inspecting
+                    // the CancellationToken.IsCancellationRequested property
+                }
             }
         }
 

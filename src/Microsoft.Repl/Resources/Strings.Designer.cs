@@ -10,7 +10,6 @@
 
 namespace Microsoft.Repl.Resources {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace Microsoft.Repl.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Repl.Resources.Strings", typeof(Strings).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Repl.Resources.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +61,7 @@ namespace Microsoft.Repl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Execution was cancelled.
+        ///   Looks up a localized string similar to Command execution cancelled.
         /// </summary>
         internal static string DefaultCommandDispatcher_Error_ExecutionWasCancelled {
             get {
