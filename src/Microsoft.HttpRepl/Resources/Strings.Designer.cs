@@ -610,6 +610,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If your default editor is Visual Studio Code, you should set the default command arguments (`{0}`) to include `-w` or `--wait` to ensure proper integration between HttpRepl and Visual Studio Code..
+        /// </summary>
+        internal static string PrefCommand_Set_VSCode {
+            get {
+                return ResourceManager.GetString("PrefCommand_Set_VSCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If specified, {0} must begin with a period and have at least one character after the period..
         /// </summary>
         internal static string RealFileSystem_Error_InvalidExtension {

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,6 +178,19 @@ namespace Microsoft.HttpRepl.Commands
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_Saving.SetColor(programState.ErrorColor));
             }
+            else
+            {
+                // If we think they're configurating HttpRepl to use Visual Studio Code as their editor, we should
+                // warn them that for best integration, they should also pass the `-w` or `--wait` arguments to
+                // Visual Studio Code.
+                if (string.Equals(prefName, WellKnownPreference.DefaultEditorCommand, StringComparison.Ordinal))
+                {
+                    if (IsVSCode(prefValue))
+                    {
+                        shellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.PrefCommand_Set_VSCode, WellKnownPreference.DefaultEditorArguments).SetColor(programState.WarningColor));
+                    }
+                }
+            }
         }
 
         private void GetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
@@ -256,6 +270,25 @@ namespace Microsoft.HttpRepl.Commands
             }
 
             return null;
+        }
+
+        private static bool IsVSCode(string path)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return path.Contains("Code.exe", StringComparison.OrdinalIgnoreCase) ||
+                       path.Contains("Code - Insiders.exe", StringComparison.OrdinalIgnoreCase);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return path.Contains("Visual Studio Code.app", StringComparison.Ordinal) ||
+                       path.Contains("Visual Studio Code - Insiders.app", StringComparison.Ordinal);
+            }
+            else //  Linux
+            {
+                return string.Equals(path, "/usr/bin/code", StringComparison.Ordinal) ||
+                       string.Equals(path, "/usr/bin/code-insiders", StringComparison.Ordinal);
+            }
         }
     }
 }
