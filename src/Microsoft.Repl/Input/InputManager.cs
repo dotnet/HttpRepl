@@ -200,7 +200,7 @@ namespace Microsoft.Repl.Input
 
         public async Task StartAsync(IShellState state, CancellationToken cancellationToken)
         {
-            state = state ?? throw new ArgumentNullException(nameof(state));
+            _ = state ?? throw new ArgumentNullException(nameof(state));
 
             StashEchoState();
 

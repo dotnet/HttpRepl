@@ -48,7 +48,7 @@ namespace Microsoft.HttpRepl.Telemetry
 
         public string RunWithCache(string cacheKey, Func<string> getValueToCache)
         {
-            getValueToCache = getValueToCache ?? throw new ArgumentNullException(nameof(getValueToCache));
+            _ = getValueToCache ?? throw new ArgumentNullException(nameof(getValueToCache));
 
             var cacheFilepath = GetCacheFilePath(cacheKey);
             try
