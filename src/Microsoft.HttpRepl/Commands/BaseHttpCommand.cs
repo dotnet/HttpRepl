@@ -463,9 +463,7 @@ namespace Microsoft.HttpRepl.Commands
                     {
                         try
                         {
-#pragma warning disable CA2012 // Use ValueTasks correctly
-                            ValueTask<int> readTask = reader.ReadAsync(buffer, cancellationToken);
-#pragma warning restore CA2012 // Use ValueTasks correctly
+                            Task<int> readTask = reader.ReadAsync(buffer, cancellationToken).AsTask();
                             if (await WaitForCompletionAsync(readTask, cancellationToken).ConfigureAwait(false))
                             {
                                 if (readTask.Result == 0)
@@ -541,7 +539,7 @@ namespace Microsoft.HttpRepl.Commands
             consoleManager.WriteLine(responseContent);
         }
 
-        private static async Task<bool> WaitForCompletionAsync(ValueTask<int> readTask, CancellationToken cancellationToken)
+        private static async Task<bool> WaitForCompletionAsync(Task<int> readTask, CancellationToken cancellationToken)
         {
             while (!readTask.IsCompleted && !cancellationToken.IsCancellationRequested && !Console.KeyAvailable)
             {
