@@ -44,7 +44,7 @@ namespace Microsoft.HttpRepl.Commands
 
                 if (swaggerRequeryBehaviorSetting.StartsWith("auto", StringComparison.OrdinalIgnoreCase))
                 {
-                    ApiConnection apiConnection = new ApiConnection(_preferences)
+                    ApiConnection apiConnection = new ApiConnection(_preferences, shellState.ConsoleManager, logVerboseMessages: false)
                     {
                         BaseUri = programState.BaseAddress,
                         SwaggerUri = programState.SwaggerEndpoint,

@@ -61,6 +61,60 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        internal static string ApiConnection_Logging_Cancelled {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking {0}... .
+        /// </summary>
+        internal static string ApiConnection_Logging_Checking {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Checking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed!.
+        /// </summary>
+        internal static string ApiConnection_Logging_Failed {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found.
+        /// </summary>
+        internal static string ApiConnection_Logging_Found {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing... .
+        /// </summary>
+        internal static string ApiConnection_Logging_Parsing {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Parsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successful.
+        /// </summary>
+        internal static string ApiConnection_Logging_Successful {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_Successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified content file, &quot;{0}&quot;, does not exist..
         /// </summary>
         internal static string BaseHttpCommand_Error_ContentFileDoesNotExist {
@@ -219,6 +273,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ConnectCommand_HelpDetails_Line3 {
             get {
                 return ResourceManager.GetString("ConnectCommand_HelpDetails_Line3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [--verbose] provides more detail about OpenAPI Description discovery and parsing.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line4 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line4", resourceCulture);
             }
         }
         

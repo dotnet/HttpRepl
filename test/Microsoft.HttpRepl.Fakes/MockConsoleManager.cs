@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Text;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
 
@@ -11,12 +12,20 @@ namespace Microsoft.HttpRepl.Fakes
     {
         private CancellationTokenSource _cancellationTokenSource;
         private ConsoleKeyInfo _consoleKeyInfo;
+        private StringBuilder _outputTracking = new StringBuilder();
 
         public MockConsoleManager(ConsoleKeyInfo consoleKeyInfo, CancellationTokenSource cancellationTokenSource)
         {
             _cancellationTokenSource = cancellationTokenSource;
             _consoleKeyInfo = consoleKeyInfo;
         }
+
+        public MockConsoleManager()
+        {
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        public string Output => _outputTracking.ToString();
 
         public Point Caret => throw new NotImplementedException();
 
@@ -52,21 +61,13 @@ namespace Microsoft.HttpRepl.Fakes
             return null;
         }
 
-        public void Write(char c)
-        {
-        }
+        public void Write(char c) => _outputTracking.Append(c);
 
-        public void Write(string s)
-        {
-        }
+        public void Write(string s) => _outputTracking.Append(s);
 
-        public void WriteLine()
-        {
-        }
+        public void WriteLine() => _outputTracking.AppendLine();
 
-        public void WriteLine(string s)
-        {
-        }
+        public void WriteLine(string s) => _outputTracking.AppendLine(s);
 
         public bool IsCaretVisible { get => true; }
 
