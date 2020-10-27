@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
 using Microsoft.HttpRepl.Telemetry;
@@ -22,11 +21,9 @@ namespace Microsoft.HttpRepl.Commands
     {
         public string Name => "help";
 
-        private readonly IPreferences _preferences;
-
-        public HelpCommand(IPreferences preferences)
+        public HelpCommand()
         {
-            _preferences = preferences;
+            
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
@@ -94,7 +91,7 @@ namespace Microsoft.HttpRepl.Commands
 
                     if (!anyHelp)
                     {
-                        output.AppendLine("Unable to locate any help information for the specified command");
+                        output.AppendLine(Strings.HelpCommand_Error_UnableToLocateHelpInfo);
                     }
 
                     shellState.ConsoleManager.Write(output.ToString());

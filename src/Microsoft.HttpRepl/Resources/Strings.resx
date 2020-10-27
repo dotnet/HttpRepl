@@ -405,4 +405,7 @@ The .NET Core tools collect usage data in order to help us improve your experien
     <value>If your default editor is Visual Studio Code, you should set the default command arguments (`{0}`) to include `-w` or `--wait` to ensure proper integration between HttpRepl and Visual Studio Code.</value>
     <comment>{0} indicates the preference name for the default editor arguments</comment>
   </data>
+  <data name="HelpCommand_Error_UnableToLocateHelpInfo" xml:space="preserve">
+    <value>Unable to locate any help information for the specified command</value>
+  </data>
 </root>
