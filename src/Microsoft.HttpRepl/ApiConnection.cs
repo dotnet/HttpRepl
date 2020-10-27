@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +38,13 @@ namespace Microsoft.HttpRepl
         private readonly IWritable _logger;
         private readonly bool _logVerboseMessages;
 
-        public Uri RootUri { get; set; }
+        public Uri? RootUri { get; set; }
         public bool HasRootUri => RootUri is object;
-        public Uri BaseUri { get; set; }
+        public Uri? BaseUri { get; set; }
         public bool HasBaseUri => BaseUri is object;
-        public Uri SwaggerUri { get; set; }
+        public Uri? SwaggerUri { get; set; }
         public bool HasSwaggerUri => SwaggerUri is object;
-        public string SwaggerDocument { get; set; }
+        public string? SwaggerDocument { get; set; }
         public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
@@ -59,24 +61,24 @@ namespace Microsoft.HttpRepl
             List<Uri> baseUrisToCheck = new List<Uri>();
             if (HasRootUri)
             {
-                baseUrisToCheck.Add(RootUri);
+                baseUrisToCheck.Add(RootUri!);
             }
             if (HasBaseUri)
             {
-                baseUrisToCheck.Add(BaseUri);
+                baseUrisToCheck.Add(BaseUri!);
             }
 
             foreach (Uri baseUriToCheck in baseUrisToCheck)
             {
                 foreach (string swaggerSearchPath in swaggerSearchPaths)
                 {
-                    if (Uri.TryCreate(baseUriToCheck, swaggerSearchPath, out Uri swaggerUri) && !checkedUris.Contains(swaggerUri))
+                    if (Uri.TryCreate(baseUriToCheck, swaggerSearchPath, out Uri? swaggerUri) && !checkedUris.Contains(swaggerUri))
                     {
-                        var result = await GetSwaggerDocAsync(client, swaggerUri, cancellationToken);
-                        if (result.Success)
+                        var document = await GetSwaggerDocAsync(client, swaggerUri, cancellationToken);
+                        if (document is not null)
                         {
                             SwaggerUri = swaggerUri;
-                            SwaggerDocument = result.Document;
+                            SwaggerDocument = document;
                             return;
                         }
                         checkedUris.Add(swaggerUri);
@@ -85,7 +87,7 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        private async Task<(bool Success, string Document)> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
+        private async Task<string?> GetSwaggerDocAsync(HttpClient client, Uri uri, CancellationToken cancellationToken)
         {
             try
             {
@@ -94,7 +96,7 @@ namespace Microsoft.HttpRepl
                 if (cancellationToken.IsCancellationRequested)
                 {
                     _logger.WriteLine(Resources.Strings.ApiConnection_Logging_Cancelled);
-                    return (false, null);
+                    return null;
                 }
 
                 if (response.IsSuccessStatusCode)
@@ -107,24 +109,24 @@ namespace Microsoft.HttpRepl
                     if (reader.CanHandle(responseString))
                     {
                         WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Successful);
-                        return (true, responseString);
+                        return responseString;
                     }
                     else
                     {
                         WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Failed);
-                        return (false, null);
+                        return null;
                     }
                 }
                 else
                 {
                     WriteLineVerbose(response.StatusCode.ToString());
-                    return (false, null);
+                    return null;
                 }
             }
             catch (Exception e)
             {
                 WriteLineVerbose(e.Message);
-                return (false, null);
+                return null;
             }
             finally
             {
@@ -146,11 +148,7 @@ namespace Microsoft.HttpRepl
         {
             if (HasSwaggerUri)
             {
-                var result = await GetSwaggerDocAsync(httpState.Client, SwaggerUri, cancellationToken);
-                if (result.Success)
-                {
-                    SwaggerDocument = result.Document;
-                }
+                SwaggerDocument = await GetSwaggerDocAsync(httpState.Client, SwaggerUri!, cancellationToken);
             }
             else if (performAutoDetect)
             {
@@ -184,7 +182,7 @@ namespace Microsoft.HttpRepl
             }
             else
             {
-                string[] paths = rawValue?.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                string[] paths = rawValue.Split('|', StringSplitOptions.RemoveEmptyEntries);
                 return paths;
             }
         }
