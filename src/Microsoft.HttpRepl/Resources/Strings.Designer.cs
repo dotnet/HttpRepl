@@ -466,11 +466,38 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to locate any help information for the specified command.
+        /// </summary>
+        internal static string HelpCommand_Error_UnableToLocateHelpInfo {
+            get {
+                return ResourceManager.GetString("HelpCommand_Error_UnableToLocateHelpInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If {0} is not an absolute URI, {1} must be specified..
         /// </summary>
         internal static string HttpState_Error_NoAbsoluteUriNoBaseAddress {
             get {
                 return ResourceManager.GetString("HttpState_Error_NoAbsoluteUriNoBaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accepts:.
+        /// </summary>
+        internal static string ListCommand_Accepts {
+            get {
+                return ResourceManager.GetString("ListCommand_Accepts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available methods:.
+        /// </summary>
+        internal static string ListCommand_AvailableMethods {
+            get {
+                return ResourceManager.GetString("ListCommand_AvailableMethods", resourceCulture);
             }
         }
         

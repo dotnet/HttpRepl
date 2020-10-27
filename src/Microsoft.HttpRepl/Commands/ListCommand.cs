@@ -19,6 +19,7 @@ namespace Microsoft.HttpRepl.Commands
     public class ListCommand : CommandWithStructuredInputBase<HttpState, ICoreParseResult>
     {
         private const string RecursiveOption = nameof(RecursiveOption);
+        private const string VerboseOption = nameof(VerboseOption);
 
         private readonly IPreferences _preferences;
 
@@ -118,6 +119,26 @@ namespace Microsoft.HttpRepl.Commands
             {
                 shellState.ConsoleManager.WriteLine(node.ToString());
             }
+
+            bool hasVerboseOption = commandInput.Options[VerboseOption].Count > 0;
+            bool hasRequestMethods = s.RequestInfo?.Methods?.Count > 0;
+
+            if (hasVerboseOption && hasRequestMethods)
+            {
+                shellState.ConsoleManager.WriteLine();
+                shellState.ConsoleManager.WriteLine(Resources.Strings.ListCommand_AvailableMethods);
+
+                foreach (string method in s.RequestInfo.Methods)
+                {
+                    shellState.ConsoleManager.WriteLine("  " + method.ToUpperInvariant());
+                    IReadOnlyList<string> accepts = s.RequestInfo.ContentTypesByMethod[method];
+                    string acceptsString = string.Join(", ", accepts.Where(x => !string.IsNullOrEmpty(x)));
+                    if (!string.IsNullOrEmpty(acceptsString))
+                    {
+                        shellState.ConsoleManager.WriteLine($"    {Resources.Strings.ListCommand_Accepts} " + acceptsString);
+                    }
+                }
+            }
         }
 
         private static void Recurse(TreeNode parentNode, IDirectoryStructure parent, int remainingDepth)
@@ -131,9 +152,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 IDirectoryStructure dir = parent.GetChildDirectory(child);
 
-                string methods = dir.RequestInfo != null && dir.RequestInfo.Methods.Count > 0 
-                    ? "[" + string.Join("|", dir.RequestInfo.Methods) + "]" 
-                    : "[]";
+                string methods = dir.RequestInfo?.GetDirectoryMethodListing();
 
                 TreeNode node = parentNode.AddChild(child, methods);
                 Recurse(node, dir, remainingDepth - 1);
@@ -144,7 +163,8 @@ namespace Microsoft.HttpRepl.Commands
 
         public override CommandInputSpecification InputSpec { get; } = CommandInputSpecification.Create("ls").AlternateName("dir")
             .MaximumArgCount(1)
-            .WithOption(new CommandOptionSpecification(RecursiveOption, maximumOccurrences: 1, acceptsValue: true, forms: new[] {"-r", "--recursive"}))
+            .WithOption(new CommandOptionSpecification(RecursiveOption, acceptsValue: true, maximumOccurrences: 1, forms: new[] {"-r", "--recursive"}))
+            .WithOption(new CommandOptionSpecification(VerboseOption, acceptsValue: false, maximumOccurrences: 1, forms: new[] { "-v", "--verbose"}))
             .Finish();
 
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)

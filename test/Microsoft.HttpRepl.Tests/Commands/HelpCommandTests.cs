@@ -24,11 +24,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [InlineData("hep", null)]
         public void CanHandle(string commandText, bool? expected)
         {
-            HttpState httpState = GetHttpState(out _, out IPreferences preferences);
+            HttpState httpState = GetHttpState(out _, out _);
             ICoreParseResult parseResult = CreateCoreParseResult(commandText);
             IShellState shellState = new MockedShellState();
 
-            HelpCommand helpCommand = new HelpCommand(preferences);
+            HelpCommand helpCommand = new HelpCommand();
 
             bool? result = helpCommand.CanHandle(shellState, httpState, parseResult);
 
@@ -41,7 +41,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [InlineData("help z")]
         public void Suggest(string commandText, params string[] expectedResults)
         {
-            HttpState httpState = GetHttpState(out MockedFileSystem fileSystem, out IPreferences preferences);
+            HttpState httpState = GetHttpState(out MockedFileSystem fileSystem, out _);
             ICoreParseResult parseResult = CreateCoreParseResult(commandText);
             IConsoleManager consoleManager = new LoggingConsoleManagerDecorator(new NullConsoleManager());
             DefaultCommandDispatcher<HttpState> commandDispatcher = DefaultCommandDispatcher.Create((ss) => { }, httpState);
@@ -50,7 +50,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             commandDispatcher.AddCommand(new RunCommand(fileSystem));
             IShellState shellState = new ShellState(commandDispatcher, consoleManager: consoleManager);
 
-            HelpCommand helpCommand = new HelpCommand(preferences);
+            HelpCommand helpCommand = new HelpCommand();
 
             IEnumerable<string> result = helpCommand.Suggest(shellState, httpState, parseResult);
 

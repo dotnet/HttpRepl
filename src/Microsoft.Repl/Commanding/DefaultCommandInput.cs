@@ -48,7 +48,7 @@ namespace Microsoft.Repl.Commanding
             CommandOptionSpecification currentOptionSpec = null;
             InputElement selectedElement = null;
 
-            for (int i = spec.CommandName.Count; i < parseResult.Sections.Count; ++i)
+            for (int i = commandNameElements.Count; i < parseResult.Sections.Count; ++i)
             {
                 //If we're not looking at an option name
                 if (!parseResult.Sections[i].StartsWith(spec.OptionPreamble.ToString(), StringComparison.OrdinalIgnoreCase) || parseResult.IsQuotedSection(i))

@@ -68,7 +68,7 @@ namespace Microsoft.HttpRepl
 
                         shell.ShellState.ConsoleManager.WriteLine();
                         shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_REPLCommands);
-                        new HelpCommand(preferences).CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
+                        new HelpCommand().CoreGetHelp(shell.ShellState, (ICommandDispatcher<HttpState, ICoreParseResult>)shell.ShellState.CommandDispatcher, state);
                         return;
                     }
 
@@ -116,7 +116,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommandWithTelemetry(telemetry, new EchoCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new ExitCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new HeadCommand(fileSystem, preferences));
-            dispatcher.AddCommandWithTelemetry(telemetry, new HelpCommand(preferences));
+            dispatcher.AddCommandWithTelemetry(telemetry, new HelpCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new GetCommand(fileSystem, preferences));
             dispatcher.AddCommandWithTelemetry(telemetry, new ListCommand(preferences));
             dispatcher.AddCommandWithTelemetry(telemetry, new OptionsCommand(fileSystem, preferences));

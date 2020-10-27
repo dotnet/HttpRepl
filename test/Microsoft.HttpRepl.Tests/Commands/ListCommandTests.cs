@@ -3,12 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.Repl.Commanding;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -150,8 +152,9 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public void Suggest_WithBlankSecondParameter_NoExceptionAndNullSuggestions()
+        public void Suggest_WithBlankSecondParameter_NoExceptionAndCorrectSuggestions()
         {
+            // Arrange
             ArrangeInputs(commandText: "dir ",
                           baseAddress: "https://localhost/",
                           path: "/",
@@ -164,9 +167,18 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             ListCommand listCommand = new ListCommand(preferences);
 
-            IEnumerable<string> suggestions = listCommand.Suggest(shellState, httpState, parseResult);
+            // Act
+            List<string> suggestions = listCommand.Suggest(shellState, httpState, parseResult).ToList();
 
-            Assert.Empty(suggestions);
+            // Assert
+            for (int optionIndex = 0; optionIndex < listCommand.InputSpec.Options.Count; optionIndex++)
+            {
+                CommandOptionSpecification option = listCommand.InputSpec.Options[optionIndex];
+                for (int formIndex = 0; formIndex < option.Forms.Count; formIndex++)
+                {
+                    Assert.Contains(option.Forms[formIndex], suggestions, StringComparer.Ordinal);
+                }
+            }
         }
 
         [Fact]
