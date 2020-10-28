@@ -17,7 +17,8 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 
         private static string SanitizePreferenceName(string preferenceName)
         {
-            if (WellKnownPreference.Catalog.Names.Contains(preferenceName, StringComparer.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(preferenceName) ||
+                WellKnownPreference.Catalog.Names.Contains(preferenceName, StringComparer.OrdinalIgnoreCase))
             {
                 return preferenceName;
             }

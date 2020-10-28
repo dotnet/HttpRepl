@@ -16,7 +16,8 @@ namespace Microsoft.HttpRepl.Telemetry.Events
 
         private static string SanitizeHeaderName(string headerName)
         {
-            if (WellKnownHeaders.CommonHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(headerName) ||
+                WellKnownHeaders.CommonHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
             {
                 return headerName;
             }
