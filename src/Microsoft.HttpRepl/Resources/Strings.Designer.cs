@@ -340,7 +340,9 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;set base {url}&apos; must be called before issuing requests to a relative path.
+        ///   Looks up a localized string similar to The base address must be set before issuing requests to a relative path.
+        ///Use the `connect` command to set the base address and then try again.
+        ///Type `help connect` for more information on the `connect` command..
         /// </summary>
         internal static string Error_NoBasePath {
             get {
@@ -565,7 +567,9 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list. Use the &quot;set base&quot; command to set a base address..
+        ///   Looks up a localized string similar to No base address has been set, so there is nothing to list.
+        ///Use the `connect` command to set the base address and then try again.
+        ///Type `help connect` for more information on the `connect` command..
         /// </summary>
         internal static string ListCommand_Error_NoBaseAddress {
             get {
@@ -746,33 +750,6 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string RunCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("RunCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning: HEAD request to the specified address was unsuccessful {0}.
-        /// </summary>
-        internal static string SetBaseCommand_HEADRequestUnSuccessful {
-            get {
-                return ResourceManager.GetString("SetBaseCommand_HEADRequestUnSuccessful", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Set the base URI. e.g. `set base http://locahost:5000`.
-        /// </summary>
-        internal static string SetBaseCommand_HelpSummary {
-            get {
-                return ResourceManager.GetString("SetBaseCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must specify a server.
-        /// </summary>
-        internal static string SetBaseCommand_MustSpecifyServerError {
-            get {
-                return ResourceManager.GetString("SetBaseCommand_MustSpecifyServerError", resourceCulture);
             }
         }
         
