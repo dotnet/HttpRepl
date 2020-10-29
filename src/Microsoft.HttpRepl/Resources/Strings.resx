@@ -131,7 +131,9 @@
     <value>Turns request echoing on or off, show the request that was made when using request commands</value>
   </data>
   <data name="Error_NoBasePath" xml:space="preserve">
-    <value>'set base {url}' must be called before issuing requests to a relative path</value>
+    <value>The base address must be set before issuing requests to a relative path.
+Use the `connect` command to set the base address and then try again.
+Type `help connect` for more information on the `connect` command.</value>
     <comment>Error shown in console when issuing an HTTP command without first setting the base url</comment>
   </data>
   <data name="Error_OutputRedirected" xml:space="preserve">
@@ -243,7 +245,9 @@ When +history option is specified, commands specified in the text file will be a
     <comment>{0} is the name of the commandSpecifiedPath parameter, {1} is the name of the baseAddress uri parameter</comment>
   </data>
   <data name="ListCommand_Error_NoBaseAddress" xml:space="preserve">
-    <value>No base address has been set, so there is nothing to list. Use the "set base" command to set a base address.</value>
+    <value>No base address has been set, so there is nothing to list.
+Use the `connect` command to set the base address and then try again.
+Type `help connect` for more information on the `connect` command.</value>
   </data>
   <data name="ListCommand_Error_NoDirectoryStructure" xml:space="preserve">
     <value>No directory structure has been set, so there is nothing to list. Use the "connect" command to set a directory structure based on an OpenAPI description.</value>
@@ -327,16 +331,6 @@ When +history option is specified, commands specified in the text file will be a
   </data>
   <data name="HelpCommand_Core_ShellCommands_Description" xml:space="preserve">
     <value>Use these commands to interact with the REPL shell</value>
-  </data>
-  <data name="SetBaseCommand_HEADRequestUnSuccessful" xml:space="preserve">
-    <value>Warning: HEAD request to the specified address was unsuccessful {0}</value>
-    <comment>{0} is the SocketException message</comment>
-  </data>
-  <data name="SetBaseCommand_HelpSummary" xml:space="preserve">
-    <value>Set the base URI. e.g. `set base http://locahost:5000`</value>
-  </data>
-  <data name="SetBaseCommand_MustSpecifyServerError" xml:space="preserve">
-    <value>Must specify a server</value>
   </data>
   <data name="RealFileSystem_Error_InvalidExtension" xml:space="preserve">
     <value>If specified, {0} must begin with a period and have at least one character after the period.</value>
