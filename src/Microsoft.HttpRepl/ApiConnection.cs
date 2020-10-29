@@ -17,26 +17,9 @@ namespace Microsoft.HttpRepl
 {
     internal class ApiConnection
     {
-        // OpenAPI description search paths are appended to the base url to
-        // attempt to find the description document. A search path is a
-        // relative url that is appended to the base url using Uri.TryCreate,
-        // so the semantics of relative urls matter here.
-        // Example: Base path https://localhost/v1/ and search path openapi.json
-        //          will result in https://localhost/v1/openapi.json being tested.
-        // Example: Base path https://localhost/v1/ and search path /openapi.json
-        //          will result in https://localhost/openapi.json being tested.
-        private static readonly string[] OpenApiDescriptionSearchPaths = new[] {
-            "swagger.json",
-            "/swagger.json",
-            "swagger/v1/swagger.json",
-            "/swagger/v1/swagger.json",
-            "openapi.json",
-            "/openapi.json",
-        };
-
-        private readonly IPreferences _preferences;
         private readonly IWritable _logger;
         private readonly bool _logVerboseMessages;
+        private readonly IOpenApiSearchPathsProvider _searchPaths;
 
         public Uri? RootUri { get; set; }
         public bool HasRootUri => RootUri is object;
@@ -48,11 +31,12 @@ namespace Microsoft.HttpRepl
         public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
-        public ApiConnection(IPreferences preferences, IWritable logger, bool logVerboseMessages)
+        public ApiConnection(IPreferences preferences, IWritable logger, bool logVerboseMessages, IOpenApiSearchPathsProvider? openApiSearchPaths = null)
         {
-            _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
+            _ = preferences ?? throw new ArgumentNullException(nameof(preferences));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logVerboseMessages = logVerboseMessages;
+            _searchPaths = openApiSearchPaths ?? new OpenApiSearchPathsProvider(preferences);
         }
 
         private async Task FindSwaggerDoc(HttpClient client, IEnumerable<string> swaggerSearchPaths, CancellationToken cancellationToken)
@@ -157,7 +141,7 @@ namespace Microsoft.HttpRepl
             }
             else if (performAutoDetect)
             {
-                await FindSwaggerDoc(httpState.Client, GetSwaggerSearchPaths(), cancellationToken);
+                await FindSwaggerDoc(httpState.Client, _searchPaths.GetOpenApiSearchPaths(), cancellationToken);
             }
 
             if (HasSwaggerDocument)
@@ -177,20 +161,7 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        private IEnumerable<string> GetSwaggerSearchPaths()
-        {
-            string rawValue = _preferences.GetValue(WellKnownPreference.SwaggerSearchPaths);
 
-            if (rawValue is null)
-            {
-                return OpenApiDescriptionSearchPaths;
-            }
-            else
-            {
-                string[] paths = rawValue.Split('|', StringSplitOptions.RemoveEmptyEntries);
-                return paths;
-            }
-        }
 
         private void WriteVerbose(string s)
         {
