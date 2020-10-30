@@ -10,7 +10,7 @@ using Microsoft.HttpRepl.OpenApi;
 
 namespace Microsoft.HttpRepl.Preferences
 {
-    internal class OpenApiSearchPathsProvider : IOpenApiSearchPathsProvider
+    internal sealed class OpenApiSearchPathsProvider : IOpenApiSearchPathsProvider
     {
         // OpenAPI description search paths are appended to the base url to
         // attempt to find the description document. A search path is a
@@ -32,7 +32,7 @@ namespace Microsoft.HttpRepl.Preferences
         private readonly IPreferences _preferences;
         public OpenApiSearchPathsProvider(IPreferences preferences)
         {
-            _preferences = preferences;
+            _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
         }
 
         public IEnumerable<string> GetOpenApiSearchPaths()

@@ -33,7 +33,6 @@ namespace Microsoft.HttpRepl
 
         public ApiConnection(IPreferences preferences, IWritable logger, bool logVerboseMessages, IOpenApiSearchPathsProvider? openApiSearchPaths = null)
         {
-            _ = preferences ?? throw new ArgumentNullException(nameof(preferences));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logVerboseMessages = logVerboseMessages;
             _searchPaths = openApiSearchPaths ?? new OpenApiSearchPathsProvider(preferences);

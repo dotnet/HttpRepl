@@ -8,7 +8,7 @@ using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl.Fakes
 {
-    public class FakePreferences : IPreferences
+    public sealed class FakePreferences : IPreferences
     {
         private readonly Dictionary<string, string> _currentPreferences;
 
