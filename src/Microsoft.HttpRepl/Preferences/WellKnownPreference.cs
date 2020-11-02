@@ -174,6 +174,10 @@ namespace Microsoft.HttpRepl.Preferences
 
         public static string SwaggerUIEndpoint { get; } = "swagger.uiEndpoint";
 
+        public static string SwaggerRemoveFromSearchPaths => "swagger.removeFromSearchPaths";
+
+        public static string SwaggerAddToSearchPaths => "swagger.addToSearchPaths";
+
         public static string UseDefaultCredentials { get; } = "httpClient.useDefaultCredentials";
 
         public static string HttpClientUserAgent { get; } = "httpClient.userAgent";
