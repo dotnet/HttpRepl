@@ -397,23 +397,14 @@ namespace Microsoft.HttpRepl.Commands
                 await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, cancellationToken).ConfigureAwait(false);
             }
 
-            if (headersTargetFile != null && !string.Equals(headersTargetFile, bodyTargetFile, StringComparison.Ordinal))
+            if (headersTargetFile != null && headerFileOutput != null)
             {
-                headerFileOutput.Add("");
-                IEnumerable<string> allOutput = headerFileOutput.Concat(bodyFileOutput);
-                _fileSystem.WriteAllLinesToFile(headersTargetFile, allOutput);
+                _fileSystem.WriteAllLinesToFile(headersTargetFile, headerFileOutput);
             }
-            else
-            {
-                if (headersTargetFile != null && headerFileOutput != null)
-                {
-                    _fileSystem.WriteAllLinesToFile(headersTargetFile, headerFileOutput);
-                }
 
-                if (bodyTargetFile != null && bodyFileOutput != null)
-                {
-                    _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
-                }
+            if (bodyTargetFile != null && bodyFileOutput != null)
+            {
+                _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
             }
 
             consoleManager.WriteLine();
