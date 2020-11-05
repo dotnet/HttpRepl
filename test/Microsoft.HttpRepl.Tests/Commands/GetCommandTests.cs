@@ -258,7 +258,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             // Arrange
             string expectedPath = "/path";
             string expectedMethod = "GET";
-            ArrangeInputs(commandText: $"{expectedMethod} {expectedPath} --no-formatting --streaming",
+            ArrangeInputs(commandText: $"{expectedMethod} {expectedPath} --no-formatting --header Content-Length=20",
                 baseAddress: _baseAddress,
                 path: _path,
                 urlsWithResponse: _urlsWithResponse,
@@ -281,13 +281,13 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal(expectedMethod, collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_Method]);
             Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_PathSpecified]);
             Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_NoFormattingSpecified]);
-            Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_StreamingSpecified]);
+            Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_HeaderSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_ResponseHeadersFileSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_StreamingSpecified]);
             Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_NoBodySpecified]);
             Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_RequestBodyContentSpecified]);
             Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_RequestBodyFileSpecified]);
             Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_ResponseBodyFileSpecified]);
-            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_ResponseHeadersFileSpecified]);
-            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_HeaderSpecified]);
         }
     }
 }
