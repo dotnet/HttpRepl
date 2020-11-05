@@ -38,22 +38,26 @@ namespace Microsoft.Repl.Parsing
 
                     //Check for the closing quote
                     int sectionLength = sections[i].Length;
-                    if (sections[i][sectionLength - 1] == '"')
+                    bool justOneCharacter = sectionLength == 1;
+                    bool endsWithDoubleQuote = sections[i][sectionLength - 1] == '"';
+                    bool lastCharacterIsEscaped = !justOneCharacter && sections[i][sectionLength - 2] == '\\';
+                    if (endsWithDoubleQuote && !lastCharacterIsEscaped)
                     {
-                        if (sectionLength > 1 && sections[i][sectionLength - 2] != '\\')
-                        {
-                            isInQuotedSection = false;
-                        }
+                        isInQuotedSection = false;
                     }
                 }
-                //Not in a quoted section, check to see if we're starting one
+                //Not in a quoted section, check to see if we're starting one (and not finishing it at the same time)
                 else
                 {
                     sectionStartLookup[i] = runningIndex;
 
-                    if (sections[i].Length > 0)
+                    if (thisSectionLength > 0)
                     {
-                        if (sections[i][0] == '"')
+                        bool startsWithDoubleQuote = sections[i][0] == '"';
+                        bool justOneCharacter = thisSectionLength == 1;
+                        bool endsWithDoubleQuote = sections[i][thisSectionLength - 1] == '"';
+                        bool lastCharacterIsEscaped = !justOneCharacter && sections[i][thisSectionLength - 2] == '\\';
+                        if (startsWithDoubleQuote && (!endsWithDoubleQuote || lastCharacterIsEscaped))
                         {
                             isInQuotedSection = true;
                         }
