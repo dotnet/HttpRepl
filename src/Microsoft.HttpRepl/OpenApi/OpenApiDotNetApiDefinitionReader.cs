@@ -1,8 +1,11 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 
@@ -10,27 +13,29 @@ namespace Microsoft.HttpRepl.OpenApi
 {
     internal class OpenApiDotNetApiDefinitionReader : IApiDefinitionReader
     {
-        public bool CanHandle(string document)
+        public ApiDefinitionParseResult CanHandle(string document)
         {
             OpenApiStringReader reader = new();
 
             try
             {
-                OpenApiDocument openApiDocument = reader.Read(document, out _);
+                OpenApiDocument openApiDocument = reader.Read(document, out OpenApiDiagnostic diagnostic);
 
-                return openApiDocument is not null;
+                IEnumerable<string> messages = diagnostic.Errors.Select(e => e.ToString());
+
+                return new ApiDefinitionParseResult(true, null, messages);
             }
             catch
             {
-                return false;
+                return ApiDefinitionParseResult.Failed;
             }
         }
 
-        public ApiDefinition ReadDefinition(string document, Uri sourceUri)
+        public ApiDefinitionParseResult ReadDefinition(string document, Uri? sourceUri)
         {
             OpenApiStringReader reader = new();
 
-            OpenApiDocument openApiDocument = reader.Read(document, out _);
+            OpenApiDocument openApiDocument = reader.Read(document, out OpenApiDiagnostic diagnostic);
 
             ApiDefinition apiDefinition = new ApiDefinition();
 
@@ -40,14 +45,14 @@ namespace Microsoft.HttpRepl.OpenApi
 
             apiDefinition.DirectoryStructure = BuildDirectoryStructure(metadata);
 
-            return apiDefinition;
+            return new ApiDefinitionParseResult(true, apiDefinition, diagnostic.Errors.Select(e => e.ToString()));
         }
 
-        private static void ReadServers(ApiDefinition apiDefinition, Uri sourceUri, OpenApiDocument openApiDocument)
+        private static void ReadServers(ApiDefinition apiDefinition, Uri? sourceUri, OpenApiDocument openApiDocument)
         {
             foreach (OpenApiServer server in openApiDocument.Servers)
             {
-                string url = server.Url?.EnsureTrailingSlash();
+                string? url = server.Url?.EnsureTrailingSlash();
                 string description = server.Description;
 
                 if (url is null)
@@ -55,11 +60,11 @@ namespace Microsoft.HttpRepl.OpenApi
                     continue;
                 }
 
-                if (Uri.IsWellFormedUriString(url, UriKind.Absolute) && Uri.TryCreate(url, UriKind.Absolute, out Uri absoluteServerUri))
+                if (Uri.IsWellFormedUriString(url, UriKind.Absolute) && Uri.TryCreate(url, UriKind.Absolute, out Uri? absoluteServerUri))
                 {
                     apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = absoluteServerUri, Description = description });
                 }
-                else if (Uri.TryCreate(sourceUri, url, out Uri relativeServerUri))
+                else if (Uri.TryCreate(sourceUri, url, out Uri? relativeServerUri))
                 {
                     apiDefinition.BaseAddresses.Add(new ApiDefinition.Server() { Url = relativeServerUri, Description = description });
                 }
@@ -106,7 +111,7 @@ namespace Microsoft.HttpRepl.OpenApi
                         {
                             string contentType = content.Key;
                             bool isRequired = operation.Value.RequestBody.Required;
-                            OpenApiSchema schema = content.Value?.Schema;
+                            OpenApiSchema? schema = content.Value?.Schema;
 
                             requestMetadata.Content.Add(new RequestContentMetadata(contentType, isRequired, schema));
                         }

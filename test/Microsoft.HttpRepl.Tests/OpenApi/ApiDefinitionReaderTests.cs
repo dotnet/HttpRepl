@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.OpenApi;
 using Xunit;
@@ -21,9 +22,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             ApiDefinitionReader apiDefinitionReader = new ApiDefinitionReader();
 
-            ApiDefinition definition = apiDefinitionReader.Read(json, null);
+            ApiDefinitionParseResult result = apiDefinitionReader.Read(json, null);
 
-            Assert.Null(definition);
+            Assert.False(result.Success);
         }
 
         [Fact]
@@ -42,9 +43,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             ApiDefinitionReader reader = new ApiDefinitionReader();
             reader.RegisterReader(apiDefinitionReaderStub);
 
-            ApiDefinition result = reader.Read(json, null);
+            ApiDefinitionParseResult result = reader.Read(json, null);
 
-            Assert.Same(apiDefinition, result);
+            Assert.Same(apiDefinition, result.ApiDefinition);
         }
     }
 }

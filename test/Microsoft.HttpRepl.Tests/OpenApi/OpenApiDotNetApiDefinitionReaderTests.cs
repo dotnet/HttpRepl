@@ -15,17 +15,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
         [Theory]
         [MemberData(nameof(GetYamlResourcePaths), MemberType = typeof(OpenApiDotNetApiDefinitionReaderTests))]
         [MemberData(nameof(GetJsonResourcePaths), MemberType = typeof(OpenApiDotNetApiDefinitionReaderTests))]
-        public async Task CanHandle_RealOpenApiDescriptions_ReturnsTrue(string resourcePath)
+        public async Task CanHandle_RealOpenApiDescriptions_ReturnsNotNull(string resourcePath)
         {
             // Arrange
             string content = await GetResourceContent(resourcePath);
             OpenApiDotNetApiDefinitionReader apiDefinitionReader = new();
 
             // Act
-            bool actual = apiDefinitionReader.CanHandle(content);
+            ApiDefinitionParseResult actual = apiDefinitionReader.CanHandle(content);
 
             // Assert
-            Assert.True(actual);
+            Assert.True(actual.Success);
         }
 
         [Theory]
@@ -38,10 +38,29 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             OpenApiDotNetApiDefinitionReader apiDefinitionReader = new();
 
             // Act
-            ApiDefinition actual = apiDefinitionReader.ReadDefinition(content, null);
+            ApiDefinitionParseResult actual = apiDefinitionReader.ReadDefinition(content, null);
 
             // Assert
-            AssertDefinition(expected, actual);
+            AssertDefinition(expected, actual.ApiDefinition);
+        }
+
+        [Fact]
+        public void CanHandle_WithMissingInfoAndPaths_ReturnsValidationMessages()
+        {
+            // Arrange
+            string json = @"
+{
+  ""openapi"": ""3.0.0""
+}
+";
+            OpenApiDotNetApiDefinitionReader apiDefinitionReader = new();
+
+            // Act
+            ApiDefinitionParseResult result = apiDefinitionReader.CanHandle(json);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.NotEqual(0, result.ValidationMessages.Count);
         }
 
         private void AssertDefinition(ApiDefinition expected, ApiDefinition actual)

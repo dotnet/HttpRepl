@@ -427,4 +427,7 @@ The .NET Core tools collect usage data in order to help us improve your experien
   <data name="BaseHttpCommand_Error_SameBodyAndHeaderFileName" xml:space="preserve">
     <value>The output files for the headers and the body must be two different files</value>
   </data>
+  <data name="ApiConnection_Logging_SuccessfulWithWarnings" xml:space="preserve">
+    <value>Successful (with warnings)</value>
+  </data>
 </root>
