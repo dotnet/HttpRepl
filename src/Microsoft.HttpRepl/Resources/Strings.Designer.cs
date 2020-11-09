@@ -151,6 +151,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The output files for the headers and the body must be two different files.
+        /// </summary>
+        internal static string BaseHttpCommand_Error_SameBodyAndHeaderFileName {
+            get {
+                return ResourceManager.GetString("BaseHttpCommand_Error_SameBodyAndHeaderFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Streaming the response, press any key to stop....
         /// </summary>
         internal static string BaseHttpCommand_FormatBodyAsync_Streaming {

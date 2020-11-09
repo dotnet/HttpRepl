@@ -31,7 +31,6 @@ namespace Microsoft.HttpRepl.Commands
         private const string HeaderOption = nameof(HeaderOption);
         private const string ResponseHeadersFileOption = nameof(ResponseHeadersFileOption);
         private const string ResponseBodyFileOption = nameof(ResponseBodyFileOption);
-        private const string ResponseFileOption = nameof(ResponseFileOption);
         private const string BodyFileOption = nameof(BodyFileOption);
         private const string NoBodyOption = nameof(NoBodyOption);
         private const string NoFormattingOption = nameof(NoFormattingOption);
@@ -75,7 +74,6 @@ namespace Microsoft.HttpRepl.Commands
                 CommandInputSpecificationBuilder builder = CommandInputSpecification.Create(Verb)
                     .MaximumArgCount(1)
                     .WithOption(new CommandOptionSpecification(HeaderOption, requiresValue: true, forms: new[] { "--header", "-h" }))
-                    .WithOption(new CommandOptionSpecification(ResponseFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response", }))
                     .WithOption(new CommandOptionSpecification(ResponseHeadersFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response:headers", }))
                     .WithOption(new CommandOptionSpecification(ResponseBodyFileOption, requiresValue: true, maximumOccurrences: 1, forms: new[] { "--response:body", }))
                     .WithOption(new CommandOptionSpecification(NoFormattingOption, maximumOccurrences: 1, forms: new[] { "--no-formatting", "-F" }))
@@ -158,12 +156,18 @@ namespace Microsoft.HttpRepl.Commands
                     }
                 }
 
-                InputElement responseFileOption = commandInput.Options[ResponseFileOption].Any() ? commandInput.Options[ResponseFileOption][0] : null;
                 InputElement responseHeadersFileOption = commandInput.Options[ResponseHeadersFileOption].Any() ? commandInput.Options[ResponseHeadersFileOption][0] : null;
                 InputElement responseBodyFileOption = commandInput.Options[ResponseBodyFileOption].Any() ? commandInput.Options[ResponseBodyFileOption][0] : null;
 
-                string headersTarget = responseHeadersFileOption?.Text ?? responseFileOption?.Text;
-                string bodyTarget = responseBodyFileOption?.Text ?? responseFileOption?.Text;
+                string headersTarget = responseHeadersFileOption?.Text;
+                string bodyTarget = responseBodyFileOption?.Text;
+
+                if (!string.IsNullOrWhiteSpace(headersTarget) &&
+                    string.Equals(headersTarget, bodyTarget, StringComparison.OrdinalIgnoreCase))
+                {
+                    shellState.ConsoleManager.Error.WriteLine(Strings.BaseHttpCommand_Error_SameBodyAndHeaderFileName.SetColor(programState.ErrorColor));
+                    return;
+                }
 
                 try
                 {
@@ -393,23 +397,14 @@ namespace Microsoft.HttpRepl.Commands
                 await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, cancellationToken).ConfigureAwait(false);
             }
 
-            if (headersTargetFile != null && !string.Equals(headersTargetFile, bodyTargetFile, StringComparison.Ordinal))
+            if (headersTargetFile != null && headerFileOutput != null)
             {
-                headerFileOutput.Add("");
-                IEnumerable<string> allOutput = headerFileOutput.Concat(bodyFileOutput);
-                _fileSystem.WriteAllLinesToFile(headersTargetFile, allOutput);
+                _fileSystem.WriteAllLinesToFile(headersTargetFile, headerFileOutput);
             }
-            else
-            {
-                if (headersTargetFile != null && headerFileOutput != null)
-                {
-                    _fileSystem.WriteAllLinesToFile(headersTargetFile, headerFileOutput);
-                }
 
-                if (bodyTargetFile != null && bodyFileOutput != null)
-                {
-                    _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
-                }
+            if (bodyTargetFile != null && bodyFileOutput != null)
+            {
+                _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
             }
 
             consoleManager.WriteLine();
@@ -607,7 +602,7 @@ namespace Microsoft.HttpRepl.Commands
         protected override string GetHelpDetails(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult)
         {
             StringBuilder helpText = new StringBuilder();
-            helpText.Append(Resources.Strings.Usage.Bold());
+            helpText.Append(Strings.Usage.Bold());
             helpText.AppendLine($"{Verb.ToUpperInvariant()} [Options]");
             helpText.AppendLine();
             helpText.AppendLine($"Issues a {Verb.ToUpperInvariant()} request.");
@@ -677,7 +672,9 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetOptionValueCompletions(IShellState shellState, HttpState programState, string optionId, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, string normalizedCompletionText)
         {
-            if (string.Equals(optionId, BodyFileOption, StringComparison.Ordinal) || string.Equals(optionId, ResponseFileOption, StringComparison.OrdinalIgnoreCase) || string.Equals(optionId, ResponseBodyFileOption, StringComparison.OrdinalIgnoreCase) || string.Equals(optionId, ResponseHeadersFileOption, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(optionId, BodyFileOption, StringComparison.Ordinal) ||
+                string.Equals(optionId, ResponseBodyFileOption, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(optionId, ResponseHeadersFileOption, StringComparison.OrdinalIgnoreCase))
             {
                 return FileSystemCompletion.GetCompletions(normalizedCompletionText);
             }

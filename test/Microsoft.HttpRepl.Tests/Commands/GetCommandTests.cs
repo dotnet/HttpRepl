@@ -223,5 +223,32 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("Content-Type: text/plain", result[6]);
             Assert.Equal(unformattedResponse, result[7]);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_WithSameHeadersAndBodyPaths_VerifyError()
+        {
+            // Arrange
+            string fileName = "\"/myfile.txt\"";
+
+            ArrangeInputs(commandText: $"GET --response:headers {fileName} --response:body {fileName}",
+                baseAddress: _baseAddress,
+                path: null,
+                urlsWithResponse: null,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            string expectedErrorMessage = Strings.BaseHttpCommand_Error_SameBodyAndHeaderFileName.SetColor(httpState.ErrorColor);
+
+            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+
+            // Act
+            await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            // Assert
+            Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
+        }
     }
 }

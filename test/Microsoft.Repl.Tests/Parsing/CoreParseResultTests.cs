@@ -95,5 +95,22 @@ namespace Microsoft.Repl.Tests.Parsing
 
             Assert.Equal(expectedSectionCount, parseResult.Sections.Count);
         }
+
+        [Fact]
+        public void Parse_WithQuotesButNoSpaces_DoesNotCombineSections()
+        {
+            // Arrange
+            string commandText = "GET --response:headers \"file.txt\" --response:body \"file.txt\"";
+            int caretPosition = commandText.Length + 1;
+            CoreParser parser = new CoreParser();
+
+            int expectedSectionCount = 5;
+
+            // Act
+            ICoreParseResult parseResult = parser.Parse(commandText, caretPosition);
+
+            // Assert
+            Assert.Equal(expectedSectionCount, parseResult.Sections.Count);
+        }
     }
 }
