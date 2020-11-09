@@ -672,7 +672,9 @@ namespace Microsoft.HttpRepl.Commands
 
         protected override IEnumerable<string> GetOptionValueCompletions(IShellState shellState, HttpState programState, string optionId, DefaultCommandInput<ICoreParseResult> commandInput, ICoreParseResult parseResult, string normalizedCompletionText)
         {
-            if (string.Equals(optionId, BodyFileOption, StringComparison.Ordinal) || string.Equals(optionId, ResponseBodyFileOption, StringComparison.OrdinalIgnoreCase) || string.Equals(optionId, ResponseHeadersFileOption, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(optionId, BodyFileOption, StringComparison.Ordinal) ||
+                string.Equals(optionId, ResponseBodyFileOption, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(optionId, ResponseHeadersFileOption, StringComparison.OrdinalIgnoreCase))
             {
                 return FileSystemCompletion.GetCompletions(normalizedCompletionText);
             }
