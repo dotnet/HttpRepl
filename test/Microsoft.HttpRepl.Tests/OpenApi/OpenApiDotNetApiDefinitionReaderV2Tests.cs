@@ -22,10 +22,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Empty(result.ApiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
@@ -42,10 +42,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Empty(result.ApiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
@@ -64,9 +64,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
 
             Assert.Null(subDirectory.RequestInfo);
         }
@@ -87,9 +87,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
         }
 
         [Fact]
@@ -145,13 +145,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("api", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("api", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/api/Employees");
 
             Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
             Assert.Contains("Get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -172,9 +172,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            bool? result = swaggerV2ApiDefinitionReader.CanHandle(json);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.CanHandle(json);
 
-            Assert.False(result);
+            Assert.False(result.Success);
         }
 
         [Fact]
@@ -192,9 +192,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            bool? result = swaggerV2ApiDefinitionReader.CanHandle(json);
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.CanHandle(json);
 
-            Assert.True(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -211,10 +211,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Empty(apiDefinition.BaseAddresses);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Empty(result.ApiDefinition.BaseAddresses);
         }
 
         [Fact]
@@ -235,11 +235,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/", result.ApiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
         }
 
         [Fact]
@@ -261,12 +261,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Equal(2, apiDefinition.BaseAddresses.Count);
-            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
-            Assert.Equal("http://localhost/", apiDefinition.BaseAddresses[1].Url.ToString(), StringComparer.Ordinal);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Equal(2, result.ApiDefinition.BaseAddresses.Count);
+            Assert.Equal("https://localhost/", result.ApiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
+            Assert.Equal("http://localhost/", result.ApiDefinition.BaseAddresses[1].Url.ToString(), StringComparer.Ordinal);
         }
 
         [Fact]
@@ -284,17 +284,17 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/", result.ApiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
 
-            apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
+            result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("http://localhost/", apiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("http://localhost/", result.ApiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
         }
 
         [Fact]
@@ -316,11 +316,11 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader swaggerV2ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
+            ApiDefinitionParseResult result = swaggerV2ApiDefinitionReader.ReadDefinition(json, new Uri("http://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("https://localhost/api/v2/", apiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/api/v2/", result.ApiDefinition.BaseAddresses[0].Url.ToString(), StringComparer.Ordinal);
         }
     }
 }

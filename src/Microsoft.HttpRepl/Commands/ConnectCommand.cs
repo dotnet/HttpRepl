@@ -91,7 +91,7 @@ namespace Microsoft.HttpRepl.Commands
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
             bool isVerbosityEnabled = GetOptionExistsFromCommand(commandInput, VerbosityOption);
 
-            ApiConnection connectionInfo = GetConnectionInfo(shellState, rootAddress, baseAddress, swaggerAddress, _preferences, isVerbosityEnabled);
+            ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences, isVerbosityEnabled);
 
             bool rootSpecified = !string.IsNullOrWhiteSpace(rootAddress);
             bool baseSpecified = !string.IsNullOrWhiteSpace(baseAddress);
@@ -137,7 +137,7 @@ namespace Microsoft.HttpRepl.Commands
             shellState.ConsoleManager.WriteLine(Resources.Strings.HelpCommand_Core_Details_Line2.Bold().Cyan());
         }
 
-        private ApiConnection GetConnectionInfo(IShellState shellState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences, bool isVerbosityEnabled)
+        private ApiConnection GetConnectionInfo(IShellState shellState, HttpState programState, string rootAddress, string baseAddress, string swaggerAddress, IPreferences preferences, bool isVerbosityEnabled)
         {
             rootAddress = rootAddress?.Trim();
             baseAddress = baseAddress?.Trim();
@@ -159,7 +159,7 @@ namespace Microsoft.HttpRepl.Commands
             // if they specified one directly.
             bool logVerboseMessages = isVerbosityEnabled || !string.IsNullOrWhiteSpace(swaggerAddress);
 
-            ApiConnection apiConnection = new ApiConnection(preferences, shellState.ConsoleManager, logVerboseMessages);
+            ApiConnection apiConnection = new ApiConnection(programState, preferences, shellState.ConsoleManager, logVerboseMessages);
             if (!string.IsNullOrWhiteSpace(rootAddress))
             {
                 // The `dotnet new webapi` template now has a default start url of `swagger`. Because

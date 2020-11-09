@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.Fakes
             _apiDefinition = apiDefinition;
         }
 
-        public bool CanHandle(string document)
+        public ApiDefinitionParseResult CanHandle(string document)
         {
             JObject doc;
             using (StringReader stringReader = new StringReader(document))
@@ -27,12 +27,12 @@ namespace Microsoft.HttpRepl.Fakes
                 doc = (JObject)serializer.Deserialize(stringReader, typeof(JObject));
             }
 
-            return (doc["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal);
+            return (doc["fakeApi"]?.ToString() ?? "").StartsWith("1.", StringComparison.Ordinal) ? new ApiDefinitionParseResult(true, null, null) : ApiDefinitionParseResult.Failed;
         }
 
-        public ApiDefinition ReadDefinition(string document, Uri sourceUri)
+        public ApiDefinitionParseResult ReadDefinition(string document, Uri sourceUri)
         {
-            return _apiDefinition;
+            return new ApiDefinitionParseResult(true, _apiDefinition, null);
         }
     }
 }

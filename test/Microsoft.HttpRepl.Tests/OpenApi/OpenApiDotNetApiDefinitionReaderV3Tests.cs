@@ -22,10 +22,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Empty(result.ApiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
@@ -42,10 +42,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Empty(apiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Empty(result.ApiDefinition.DirectoryStructure.DirectoryNames);
         }
 
         [Fact]
@@ -70,13 +70,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Single(subDirectory.RequestInfo.Methods);
             Assert.Contains("Post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -95,9 +95,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
         }
 
         [Fact]
@@ -113,9 +113,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Null(subDirectory.RequestInfo);
         }
@@ -166,13 +166,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             if (shouldHaveRequest)
             {
@@ -215,13 +215,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Single(subDirectory.RequestInfo.Methods);
             Assert.Contains("Post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -258,13 +258,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Single(subDirectory.RequestInfo.Methods);
             Assert.Contains("Post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -304,13 +304,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Single(subDirectory.RequestInfo.Methods);
             Assert.Contains("Post", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -366,13 +366,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
             Assert.Contains("Get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -413,13 +413,13 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.DirectoryStructure);
-            Assert.Single(apiDefinition.DirectoryStructure.DirectoryNames);
-            Assert.Equal("pets", apiDefinition.DirectoryStructure.DirectoryNames.Single());
+            Assert.NotNull(result.ApiDefinition?.DirectoryStructure);
+            Assert.Single(result.ApiDefinition.DirectoryStructure.DirectoryNames);
+            Assert.Equal("pets", result.ApiDefinition.DirectoryStructure.DirectoryNames.Single());
 
-            IDirectoryStructure subDirectory = apiDefinition.DirectoryStructure.TraverseTo("/pets");
+            IDirectoryStructure subDirectory = result.ApiDefinition.DirectoryStructure.TraverseTo("/pets");
 
             Assert.Equal(2, subDirectory.RequestInfo.Methods.Count);
             Assert.Contains("Get", subDirectory.RequestInfo.Methods, StringComparer.Ordinal);
@@ -440,9 +440,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            bool? result = openApiV3ApiDefinitionReader.CanHandle(json);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.CanHandle(json);
 
-            Assert.False(result);
+            Assert.False(result.Success);
         }
 
         [Fact]
@@ -460,9 +460,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            bool? result = openApiV3ApiDefinitionReader.CanHandle(json);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.CanHandle(json);
 
-            Assert.True(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -480,9 +480,9 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            bool? result = openApiV3ApiDefinitionReader.CanHandle(json);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.CanHandle(json);
 
-            Assert.False(result);
+            Assert.False(result.Success);
         }
 
         [Fact]
@@ -502,10 +502,10 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Empty(apiDefinition.BaseAddresses);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Empty(result.ApiDefinition.BaseAddresses);
         }
 
         [Fact]
@@ -531,12 +531,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[0].Url.ToString());
-            Assert.Equal("First Server Address", apiDefinition.BaseAddresses[0].Description);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/", result.ApiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("First Server Address", result.ApiDefinition.BaseAddresses[0].Description);
         }
 
         [Fact]
@@ -566,16 +566,16 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, null);
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Equal(2, apiDefinition.BaseAddresses.Count);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Equal(2, result.ApiDefinition.BaseAddresses.Count);
 
-            Assert.Equal("https://petstore.swagger.io/", apiDefinition.BaseAddresses[0].Url.ToString());
-            Assert.Equal("Production Server Address", apiDefinition.BaseAddresses[0].Description);
+            Assert.Equal("https://petstore.swagger.io/", result.ApiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("Production Server Address", result.ApiDefinition.BaseAddresses[0].Description);
 
-            Assert.Equal("https://localhost/", apiDefinition.BaseAddresses[1].Url.ToString());
-            Assert.Equal("Local Development Server Address", apiDefinition.BaseAddresses[1].Description);
+            Assert.Equal("https://localhost/", result.ApiDefinition.BaseAddresses[1].Url.ToString());
+            Assert.Equal("Local Development Server Address", result.ApiDefinition.BaseAddresses[1].Description);
         }
 
         [Fact]
@@ -601,12 +601,12 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
 
-            Assert.NotNull(apiDefinition?.BaseAddresses);
-            Assert.Single(apiDefinition.BaseAddresses);
-            Assert.Equal("https://localhost/api/v2/", apiDefinition.BaseAddresses[0].Url.ToString());
-            Assert.Equal("First Server Address", apiDefinition.BaseAddresses[0].Description);
+            Assert.NotNull(result.ApiDefinition?.BaseAddresses);
+            Assert.Single(result.ApiDefinition.BaseAddresses);
+            Assert.Equal("https://localhost/api/v2/", result.ApiDefinition.BaseAddresses[0].Url.ToString());
+            Assert.Equal("First Server Address", result.ApiDefinition.BaseAddresses[0].Description);
         }
 
         [Fact]
@@ -643,8 +643,8 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             OpenApiDotNetApiDefinitionReader openApiV3ApiDefinitionReader = new OpenApiDotNetApiDefinitionReader();
 
-            ApiDefinition apiDefinition = openApiV3ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
-            IDirectoryStructure pets = apiDefinition.DirectoryStructure.TraverseTo("pets");
+            ApiDefinitionParseResult result = openApiV3ApiDefinitionReader.ReadDefinition(json, new Uri("https://localhost/swagger.json"));
+            IDirectoryStructure pets = result.ApiDefinition.DirectoryStructure.TraverseTo("pets");
             string requestBody = pets.RequestInfo.GetRequestBodyForContentType(ref contentType, "post");
 
             Assert.NotNull(requestBody);

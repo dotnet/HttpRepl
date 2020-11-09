@@ -17,6 +17,7 @@ namespace Microsoft.HttpRepl
 {
     internal class ApiConnection
     {
+        private readonly HttpState _httpState;
         private readonly IWritable _logger;
         private readonly bool _logVerboseMessages;
         private readonly IOpenApiSearchPathsProvider _searchPaths;
@@ -31,8 +32,9 @@ namespace Microsoft.HttpRepl
         public bool HasSwaggerDocument => SwaggerDocument is object;
         public bool AllowBaseOverrideBySwagger { get; set; }
 
-        public ApiConnection(IPreferences preferences, IWritable logger, bool logVerboseMessages, IOpenApiSearchPathsProvider? openApiSearchPaths = null)
+        public ApiConnection(HttpState httpState, IPreferences preferences, IWritable logger, bool logVerboseMessages, IOpenApiSearchPathsProvider? openApiSearchPaths = null)
         {
+            _httpState = httpState ?? throw new ArgumentNullException(nameof(httpState));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logVerboseMessages = logVerboseMessages;
             _searchPaths = openApiSearchPaths ?? new OpenApiSearchPathsProvider(preferences);
@@ -78,13 +80,13 @@ namespace Microsoft.HttpRepl
                 HttpResponseMessage? response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    _logger.WriteLine(Resources.Strings.ApiConnection_Logging_Cancelled);
+                    _logger.WriteLine(Resources.Strings.ApiConnection_Logging_Cancelled.SetColor(_httpState.ErrorColor));
                     return null;
                 }
 
                 if (response.IsSuccessStatusCode)
                 {
-                    WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found);
+                    WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found.SetColor(AllowedColors.BoldGreen));
 
 #if NET5_0
                     string responseString = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -94,26 +96,40 @@ namespace Microsoft.HttpRepl
 
                     WriteVerbose(Resources.Strings.ApiConnection_Logging_Parsing);
                     ApiDefinitionReader reader = new ApiDefinitionReader();
-                    if (reader.CanHandle(responseString))
+                    ApiDefinitionParseResult result = reader.CanHandle(responseString);
+                    if (result.Success)
                     {
-                        WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Successful);
+                        if (result.ValidationMessages.Count == 0)
+                        {
+                            WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Successful.SetColor(AllowedColors.BoldGreen));
+                        }
+                        else
+                        {
+                            WriteLineVerbose(Resources.Strings.ApiConnection_Logging_SuccessfulWithWarnings.SetColor(_httpState.WarningColor));
+                            foreach (string validationMessage in result.ValidationMessages)
+                            {
+                                WriteLineVerbose(validationMessage.SetColor(_httpState.WarningColor));
+                            }
+                        }
                         return responseString;
                     }
                     else
                     {
-                        WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Failed);
+                        WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Failed.SetColor(_httpState.ErrorColor));
                         return null;
                     }
                 }
                 else
                 {
-                    WriteLineVerbose(response.StatusCode.ToString());
+                    int statusCode = (int)response.StatusCode;
+                    string statusCodeDescription = response.StatusCode.ToString();
+                    WriteLineVerbose($"{statusCode} {statusCodeDescription}".SetColor(_httpState.ErrorColor));
                     return null;
                 }
             }
             catch (Exception e)
             {
-                WriteLineVerbose(e.Message);
+                WriteLineVerbose(e.Message.SetColor(_httpState.ErrorColor));
                 return null;
             }
             finally
@@ -124,11 +140,18 @@ namespace Microsoft.HttpRepl
 
         public void SetupApiDefinition(HttpState programState)
         {
-            ApiDefinitionReader reader = new ApiDefinitionReader();
-            programState.ApiDefinition = reader.Read(SwaggerDocument, SwaggerUri);
-            if (programState.ApiDefinition is object)
+            if (SwaggerDocument is not null && SwaggerUri is not null)
             {
-                programState.SwaggerEndpoint = SwaggerUri;
+                ApiDefinitionReader reader = new ApiDefinitionReader();
+                ApiDefinitionParseResult parseResult = reader.Read(SwaggerDocument, SwaggerUri);
+                if (parseResult.Success)
+                {
+                    programState.ApiDefinition = parseResult.ApiDefinition;
+                    if (programState.ApiDefinition is not null)
+                    {
+                        programState.SwaggerEndpoint = SwaggerUri;
+                    }
+                }
             }
         }
 

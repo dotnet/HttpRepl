@@ -115,6 +115,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successful (with warnings).
+        /// </summary>
+        internal static string ApiConnection_Logging_SuccessfulWithWarnings {
+            get {
+                return ResourceManager.GetString("ApiConnection_Logging_SuccessfulWithWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified content file, &quot;{0}&quot;, does not exist..
         /// </summary>
         internal static string BaseHttpCommand_Error_ContentFileDoesNotExist {

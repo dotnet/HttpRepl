@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 
@@ -18,36 +20,38 @@ namespace Microsoft.HttpRepl.OpenApi
             _readers.Add(reader);
         }
 
-        public bool CanHandle(string document)
+        public ApiDefinitionParseResult CanHandle(string document)
         {
             if (document is null)
             {
-                return false;
+                return ApiDefinitionParseResult.Failed;
             }
 
             foreach (IApiDefinitionReader reader in _readers)
             {
-                if (reader.CanHandle(document))
+                ApiDefinitionParseResult result = reader.CanHandle(document);
+                if (result.Success)
                 {
-                    return true;
+                    return result;
                 }
             }
-            return false;
+            return ApiDefinitionParseResult.Failed;
         }
 
-        public ApiDefinition Read(string document, Uri swaggerUri)
+        public ApiDefinitionParseResult Read(string document, Uri? swaggerUri)
         {
             foreach (IApiDefinitionReader reader in _readers)
             {
-                if (reader.CanHandle(document))
+                ApiDefinitionParseResult parseResult = reader.CanHandle(document);
+                if (parseResult.Success)
                 {
-                    ApiDefinition result = reader.ReadDefinition(document, swaggerUri);
+                    ApiDefinitionParseResult result = reader.ReadDefinition(document, swaggerUri);
 
                     return result;
                 }
             }
 
-            return null;
+            return ApiDefinitionParseResult.Failed;
         }
 
         public static void FillDirectoryInfo(DirectoryStructure parent, EndpointMetadata entry)
