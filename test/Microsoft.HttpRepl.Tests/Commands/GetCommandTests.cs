@@ -243,7 +243,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.BaseHttpCommand_Error_SameBodyAndHeaderFileName.SetColor(httpState.ErrorColor);
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
 
             // Act
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
