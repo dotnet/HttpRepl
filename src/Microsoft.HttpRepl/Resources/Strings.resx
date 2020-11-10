@@ -382,10 +382,14 @@ Type `help connect` for more information on the `connect` command.</value>
   </data>
   <data name="Telemetry_WelcomeMessage" xml:space="preserve">
     <value>Welcome to HttpRepl {0}!
----------------------
+------------------------
+
 Telemetry
 ---------
-The .NET Core tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+The .NET tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to '1' or 'true' using your favorite shell.
+
+Read more about HttpRepl telemetry: https://aka.ms/httprepl-telemetry
+Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
 </value>
     <comment>{0} is the major.minor version of the current build</comment>
   </data>

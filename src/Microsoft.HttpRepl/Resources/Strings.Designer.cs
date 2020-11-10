@@ -791,11 +791,14 @@ namespace Microsoft.HttpRepl.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Welcome to HttpRepl {0}!
-        ///---------------------
+        ///------------------------
+        ///
         ///Telemetry
         ///---------
-        ///The .NET Core tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to &apos;1&apos; or &apos;true&apos; using your favorite shell.
-        ///.
+        ///The .NET tools collect usage data in order to help us improve your experience. The data is collected by Microsoft and shared with the community. You can opt-out of telemetry by setting the DOTNET_HTTPREPL_TELEMETRY_OPTOUT environment variable to &apos;1&apos; or &apos;true&apos; using your favorite shell.
+        ///
+        ///Read more about HttpRepl telemetry: https://aka.ms/httprepl-telemetry
+        ///Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemet [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Telemetry_WelcomeMessage {
             get {
