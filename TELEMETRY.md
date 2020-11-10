@@ -40,6 +40,7 @@ The telemetry feature collects the following data:
 | >=5.0        | For the `pref` command, whether a `get` or `set` was issued and which preference was accessed. If not a well-known preference, the name is hashed. The value is not collected. |
 | >=5.0        | For the `set header` command, the header name being set. If not a well-known header, the name is hashed. The value is not collected. |
 | >=5.0        | For the `connect` command, whether or not a specific special-case for `dotnet new webapi` was used and, whether or not it was bypassed via preference. |
+| >=5.0        | For all HTTP commands (e.g. GET, POST, PUT, etc), whether or not each of the options was specified. The values of the options are not collected. |
 
 ## See also
 

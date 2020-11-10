@@ -7,6 +7,7 @@ namespace Microsoft.HttpRepl.Telemetry
     {
         public const string CommandExecuted = nameof(CommandExecuted);
         public const string Connect = nameof(Connect);
+        public const string HttpCommand = nameof(HttpCommand);
         public const string Preference = nameof(Preference);
         public const string SetHeader = nameof(SetHeader);
         public const string Started = nameof(Started);
@@ -22,6 +23,17 @@ namespace Microsoft.HttpRepl.Telemetry
         public const string Connect_OpenApiFound = "OpenApiFound";
         public const string Connect_OpenApiSpecified = "OpenApiSpecified";
         public const string Connect_RootSpecified = "RootSpecified";
+
+        public const string HttpCommand_HeaderSpecified = "HeaderSpecified";
+        public const string HttpCommand_Method = "Method";
+        public const string HttpCommand_NoBodySpecified = "NoBodySpecified";
+        public const string HttpCommand_NoFormattingSpecified = "NoFormattingSpecified";
+        public const string HttpCommand_PathSpecified = "PathSpecified";
+        public const string HttpCommand_RequestBodyContentSpecified = "RequestBodyContentSpecified";
+        public const string HttpCommand_RequestBodyFileSpecified = "RequestBodyFileSpecified";
+        public const string HttpCommand_ResponseHeadersFileSpecified = "ResponseHeadersFileSpecified";
+        public const string HttpCommand_ResponseBodyFileSpecified = "ResponseBodyFileSpecified";
+        public const string HttpCommand_StreamingSpecified = "StreamingSpecified";
 
         public const string Preference_GetOrSet = "GetOrSet";
         public const string Preference_PreferenceName = "PreferenceName";

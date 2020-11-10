@@ -9,6 +9,7 @@ using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
+using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl.ConsoleHandling;
 using Microsoft.Repl.Parsing;
 using Xunit;
@@ -45,7 +46,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -64,7 +65,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response.";
@@ -88,7 +89,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a response from the root.";
@@ -127,7 +128,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 contentType: "application/json");
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             int expectedHeaderLength = 2;
@@ -175,7 +176,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 contentType: "text/plain");
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;
@@ -208,7 +209,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             httpState.EchoRequest = true;
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;
@@ -242,13 +243,51 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.BaseHttpCommand_Error_SameBodyAndHeaderFileName.SetColor(httpState.ErrorColor);
 
-            GetCommand getCommand = new GetCommand(fileSystem, preferences);
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, new NullTelemetry());
 
             // Act
             await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             // Assert
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithPathAndOptions_SendsTelemetry()
+        {
+            // Arrange
+            string expectedPath = "/path";
+            string expectedMethod = "GET";
+            ArrangeInputs(commandText: $"{expectedMethod} {expectedPath} --no-formatting --header Content-Length=20",
+                baseAddress: _baseAddress,
+                path: _path,
+                urlsWithResponse: _urlsWithResponse,
+                out MockedShellState shellState,
+                out HttpState httpState,
+                out ICoreParseResult parseResult,
+                out MockedFileSystem fileSystem,
+                out IPreferences preferences);
+
+            TelemetryCollector telemetry = new TelemetryCollector();
+            GetCommand getCommand = new GetCommand(fileSystem, preferences, telemetry);
+
+            // Act
+            await getCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            // Assert
+            Assert.Single(telemetry.Telemetry);
+            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
+            Assert.Equal(TelemetryEventNames.HttpCommand, collectedTelemetry.EventName, ignoreCase: true);
+            Assert.Equal(expectedMethod, collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_Method]);
+            Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_PathSpecified]);
+            Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_NoFormattingSpecified]);
+            Assert.Equal("True", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_HeaderSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_ResponseHeadersFileSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_StreamingSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_NoBodySpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_RequestBodyContentSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_RequestBodyFileSpecified]);
+            Assert.Equal("False", collectedTelemetry.Properties[TelemetryPropertyNames.HttpCommand_ResponseBodyFileSpecified]);
         }
     }
 }

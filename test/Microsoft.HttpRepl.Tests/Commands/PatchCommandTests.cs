@@ -47,7 +47,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences, new NullTelemetry());
             await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -66,7 +66,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences, new NullTelemetry());
             await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PATCH: \"Test Patch Body\"";
@@ -90,7 +90,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences, new NullTelemetry());
             await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PATCH: \"Test Patch Body\"";
@@ -114,7 +114,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences, new NullTelemetry());
             await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PATCH: \"\"";
@@ -145,7 +145,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             fileSystem.AddFile(filePath, "Test Patch Body From File");
 
-            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences);
+            PatchCommand patchCommand = new PatchCommand(fileSystem, preferences, new NullTelemetry());
             await patchCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;

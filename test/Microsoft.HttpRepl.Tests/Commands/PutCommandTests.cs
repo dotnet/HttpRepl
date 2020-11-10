@@ -47,7 +47,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            PutCommand putCommand = new PutCommand(fileSystem, preferences, new NullTelemetry());
             await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -66,7 +66,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            PutCommand putCommand = new PutCommand(fileSystem, preferences, new NullTelemetry());
             await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PUT: \"Test Put Body\"";
@@ -90,7 +90,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            PutCommand putCommand = new PutCommand(fileSystem, preferences, new NullTelemetry());
             await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PUT: \"Test Put Body\"";
@@ -114,7 +114,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            PutCommand putCommand = new PutCommand(fileSystem, preferences, new NullTelemetry());
             await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a PUT: \"\"";
@@ -145,7 +145,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             fileSystem.AddFile(filePath, "Test Put Body From File");
 
-            PutCommand putCommand = new PutCommand(fileSystem, preferences);
+            PutCommand putCommand = new PutCommand(fileSystem, preferences, new NullTelemetry());
             await putCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;

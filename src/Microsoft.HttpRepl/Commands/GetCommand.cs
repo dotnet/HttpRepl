@@ -3,12 +3,13 @@
 
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
+using Microsoft.HttpRepl.Telemetry;
 
 namespace Microsoft.HttpRepl.Commands
 {
     public class GetCommand : BaseHttpCommand
     {
-        public GetCommand(IFileSystem fileSystem, IPreferences preferences) : base(fileSystem, preferences) { }
+        public GetCommand(IFileSystem fileSystem, IPreferences preferences, ITelemetry telemetry) : base(fileSystem, preferences, telemetry) { }
 
         protected override string Verb => "get";
 
