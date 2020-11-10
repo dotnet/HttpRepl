@@ -8,7 +8,7 @@
     <PackageReference Update="Microsoft.ApplicationInsights.WorkerService" Version="2.15.0" />
     <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" PrivateAssets="All" />
-    <PackageReference Update="Microsoft.DotNet.PlatformAbstractions" Version="5.0.0-preview.5.20278.1" />
+    <PackageReference Update="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
     <PackageReference Update="Microsoft.OpenApi.Readers" Version="1.2.3" />
     <PackageReference Update="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Update="Moq" Version="4.14.7" PrivateAssets="All" />
