@@ -56,7 +56,7 @@ namespace Microsoft.HttpRepl
                     {
                         telemetry.TrackStartedEvent(withHelp: true);
                         shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Usage);
-                        shell.ShellState.ConsoleManager.WriteLine("  dotnet httprepl [<BASE_ADDRESS>] [options]");
+                        shell.ShellState.ConsoleManager.WriteLine("  httprepl [<BASE_ADDRESS>] [options]");
                         shell.ShellState.ConsoleManager.WriteLine();
                         shell.ShellState.ConsoleManager.WriteLine(Resources.Strings.Help_Arguments);
                         shell.ShellState.ConsoleManager.WriteLine(string.Format(Resources.Strings.Help_BaseAddress, "<BASE_ADDRESS>"));
