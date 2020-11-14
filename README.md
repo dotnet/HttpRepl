@@ -23,7 +23,7 @@ See the [documentation](https://aka.ms/http-repl-doc) for how to use and configu
 
 ## Telemetry
 
-HttpRepl collects usage data. See [Telemetry](/TELEMETRY.md) for more details.
+See the [documentation](https://docs.microsoft.com/aspnet/core/web-api/http-repl/telemetry) for information about the usage data collection.
 
 ## Building
 
