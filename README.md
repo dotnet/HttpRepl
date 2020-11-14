@@ -9,13 +9,13 @@ The HTTP Read-Eval-Print Loop (REPL) is:
 
 ## Installation
 
-To install the HTTP REPL, run the following command:
+To install the HttpRepl, run the following command:
 
 ```
 dotnet tool install -g Microsoft.dotnet-httprepl
 ```
 
-A [.NET Core Global Tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool) is installed from the [Microsoft.dotnet-httprepl](https://www.nuget.org/packages/Microsoft.dotnet-httprepl) NuGet package.
+A [.NET Core Global Tool](https://docs.microsoft.com/dotnet/core/tools/global-tools#install-a-global-tool) is installed from the [Microsoft.dotnet-httprepl](https://www.nuget.org/packages/Microsoft.dotnet-httprepl) NuGet package.
 
 ## Usage
 
@@ -23,7 +23,7 @@ See the [documentation](https://aka.ms/http-repl-doc) for how to use and configu
 
 ## Telemetry
 
-HttpRepl collects usage data. See [Telemetry](/TELEMETRY.md) for more details.
+See the [documentation](https://docs.microsoft.com/aspnet/core/web-api/http-repl/telemetry) for information about the usage data collection.
 
 ## Building
 
@@ -35,4 +35,4 @@ See the [Contributing Guide](/CONTRIBUTING.md) for details on what it means to c
 
 ## Reporting security issues and bugs
 
-Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) secure@microsoft.com. You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the MSRC PGP key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/ff852094.aspx).
+Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) secure@microsoft.com. You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the MSRC PGP key, can be found in the [Security TechCenter](https://technet.microsoft.com/security/ff852094.aspx).
