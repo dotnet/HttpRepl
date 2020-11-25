@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.OpenApi;
@@ -34,6 +35,8 @@ namespace Microsoft.HttpRepl
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 
+        public Dictionary<string, IEnumerable<string>> QueryString{ get; }
+
         public Uri SwaggerEndpoint { get; set; }
 
         public HttpState(IPreferences preferences, HttpClient httpClient)
@@ -47,6 +50,7 @@ namespace Microsoft.HttpRepl
             {
                 { "User-Agent", new[] { _preferences.GetValue(WellKnownPreference.HttpClientUserAgent, "HTTP-REPL") } }
             };
+            QueryString = new Dictionary<string, IEnumerable<string>>();
         }
 
         public string GetPrompt()
@@ -84,10 +88,16 @@ namespace Microsoft.HttpRepl
 
         public Uri GetEffectivePath(string commandSpecifiedPath)
         {
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath);
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, null);
         }
 
-        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath)
+
+        public Uri GetEffectivePathWithQueryString(string commandSpecifiedPath, Dictionary<string,IEnumerable<string>> queryString)
+        {
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryString);
+        }
+
+        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string,IEnumerable<string>> queryString)
         {
             // If an absolute uri string was already specified, just return that.
             if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
@@ -99,6 +109,7 @@ namespace Microsoft.HttpRepl
             {
                 throw new ArgumentNullException(nameof(baseAddress), string.Format(Resources.Strings.HttpState_Error_NoAbsoluteUriNoBaseAddress, nameof(commandSpecifiedPath), nameof(baseAddress)));
             }
+            
 
             pathSections = pathSections ?? throw new ArgumentNullException(nameof(pathSections));
 
@@ -107,6 +118,18 @@ namespace Microsoft.HttpRepl
             UpdateUriBuilderForSpecifiedPath(builder, commandSpecifiedPath, out string commandQuery);
             AppendQueryToBuilder(builder, baseAndPathQuery);
             AppendQueryToBuilder(builder, commandQuery);
+
+            if (queryString != null)
+            {
+                
+                foreach (KeyValuePair<string, IEnumerable<string>> tuple in queryString)
+                {
+                    foreach (var singleValue in tuple.Value)
+                    {
+                        AppendQueryToBuilder(builder, $"{tuple.Key}={WebUtility.UrlEncode(singleValue)}");
+                    }
+                }
+            }
 
             return builder.Uri;
         }
@@ -118,7 +141,7 @@ namespace Microsoft.HttpRepl
                 return null;
             }
 
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "");
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "", null);
         }
 
         public string GetRelativePathString()

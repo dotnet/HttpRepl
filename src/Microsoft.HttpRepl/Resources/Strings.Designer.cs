@@ -790,6 +790,15 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sets or clears a query string key and value. When [value] is empty the header is cleared. The value will be UrlEncoded..
+        /// </summary>
+        internal static string SetQueryStringCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("SetQueryStringCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to HttpRepl {0}!
         ///------------------------
         ///
