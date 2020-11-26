@@ -117,7 +117,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
             KeyValuePair<string, IEnumerable<string>> firstHeader = headers.First();
 
-            Assert.Equal(0,httpState.QueryString.Count);
+            Assert.Empty(httpState.QueryString);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Dictionary<string, IEnumerable<string>> queryString = httpState.QueryString;
 
-            Assert.Equal(1, httpState.QueryString.Count);
+            Assert.Single(httpState.QueryString);
 
             Assert.True(queryString.ContainsKey("name"));
 
