@@ -131,8 +131,7 @@ namespace Microsoft.HttpRepl.Commands
                 thisRequestHeaders[header.Text.Substring(0, equalsIndex)] = header.Text.Substring(equalsIndex + 1);
             }
 
-            Uri effectivePath = programState.GetEffectivePathWithQueryString(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, programState.QueryString);
-
+            Uri effectivePath = programState.GetEffectivePath(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty);
             using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(Verb.ToUpperInvariant()), effectivePath))
             {
                 if (RequiresBody)
@@ -761,16 +760,16 @@ namespace Microsoft.HttpRepl.Commands
         private void SendTelemetry(DefaultCommandInput<ICoreParseResult> commandInput)
         {
             HttpCommandEvent httpCommandEvent = new HttpCommandEvent(
-                method: Verb.ToUpperInvariant(),
-                isPathSpecified: commandInput.Arguments.Count > 0,
-                isHeaderSpecified: commandInput.Options[HeaderOption].Any(),
+                method:                         Verb.ToUpperInvariant(),
+                isPathSpecified:                commandInput.Arguments.Count > 0,
+                isHeaderSpecified:              commandInput.Options[HeaderOption].Any(),
                 isResponseHeadersFileSpecified: commandInput.Options[ResponseHeadersFileOption].Any(),
-                isResponseBodyFileSpecified: commandInput.Options[ResponseBodyFileOption].Any(),
-                isNoFormattingSpecified: commandInput.Options[NoFormattingOption].Any(),
-                isStreamingSpecified: commandInput.Options[StreamingOption].Any(),
-                isNoBodySpecified: RequiresBody && commandInput.Options[NoBodyOption].Any(),
-                isRequestBodyFileSpecified: RequiresBody && commandInput.Options[BodyFileOption].Any(),
-                isRequestBodyContentSpecified: RequiresBody && commandInput.Options[BodyContentOption].Any()
+                isResponseBodyFileSpecified:    commandInput.Options[ResponseBodyFileOption].Any(),
+                isNoFormattingSpecified:        commandInput.Options[NoFormattingOption].Any(),
+                isStreamingSpecified:           commandInput.Options[StreamingOption].Any(),
+                isNoBodySpecified:              RequiresBody && commandInput.Options[NoBodyOption].Any(),
+                isRequestBodyFileSpecified:     RequiresBody && commandInput.Options[BodyFileOption].Any(),
+                isRequestBodyContentSpecified:  RequiresBody && commandInput.Options[BodyContentOption].Any()
             );
 
             _telemetry.TrackEvent(httpCommandEvent);
