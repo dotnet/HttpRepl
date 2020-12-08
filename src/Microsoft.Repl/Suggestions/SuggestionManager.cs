@@ -18,7 +18,7 @@ namespace Microsoft.Repl.Suggestions
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             string line = shellState.InputManager.GetCurrentBuffer();
-            ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.ConsoleManager.CaretPosition);
+            ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.InputManager.CaretPosition);
             string currentSuggestion;
 
             //Check to see if we're continuing before querying for suggestions again
@@ -61,7 +61,7 @@ namespace Microsoft.Repl.Suggestions
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             string line = shellState.InputManager.GetCurrentBuffer();
-            ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.ConsoleManager.CaretPosition);
+            ICoreParseResult parseResult = shellState.CommandDispatcher.Parser.Parse(line, shellState.InputManager.CaretPosition);
             string currentSuggestion;
 
             //Check to see if we're continuing before querying for suggestions again

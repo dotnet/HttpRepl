@@ -10,10 +10,6 @@ namespace Microsoft.Repl.ConsoleHandling
     {
         Point Caret { get; }
 
-        Point CommandStart { get; }
-
-        int CaretPosition { get; }
-
 #pragma warning disable CA1716 // Identifiers should not match keywords
         IWritable Error { get; }
 #pragma warning restore CA1716 // Identifiers should not match keywords
@@ -25,8 +21,6 @@ namespace Microsoft.Repl.ConsoleHandling
         void MoveCaret(int positions);
 
         ConsoleKeyInfo ReadKey(CancellationToken cancellationToken);
-
-        void ResetCommandStart();
 
         IDisposable AddBreakHandler(Action onBreak);
 
