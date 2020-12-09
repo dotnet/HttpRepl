@@ -104,11 +104,11 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('g', ConsoleKey.G),
-                GetConsoleKeyInfo('e', ConsoleKey.E),
-                GetConsoleKeyInfo('t', ConsoleKey.T),
-                GetConsoleKeyInfo('\0', ConsoleKey.LeftArrow),
-                GetConsoleKeyInfo('\0', ConsoleKey.Delete)
+                GetConsoleKeyInfo('g'),
+                GetConsoleKeyInfo('e'),
+                GetConsoleKeyInfo('t'),
+                GetConsoleKeyInfo(ConsoleKey.LeftArrow),
+                GetConsoleKeyInfo(ConsoleKey.Delete)
             };
 
             Shell shell = CreateShell(keys,
@@ -129,11 +129,11 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('g', ConsoleKey.G),
-                GetConsoleKeyInfo('e', ConsoleKey.E),
-                GetConsoleKeyInfo('t', ConsoleKey.T),
-                GetConsoleKeyInfo('\0', ConsoleKey.LeftArrow),
-                GetConsoleKeyInfo('\0', ConsoleKey.Backspace)
+                GetConsoleKeyInfo('g'),
+                GetConsoleKeyInfo('e'),
+                GetConsoleKeyInfo('t'),
+                GetConsoleKeyInfo(ConsoleKey.LeftArrow),
+                GetConsoleKeyInfo(ConsoleKey.Backspace)
             };
 
             Shell shell = CreateShell(keys,
@@ -154,10 +154,10 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
 {
-                GetConsoleKeyInfo('g', ConsoleKey.G),
-                GetConsoleKeyInfo('e', ConsoleKey.E),
-                GetConsoleKeyInfo('t', ConsoleKey.T),
-                GetConsoleKeyInfo('\0', ConsoleKey.Escape),
+                GetConsoleKeyInfo('g'),
+                GetConsoleKeyInfo('e'),
+                GetConsoleKeyInfo('t'),
+                GetConsoleKeyInfo(ConsoleKey.Escape),
             };
             Shell shell = CreateShell(keys,
                 previousCommand: null,
@@ -177,9 +177,9 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('g', ConsoleKey.G),
-                GetConsoleKeyInfo('e', ConsoleKey.E),
-                GetConsoleKeyInfo('t', ConsoleKey.T),
+                GetConsoleKeyInfo('g'),
+                GetConsoleKeyInfo('e'),
+                GetConsoleKeyInfo('t'),
                 new(keyChar: '\0', key: ConsoleKey.U, shift: false, alt: false, control: true),
             };
 
@@ -220,10 +220,10 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('g', ConsoleKey.G),
-                GetConsoleKeyInfo('e', ConsoleKey.E),
-                GetConsoleKeyInfo('t', ConsoleKey.T),
-                GetConsoleKeyInfo('\0', ConsoleKey.F1),
+                GetConsoleKeyInfo('g'),
+                GetConsoleKeyInfo('e'),
+                GetConsoleKeyInfo('t'),
+                GetConsoleKeyInfo(ConsoleKey.F1),
             };
 
             Shell shell = CreateShell(keys,
@@ -244,8 +244,8 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('c', ConsoleKey.C),
-                GetConsoleKeyInfo('\0', ConsoleKey.Tab),
+                GetConsoleKeyInfo('c'),
+                GetConsoleKeyInfo(ConsoleKey.Tab),
             };
 
             Shell shell = CreateShell(keys,
@@ -273,7 +273,7 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('c', ConsoleKey.C),
+                GetConsoleKeyInfo('c'),
                 new(keyChar: '\0', key: ConsoleKey.Tab, shift: true, alt: false, control: false),
             };
 
@@ -302,8 +302,8 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('z', ConsoleKey.Z),
-                GetConsoleKeyInfo('\0', ConsoleKey.Tab),
+                GetConsoleKeyInfo('z'),
+                GetConsoleKeyInfo(ConsoleKey.Tab),
             };
 
             Shell shell = CreateShell(keys,
@@ -324,7 +324,7 @@ namespace Microsoft.Repl.Tests
         {
             ConsoleKeyInfo[] keys = new[]
             {
-                GetConsoleKeyInfo('z', ConsoleKey.Z),
+                GetConsoleKeyInfo('z'),
                 new(keyChar: '\0', key: ConsoleKey.Tab, shift: true, alt: false, control: false)
             };
 
@@ -345,7 +345,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithEnterKeyPress_UpdatesInputBufferWithEmptyString()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.Enter, shift: false, alt: false, control: false));
 
             Shell shell = CreateShell(keys,
@@ -363,7 +363,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithLeftArrowKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
 
             Shell shell = CreateShell(keys,
@@ -382,7 +382,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithControlLeftArrowKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: true));
 
             Shell shell = CreateShell(keys,
@@ -401,7 +401,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithRightArrowKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
@@ -423,7 +423,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithControlRightArrowKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
@@ -445,7 +445,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithHomeKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.Home, shift: false, alt: false, control: false));
 
             Shell shell = CreateShell(keys,
@@ -464,7 +464,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithCtrlAKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.A, shift: false, alt: false, control: true));
 
             Shell shell = CreateShell(keys,
@@ -483,7 +483,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithEndKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
@@ -505,7 +505,7 @@ namespace Microsoft.Repl.Tests
         public async Task RunAsync_WithCtrlEKeyPress_VerifyCaretPositionWasUpdated()
         {
             string input = "set base \"https://localhost:44366/\"";
-            List<ConsoleKeyInfo> keys = GetConsoleKeysFromString(input);
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
             keys.Add(new(keyChar: '\0', key: ConsoleKey.LeftArrow, shift: false, alt: false, control: false));
@@ -516,14 +516,47 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            IShellState shellState = shell.ShellState;
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            Assert.Equal(input.Length, shell.ShellState.InputManager.CaretPosition);
+        }
+
+        [Fact]
+        public async Task RunAsync_WithInvalidCommand_VerifyInputBufferIsCleared()
+        {
+            string input = "this is an invalid command\n";
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
+
+            Shell shell = CreateShell(keys,
+                previousCommand: null,
+                nextCommand: null,
+                out CancellationTokenSource cancellationTokenSource);
 
             await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
-            Assert.Equal(input.Length, shellState.InputManager.CaretPosition);
+            Assert.Empty(shell.ShellState.InputManager.GetCurrentBuffer());
+            Assert.Equal(0, shell.ShellState.InputManager.CaretPosition);
         }
 
-        private Shell CreateShell(IEnumerable<ConsoleKeyInfo> consoleKeyInfo,
+        [Fact]
+        public async Task RunAsync_WithTwoInvalidCommandsAndTwoUpArrows_VerifyInputBufferIsCorrect()
+        {
+            string commandOne = "longer invalid command text";
+            string commandTwo = "small invalid cmd";
+            string input = $"{commandOne}\n{commandTwo}\n";
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(input);
+            keys.Add(GetConsoleKeyInfo(ConsoleKey.UpArrow));
+            keys.Add(GetConsoleKeyInfo(ConsoleKey.UpArrow));
+
+            Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
+
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            Assert.Equal(commandOne,shell.ShellState.InputManager.GetCurrentBuffer());
+            Assert.Equal(commandOne.Length, shell.ShellState.InputManager.CaretPosition);
+        }
+
+        private static Shell CreateShell(IEnumerable<ConsoleKeyInfo> consoleKeyInfo,
             string previousCommand,
             string nextCommand,
             out CancellationTokenSource cancellationTokenSource)
@@ -546,44 +579,65 @@ namespace Microsoft.Repl.Tests
             return new Shell(shellState);
         }
 
-        private Shell CreateShell(ConsoleKeyInfo consoleKeyInfo, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
+        private static Shell CreateShell(IEnumerable<ConsoleKeyInfo> consoleKeyInfo, out CancellationTokenSource cancellationTokenSource)
+        {
+            DefaultCommandDispatcher<object> defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
+
+            cancellationTokenSource = new CancellationTokenSource();
+            MockConsoleManager mockConsoleManager = new MockConsoleManager(consoleKeyInfo, cancellationTokenSource);
+
+            ShellState shellState = new ShellState(defaultCommandDispatcher,
+                consoleManager: mockConsoleManager);
+
+            return new Shell(shellState);
+        }
+
+        private static Shell CreateShell(ConsoleKeyInfo consoleKeyInfo, string previousCommand, string nextCommand, out CancellationTokenSource cancellationTokenSource)
         {
             return CreateShell(new ConsoleKeyInfo[] { consoleKeyInfo }, previousCommand, nextCommand, out cancellationTokenSource);
         }
 
-        private static ConsoleKeyInfo GetConsoleKeyInfo(char keyChar, ConsoleKey key) => new(keyChar, key, shift: false, alt: false, control: false);
-
-        private static List<ConsoleKeyInfo> GetConsoleKeysFromString(string text)
+        /// <summary>
+        /// Converts a string into the series of ConsoleKeyInfo instances that would be used
+        /// to type the string in the console.
+        /// </summary>
+        private static List<ConsoleKeyInfo> GetConsoleKeyInfo(string text)
         {
             List<ConsoleKeyInfo> keys = new();
 
+            text = text.Replace("\r\n", "\n");
+
             foreach (char c in text)
             {
-                switch (c)
-                {
-                    case >= 'a' and <= 'z':
-                        keys.Add(new(keyChar: c, key: (ConsoleKey)(c - 32), shift: false, alt: false, control: false));
-                        break;
-                    case >= 'A' and <= 'Z':
-                        keys.Add(new(keyChar: c, key: (ConsoleKey)c, shift: true, alt: false, control: false));
-                        break;
-                    case >= '0' and <= '9':
-                    case ' ':
-                        keys.Add(new(keyChar: c, key: (ConsoleKey)c, shift: false, alt: false, control: false));
-                        break;
-                    case ':':
-                        keys.Add(new(keyChar: c, key: ConsoleKey.Oem1, shift: true, alt: false, control: false));
-                        break;
-                    case '/':
-                        keys.Add(new(keyChar: c, key: ConsoleKey.Oem2, shift: false, alt: false, control: false));
-                        break;
-                    case '"':
-                        keys.Add(new(keyChar: c, key: ConsoleKey.Oem7, shift: true, alt: false, control: false));
-                        break;
-                }
+                ConsoleKeyInfo consoleKeyInfo = GetConsoleKeyInfo(c);
+                keys.Add(consoleKeyInfo);
             }
 
             return keys;
+        }
+
+        /// <summary>
+        /// Builds a ConsoleKeyInfo object with the specified console key, the null keyChar ('\0') and no modifiers.
+        /// Intended for non-printable keystrokes.
+        /// </summary>
+        private static ConsoleKeyInfo GetConsoleKeyInfo(ConsoleKey key) => new('\0', key, shift: false, alt: false, control: false);
+
+        /// <summary>
+        /// Builds a ConsoleKeyInfo that could produce the specified character
+        /// </summary>
+        private static ConsoleKeyInfo GetConsoleKeyInfo(char keyChar)
+        {
+            return keyChar switch
+            {
+                >= 'a' and <= 'z'        => new(keyChar: keyChar, key: (ConsoleKey)(keyChar - 32), shift: false, alt: false, control: false),
+                >= 'A' and <= 'Z'        => new(keyChar: keyChar, key: (ConsoleKey)keyChar,        shift: true,  alt: false, control: false),
+                >= '0' and <= '9' or ' ' => new(keyChar: keyChar, key: (ConsoleKey)keyChar,        shift: false, alt: false, control: false),
+                ':'                      => new(keyChar: keyChar, key: ConsoleKey.Oem1,            shift: true,  alt: false, control: false),
+                '/'                      => new(keyChar: keyChar, key: ConsoleKey.Oem2,            shift: false, alt: false, control: false),
+                '"'                      => new(keyChar: keyChar, key: ConsoleKey.Oem7,            shift: true,  alt: false, control: false),
+                '\n'                     => new(keyChar: '\r',    key: ConsoleKey.Enter,           shift: false, alt: false, control: false),
+                _                        => throw new InvalidOperationException($"Test setup does not support '{keyChar}' yet."),
+            };
         }
     }
 }
