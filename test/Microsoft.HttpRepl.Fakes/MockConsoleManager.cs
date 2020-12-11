@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Microsoft.Repl.ConsoleHandling;
@@ -11,13 +12,14 @@ namespace Microsoft.HttpRepl.Fakes
     public class MockConsoleManager : IConsoleManager
     {
         private CancellationTokenSource _cancellationTokenSource;
-        private ConsoleKeyInfo _consoleKeyInfo;
+        private List<ConsoleKeyInfo> _consoleKeyInfo;
+        private int _nextKeyIndex;
         private StringBuilder _outputTracking = new StringBuilder();
 
-        public MockConsoleManager(ConsoleKeyInfo consoleKeyInfo, CancellationTokenSource cancellationTokenSource)
+        public MockConsoleManager(IEnumerable<ConsoleKeyInfo> consoleKeyInfo, CancellationTokenSource cancellationTokenSource)
         {
             _cancellationTokenSource = cancellationTokenSource;
-            _consoleKeyInfo = consoleKeyInfo;
+            _consoleKeyInfo = new List<ConsoleKeyInfo>(consoleKeyInfo);
         }
 
         public MockConsoleManager()
@@ -35,7 +37,7 @@ namespace Microsoft.HttpRepl.Fakes
 
         public IWritable Error => new MockWritable();
 
-        public bool IsKeyAvailable => throw new NotImplementedException();
+        public bool IsKeyAvailable => _nextKeyIndex < _consoleKeyInfo.Count;
 
         public void Clear()
         {
@@ -48,8 +50,13 @@ namespace Microsoft.HttpRepl.Fakes
 
         public ConsoleKeyInfo ReadKey(CancellationToken cancellationToken)
         {
-            _cancellationTokenSource.Cancel();
-            return _consoleKeyInfo;
+            ConsoleKeyInfo currentKeyInfo = _nextKeyIndex < _consoleKeyInfo.Count ? _consoleKeyInfo[_nextKeyIndex] : new ConsoleKeyInfo();
+            _nextKeyIndex++;
+            if (_nextKeyIndex >= _consoleKeyInfo.Count)
+            {
+                _cancellationTokenSource.Cancel();
+            }
+            return currentKeyInfo;
         }
 
         public void ResetCommandStart()

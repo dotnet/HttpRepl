@@ -11,6 +11,8 @@ namespace Microsoft.Repl.Input
     {
         bool IsOverwriteMode { get; set; }
 
+        int CaretPosition { get; }
+
         IInputManager RegisterKeyHandler(ConsoleKey key, AsyncKeyPressHandler handler);
 
         IInputManager RegisterKeyHandler(ConsoleKey key, ConsoleModifiers modifiers, AsyncKeyPressHandler handler);
@@ -28,5 +30,7 @@ namespace Microsoft.Repl.Input
         void RemoveCurrentCharacter(IShellState state);
 
         void Clear(IShellState state);
+
+        void MoveCaret(int positions);
     }
 }

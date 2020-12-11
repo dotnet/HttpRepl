@@ -14,17 +14,6 @@ namespace Microsoft.Repl.ConsoleHandling
 
         public Point Caret => new Point(Console.CursorLeft, Console.CursorTop);
 
-        public Point CommandStart
-        {
-            get
-            {
-                Point c = Caret;
-                return new Point(c.X - CaretPosition % Console.BufferWidth, c.Y - CaretPosition / Console.BufferWidth);
-            }
-        }
-
-        public int CaretPosition { get; private set; }
-
         public bool IsKeyAvailable => Console.KeyAvailable;
 
         public bool IsCaretVisible
@@ -35,95 +24,88 @@ namespace Microsoft.Repl.ConsoleHandling
 
         public ConsoleManager()
         {
-            Error = new Writable(CaretUpdateScope, Reporter.Error);
+            Error = new Writable(Reporter.Error);
             Console.CancelKeyPress += OnCancelKeyPress;
         }
 
         public void Clear()
         {
-            using (CaretUpdateScope())
-            {
-                Console.Clear();
-                ResetCommandStart();
-            }
+            Console.Clear();
         }
 
         public void MoveCaret(int positions)
         {
-            using (CaretUpdateScope())
+            if (positions == 0)
             {
-                if (positions == 0)
-                {
-                    return;
-                }
-
-                int bufferWidth = Console.BufferWidth;
-                int cursorTop = Console.CursorTop;
-                int cursorLeft = Console.CursorLeft;
-
-                while (positions < 0 && CaretPosition > 0)
-                {
-                    if (-positions > bufferWidth)
-                    {
-                        if (cursorTop == 0)
-                        {
-                            cursorLeft = 0;
-                            positions = 0;
-                        }
-                        else
-                        {
-                            positions += bufferWidth;
-                            --cursorTop;
-                        }
-                    }
-                    else
-                    {
-                        int remaining = cursorLeft + positions;
-
-                        if (remaining >= 0)
-                        {
-                            cursorLeft = remaining;
-                        }
-                        else if (cursorTop == 0)
-                        {
-                            cursorLeft = 0;
-                        }
-                        else
-                        {
-                            --cursorTop;
-                            cursorLeft = bufferWidth + remaining;
-                        }
-
-                        positions = 0;
-                    }
-                }
-
-                while (positions > 0)
-                {
-                    if (positions > bufferWidth)
-                    {
-                        positions -= bufferWidth;
-                        ++cursorTop;
-                    }
-                    else
-                    {
-                        int spaceLeftOnLine = bufferWidth - cursorLeft - 1;
-                        if (positions > spaceLeftOnLine)
-                        {
-                            ++cursorTop;
-                            cursorLeft = positions - spaceLeftOnLine - 1;
-                        }
-                        else
-                        {
-                            cursorLeft += positions;
-                        }
-
-                        positions = 0;
-                    }
-                }
-
-                Console.SetCursorPosition(cursorLeft, cursorTop);
+                return;
             }
+
+            int bufferWidth = Console.BufferWidth;
+            int cursorTop = Console.CursorTop;
+            int cursorLeft = Console.CursorLeft;
+
+            while (positions < 0)
+            {
+                if (-positions > bufferWidth)
+                {
+                    if (cursorTop == 0)
+                    {
+                        cursorLeft = 0;
+                        positions = 0;
+                    }
+                    else
+                    {
+                        positions += bufferWidth;
+                        --cursorTop;
+                    }
+                }
+                else
+                {
+                    int remaining = cursorLeft + positions;
+
+                    if (remaining >= 0)
+                    {
+                        cursorLeft = remaining;
+                    }
+                    else if (cursorTop == 0)
+                    {
+                        cursorLeft = 0;
+                    }
+                    else
+                    {
+                        --cursorTop;
+                        cursorLeft = bufferWidth + remaining;
+                    }
+
+                    positions = 0;
+                }
+            }
+
+            while (positions > 0)
+            {
+                if (positions > bufferWidth)
+                {
+                    positions -= bufferWidth;
+                    ++cursorTop;
+                }
+                else
+                {
+                    int spaceLeftOnLine = bufferWidth - cursorLeft - 1;
+                    if (positions > spaceLeftOnLine)
+                    {
+                        ++cursorTop;
+                        cursorLeft = positions - spaceLeftOnLine - 1;
+                    }
+                    else
+                    {
+                        cursorLeft += positions;
+                    }
+
+                    positions = 0;
+                }
+            }
+
+            Console.SetCursorPosition(cursorLeft, cursorTop);
         }
 
         public ConsoleKeyInfo ReadKey(CancellationToken cancellationToken)
@@ -143,33 +125,19 @@ namespace Microsoft.Repl.ConsoleHandling
             }
         }
 
-        public void ResetCommandStart()
-        {
-            CaretPosition = 0;
-        }
-
         public void Write(char c)
         {
-            using (CaretUpdateScope())
-            {
-                Reporter.Output.Write(c);
-            }
+            Reporter.Output.Write(c);
         }
 
         public void Write(string s)
         {
-            using (CaretUpdateScope())
-            {
-                Reporter.Output.Write(s);
-            }
+            Reporter.Output.Write(s);
         }
 
         public void WriteLine()
         {
-            using (CaretUpdateScope())
-            {
-                Reporter.Output.WriteLine();
-            }
+            Reporter.Output.WriteLine();
         }
 
         public void WriteLine(string s)
@@ -179,10 +147,7 @@ namespace Microsoft.Repl.ConsoleHandling
                 return;
             }
 
-            using (CaretUpdateScope())
-            {
-                Reporter.Output.WriteLine(s);
-            }
+            Reporter.Output.WriteLine(s);
         }
 
         public IDisposable AddBreakHandler(Action onBreak)
@@ -190,18 +155,6 @@ namespace Microsoft.Repl.ConsoleHandling
             Disposable result = new Disposable(() => ReleaseBreakHandler(onBreak));
             _breakHandlers.Add(onBreak);
             return result;
-        }
-
-        private IDisposable CaretUpdateScope()
-        {
-            Point currentCaret = Caret;
-            return new Disposable(() =>
-            {
-                Point c = Caret;
-                int y = c.Y - currentCaret.Y;
-                int x = c.X - currentCaret.X;
-                CaretPosition += y * Console.BufferWidth + x;
-            });
         }
 
         private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)

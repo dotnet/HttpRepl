@@ -30,5 +30,11 @@ namespace Microsoft.Repl
         public bool IsExiting { get; set; }
 
         public ISuggestionManager SuggestionManager { get; }
+
+        public void MoveCarets(int positions)
+        {
+            ConsoleManager.MoveCaret(positions);
+            InputManager.MoveCaret(positions);
+        }
     }
 }
