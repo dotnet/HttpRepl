@@ -13,9 +13,16 @@ namespace Microsoft.HttpRepl.Fakes
     {
         private string _inputBuffer;
 
+        public int CaretPosition { get; private set; }
+
         public MockInputManager(string inputBuffer)
         {
             _inputBuffer = inputBuffer;
+        }
+
+        public void MoveCaret(int positions)
+        {
+
         }
 
         public bool IsOverwriteMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

@@ -25,10 +25,6 @@ namespace Microsoft.HttpRepl.Fakes
         #region IConsoleManager
         public Point Caret => _baseConsole.Caret;
 
-        public Point CommandStart => _baseConsole.CommandStart;
-
-        public int CaretPosition => _baseConsole.CaretPosition;
-
         public IWritable Error => _baseConsole.Error;
 
         public bool IsKeyAvailable => _baseConsole.IsKeyAvailable;
@@ -56,11 +52,6 @@ namespace Microsoft.HttpRepl.Fakes
         public ConsoleKeyInfo ReadKey(CancellationToken cancellationToken)
         {
             return _baseConsole.ReadKey(cancellationToken);
-        }
-
-        public void ResetCommandStart()
-        {
-            _baseConsole.ResetCommandStart();
         }
 
         public void Write(char c)

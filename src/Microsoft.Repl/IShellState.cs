@@ -21,5 +21,7 @@ namespace Microsoft.Repl
         ISuggestionManager SuggestionManager { get; }
 
         bool IsExiting { get; set; }
+
+        void MoveCarets(int positions);
     }
 }

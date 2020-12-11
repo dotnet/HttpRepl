@@ -18,6 +18,24 @@ namespace Microsoft.Repl.Input
 
         public bool IsOverwriteMode { get; set; }
 
+        public int CaretPosition { get; private set; }
+
+        public void MoveCaret(int positions)
+        {
+            if (CaretPosition + positions < 0)
+            {
+                CaretPosition = 0;
+            }
+            else if (CaretPosition + positions > _inputBuffer.Count)
+            {
+                CaretPosition = _inputBuffer.Count;
+            }
+            else
+            {
+                CaretPosition += positions;
+            }
+        }
+
         public void Clear(IShellState state)
         {
             SetInput(state, string.Empty);
@@ -70,18 +88,15 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            int caret = state.ConsoleManager.CaretPosition;
-
-            if (caret == _inputBuffer.Count)
+            if (CaretPosition == _inputBuffer.Count)
             {
                 return;
             }
 
             List<char> update = _inputBuffer.ToList();
-            update.RemoveAt(caret);
+            update.RemoveAt(CaretPosition);
             state.ConsoleManager.IsCaretVisible = false;
             SetInput(state, update);
-            state.ConsoleManager.MoveCaret(caret - state.ConsoleManager.CaretPosition);
             state.ConsoleManager.IsCaretVisible = true;
         }
 
@@ -89,17 +104,15 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            int caret = state.ConsoleManager.CaretPosition;
-            if (caret == 0)
+            if (CaretPosition == 0)
             {
                 return;
             }
 
             List<char> update = _inputBuffer.ToList();
-            update.RemoveAt(caret - 1);
+            update.RemoveAt(CaretPosition - 1);
             state.ConsoleManager.IsCaretVisible = false;
-            SetInput(state, update, false);
-            state.ConsoleManager.MoveCaret(caret - state.ConsoleManager.CaretPosition - 1);
+            SetInput(state, update);
             state.ConsoleManager.IsCaretVisible = true;
         }
 
@@ -115,6 +128,7 @@ namespace Microsoft.Repl.Input
         public void ResetInput()
         {
             _inputBuffer.Clear();
+            CaretPosition = 0;
         }
 
         private string _ttyState;
@@ -163,7 +177,7 @@ namespace Microsoft.Repl.Input
             }
         }
 
-        private void SetInput(IShellState state, IReadOnlyList<char> input, bool moveCaret = true)
+        private void SetInput(IShellState state, IReadOnlyList<char> input)
         {
             bool oldCaretVisibility = state.ConsoleManager.IsCaretVisible;
             state.ConsoleManager.IsCaretVisible = false;
@@ -173,7 +187,7 @@ namespace Microsoft.Repl.Input
             {
             }
 
-            state.ConsoleManager.MoveCaret(-state.ConsoleManager.CaretPosition + lastCommonPosition);
+            state.ConsoleManager.MoveCaret(-CaretPosition + lastCommonPosition);
             string str = new string(input.Skip(lastCommonPosition).ToArray());
             int trailing = _inputBuffer.Count - input.Count;
 
@@ -184,13 +198,15 @@ namespace Microsoft.Repl.Input
 
             state.ConsoleManager.Write(str);
 
-            if (trailing > 0 && moveCaret)
+            _inputBuffer.Clear();
+            _inputBuffer.AddRange(input);
+
+            if (trailing > 0)
             {
                 state.ConsoleManager.MoveCaret(-trailing);
             }
 
-            _inputBuffer.Clear();
-            _inputBuffer.AddRange(input);
+            CaretPosition = _inputBuffer.Count;
 
             if (oldCaretVisibility)
             {
@@ -234,11 +250,13 @@ namespace Microsoft.Repl.Input
                         //TODO: Verify on a mac whether these are still needed
                         if (keyPress.Key == ConsoleKey.A)
                         {
-                            state.ConsoleManager.MoveCaret(-state.ConsoleManager.CaretPosition);
+                            state.ConsoleManager.MoveCaret(-CaretPosition);
+                            CaretPosition = 0;
                         }
                         else if (keyPress.Key == ConsoleKey.E)
                         {
-                            state.ConsoleManager.MoveCaret(_inputBuffer.Count - state.ConsoleManager.CaretPosition);
+                            state.ConsoleManager.MoveCaret(_inputBuffer.Count - CaretPosition);
+                            CaretPosition = _inputBuffer.Count;
                         }
                     }
                     //TODO: Register these like regular commands
@@ -252,7 +270,7 @@ namespace Microsoft.Repl.Input
                         //Move back a word
                         if (keyPress.Key == ConsoleKey.B)
                         {
-                            int i = state.ConsoleManager.CaretPosition - 1;
+                            int i = CaretPosition - 1;
 
                             if (i < 0)
                             {
@@ -272,13 +290,14 @@ namespace Microsoft.Repl.Input
 
                             if (i > -1)
                             {
-                                state.ConsoleManager.MoveCaret(i - state.ConsoleManager.CaretPosition);
+                                state.ConsoleManager.MoveCaret(i - CaretPosition);
+                                CaretPosition = i;
                             }
                         }
                         //Move forward a word
                         else if (keyPress.Key == ConsoleKey.F)
                         {
-                            int i = state.ConsoleManager.CaretPosition + 1;
+                            int i = CaretPosition + 1;
 
                             if (i >= _inputBuffer.Count)
                             {
@@ -296,7 +315,8 @@ namespace Microsoft.Repl.Input
                                 --i;
                             }
 
-                            state.ConsoleManager.MoveCaret(i - state.ConsoleManager.CaretPosition);
+                            state.ConsoleManager.MoveCaret(i - CaretPosition);
+                            CaretPosition = i;
                         }
                     }
                     else
@@ -319,25 +339,27 @@ namespace Microsoft.Repl.Input
                             continue;
                         }
 
-                        if (state.ConsoleManager.CaretPosition == _inputBuffer.Count)
+                        if (CaretPosition == _inputBuffer.Count)
                         {
                             _inputBuffer.Add(keyPress.KeyChar);
                             state.ConsoleManager.Write(keyPress.KeyChar);
+                            MoveCaret(1);
                         }
                         else if (IsOverwriteMode)
                         {
-                            _inputBuffer[state.ConsoleManager.CaretPosition] = keyPress.KeyChar;
+                            _inputBuffer[CaretPosition] = keyPress.KeyChar;
                             state.ConsoleManager.Write(keyPress.KeyChar);
+                            MoveCaret(1);
                         }
                         else
                         {
                             state.ConsoleManager.IsCaretVisible = false;
-                            _inputBuffer.Insert(state.ConsoleManager.CaretPosition, keyPress.KeyChar);
-                            int currentCaretPosition = state.ConsoleManager.CaretPosition;
-                            string s = new string(_inputBuffer.ToArray(), state.ConsoleManager.CaretPosition, _inputBuffer.Count - state.ConsoleManager.CaretPosition);
+                            _inputBuffer.Insert(CaretPosition, keyPress.KeyChar);
+                            int currentCaretPosition = CaretPosition;
+                            string s = new string(_inputBuffer.ToArray(), CaretPosition, _inputBuffer.Count - CaretPosition);
                             state.ConsoleManager.Write(s);
-                            state.ConsoleManager.MoveCaret(currentCaretPosition - state.ConsoleManager.CaretPosition + 1);
                             state.ConsoleManager.IsCaretVisible = true;
+                            MoveCaret(1);
                         }
                     }
                 }
@@ -352,7 +374,7 @@ namespace Microsoft.Repl.Input
         {
             string str = new string(presses.Select(x => x.KeyChar).ToArray());
 
-            if (state.ConsoleManager.CaretPosition == _inputBuffer.Count)
+            if (CaretPosition == _inputBuffer.Count)
             {
                 _inputBuffer.AddRange(str);
                 state.ConsoleManager.Write(str);
@@ -361,9 +383,9 @@ namespace Microsoft.Repl.Input
             {
                 for (int i = 0; i < str.Length; ++i)
                 {
-                    if (state.ConsoleManager.CaretPosition + i < _inputBuffer.Count)
+                    if (CaretPosition + i < _inputBuffer.Count)
                     {
-                        _inputBuffer[state.ConsoleManager.CaretPosition + i] = str[i];
+                        _inputBuffer[CaretPosition + i] = str[i];
                     }
                     else
                     {
@@ -377,13 +399,14 @@ namespace Microsoft.Repl.Input
             else
             {
                 state.ConsoleManager.IsCaretVisible = false;
-                _inputBuffer.InsertRange(state.ConsoleManager.CaretPosition, str);
-                int currentCaretPosition = state.ConsoleManager.CaretPosition;
-                string s = new string(_inputBuffer.ToArray(), state.ConsoleManager.CaretPosition, _inputBuffer.Count - state.ConsoleManager.CaretPosition);
+                _inputBuffer.InsertRange(CaretPosition, str);
+                int currentCaretPosition = CaretPosition;
+                string s = new string(_inputBuffer.ToArray(), CaretPosition, _inputBuffer.Count - CaretPosition);
                 state.ConsoleManager.Write(s);
-                state.ConsoleManager.MoveCaret(currentCaretPosition - state.ConsoleManager.CaretPosition + str.Length);
+                state.ConsoleManager.MoveCaret(currentCaretPosition - CaretPosition + str.Length);
                 state.ConsoleManager.IsCaretVisible = true;
             }
+            MoveCaret(str.Length);
 
             presses = null;
         }

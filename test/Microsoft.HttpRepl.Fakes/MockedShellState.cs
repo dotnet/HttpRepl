@@ -46,5 +46,11 @@ namespace Microsoft.HttpRepl.Fakes
         public ISuggestionManager SuggestionManager => _shellState.SuggestionManager;
 
         public bool IsExiting { get => _shellState.IsExiting; set => _shellState.IsExiting = value; }
+
+        public void MoveCarets(int positions)
+        {
+            ConsoleManager?.MoveCaret(positions);
+            InputManager?.MoveCaret(positions);
+        }
     }
 }
