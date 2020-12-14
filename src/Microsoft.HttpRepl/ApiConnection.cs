@@ -155,8 +155,10 @@ namespace Microsoft.HttpRepl
             }
         }
 
-        public async Task SetupHttpState(HttpState httpState, bool performAutoDetect, CancellationToken cancellationToken)
+        public async Task SetupHttpState(HttpState httpState, bool performAutoDetect, bool persistHeaders, bool persistPath, CancellationToken cancellationToken)
         {
+            httpState.ResetState(persistHeaders, persistPath);
+
             if (HasSwaggerUri)
             {
                 SwaggerDocument = await GetSwaggerDocAsync(httpState.Client, SwaggerUri!, cancellationToken);

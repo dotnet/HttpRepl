@@ -205,7 +205,7 @@ namespace Microsoft.HttpRepl.Commands
                     SwaggerUri = programState.SwaggerEndpoint,
                     AllowBaseOverrideBySwagger = false
                 };
-                await apiConnection.SetupHttpState(programState, performAutoDetect: false, cancellationToken).ConfigureAwait(false);
+                await apiConnection.SetupHttpState(programState, performAutoDetect: false, persistHeaders: true, persistPath: true, cancellationToken).ConfigureAwait(false);
             }
         }
 

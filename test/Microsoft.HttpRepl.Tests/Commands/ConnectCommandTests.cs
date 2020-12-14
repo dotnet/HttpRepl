@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
@@ -801,6 +802,92 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Equal("False", collectedTelemetry.Properties["BaseSpecified"]);
             Assert.Equal("False", collectedTelemetry.Properties["OpenApiSpecified"]);
             Assert.Equal("False", collectedTelemetry.Properties["OpenApiFound"]);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithoutPersistHeaders_DoesNotPersistNonDefaultHeaders()
+        {
+            string rootAddress = "https://localhost/";
+            ArrangeInputs($"connect {rootAddress}",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences,
+                          fileContents: "");
+
+            httpState.Headers["TestHeaderName"] = new[] { "TestHeaderValue" };
+
+            ConnectCommand connectCommand = new(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(httpState.Headers);
+            Assert.True(httpState.Headers.ContainsKey("User-Agent"));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithoutPersistPaths_DoesNotPersistPaths()
+        {
+            string rootAddress = "https://localhost/";
+            ArrangeInputs($"connect {rootAddress}",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences,
+                          fileContents: "");
+
+            httpState.PathSections.Push("dir1");
+
+            ConnectCommand connectCommand = new(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Empty(httpState.PathSections);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithPersistHeaders_PersistsHeaders()
+        {
+            string expectedHeaderName = "TestHeaderName";
+            string expectedHeaderValue = "TestHeaderValue";
+            string rootAddress = "https://localhost/";
+            ArrangeInputs($"connect {rootAddress} --persist-headers",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences,
+                          fileContents: "");
+
+            httpState.Headers[expectedHeaderName] = new[] { expectedHeaderValue };
+
+            ConnectCommand connectCommand = new(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.True(httpState.Headers.ContainsKey(expectedHeaderName));
+            Assert.Equal(expectedHeaderValue, httpState.Headers[expectedHeaderName].Single());
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WithPersistPaths_PersistsPaths()
+        {
+            string expectedPathSection = "dir1";
+            string rootAddress = "https://localhost/";
+            ArrangeInputs($"connect {rootAddress} --persist-paths",
+                          out MockedShellState shellState,
+                          out HttpState httpState,
+                          out ICoreParseResult parseResult,
+                          out IPreferences preferences,
+                          fileContents: "");
+
+            httpState.PathSections.Push(expectedPathSection);
+
+            ConnectCommand connectCommand = new(preferences, new NullTelemetry());
+
+            await connectCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Assert.Single(httpState.PathSections);
+            Assert.Equal(httpState.PathSections.Peek(), expectedPathSection);
         }
 
         private void ArrangeInputs(string commandText, out MockedShellState shellState, out HttpState httpState, out ICoreParseResult parseResult, out IPreferences preferences, string fileContents = null)
