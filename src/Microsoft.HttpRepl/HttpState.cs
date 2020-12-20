@@ -91,13 +91,12 @@ namespace Microsoft.HttpRepl
             return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, null);
         }
 
-
-        public Uri GetEffectivePathWithQueryString(string commandSpecifiedPath, Dictionary<string,IEnumerable<string>> queryString)
+        public Uri GetEffectivePathWithQueryString(string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryString)
         {
             return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryString);
         }
 
-        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string,IEnumerable<string>> queryString)
+        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryString)
         {
             // If an absolute uri string was already specified, just return that.
             if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
@@ -121,7 +120,6 @@ namespace Microsoft.HttpRepl
 
             if (queryString != null)
             {
-                
                 foreach (KeyValuePair<string, IEnumerable<string>> tuple in queryString)
                 {
                     foreach (var singleValue in tuple.Value)
