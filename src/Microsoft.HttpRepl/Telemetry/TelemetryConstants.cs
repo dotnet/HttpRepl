@@ -10,6 +10,7 @@ namespace Microsoft.HttpRepl.Telemetry
         public const string HttpCommand = nameof(HttpCommand);
         public const string Preference = nameof(Preference);
         public const string SetHeader = nameof(SetHeader);
+        public const string SetQueryString = nameof(SetQueryString);
         public const string Started = nameof(Started);
         public const string WebApiF5Fix = nameof(WebApiF5Fix);
     }
@@ -40,6 +41,9 @@ namespace Microsoft.HttpRepl.Telemetry
 
         public const string SetHeader_HeaderName = "HeaderName";
         public const string SetHeader_IsValueEmpty = "IsValueEmpty";
+
+        public const string SetQueryString_Key= "QueryStringKey";
+        public const string SetQueryString_IsValueEmpty = "IsValueEmpty";
 
         public const string Started_WithHelp = "WithHelp";
         public const string Started_WithOtherArgs = "WithOtherArgs";

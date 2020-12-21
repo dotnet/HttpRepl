@@ -228,6 +228,9 @@ Type `help connect` for more information on the `connect` command.</value>
   <data name="SetHeaderCommand_HelpDetails" xml:space="preserve">
     <value>Sets or clears a header. When [value] is empty the header is cleared.</value>
   </data>
+  <data name="SetQueryStringCommand_HelpDetails" xml:space="preserve">
+    <value>Sets or clears a query string key and value. When [value] is empty the header is cleared. The value will be UrlEncoded.</value>
+  </data>
   <data name="RunCommand_HelpDetails" xml:space="preserve">
     <value>run {path to script}
 

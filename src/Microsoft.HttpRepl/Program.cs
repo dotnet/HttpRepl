@@ -124,6 +124,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommandWithTelemetry(telemetry, new PutCommand(fileSystem, preferences, telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new RunCommand(fileSystem));
             dispatcher.AddCommandWithTelemetry(telemetry, new SetHeaderCommand(telemetry));
+            dispatcher.AddCommandWithTelemetry(telemetry, new SetQueryStringCommand(telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new UICommand(new UriLauncher(), preferences));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
