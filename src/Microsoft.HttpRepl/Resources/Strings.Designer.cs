@@ -268,7 +268,9 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified.
+        ///   Looks up a localized string similar to Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified
+        ///
+        ///By default, existing headers set via the `set header` command and path segments beyond the base address are cleared when this command is executed. Use [--persist-headers] and [--persist-paths] to change those defaults.
         /// </summary>
         internal static string ConnectCommand_HelpDetails_Line1 {
             get {
@@ -300,6 +302,24 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ConnectCommand_HelpDetails_Line4 {
             get {
                 return ResourceManager.GetString("ConnectCommand_HelpDetails_Line4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [--persist-headers] leaves existing session headers in place when connecting to a new API.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line5 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [--persist-path] leaves existing path segments in place when connecting to a new API.
+        /// </summary>
+        internal static string ConnectCommand_HelpDetails_Line6 {
+            get {
+                return ResourceManager.GetString("ConnectCommand_HelpDetails_Line6", resourceCulture);
             }
         }
         

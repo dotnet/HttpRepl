@@ -43,10 +43,8 @@ namespace Microsoft.HttpRepl
             _preferences = preferences;
             Client = httpClient;
             PathSections = new Stack<string>();
-            Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "User-Agent", new[] { _preferences.GetValue(WellKnownPreference.HttpClientUserAgent, "HTTP-REPL") } }
-            };
+            Headers = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
+            AddDefaultHeaders();
         }
 
         public string GetPrompt()
@@ -225,6 +223,28 @@ namespace Microsoft.HttpRepl
                 }
 
                 builder.Query += query;
+            }
+        }
+
+        private void AddDefaultHeaders()
+        {
+            Headers["User-Agent"] = new[] { _preferences.GetValue(WellKnownPreference.HttpClientUserAgent, "HTTP-REPL") };
+        }
+
+        public void ResetState(bool persistHeaders = false, bool persistPath = false)
+        {
+            BaseAddress = null;
+            SwaggerEndpoint = null;
+
+            if (!persistHeaders)
+            {
+                Headers.Clear();
+                AddDefaultHeaders();
+            }
+
+            if (!persistPath)
+            {
+                PathSections.Clear();
             }
         }
     }

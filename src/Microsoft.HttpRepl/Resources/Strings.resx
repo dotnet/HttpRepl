@@ -288,7 +288,9 @@ Type `help connect` for more information on the `connect` command.</value>
     <value>Configures the directory structure and base address of the api server</value>
   </data>
   <data name="ConnectCommand_HelpDetails_Line1" xml:space="preserve">
-    <value>Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified</value>
+    <value>Configures the directory structure and base address of the api server based on the arguments and options specified. At least one of [rootAddress], [--base baseAddress] or [--openapi openApiDescriptionAddress] must be specified
+
+By default, existing headers set via the `set header` command and path segments beyond the base address are cleared when this command is executed. Use [--persist-headers] and [--persist-paths] to change those defaults</value>
   </data>
   <data name="ConnectCommand_HelpDetails_Line2" xml:space="preserve">
     <value>[rootAddress] will be used to automatically determine the base address and OpenAPI description address</value>
@@ -433,5 +435,11 @@ Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
   </data>
   <data name="ApiConnection_Logging_SuccessfulWithWarnings" xml:space="preserve">
     <value>Successful (with warnings)</value>
+  </data>
+  <data name="ConnectCommand_HelpDetails_Line5" xml:space="preserve">
+    <value>[--persist-headers] leaves existing session headers in place when connecting to a new API</value>
+  </data>
+  <data name="ConnectCommand_HelpDetails_Line6" xml:space="preserve">
+    <value>[--persist-path] leaves existing path segments in place when connecting to a new API</value>
   </data>
 </root>

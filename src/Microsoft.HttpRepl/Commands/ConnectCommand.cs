@@ -22,8 +22,10 @@ namespace Microsoft.HttpRepl.Commands
         private const string BaseAddressOption = nameof(BaseAddressOption);
         private const string SwaggerAddressOption = nameof(SwaggerAddressOption);
         private const string VerbosityOption = nameof(VerbosityOption);
+        private const string PersistHeadersOption = nameof(PersistHeadersOption);
+        private const string PersistPathOption = nameof(PersistPathOption);
         public override string Name => "connect";
-        private const string WebApiDefaultPathSuffix = "/swagger/"; 
+        private const string WebApiDefaultPathSuffix = "/swagger/";
 
         private readonly IPreferences _preferences;
         private readonly ITelemetry _telemetry;
@@ -53,6 +55,12 @@ namespace Microsoft.HttpRepl.Commands
                                                                                                                                    minimumOccurrences: 0,
                                                                                                                                    maximumOccurrences: 1,
                                                                                                                                    forms: new[] { "--verbose", "-v" }))
+                                                                                        .WithOption(new CommandOptionSpecification(id: PersistHeadersOption,
+                                                                                                                                   maximumOccurrences: 1,
+                                                                                                                                   forms: new[] { "--persist-headers"}))
+                                                                                        .WithOption(new CommandOptionSpecification(id: PersistPathOption,
+                                                                                                                                   maximumOccurrences: 1,
+                                                                                                                                   forms: new[] { "--persist-path"}))
                                                                                         .Finish();
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
@@ -66,13 +74,15 @@ namespace Microsoft.HttpRepl.Commands
             {
                 StringBuilder helpText = new StringBuilder();
                 helpText.Append(Resources.Strings.Usage.Bold());
-                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--openapi openApiDescriptionAddress] [--verbose]");
+                helpText.AppendLine("connect [rootAddress] [--base baseAddress] [--openapi openApiDescriptionAddress] [--verbose] [--persist-headers] [--persist-paths]");
                 helpText.AppendLine();
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line1);
                 helpText.AppendLine();
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line2);
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line3);
                 helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line4);
+                helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line5);
+                helpText.AppendLine(Resources.Strings.ConnectCommand_HelpDetails_Line6);
                 return helpText.ToString();
             }
             return null;
@@ -90,6 +100,8 @@ namespace Microsoft.HttpRepl.Commands
             string baseAddress = GetBaseAddressFromCommand(commandInput)?.EnsureTrailingSlash();
             string swaggerAddress = GetSwaggerAddressFromCommand(commandInput);
             bool isVerbosityEnabled = GetOptionExistsFromCommand(commandInput, VerbosityOption);
+            bool persistHeaders = GetOptionExistsFromCommand(commandInput, PersistHeadersOption);
+            bool persistPath = GetOptionExistsFromCommand(commandInput, PersistPathOption);
 
             ApiConnection connectionInfo = GetConnectionInfo(shellState, programState, rootAddress, baseAddress, swaggerAddress, _preferences, isVerbosityEnabled);
 
@@ -103,7 +115,7 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, cancellationToken);
+            await connectionInfo.SetupHttpState(programState, performAutoDetect: true, persistHeaders, persistPath, cancellationToken);
 
             bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
 
@@ -184,7 +196,7 @@ namespace Microsoft.HttpRepl.Commands
 
                     _telemetry.TrackEvent(fixEvent);
                 }
-                
+
                 apiConnection.RootUri = new Uri(rootAddress, UriKind.Absolute);
             }
 
