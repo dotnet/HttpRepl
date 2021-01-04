@@ -84,7 +84,7 @@ namespace Microsoft.Repl.Commanding
             shellState = shellState ?? throw new ArgumentNullException(nameof(shellState));
 
             string line = shellState.InputManager.GetCurrentBuffer();
-            TParseResult parseResult = _parser.Parse(line, shellState.ConsoleManager.CaretPosition);
+            TParseResult parseResult = _parser.Parse(line, shellState.InputManager.CaretPosition);
             HashSet<string> suggestions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (ICommand<TProgramState, TParseResult> command in _commands)
@@ -139,7 +139,7 @@ namespace Microsoft.Repl.Commanding
         private async Task ExecuteCommandInternalAsync(IShellState shellState, CancellationToken cancellationToken)
         {
             string line = shellState.InputManager.GetCurrentBuffer();
-            TParseResult parseResult = _parser.Parse(line, shellState.ConsoleManager.CaretPosition);
+            TParseResult parseResult = _parser.Parse(line, shellState.InputManager.CaretPosition);
 
             if (!string.IsNullOrWhiteSpace(parseResult.CommandText))
             {
@@ -171,7 +171,7 @@ namespace Microsoft.Repl.Commanding
             if (!_isReady && !shellState.IsExiting)
             {
                 _onReady(shellState);
-                shellState.ConsoleManager.ResetCommandStart();
+                shellState.InputManager.ResetInput();
                 _isReady = true;
             }
         }

@@ -89,7 +89,7 @@ namespace Microsoft.Repl.Input
 
         private static Task End(ConsoleKeyInfo keyInfo, IShellState state, CancellationToken cancellationToken)
         {
-            state.ConsoleManager.MoveCaret(state.InputManager.GetCurrentBuffer().Length - state.ConsoleManager.CaretPosition);
+            state.MoveCarets(state.InputManager.GetCurrentBuffer().Length - state.InputManager.CaretPosition);
             return Task.CompletedTask;
         }
 
@@ -97,7 +97,7 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            state.ConsoleManager.MoveCaret(-state.ConsoleManager.CaretPosition);
+            state.MoveCarets(-state.InputManager.CaretPosition);
             return Task.CompletedTask;
         }
 
@@ -105,16 +105,16 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            if (state.ConsoleManager.CaretPosition > 0)
+            if (state.InputManager.CaretPosition > 0)
             {
                 if (!keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
                 {
-                    state.ConsoleManager.MoveCaret(-1);
+                    state.MoveCarets(-1);
                 }
                 else
                 {
                     string line = state.InputManager.GetCurrentBuffer();
-                    ICoreParseResult parseResult = state.CommandDispatcher.Parser.Parse(line, state.ConsoleManager.CaretPosition);
+                    ICoreParseResult parseResult = state.CommandDispatcher.Parser.Parse(line, state.InputManager.CaretPosition);
                     int targetSection = parseResult.SelectedSection - (parseResult.CaretPositionWithinSelectedSection > 0 ? 0 : 1);
 
                     if (targetSection < 0)
@@ -123,7 +123,7 @@ namespace Microsoft.Repl.Input
                     }
 
                     int desiredPosition = parseResult.SectionStartLookup[targetSection];
-                    state.ConsoleManager.MoveCaret(desiredPosition - state.ConsoleManager.CaretPosition);
+                    state.MoveCarets(desiredPosition - state.InputManager.CaretPosition);
                 }
             }
 
@@ -136,25 +136,25 @@ namespace Microsoft.Repl.Input
 
             string line = state.InputManager.GetCurrentBuffer();
 
-            if (state.ConsoleManager.CaretPosition < line.Length)
+            if (state.InputManager.CaretPosition < line.Length)
             {
                 if (!keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
                 {
-                    state.ConsoleManager.MoveCaret(1);
+                    state.MoveCarets(1);
                 }
                 else
                 {
-                    ICoreParseResult parseResult = state.CommandDispatcher.Parser.Parse(line, state.ConsoleManager.CaretPosition);
+                    ICoreParseResult parseResult = state.CommandDispatcher.Parser.Parse(line, state.InputManager.CaretPosition);
                     int targetSection = parseResult.SelectedSection + 1;
 
                     if (targetSection >= parseResult.Sections.Count)
                     {
-                        state.ConsoleManager.MoveCaret(line.Length - state.ConsoleManager.CaretPosition);
+                        state.MoveCarets(line.Length - state.InputManager.CaretPosition);
                     }
                     else
                     {
                         int desiredPosition = parseResult.SectionStartLookup[targetSection];
-                        state.ConsoleManager.MoveCaret(desiredPosition - state.ConsoleManager.CaretPosition);
+                        state.MoveCarets(desiredPosition - state.InputManager.CaretPosition);
                     }
                 }
             }
