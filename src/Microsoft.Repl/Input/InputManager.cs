@@ -355,9 +355,11 @@ namespace Microsoft.Repl.Input
                         {
                             state.ConsoleManager.IsCaretVisible = false;
                             _inputBuffer.Insert(CaretPosition, keyPress.KeyChar);
-                            int currentCaretPosition = CaretPosition;
                             string s = new string(_inputBuffer.ToArray(), CaretPosition, _inputBuffer.Count - CaretPosition);
                             state.ConsoleManager.Write(s);
+                            // Since we're "inserting", move the console cursor back by one fewer
+                            // than the length of the string just written to the console 
+                            state.ConsoleManager.MoveCaret(-1 * (s.Length - 1));
                             state.ConsoleManager.IsCaretVisible = true;
                             MoveCaret(1);
                         }
