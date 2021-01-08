@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.Fakes
     {
         private readonly ShellState _shellState;
         private readonly StringBuilder _output = new StringBuilder();
-        public MockedShellState()
+        public MockedShellState(IInputManager inputManager = null)
         {
             DefaultCommandDispatcher<object> defaultCommandDispatcher = DefaultCommandDispatcher.Create(x => { }, new object());
             Mock<IConsoleManager> mockedConsoleManager = new Mock<IConsoleManager>();
@@ -28,7 +28,7 @@ namespace Microsoft.HttpRepl.Fakes
             mockedConsoleManager.Setup(x => x.Write(It.IsAny<string>())).Callback((string s) => _output.Append(s));
             mockedConsoleManager.Setup(x => x.WriteLine(It.IsAny<string>())).Callback((string s) => _output.AppendLine(s));
 
-            _shellState = new ShellState(defaultCommandDispatcher, consoleManager: mockedConsoleManager.Object);
+            _shellState = new ShellState(defaultCommandDispatcher, inputManager: inputManager, consoleManager: mockedConsoleManager.Object);
         }
 
         public string ErrorMessage { get; private set; }
