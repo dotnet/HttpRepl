@@ -16,6 +16,18 @@ namespace Microsoft.Repl.Input
         private readonly Dictionary<ConsoleKey, Dictionary<ConsoleModifiers, AsyncKeyPressHandler>> _handlers = new Dictionary<ConsoleKey, Dictionary<ConsoleModifiers, AsyncKeyPressHandler>>();
         private readonly List<char> _inputBuffer = new List<char>();
 
+        public InputManager() { }
+
+        /// <summary>
+        /// For testing purposes only
+        /// </summary>
+        internal InputManager(string initialInput, int initialPosition)
+        {
+            _inputBuffer.AddRange(initialInput);
+            CaretPosition = initialPosition;
+        }
+
+
         public bool IsOverwriteMode { get; set; }
 
         public int CaretPosition { get; private set; }
@@ -88,15 +100,17 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            if (CaretPosition == _inputBuffer.Count)
+            int caret = CaretPosition;
+            if (caret == _inputBuffer.Count)
             {
                 return;
             }
 
             List<char> update = _inputBuffer.ToList();
-            update.RemoveAt(CaretPosition);
+            update.RemoveAt(caret);
             state.ConsoleManager.IsCaretVisible = false;
             SetInput(state, update);
+            state.MoveCarets(caret - CaretPosition);
             state.ConsoleManager.IsCaretVisible = true;
         }
 
@@ -104,15 +118,17 @@ namespace Microsoft.Repl.Input
         {
             state = state ?? throw new ArgumentNullException(nameof(state));
 
-            if (CaretPosition == 0)
+            int caret = CaretPosition;
+            if (caret == 0)
             {
                 return;
             }
 
             List<char> update = _inputBuffer.ToList();
-            update.RemoveAt(CaretPosition - 1);
+            update.RemoveAt(caret - 1);
             state.ConsoleManager.IsCaretVisible = false;
             SetInput(state, update);
+            state.MoveCarets(caret - CaretPosition - 1);
             state.ConsoleManager.IsCaretVisible = true;
         }
 
