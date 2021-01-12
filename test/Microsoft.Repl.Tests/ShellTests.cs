@@ -556,6 +556,45 @@ namespace Microsoft.Repl.Tests
             Assert.Equal(commandOne.Length, shell.ShellState.InputManager.CaretPosition);
         }
 
+        [Fact]
+        public async Task RunAsync_WithNullCharacters_NullCharactersIgnored()
+        {
+            // Arrange
+            string command = "Command With \0 Character";
+            string expectedCommand = command.Replace("\0", "");
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(command);
+
+            Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
+
+            // Act
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Assert
+            Assert.Equal(expectedCommand, shell.ShellState.InputManager.GetCurrentBuffer());
+            Assert.Equal(expectedCommand.Length, shell.ShellState.InputManager.CaretPosition);
+        }
+
+        [Fact]
+        public async Task RunAsync_WithNullCharactersAndBackspaces_NullCharactersIgnored()
+        {
+            // Arrange
+            string command = "Command With \0 ";
+            string expectedCommand = "Command Wit";
+            List<ConsoleKeyInfo> keys = GetConsoleKeyInfo(command);
+            keys.Add(GetConsoleKeyInfo(ConsoleKey.Backspace));
+            keys.Add(GetConsoleKeyInfo(ConsoleKey.Backspace));
+            keys.Add(GetConsoleKeyInfo(ConsoleKey.Backspace));
+
+            Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
+
+            // Act
+            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+            // Assert
+            Assert.Equal(expectedCommand, shell.ShellState.InputManager.GetCurrentBuffer());
+            Assert.Equal(expectedCommand.Length, shell.ShellState.InputManager.CaretPosition);
+        }
+
         private static Shell CreateShell(IEnumerable<ConsoleKeyInfo> consoleKeyInfo,
             string previousCommand,
             string nextCommand,
@@ -636,6 +675,7 @@ namespace Microsoft.Repl.Tests
                 '/'                      => new(keyChar: keyChar, key: ConsoleKey.Oem2,            shift: false, alt: false, control: false),
                 '"'                      => new(keyChar: keyChar, key: ConsoleKey.Oem7,            shift: true,  alt: false, control: false),
                 '\n'                     => new(keyChar: '\r',    key: ConsoleKey.Enter,           shift: false, alt: false, control: false),
+                '\0'                     => new(keyChar: keyChar, key: ConsoleKey.Oem102,          shift: false, alt: false, control: false),
                 _                        => throw new InvalidOperationException($"Test setup does not support '{keyChar}' yet."),
             };
         }
