@@ -337,6 +337,15 @@ namespace Microsoft.Repl.Input
                     }
                     else
                     {
+                        // If we got here, we've processed all handlers we know for
+                        // key combinations. So anything else should have a valid
+                        // character or be the null character. If its the latter,
+                        // we just want to ignore it.
+                        if (keyPress.KeyChar == '\0')
+                        {
+                            continue;
+                        }
+
                         if (state.ConsoleManager.IsKeyAvailable)
                         {
                             if (presses == null)
