@@ -1,6 +1,6 @@
 HttpRepl
 =======
-[![Build Status](https://dev.azure.com/dnceng/public/_apis/build/status/aspnet/HttpRepl/aspnet-HttpRepl-CI?branchName=master)](https://dev.azure.com/dnceng/public/_build/latest?definitionId=538&branchName=master)
+[![Build Status](https://dev.azure.com/dnceng/public/_apis/build/status/aspnet/HttpRepl/aspnet-HttpRepl-CI?branchName=main)](https://dev.azure.com/dnceng/public/_build/latest?definitionId=538&branchName=main)
 
 The HTTP Read-Eval-Print Loop (REPL) is:
 
