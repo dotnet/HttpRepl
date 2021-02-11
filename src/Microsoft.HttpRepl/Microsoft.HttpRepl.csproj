@@ -20,11 +20,6 @@
     <PackageReference Include="System.Text.Encoding.CodePages" />
   </ItemGroup>
 
-  <!-- These Package Refs included solely for security vulnerability mitigations -->
-  <ItemGroup>
-    <PackageReference Include="System.Private.Uri" Version="4.3.2" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="$(RepoSource)\Microsoft.HttpRepl.Telemetry\Microsoft.HttpRepl.Telemetry.csproj" />
     <ProjectReference Include="$(RepoSource)\Microsoft.Repl\Microsoft.Repl.csproj" />

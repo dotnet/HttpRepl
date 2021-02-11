@@ -10,9 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moq" />
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Moq" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" PrivateAssets="All" />
+    <PackageReference Include="Swashbuckle.AspNetCore" PrivateAssets="All" />
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
 
