@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moq" />
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Moq" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
