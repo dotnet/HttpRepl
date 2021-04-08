@@ -463,7 +463,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 Memory<char> buffer = new Memory<char>(new char[2048]);
 
-#if NET5_0
+#if NET5_0_OR_GREATER
                 Stream s = await content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 #else
                 Stream s = await content.ReadAsStreamAsync().ConfigureAwait(false);
