@@ -88,7 +88,7 @@ namespace Microsoft.HttpRepl
                 {
                     WriteLineVerbose(Resources.Strings.ApiConnection_Logging_Found.SetColor(AllowedColors.BoldGreen));
 
-#if NET5_0
+#if NET5_0_OR_GREATER
                     string responseString = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
                     string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
