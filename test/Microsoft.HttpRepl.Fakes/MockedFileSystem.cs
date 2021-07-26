@@ -83,9 +83,7 @@ namespace Microsoft.HttpRepl.Fakes
 
         private string GetRandomFileName()
         {
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] bytes = new byte[9];
-            rng.GetBytes(bytes);
+            byte[] bytes = RandomNumberGenerator.GetBytes(9);
             string path = Convert.ToBase64String(bytes);
             return path;
         }
