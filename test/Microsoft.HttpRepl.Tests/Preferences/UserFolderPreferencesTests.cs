@@ -1,5 +1,6 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the License.txt file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ This third line is invalid as well";
 
             MockedFileSystem fileSystem = new MockedFileSystem();
             IUserProfileDirectoryProvider userProfileDirectoryProvider = new UserProfileDirectoryProvider();
-            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, defaultPreferences);           
+            UserFolderPreferences preferences = new UserFolderPreferences(fileSystem, userProfileDirectoryProvider, defaultPreferences);
 
             // Create a file with a non-default value, read it from the file system and
             // validate that it was read correctly
@@ -105,7 +106,7 @@ This third line is invalid as well";
         {
             string initialValue = "BoldRed";
             SetupPreferencesWithFileContent($"{WellKnownPreference.JsonBraceColor}={initialValue}", out UserFolderPreferences preferences);
-            
+
             Assert.Equal("BoldRed", preferences.GetValue(WellKnownPreference.JsonBraceColor));
 
             // JsonBraceColor has no default, so this should remove the preference
