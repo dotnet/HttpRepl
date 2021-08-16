@@ -21,6 +21,8 @@ insert_final_newline = true
 indent_size = 4
 dotnet_sort_system_directives_first = true:warning
 
+file_header_template = Copyright (c) .NET Foundation. All rights reserved.\nLicensed under the MIT license. See License.txt in the project root for license information.
+
 # Xml project files
 [*.{*proj,vcxproj.filters,projitems}]
 indent_size = 2
