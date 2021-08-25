@@ -21,7 +21,7 @@ insert_final_newline = true
 indent_size = 4
 dotnet_sort_system_directives_first = true:warning
 
-file_header_template = Copyright (c) .NET Foundation. All rights reserved.\nLicensed under the MIT license. See License.txt in the project root for license information.
+file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the License.txt file in the project root for more information.
 
 # Xml project files
 [*.{*proj,vcxproj.filters,projitems}]
