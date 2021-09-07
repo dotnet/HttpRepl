@@ -1,5 +1,6 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the License.txt file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Microsoft.Repl.Commanding
 
         public string GetHelpDetails(IShellState shellState, TProgramState programState, TParseResult parseResult)
         {
-            if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues) 
+            if (!DefaultCommandInput<TParseResult>.TryProcess(InputSpec, parseResult, out DefaultCommandInput<TParseResult> commandInput, out IReadOnlyList<CommandInputProcessingIssue> processingIssues)
                 && processingIssues.Any(x => x.Kind == CommandInputProcessingIssueKind.CommandMismatch))
             {
                 //If this is the right command, just not the right syntax, report the usage errors
@@ -45,7 +46,7 @@ namespace Microsoft.Repl.Commanding
             for (int j = 0; j < InputSpec.CommandName.Count; ++j)
             {
                 IReadOnlyList<string> currentCommandNameParts = InputSpec.CommandName[j];
-                
+
                 //If we're completing in a name position, offer completion for the command name
                 if (parseResult.SelectedSection < currentCommandNameParts.Count)
                 {

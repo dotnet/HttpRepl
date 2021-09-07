@@ -1,5 +1,6 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the License.txt file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
@@ -383,7 +384,7 @@ namespace Microsoft.Repl.Input
                             string s = new string(_inputBuffer.ToArray(), CaretPosition, _inputBuffer.Count - CaretPosition);
                             state.ConsoleManager.Write(s);
                             // Since we're "inserting", move the console cursor back by one fewer
-                            // than the length of the string just written to the console 
+                            // than the length of the string just written to the console
                             state.ConsoleManager.MoveCaret(-1 * (s.Length - 1));
                             state.ConsoleManager.IsCaretVisible = true;
                             MoveCaret(1);
