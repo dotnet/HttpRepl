@@ -21,6 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- This PackageReference is only here to ensure we pick up the newer version
+         without vulnerabilities rather than the default 4.3.0 version -->
+    <PackageReference Include="System.Private.Uri" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="$(RepoSource)\Microsoft.HttpRepl.Telemetry\Microsoft.HttpRepl.Telemetry.csproj" />
     <ProjectReference Include="$(RepoSource)\Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
