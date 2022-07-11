@@ -1,11 +1,8 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" PrivateAssets="All" />
-  </ItemGroup>
-
   <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <CodeAnalysisRuleSet>$(RepoRoot)\build\analyzers\rulesets\Default.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
