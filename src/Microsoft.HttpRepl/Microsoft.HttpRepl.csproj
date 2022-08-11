@@ -21,9 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- This PackageReference is only here to ensure we pick up the newer version
-         without vulnerabilities rather than the default 4.3.0 version -->
+    <!-- These PackageReferences are only here to ensure we pick up the newer
+         versions without vulnerabilities rather than the default versions -->
     <PackageReference Include="System.Private.Uri" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>
