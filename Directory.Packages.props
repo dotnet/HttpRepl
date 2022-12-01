@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <!-- Suppress this warning until Arcade has better support -->
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>

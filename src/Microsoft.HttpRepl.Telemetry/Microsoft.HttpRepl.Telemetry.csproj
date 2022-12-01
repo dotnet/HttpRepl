@@ -7,13 +7,4 @@
     <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" />
     <PackageReference Include="Microsoft.Win32.Registry" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!--
-      This PackageReference is only here to deal with a Component Governance alert.
-      Once Microsoft.ApplicationInsights.WorkerService 2.22 is released, we can
-      update our reference to that and remove this.
-    -->
-    <PackageReference Include="System.Drawing.Common" />
-  </ItemGroup>
 </Project>

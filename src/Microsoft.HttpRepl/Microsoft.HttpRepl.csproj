@@ -21,13 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- These PackageReferences are only here to ensure we pick up the newer
-         versions without vulnerabilities rather than the default versions -->
-    <PackageReference Include="System.Private.Uri" />
-    <PackageReference Include="Newtonsoft.Json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="$(RepoSource)\Microsoft.HttpRepl.Telemetry\Microsoft.HttpRepl.Telemetry.csproj" />
     <ProjectReference Include="$(RepoSource)\Microsoft.Repl\Microsoft.Repl.csproj" />
   </ItemGroup>
