@@ -1,51 +1,67 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security;
-using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Win32;
 
 namespace Microsoft.HttpRepl.Telemetry
 {
     internal class DockerContainerDetectorForTelemetry : IDockerContainerDetector
     {
-        public IsDockerContainerResult IsDockerContainer()
+        public IsDockerContainer IsDockerContainer()
         {
-            switch (RuntimeEnvironment.OperatingSystemPlatform)
+            if (OperatingSystem.IsWindows())
             {
-                case Platform.Windows:
-                    try
+                try
+                {
+                    using (RegistryKey subkey
+                        = Registry.LocalMachine.OpenSubKey("System\\CurrentControlSet\\Control"))
                     {
-                        using (RegistryKey subkey
-                            = Registry.LocalMachine.OpenSubKey("System\\CurrentControlSet\\Control"))
-                        {
-                            return subkey?.GetValue("ContainerType") != null
-                                ? IsDockerContainerResult.True
-                                : IsDockerContainerResult.False;
-                        }
+                        return subkey?.GetValue("ContainerType") != null
+                            ? HttpRepl.Telemetry.IsDockerContainer.True
+                            : HttpRepl.Telemetry.IsDockerContainer.False;
                     }
-                    catch (SecurityException)
-                    {
-                        return IsDockerContainerResult.Unknown;
-                    }
-                case Platform.Linux:
-                    return ReadProcToDetectDockerInLinux()
-                        ? IsDockerContainerResult.True
-                        : IsDockerContainerResult.False;
-                case Platform.Unknown:
-                    return IsDockerContainerResult.Unknown;
-                case Platform.Darwin:
-                default:
-                    return IsDockerContainerResult.False;
+                }
+                catch (SecurityException)
+                {
+                    return HttpRepl.Telemetry.IsDockerContainer.Unknown;
+                }
             }
-        }
+            else if (OperatingSystem.IsLinux())
+            {
+                try
+                {
+                    bool isDocker = File
+                        .ReadAllText("/proc/1/cgroup")
+                        .Contains("/docker/", StringComparison.Ordinal);
 
-        private static bool ReadProcToDetectDockerInLinux()
-        {
-            return IsRunningInDockerContainer || File.ReadAllText("/proc/1/cgroup").Contains("/docker/");
-        }
+                    return isDocker
+                        ? HttpRepl.Telemetry.IsDockerContainer.True
+                        : HttpRepl.Telemetry.IsDockerContainer.False;
+                }
+                catch (Exception ex) when (ex is IOException || ex.InnerException is IOException)
+                {
+                    // in some environments (restricted docker container, shared hosting etc.),
+                    // procfs is not accessible and we get UnauthorizedAccessException while the
+                    // inner exception is set to IOException. Ignore and continue when that happens.
+                }
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                return HttpRepl.Telemetry.IsDockerContainer.False;
+            }
 
-        private static bool IsRunningInDockerContainer => EnvironmentHelper.GetEnvironmentVariableAsBool("DOTNET_RUNNING_IN_CONTAINER", false);
+            return HttpRepl.Telemetry.IsDockerContainer.Unknown;
+        }
+    }
+
+    internal enum IsDockerContainer
+    {
+        True,
+        False,
+        Unknown
     }
 }

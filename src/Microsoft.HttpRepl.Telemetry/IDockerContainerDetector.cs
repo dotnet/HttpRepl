@@ -3,8 +3,8 @@
 
 namespace Microsoft.HttpRepl.Telemetry
 {
-    public interface IDockerContainerDetector
+    internal interface IDockerContainerDetector
     {
-        IsDockerContainerResult IsDockerContainer();
+        IsDockerContainer IsDockerContainer();
     }
 }
