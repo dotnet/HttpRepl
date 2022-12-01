@@ -20,4 +20,13 @@
     <PackageVersion Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageVersion Include="System.Threading.Thread" Version="4.3.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      This PackageVersion is only here to deal with a Component Governance alert.
+      Once Microsoft.ApplicationInsights.WorkerService 2.22 is released, we can
+      update our reference to that and remove this.
+    -->
+    <PackageVersion Include="System.Drawing.Common" Version="4.7.2" />
+  </ItemGroup>
 </Project>
