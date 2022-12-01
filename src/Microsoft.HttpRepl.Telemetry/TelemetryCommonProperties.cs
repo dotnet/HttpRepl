@@ -8,7 +8,7 @@ using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironm
 
 namespace Microsoft.HttpRepl.Telemetry
 {
-    public class TelemetryCommonProperties
+    internal class TelemetryCommonProperties
     {
         private readonly string _productVersion;
 

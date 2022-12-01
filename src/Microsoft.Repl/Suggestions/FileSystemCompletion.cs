@@ -49,7 +49,7 @@ namespace Microsoft.Repl.Suggestions
             if (Directory.Exists(dir))
             {
                 return Directory.EnumerateDirectories(dir).Where(x => Path.GetFileName(x).StartsWith(partPrefix, StringComparison.OrdinalIgnoreCase))
-                    .Union(Directory.EnumerateFiles(dir).Where(x => Path.GetFileName(x).StartsWith(partPrefix, StringComparison.OrdinalIgnoreCase))).Select(x => x.IndexOf(' ') > -1 ? $"\"{x}\"" : x);
+                    .Union(Directory.EnumerateFiles(dir).Where(x => Path.GetFileName(x).StartsWith(partPrefix, StringComparison.OrdinalIgnoreCase))).Select(x => x.IndexOf(' ', StringComparison.Ordinal) > -1 ? $"\"{x}\"" : x);
             }
 
             return null;
