@@ -1,0 +1,10 @@
+{  
+    "instanceUrl": "https://devdiv.visualstudio.com/",
+    "template": "TFSDEVDIV",
+    "projectName": "DEVDIV",
+    "areaPath": "DevDiv\\NET Developer Experience\\Web\\Http Repl",
+    "iterationPath": "DevDiv",
+    "notificationAliases": [ "venusweb@microsoft.com" ],
+    "repositoryName":"HttpRepl",
+    "codebaseName": "HttpRepl"
+}
