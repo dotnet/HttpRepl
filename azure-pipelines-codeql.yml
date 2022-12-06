@@ -38,8 +38,7 @@ jobs:
 - job: codeql
   displayName: CodeQL
   pool:
-    name: $(DncEngInternalBuildPool)
-    demands: ImageOverride -equals 1es-windows-2022
+    name: VSEngSS-MicroBuild2022-1ES
   timeoutInMinutes: 90
 
   steps:
