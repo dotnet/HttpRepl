@@ -99,8 +99,8 @@ namespace Microsoft.HttpRepl.Telemetry
             {
 #pragma warning disable CS0618 // Type or member is obsolete
                 _client = new TelemetryClient();
-#pragma warning restore CS0618 // Type or member is obsolete
                 _client.InstrumentationKey = InstrumentationKey;
+#pragma warning restore CS0618 // Type or member is obsolete
                 _client.Context.Session.Id = CurrentSessionId;
                 _client.Context.Device.OperatingSystem = RuntimeEnvironment.OperatingSystem;
 
