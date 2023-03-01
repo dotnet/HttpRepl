@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
+using System.Net;
 using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl
@@ -34,6 +34,8 @@ namespace Microsoft.HttpRepl
         public bool EchoRequest { get; set; }
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
+
+        public Dictionary<string, IEnumerable<string>> QueryParam { get; } = new();
 
         public Uri SwaggerEndpoint { get; set; }
 
@@ -83,10 +85,15 @@ namespace Microsoft.HttpRepl
 
         public Uri GetEffectivePath(string commandSpecifiedPath)
         {
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath);
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam: null);
         }
 
-        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath)
+        public Uri GetEffectivePathWithQueryParam(string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
+        {
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam);
+        }
+
+        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
         {
             // If an absolute uri string was already specified, just return that.
             if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
@@ -107,6 +114,17 @@ namespace Microsoft.HttpRepl
             AppendQueryToBuilder(builder, baseAndPathQuery);
             AppendQueryToBuilder(builder, commandQuery);
 
+            if (queryParam is not null)
+            {
+                foreach (KeyValuePair<string, IEnumerable<string>> tuple in queryParam)
+                {
+                    foreach (var singleValue in tuple.Value)
+                    {
+                        AppendQueryToBuilder(builder, $"{WebUtility.UrlEncode(tuple.Key)}={WebUtility.UrlEncode(singleValue)}");
+                    }
+                }
+            }
+
             return builder.Uri;
         }
 
@@ -117,7 +135,7 @@ namespace Microsoft.HttpRepl
                 return null;
             }
 
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "");
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "", queryParam: null);
         }
 
         public string GetRelativePathString()

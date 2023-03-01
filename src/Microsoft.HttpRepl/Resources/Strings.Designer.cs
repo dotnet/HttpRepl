@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -806,6 +806,15 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string SetHeaderCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("SetHeaderCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets or clears a query string key and value. When [value] is empty the header is cleared. The key and value will be UrlEncoded..
+        /// </summary>
+        internal static string SetQueryParamCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("SetQueryParamCommand_HelpDetails", resourceCulture);
             }
         }
         

@@ -17,7 +17,13 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
         public SampleApiServer(SampleApiServerConfig config)
         {
             _Host = WebHost.CreateDefaultBuilder()
-                           .UseKestrel(options => options.ListenLocalhost(config.Port.Value))
+                           .UseKestrel(kestrelOptions =>
+                           {
+                               kestrelOptions.ListenLocalhost(config.Port.Value, listenOptions =>
+                               {
+                                   listenOptions.DisableAltSvcHeader = true;
+                               });
+                           })
                            .ConfigureServices(services =>
                            {
                                services.AddControllers();

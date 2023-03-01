@@ -209,6 +209,9 @@ Type `help connect` for more information on the `connect` command.</value>
   <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
     <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
   </data>
+  <data name="SetQueryParamCommand_HelpDetails" xml:space="preserve">
+    <value>Sets or clears a query string key and value. When [value] is empty the header is cleared. The key and value will be UrlEncoded.</value>
+  </data>
   <data name="UICommand_HelpSummary" xml:space="preserve">
     <value>Displays the Swagger UI page, if available, in the default browser</value>
   </data>
