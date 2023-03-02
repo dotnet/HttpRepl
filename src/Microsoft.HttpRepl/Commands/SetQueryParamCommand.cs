@@ -33,12 +33,10 @@ namespace Microsoft.HttpRepl.Commands
             _telemetry = telemetry;
         }
 
-        public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
-        {
-            return parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
+        public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult) =>
+            parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
                 ? (bool?)true
                 : null;
-        }
 
         public Task ExecuteAsync(IShellState shellState, HttpState programState, ICoreParseResult parseResult, CancellationToken cancellationToken)
         {
@@ -78,14 +76,8 @@ namespace Microsoft.HttpRepl.Commands
             return null;
         }
 
-        public string GetHelpSummary(IShellState shellState, HttpState programState)
-        {
-            return Description;
-        }
+        public string GetHelpSummary(IShellState shellState, HttpState programState) => Description;
 
-        public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
-        {
-            return null;
-        }
+        public IEnumerable<string> Suggest(IShellState shellState, HttpState programState, ICoreParseResult parseResult) => null;
     }
 }
