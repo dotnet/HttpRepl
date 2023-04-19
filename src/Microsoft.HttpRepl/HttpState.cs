@@ -35,7 +35,7 @@ namespace Microsoft.HttpRepl
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 
-        public Dictionary<string, IEnumerable<string>> QueryParam { get; } = new();
+        public Dictionary<string, IEnumerable<string>> QueryParam { get; set; } = new();
 
         public Uri SwaggerEndpoint { get; set; }
 

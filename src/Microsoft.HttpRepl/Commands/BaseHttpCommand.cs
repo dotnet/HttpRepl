@@ -132,7 +132,7 @@ namespace Microsoft.HttpRepl.Commands
                 thisRequestHeaders[header.Text.Substring(0, equalsIndex)] = header.Text.Substring(equalsIndex + 1);
             }
 
-            Uri effectivePath = programState.GetEffectivePath(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty);
+            Uri effectivePath = programState.GetEffectivePathWithQueryParam(commandInput.Arguments.Count > 0 ? commandInput.Arguments[0].Text : string.Empty, programState.QueryParam);
             using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(Verb.ToUpperInvariant()), effectivePath))
             {
                 if (RequiresBody)
@@ -752,7 +752,7 @@ namespace Microsoft.HttpRepl.Commands
 
         private static string GetExampleBody(string path, ref string contentType, string method, HttpState httpState)
         {
-            Uri effectivePath = httpState.GetEffectivePath(path);
+            Uri effectivePath = httpState.GetEffectivePathWithQueryParam(path, httpState.QueryParam);
             string rootRelativePath = effectivePath.LocalPath.Substring(httpState.BaseAddress.LocalPath.Length).TrimStart('/');
             IDirectoryStructure structure = httpState.Structure?.TraverseTo(rootRelativePath);
             return structure?.RequestInfo?.GetRequestBodyForContentType(ref contentType, method);

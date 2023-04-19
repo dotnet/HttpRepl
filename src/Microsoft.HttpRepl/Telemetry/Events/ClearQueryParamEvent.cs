@@ -4,12 +4,12 @@
 
 namespace Microsoft.HttpRepl.Telemetry.Events
 {
-    internal class SetQueryParamEvent : TelemetryEventBase
+    internal class ClearQueryParamEvent: TelemetryEventBase
     {
-        public SetQueryParamEvent(string key, bool isValueEmpty) : base(TelemetryEventNames.SetQueryParam)
+        public ClearQueryParamEvent(string key, bool isValueEmpty) : base(TelemetryEventNames.ClearQueryParam)
         {
-            SetProperty(TelemetryPropertyNames.SetQueryParam_Key, SanitizeKey(key));
-            SetProperty(TelemetryPropertyNames.SetQueryParam_IsValueEmpty, isValueEmpty);
+            SetProperty(TelemetryPropertyNames.ClearQueryParam_Key, SanitizeKey(key));
+            SetProperty(TelemetryPropertyNames.ClearQueryParam_IsValueEmpty, isValueEmpty);
         }
 
         private static string SanitizeKey(string headerName)
@@ -23,3 +23,4 @@ namespace Microsoft.HttpRepl.Telemetry.Events
         }
     }
 }
+

@@ -18,23 +18,22 @@ using Microsoft.Repl.Parsing;
 
 namespace Microsoft.HttpRepl.Commands
 {
-    public class SetQueryParamCommand : ICommand<HttpState, ICoreParseResult>
+    public class ClearQueryParamCommand : ICommand<HttpState, ICoreParseResult>
     {
-        private const string CommandName = "set";
+        public string Name => "clearQueryParam";
+        private const string CommandName = "clear";
         private const string SubCommand = "query-param";
+
+        public static string Description => Strings.ClearQueryParamCommand_HelpDetails;
 
         private readonly ITelemetry _telemetry;
 
-        public string Name => "setQueryParam";
-        public static string Description => Strings.SetQueryParamCommand_HelpDetails;
-
-        public SetQueryParamCommand(ITelemetry telemetry)
-        {
+        public ClearQueryParamCommand(ITelemetry telemetry) {
             _telemetry = telemetry;
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult) =>
-            parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
+            parseResult.ContainsAtLeast(minimumLength: 2, CommandName, SubCommand)
                 ? (bool?)true
                 : null;
 
@@ -44,20 +43,18 @@ namespace Microsoft.HttpRepl.Commands
 
             programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
+            int sectionCount = parseResult.Sections.Count;
             bool isValueEmpty;
-            if (parseResult.Sections.Count == 3)
+            if (sectionCount == 2)
             {
-                programState.QueryParam.Remove(parseResult.Sections[2]);
+                programState.QueryParam.Clear();
                 isValueEmpty = true;
-            }
-            else
+            } else
             {
-                programState.QueryParam[parseResult.Sections[2]] = parseResult.Sections.Skip(3);
                 isValueEmpty = false;
             }
 
-            _telemetry.TrackEvent(new SetQueryParamEvent(parseResult.Sections[2], isValueEmpty));
-
+            _telemetry.TrackEvent(new ClearQueryParamEvent(parseResult.Sections[1], isValueEmpty));
             return Task.CompletedTask;
         }
 
@@ -67,9 +64,9 @@ namespace Microsoft.HttpRepl.Commands
             {
                 StringBuilder helpText = new StringBuilder();
                 helpText.Append(Strings.Usage.Bold());
-                helpText.AppendLine("set query-param {name} [value]");
+                helpText.AppendLine("clear query-param");
                 helpText.AppendLine();
-                helpText.AppendLine(Strings.SetQueryParamCommand_HelpDetails);
+                helpText.AppendLine(Strings.ClearQueryParamCommand_HelpDetails);
                 return helpText.ToString();
             }
 

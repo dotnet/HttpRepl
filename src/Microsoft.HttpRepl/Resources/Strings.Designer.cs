@@ -61,6 +61,24 @@ namespace Microsoft.HttpRepl.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adds a key and value pair to the query string. The key and value will be UrlEncoded. Multiple values may be mapped to the same key..
+        /// </summary>
+        internal static string AddQueryParamCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("AddQueryParamCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a key and value pair to the query string.
+        /// </summary>
+        internal static string AddQueryParamCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("AddQueryParamCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancelled.
         /// </summary>
         internal static string ApiConnection_Logging_Cancelled {
@@ -201,6 +219,24 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ClearCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("ClearCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clears the query string of all key and values.
+        /// </summary>
+        internal static string ClearQueryParamCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("ClearQueryParamCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clears the query string for all requests.
+        /// </summary>
+        internal static string ClearQueryParamCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ClearQueryParamCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -806,15 +842,6 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string SetHeaderCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("SetHeaderCommand_HelpSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sets or clears a query string key and value. When [value] is empty the header is cleared. The key and value will be UrlEncoded..
-        /// </summary>
-        internal static string SetQueryParamCommand_HelpDetails {
-            get {
-                return ResourceManager.GetString("SetQueryParamCommand_HelpDetails", resourceCulture);
             }
         }
         

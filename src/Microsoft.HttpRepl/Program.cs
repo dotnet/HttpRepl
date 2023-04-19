@@ -110,6 +110,7 @@ namespace Microsoft.HttpRepl
             DefaultCommandDispatcher<HttpState> dispatcher = DefaultCommandDispatcher.Create(state.GetPrompt, state);
             dispatcher.AddCommandWithTelemetry(telemetry, new ChangeDirectoryCommand());
             dispatcher.AddCommandWithTelemetry(telemetry, new ClearCommand());
+            dispatcher.AddCommandWithTelemetry(telemetry, new ClearQueryParamCommand(telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new ConnectCommand(preferences, telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new DeleteCommand(fileSystem, preferences, telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new EchoCommand());
@@ -125,7 +126,7 @@ namespace Microsoft.HttpRepl
             dispatcher.AddCommandWithTelemetry(telemetry, new PutCommand(fileSystem, preferences, telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new RunCommand(fileSystem));
             dispatcher.AddCommandWithTelemetry(telemetry, new SetHeaderCommand(telemetry));
-            dispatcher.AddCommandWithTelemetry(telemetry, new SetQueryParamCommand(telemetry));
+            dispatcher.AddCommandWithTelemetry(telemetry, new AddQueryParamCommand(telemetry));
             dispatcher.AddCommandWithTelemetry(telemetry, new UICommand(new UriLauncher(), preferences));
 
             shell = new Shell(dispatcher, consoleManager: consoleManager);
