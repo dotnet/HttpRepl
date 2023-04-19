@@ -76,7 +76,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         [Fact]
         public void GetHelpDetails_ReturnsHelpDetails()
         {
-            ArrangeInputs(parseResultSections: "add query-param",
+            ArrangeInputs(parseResultSections: "add query-param test",
                  out MockedShellState shellState,
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
@@ -92,7 +92,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
         }
 
         [Fact]
-        public async Task ExecuteAsync_ValidCommandInvalidInput_ThrowsException()
+        public async Task ExecuteAsync_ValidCommandInvalidInput_CommandOutput()
         {
             ArrangeInputs(parseResultSections: "add query-param test",
                  out MockedShellState shellState,
@@ -100,9 +100,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult);
 
             AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>  await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None));
+            await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
-            Assert.Empty(httpState.QueryParam);
+            string expectedOutput = "The add query-param command key: test is missing a value. " +
+                "Please try again with a valid key value pair";
+            Assert.Equal(shellState.Output.Last(), expectedOutput);
         }
 
         [Fact]
@@ -117,31 +119,44 @@ namespace Microsoft.HttpRepl.Tests.Commands
             await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> queryParam = httpState.QueryParam;
-
             Assert.Single(httpState.QueryParam);
-
             Assert.True(queryParam.ContainsKey("name"));
 
             queryParam.TryGetValue("name", out IEnumerable<string> nameHeaderValues);
-
             Assert.Contains("value1", nameHeaderValues);
+            Assert.Contains("value2", nameHeaderValues);
 
-            ArrangeInputs(parseResultSections: "add query-param name value2",
+            ArrangeInputs(parseResultSections: "add query-param name value3",
                  out MockedShellState shellStateTwo,
                  out HttpState httpStateTwo,
                  out ICoreParseResult parseResultTwo);
 
             await addQueryParamCommand.ExecuteAsync(shellStateTwo, httpState, parseResultTwo, CancellationToken.None);
+
             queryParam = httpState.QueryParam;
-
             Assert.Single(httpState.QueryParam);
-
             Assert.True(queryParam.ContainsKey("name"));
 
             queryParam.TryGetValue("name", out IEnumerable<string> nameHeaderValuesTwo);
+            Assert.Contains("value3", nameHeaderValuesTwo);     
+        }
 
-            Assert.Contains("value1", nameHeaderValuesTwo);
-            Assert.Contains("value2", nameHeaderValuesTwo);
+        [Fact]
+        public async Task ExecuteAsync_ValidCommandWithSpace()
+        {
+            ArrangeInputs(parseResultSections: "add query-param test ",
+                 out MockedShellState shellState,
+                 out HttpState httpState,
+                 out ICoreParseResult parseResult);
+
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
+
+            Dictionary<string, IEnumerable<string>> queryParam = httpState.QueryParam;
+            Assert.Single(httpState.QueryParam);
+            Assert.True(queryParam.ContainsKey("test"));
+            queryParam.TryGetValue("test", out IEnumerable<string> nameHeaderValue);
+            Assert.Contains("", nameHeaderValue);
         }
 
 

@@ -34,7 +34,7 @@ namespace Microsoft.HttpRepl.Commands
         }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult) =>
-            parseResult.ContainsAtLeast(minimumLength: 4, CommandName, SubCommand)
+            parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
                 ? (bool?)true
                 : null;
 
@@ -54,8 +54,8 @@ namespace Microsoft.HttpRepl.Commands
                     if (i + 1 < sectionCount)
                     {
                         if (programState.QueryParam.ContainsKey(parseResult.Sections[i])){
-                           var u = programState.QueryParam[parseResult.Sections[i]].Append(parseResult.Sections[i + 1]);
-                            programState.QueryParam[parseResult.Sections[i]] = u;
+                            IEnumerable<string> updatedParams = programState.QueryParam[parseResult.Sections[i]].Append(parseResult.Sections[i + 1]);
+                            programState.QueryParam[parseResult.Sections[i]] = updatedParams;
                         } else
                         {
                             programState.QueryParam[parseResult.Sections[i]] = Enumerable.Repeat(parseResult.Sections[i + 1], 1);
@@ -66,10 +66,8 @@ namespace Microsoft.HttpRepl.Commands
                 isValueEmpty = false;
             } else
             {
-               // isValueEmpty = true;
-                throw new ArgumentNullException(nameof(parseResult));
-                //Invalid input here
-                
+                isValueEmpty = true;
+                shellState.ConsoleManager.WriteLine($"The add query-param command key: {parseResult.Sections[sectionCount - 1]} is missing a value. Please try again with a valid key value pair");           
             }
             _telemetry.TrackEvent(new AddQueryParamEvent(parseResult.Sections[2], isValueEmpty));      
 
