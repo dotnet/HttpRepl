@@ -267,7 +267,7 @@ namespace Microsoft.HttpRepl.Tests
             HttpState httpState = SetupHttpState();
             httpState.BaseAddress = null;
 
-            Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePath(""));
+            Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePathWithoutQueryParam(""));
         }
 
         [Fact]

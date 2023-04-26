@@ -62,7 +62,7 @@ namespace Microsoft.HttpRepl
                 return null;
             }
 
-            Uri effectivePath = GetEffectivePath(path);
+            Uri effectivePath = GetEffectivePathWithoutQueryParam(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
             IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
             IReadOnlyDictionary<string, IReadOnlyList<string>> contentTypesByMethod = structure?.RequestInfo?.ContentTypesByMethod;
@@ -83,17 +83,14 @@ namespace Microsoft.HttpRepl
             return null;
         }
 
-        public Uri GetEffectivePath(string commandSpecifiedPath)
-        {
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam: null);
-        }
+        internal Uri GetEffectivePathWithoutQueryParam(string commandSpecifiedPath) =>
+            GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam: null);
+       
+    
+        public Uri GetEffectivePath(string commandSpecifiedPath) =>
+            GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, QueryParam);
 
-        public Uri GetEffectivePathWithQueryParam(string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
-        {
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam);
-        }
-
-        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
+        internal static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
         {
             // If an absolute uri string was already specified, just return that.
             if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
