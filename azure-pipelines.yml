@@ -69,10 +69,10 @@ stages:
         pool:
           ${{ if eq(variables['System.TeamProject'], 'public') }}:
             name: NetCore-Public
-            demands: ImageOverride -equals windows.vs2017.amd64.open
+            demands: ImageOverride -equals windows.vs2022.amd64.open
           ${{ if ne(variables['System.TeamProject'], 'public') }}:
             name: NetCore1ESPool-Internal
-            demands: ImageOverride -equals windows.vs2017.amd64
+            demands: ImageOverride -equals windows.vs2022.amd64
         variables:
         - name: _HelixBuildConfig
           value: $(_BuildConfig)
@@ -122,7 +122,7 @@ stages:
 
       - job: macOS
         pool:
-          vmImage: macOS-10.15
+          vmImage: macOS-latest
         strategy:
           matrix:
             debug:
