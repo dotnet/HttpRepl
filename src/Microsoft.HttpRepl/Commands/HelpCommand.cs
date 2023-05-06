@@ -187,7 +187,8 @@ namespace Microsoft.HttpRepl.Commands
             output.AppendLine();
             output.AppendLine($"{"connect",navCommandColumn}{GetCommand<ConnectCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
             output.AppendLine($"{"set header",navCommandColumn}{GetCommand<SetHeaderCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
-
+            output.AppendLine($"{"add query-param",navCommandColumn}{GetCommand<AddQueryParamCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
+            output.AppendLine($"{"clear query-param",navCommandColumn}{GetCommand<ClearQueryParamCommand>(dispatcher).GetHelpSummary(shellState, programState)}");
             output.AppendLine();
             output.AppendLine(Strings.HelpCommand_Core_HttpCommands.Bold().Cyan());
             output.AppendLine(Strings.HelpCommand_Core_HttpCommands_Description);

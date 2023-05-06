@@ -19,7 +19,7 @@ namespace Microsoft.HttpRepl.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -57,6 +57,24 @@ namespace Microsoft.HttpRepl.Resources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a key and value pair to the query string. The key and value will be UrlEncoded. Multiple values may be mapped to the same key..
+        /// </summary>
+        internal static string AddQueryParamCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("AddQueryParamCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a key and value pair to the query string.
+        /// </summary>
+        internal static string AddQueryParamCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("AddQueryParamCommand_HelpSummary", resourceCulture);
             }
         }
         
@@ -201,6 +219,24 @@ namespace Microsoft.HttpRepl.Resources {
         internal static string ClearCommand_HelpSummary {
             get {
                 return ResourceManager.GetString("ClearCommand_HelpSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clears the query string of all key and values.
+        /// </summary>
+        internal static string ClearQueryParamCommand_HelpDetails {
+            get {
+                return ResourceManager.GetString("ClearQueryParamCommand_HelpDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clears the query string for all requests.
+        /// </summary>
+        internal static string ClearQueryParamCommand_HelpSummary {
+            get {
+                return ResourceManager.GetString("ClearQueryParamCommand_HelpSummary", resourceCulture);
             }
         }
         

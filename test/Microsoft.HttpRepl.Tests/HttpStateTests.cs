@@ -150,7 +150,7 @@ namespace Microsoft.HttpRepl.Tests
         [Fact]
         public void GetEffectivePath_NoBaseAddressOrAbsoluteUri_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => HttpState.GetEffectivePath(null, "", "/NotAnAbsoluteUri"));
+            Assert.Throws<ArgumentNullException>(() => HttpState.GetEffectivePath(null, "", "/NotAnAbsoluteUri", queryParam: null));
         }
 
         [Theory]
@@ -170,9 +170,95 @@ namespace Microsoft.HttpRepl.Tests
         {
             Uri baseUri = new Uri(baseUriString);
 
-            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath);
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryParam: null);
 
             Assert.Equal(expectedResult, result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_AppendQueryString_SingleCase()
+        {
+            string baseUriString = "https://github.com/";
+            string pathSections = "dir1";
+            string specifiedPath = "dir2";
+            var queryString = new Dictionary<string, IEnumerable<string>>()
+            {
+                ["key"] = new List<string>() { "value"}
+            };
+            Uri baseUri = new Uri(baseUriString);
+
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryString);
+
+            Assert.Equal("https://github.com/dir1/dir2?key=value", result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_AppendQueryString_MultipleCase()
+        {
+            string baseUriString = "https://github.com/";
+            string pathSections = "dir1";
+            string specifiedPath = "dir2";
+            var queryString = new Dictionary<string, IEnumerable<string>>()
+            {
+                ["key1"] = new List<string>() { "value" },
+                ["key2"] = new List<string>() { "value" },
+            };
+            Uri baseUri = new Uri(baseUriString);
+
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryString);
+
+            Assert.Equal("https://github.com/dir1/dir2?key1=value&key2=value", result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_AppendQueryString_Multiple_SameKey()
+        {
+            string baseUriString = "https://github.com/";
+            string pathSections = "dir1";
+            string specifiedPath = "dir2";
+            var queryString = new Dictionary<string, IEnumerable<string>>()
+            {
+                ["key1"] = new List<string>() { "value", "anotherValue" },
+            };
+            Uri baseUri = new Uri(baseUriString);
+
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryString);
+
+            Assert.Equal("https://github.com/dir1/dir2?key1=value&key1=anotherValue", result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_AppendQueryString_EncodeUriValues ()
+        {
+            string baseUriString = "https://github.com/";
+            string pathSections = "dir1";
+            string specifiedPath = "dir2";
+            var queryString = new Dictionary<string, IEnumerable<string>>()
+            {
+                ["key1"] = new List<string>() { "a+b=c" },
+            };
+            Uri baseUri = new Uri(baseUriString);
+
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryString);
+
+            Assert.Equal("https://github.com/dir1/dir2?key1=a%2Bb%3Dc", result.ToString(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public void GetEffectivePath_AppendQueryString_EncodeUriKeys ()
+        {
+            string baseUriString = "https://github.com/";
+            string pathSections = "dir1";
+            string specifiedPath = "dir2";
+            var queryString = new Dictionary<string, IEnumerable<string>>()
+            {
+                ["a+b=c"] = new List<string>() { "value1" },
+            };
+            Uri baseUri = new Uri(baseUriString);
+
+            Uri result = HttpState.GetEffectivePath(baseUri, pathSections, specifiedPath, queryString);
+
+            Assert.Equal("https://github.com/dir1/dir2?a%2Bb%3Dc=value1", result.ToString(), StringComparer.OrdinalIgnoreCase);
         }
 
         [Fact]
@@ -181,7 +267,7 @@ namespace Microsoft.HttpRepl.Tests
             HttpState httpState = SetupHttpState();
             httpState.BaseAddress = null;
 
-            Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePath(""));
+            Assert.Throws<ArgumentNullException>("baseAddress", () => httpState.GetEffectivePathWithoutQueryParam(""));
         }
 
         [Fact]

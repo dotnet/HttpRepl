@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.OpenApi;
 using Microsoft.HttpRepl.Preferences;
+using System.Net;
 using Microsoft.Repl.ConsoleHandling;
 
 namespace Microsoft.HttpRepl
@@ -35,6 +35,8 @@ namespace Microsoft.HttpRepl
 
         public Dictionary<string, IEnumerable<string>> Headers { get; }
 
+        public Dictionary<string, IEnumerable<string>> QueryParam { get; set; } = new();
+
         public Uri SwaggerEndpoint { get; set; }
 
         public HttpState(IPreferences preferences, HttpClient httpClient)
@@ -60,7 +62,7 @@ namespace Microsoft.HttpRepl
                 return null;
             }
 
-            Uri effectivePath = GetEffectivePath(path);
+            Uri effectivePath = GetEffectivePathWithoutQueryParam(path);
             string rootRelativePath = effectivePath.LocalPath.Substring(BaseAddress.LocalPath.Length).TrimStart('/');
             IDirectoryStructure structure = Structure?.TraverseTo(rootRelativePath);
             IReadOnlyDictionary<string, IReadOnlyList<string>> contentTypesByMethod = structure?.RequestInfo?.ContentTypesByMethod;
@@ -81,12 +83,14 @@ namespace Microsoft.HttpRepl
             return null;
         }
 
-        public Uri GetEffectivePath(string commandSpecifiedPath)
-        {
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath);
-        }
+        internal Uri GetEffectivePathWithoutQueryParam(string commandSpecifiedPath) =>
+            GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, queryParam: null);
+       
+    
+        public Uri GetEffectivePath(string commandSpecifiedPath) =>
+            GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), commandSpecifiedPath, QueryParam);
 
-        public static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath)
+        internal static Uri GetEffectivePath(Uri baseAddress, string pathSections, string commandSpecifiedPath, Dictionary<string, IEnumerable<string>> queryParam)
         {
             // If an absolute uri string was already specified, just return that.
             if (Uri.IsWellFormedUriString(commandSpecifiedPath, UriKind.Absolute))
@@ -107,6 +111,17 @@ namespace Microsoft.HttpRepl
             AppendQueryToBuilder(builder, baseAndPathQuery);
             AppendQueryToBuilder(builder, commandQuery);
 
+            if (queryParam is not null)
+            {
+                foreach (KeyValuePair<string, IEnumerable<string>> tuple in queryParam)
+                {
+                    foreach (var singleValue in tuple.Value)
+                    {
+                        AppendQueryToBuilder(builder, $"{WebUtility.UrlEncode(tuple.Key)}={WebUtility.UrlEncode(singleValue)}");
+                    }
+                }
+            }
+
             return builder.Uri;
         }
 
@@ -117,7 +132,7 @@ namespace Microsoft.HttpRepl
                 return null;
             }
 
-            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "");
+            return GetEffectivePath(BaseAddress, string.Join('/', PathSections.Reverse()), "", queryParam: null);
         }
 
         public string GetRelativePathString()

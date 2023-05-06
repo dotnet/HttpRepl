@@ -209,6 +209,9 @@ Type `help connect` for more information on the `connect` command.</value>
   <data name="SetHeaderCommand_HelpSummary" xml:space="preserve">
     <value>Sets or clears a header for all requests. e.g. `set header content-type application/json`</value>
   </data>
+  <data name="AddQueryParamCommand_HelpDetails" xml:space="preserve">
+    <value>Adds a key and value pair to the query string. The key and value will be UrlEncoded. Multiple values may be mapped to the same key.</value>
+  </data>
   <data name="UICommand_HelpSummary" xml:space="preserve">
     <value>Displays the Swagger UI page, if available, in the default browser</value>
   </data>
@@ -441,5 +444,14 @@ Read more about .NET CLI Tools telemetry: https://aka.ms/dotnet-cli-telemetry
   </data>
   <data name="ConnectCommand_HelpDetails_Line6" xml:space="preserve">
     <value>[--persist-path] leaves existing path segments in place when connecting to a new API</value>
+  </data>
+  <data name="AddQueryParamCommand_HelpSummary" xml:space="preserve">
+    <value>Adds a key and value pair to the query string</value>
+  </data>
+  <data name="ClearQueryParamCommand_HelpDetails" xml:space="preserve">
+    <value>Clears the query string of all key and values</value>
+  </data>
+  <data name="ClearQueryParamCommand_HelpSummary" xml:space="preserve">
+    <value>Clears the query string for all requests</value>
   </data>
 </root>
