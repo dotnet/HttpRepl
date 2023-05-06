@@ -18,7 +18,7 @@ namespace Microsoft.HttpRepl.IntegrationTests.SampleApi
         {
             _Host = WebHost.CreateDefaultBuilder()
                            .UseKestrel(options =>
-                            {
+                           {
                                options.ListenLocalhost(config.Port.Value, (listenOptions) =>
                                {
                                    listenOptions.DisableAltSvcHeader = true;
