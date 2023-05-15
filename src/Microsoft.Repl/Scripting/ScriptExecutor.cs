@@ -54,7 +54,10 @@ namespace Microsoft.Repl.Scripting
                     }
                     if(shellState.ScriptManager.IsActive)
                     {
-                        //shellState.ScriptManager.Statuses;
+                        foreach (KeyValuePair<string, IEnumerable<string>> entry in shellState.ScriptManager.Statuses)
+                        {
+                            shellState.ConsoleManager.WriteLine($"Status code {entry.Key} had this many results: {entry.Value.Count()}");                    
+                        }
                     }
                 }
             }

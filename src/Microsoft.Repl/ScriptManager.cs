@@ -20,7 +20,7 @@ namespace Microsoft.Repl
 
         public bool IsActive { get; set; }
 
-        public Dictionary<string, IEnumerable<string>> Statuses { get; }
+        public Dictionary<string, IEnumerable<string>> Statuses { get; set; }
 
         public int NumberOfRequests { get; set; }
     }

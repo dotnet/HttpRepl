@@ -369,7 +369,11 @@ namespace Microsoft.HttpRepl.Commands
             if(scriptManager.IsActive){
                if(scriptManager.Statuses.TryGetValue(status, out IEnumerable<string> values))
                 {
-                    _ = values.Append(status);
+                    scriptManager.Statuses[status] = values.Append(status);
+           
+                } else
+                {
+                    scriptManager.Statuses.Add(status, Enumerable.Repeat(status, 1));
                 }
             } else
             {
