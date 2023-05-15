@@ -179,7 +179,7 @@ namespace Microsoft.HttpRepl.Commands
                 try
                 {
                     HttpResponseMessage response = await programState.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
+                    await HandleResponseAsync(programState, commandInput, shellState.ConsoleManager, shellState.ScriptManager, response, programState.EchoRequest, headersTarget, bodyTarget, cancellationToken).ConfigureAwait(false);
                 }
                 catch (HttpRequestException httpRequestException)
                 {
@@ -345,7 +345,7 @@ namespace Microsoft.HttpRepl.Commands
             }
         }
 
-        private async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
+        private async Task HandleResponseAsync(HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput, IConsoleManager consoleManager, IScriptManager scriptManager, HttpResponseMessage response, bool echoRequest, string headersTargetFile, string bodyTargetFile, CancellationToken cancellationToken)
         {
             string protocolInfo;
 
@@ -353,7 +353,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 RequestConfig requestConfig = new RequestConfig(_preferences);
                 string hostString = response.RequestMessage.RequestUri.Scheme + "://" + response.RequestMessage.RequestUri.Host + (!response.RequestMessage.RequestUri.IsDefaultPort ? ":" + response.RequestMessage.RequestUri.Port : "");
-                await HandleEchoRequest(commandInput, consoleManager, programState, response, requestConfig, hostString, cancellationToken);
+                await HandleEchoRequest(commandInput, consoleManager, programState, response, requestConfig, hostString,scriptManager, cancellationToken);
 
                 // Only need to write out this separator if we've echoed the request
                 consoleManager.WriteLine();
@@ -366,7 +366,16 @@ namespace Microsoft.HttpRepl.Commands
             protocolInfo = $"{"HTTP".SetColor(responseConfig.ProtocolNameColor)}{"/".SetColor(responseConfig.ProtocolSeparatorColor)}{response.Version.ToString().SetColor(responseConfig.ProtocolVersionColor)}";
             string status = ((int)response.StatusCode).ToString().SetColor(responseConfig.StatusCodeColor) + " " + response.ReasonPhrase.SetColor(responseConfig.StatusReasonPhraseColor);
 
-            consoleManager.WriteLine($"{protocolInfo} {status}");
+            if(scriptManager.IsActive){
+               if(scriptManager.Statuses.TryGetValue(status, out IEnumerable<string> values))
+                {
+                    _ = values.Append(status);
+                }
+            } else
+            {
+                consoleManager.WriteLine($"{protocolInfo} {status}");
+            }
+           // consoleManager.WriteLine($"{protocolInfo} {status}");
 
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> responseHeaders = response.Headers;
 
@@ -388,7 +397,9 @@ namespace Microsoft.HttpRepl.Commands
                 string headerKey = header.Key.SetColor(responseConfig.HeaderKeyColor);
                 string headerSep = ":".SetColor(responseConfig.HeaderSeparatorColor);
                 string headerValue = string.Join(";".SetColor(responseConfig.HeaderValueSeparatorColor), header.Value.Select(x => x.Trim().SetColor(responseConfig.HeaderValueColor)));
-                consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
+                if(!scriptManager.IsActive){
+                    consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
+                }
                 headerFileOutput?.Add($"{header.Key}: {string.Join(";", header.Value.Select(x => x.Trim()))}");
             }
 
@@ -397,11 +408,14 @@ namespace Microsoft.HttpRepl.Commands
                 bodyFileOutput = new List<string>();
             }
 
-            consoleManager.WriteLine();
+            if (!scriptManager.IsActive)
+            {
+                consoleManager.WriteLine();
+            }
 
             if (response.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, cancellationToken).ConfigureAwait(false);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, scriptManager, cancellationToken).ConfigureAwait(false);
             }
 
             if (headersTargetFile != null && headerFileOutput != null)
@@ -414,7 +428,10 @@ namespace Microsoft.HttpRepl.Commands
                 _fileSystem.WriteAllLinesToFile(bodyTargetFile, bodyFileOutput);
             }
 
-            consoleManager.WriteLine();
+            if (!scriptManager.IsActive)
+            {
+                consoleManager.WriteLine();
+            }
         }
 
         private async Task HandleEchoRequest(DefaultCommandInput<ICoreParseResult> commandInput,
@@ -423,6 +440,7 @@ namespace Microsoft.HttpRepl.Commands
             HttpResponseMessage response,
             RequestConfig requestConfig,
             string hostString,
+            IScriptManager scriptManager,
             CancellationToken cancellationToken)
         {
             consoleManager.WriteLine($"Request to {hostString}...".SetColor(requestConfig.AddressColor));
@@ -454,11 +472,11 @@ namespace Microsoft.HttpRepl.Commands
 
             if (response.RequestMessage.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, cancellationToken).ConfigureAwait(false);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, scriptManager, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, CancellationToken cancellationToken)
+        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager, CancellationToken cancellationToken)
         {
             if (commandInput.Options[StreamingOption].Count > 0)
             {
@@ -504,13 +522,14 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, preferences);
+            await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, scriptManager, preferences);
         }
 
         private static async Task FormatResponseContentAsync(DefaultCommandInput<ICoreParseResult> commandInput,
             IConsoleManager consoleManager,
             HttpContent content,
             List<string> bodyFileOutput,
+            IScriptManager scriptManager,
             IPreferences preferences)
         {
             string contentType = null;
@@ -530,7 +549,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-JAVASCRIPT", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+JAVASCRIPT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatJsonAsync(consoleManager, content, bodyFileOutput, preferences))
+                    if (await FormatJsonAsync(consoleManager, content, bodyFileOutput, preferences, scriptManager))
                     {
                         return;
                     }
@@ -542,7 +561,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-XML", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+XML", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatXmlAsync(consoleManager, content, bodyFileOutput))
+                    if (await FormatXmlAsync(consoleManager, content, bodyFileOutput, scriptManager))
                     {
                         return;
                     }
@@ -570,13 +589,16 @@ namespace Microsoft.HttpRepl.Commands
             return readTask.IsCompleted;
         }
 
-        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, List<string> bodyFileOutput)
+        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, List<string> bodyFileOutput, IScriptManager scriptManager)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
             try
             {
                 XDocument body = XDocument.Parse(responseContent);
-                consoleManager.WriteLine(body.ToString());
+                if (!scriptManager.IsActive)
+                {
+                    consoleManager.WriteLine(body.ToString());
+                }          
                 bodyFileOutput?.Add(body.ToString());
                 return true;
             }
@@ -587,7 +609,7 @@ namespace Microsoft.HttpRepl.Commands
             return false;
         }
 
-        private static async Task<bool> FormatJsonAsync(IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences)
+        private static async Task<bool> FormatJsonAsync(IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -595,7 +617,10 @@ namespace Microsoft.HttpRepl.Commands
             {
                 JsonConfig config = new JsonConfig(preferences);
                 string formatted = JsonVisitor.FormatAndColorize(config, responseContent);
-                outputSink.WriteLine(formatted);
+                if (!scriptManager.IsActive)
+                {
+                    outputSink.WriteLine(formatted);
+                }
                 bodyFileOutput?.Add(JToken.Parse(responseContent).ToString());
                 return true;
             }

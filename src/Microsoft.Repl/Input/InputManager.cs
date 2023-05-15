@@ -213,7 +213,7 @@ namespace Microsoft.Repl.Input
                 str = str.PadRight(trailing + str.Length);
             }
 
-            state.ConsoleManager.Write(str);
+          state.ConsoleManager.Write(str);
 
             _inputBuffer.Clear();
             _inputBuffer.AddRange(input);

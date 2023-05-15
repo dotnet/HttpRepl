@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Repl.Commanding;
@@ -33,6 +34,8 @@ namespace Microsoft.Repl.Scripting
 
                 using (suppressor)
                 {
+
+                    shellState.ScriptManager.NumberOfRequests = commandTexts.Count();
                     foreach (string commandText in commandTexts)
                     {
                         if (string.IsNullOrWhiteSpace(commandText))
@@ -48,6 +51,10 @@ namespace Microsoft.Repl.Scripting
                         dispatcher.OnReady(shellState);
                         shellState.InputManager.SetInput(shellState, commandText);
                         await dispatcher.ExecuteCommandAsync(shellState, cancellationToken).ConfigureAwait(false);
+                    }
+                    if(shellState.ScriptManager.IsActive)
+                    {
+                        //shellState.ScriptManager.Statuses;
                     }
                 }
             }

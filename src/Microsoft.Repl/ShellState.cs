@@ -11,13 +11,14 @@ namespace Microsoft.Repl
 {
     public class ShellState : IShellState
     {
-        public ShellState(ICommandDispatcher commandDispatcher, ISuggestionManager suggestionManager = null, IInputManager inputManager = null, ICommandHistory commandHistory = null, IConsoleManager consoleManager = null)
+        public ShellState(ICommandDispatcher commandDispatcher, ISuggestionManager suggestionManager = null, IInputManager inputManager = null, ICommandHistory commandHistory = null, IConsoleManager consoleManager = null, IScriptManager scriptManager = null)
         {
             InputManager = inputManager ?? new InputManager();
             CommandHistory = commandHistory ?? new CommandHistory();
             ConsoleManager = consoleManager ?? new ConsoleManager();
             CommandDispatcher = commandDispatcher;
             SuggestionManager = suggestionManager ?? new SuggestionManager();
+            ScriptManager = scriptManager ?? new ScriptManager();
         }
 
         public IInputManager InputManager { get; }
@@ -31,6 +32,8 @@ namespace Microsoft.Repl
         public bool IsExiting { get; set; }
 
         public ISuggestionManager SuggestionManager { get; }
+
+        public IScriptManager ScriptManager { get; }
 
         public void MoveCarets(int positions)
         {

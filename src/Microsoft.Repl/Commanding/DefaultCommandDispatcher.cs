@@ -130,7 +130,10 @@ namespace Microsoft.Repl.Commanding
 
             if (!_isReady && !shellState.IsExiting)
             {
-                shellState.ConsoleManager.WriteLine();
+                if (!shellState.ScriptManager.IsActive)
+                {
+                    shellState.ConsoleManager.WriteLine();
+                }
                 OnReady(shellState);
             }
 

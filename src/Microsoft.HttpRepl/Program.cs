@@ -75,6 +75,12 @@ namespace Microsoft.HttpRepl
                     if (string.Equals(args[0], "run", StringComparison.OrdinalIgnoreCase))
                     {
                         telemetry.TrackStartedEvent(withRun: true);
+                        if(args.Length >= 2){
+                            if (args[1].EndsWith(".http", StringComparison.OrdinalIgnoreCase) || args[1].EndsWith(@".http""", StringComparison.OrdinalIgnoreCase))
+                            {
+                                shell.ShellState.ConsoleManager.WriteLine("Running Http File");
+                            }
+                        }
                         shell.ShellState.CommandDispatcher.OnReady(shell.ShellState);
                         shell.ShellState.InputManager.SetInput(shell.ShellState, string.Join(' ', args));
                         await shell.ShellState.CommandDispatcher.ExecuteCommandAsync(shell.ShellState, CancellationToken.None).ConfigureAwait(false);
