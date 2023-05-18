@@ -213,7 +213,18 @@ namespace Microsoft.Repl.Input
                 str = str.PadRight(trailing + str.Length);
             }
 
-          state.ConsoleManager.Write(str);
+            if (state.ScriptManager.IsActive)
+            {
+                /*Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Console.Write(new string(' ', Console.WindowWidth));               
+                Console.SetCursorPosition(0, Console.CursorTop - 1);*/
+                state.ConsoleManager.Clear();
+                state.ConsoleManager.Write($"Processing request {state.ScriptManager.CurrentRequest} of {state.ScriptManager.NumberOfRequests}");
+            } else
+            {
+                state.ConsoleManager.Write(str);
+            }
+          
 
             _inputBuffer.Clear();
             _inputBuffer.AddRange(input);

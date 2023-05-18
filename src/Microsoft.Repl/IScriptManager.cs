@@ -10,6 +10,7 @@ namespace Microsoft.Repl
     {
         bool IsActive { get; set;  }
         Dictionary<string, IEnumerable<string>> Statuses { get; set; }
+        int CurrentRequest { get; set; }
         int NumberOfRequests { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace Microsoft.Repl
         public ScriptManager() {
             IsActive = false;
             Statuses = new Dictionary<string, IEnumerable<string>>();
+            CurrentRequest = 0;
             NumberOfRequests = 0;
         }
 
@@ -23,5 +24,6 @@ namespace Microsoft.Repl
         public Dictionary<string, IEnumerable<string>> Statuses { get; set; }
 
         public int NumberOfRequests { get; set; }
+        public int CurrentRequest { get; set; }
     }
 }

@@ -48,6 +48,7 @@ namespace Microsoft.Repl.Scripting
                             break;
                         }
 
+                        shellState.ScriptManager.CurrentRequest++;
                         dispatcher.OnReady(shellState);
                         shellState.InputManager.SetInput(shellState, commandText);
                         await dispatcher.ExecuteCommandAsync(shellState, cancellationToken).ConfigureAwait(false);
