@@ -375,6 +375,7 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     scriptManager.Statuses.Add(status, Enumerable.Repeat(status, 1));
                 }
+                consoleManager.WriteLine($"Status: {status}");
             } else
             {
                 consoleManager.WriteLine($"{protocolInfo} {status}");
@@ -411,11 +412,8 @@ namespace Microsoft.HttpRepl.Commands
             {
                 bodyFileOutput = new List<string>();
             }
-
-            if (!scriptManager.IsActive)
-            {
-                consoleManager.WriteLine();
-            }
+           
+            consoleManager.WriteLine();
 
             if (response.Content != null)
             {

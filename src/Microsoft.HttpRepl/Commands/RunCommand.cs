@@ -49,10 +49,10 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            if (parseResult.Sections[1].EndsWith(".http", StringComparison.OrdinalIgnoreCase))
+            /*if (parseResult.Sections[1].EndsWith(".http", StringComparison.OrdinalIgnoreCase))
             {
                 shellState.ConsoleManager.WriteLine("Running Http File");
-            }
+            }*/
             shellState.ScriptManager.IsActive = true;
             bool suppressScriptLinesInHistory = true;
             if (parseResult.Sections.Count == 3)

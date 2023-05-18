@@ -215,11 +215,8 @@ namespace Microsoft.Repl.Input
 
             if (state.ScriptManager.IsActive)
             {
-                /*Console.SetCursorPosition(0, Console.CursorTop - 1);
-                Console.Write(new string(' ', Console.WindowWidth));               
-                Console.SetCursorPosition(0, Console.CursorTop - 1);*/
-                state.ConsoleManager.Clear();
-                state.ConsoleManager.Write($"Processing request {state.ScriptManager.CurrentRequest} of {state.ScriptManager.NumberOfRequests}");
+                var commands = str.Split(' ');
+                state.ConsoleManager.Write($"{state.ScriptManager.CurrentRequest}: {commands[0]} {commands[1]}");
             } else
             {
                 state.ConsoleManager.Write(str);

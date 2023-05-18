@@ -36,6 +36,7 @@ namespace Microsoft.Repl.Scripting
                 {
 
                     shellState.ScriptManager.NumberOfRequests = commandTexts.Count();
+                    shellState.ConsoleManager.WriteLine($"Running file with {commandTexts.Count()} requests");
                     foreach (string commandText in commandTexts)
                     {
                         if (string.IsNullOrWhiteSpace(commandText))
