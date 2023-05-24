@@ -32,6 +32,11 @@ namespace Microsoft.Repl.Scripting
             {
                 IDisposable suppressor = _hideScriptLinesFromHistory ? shellState.CommandHistory.SuspendHistory() : null;
 
+                if (shellState.ScriptManager.IsActive)
+                {
+                    suppressor = shellState.CommandHistory.SuspendHistory();
+                }
+
                 using (suppressor)
                 {
 
@@ -53,13 +58,15 @@ namespace Microsoft.Repl.Scripting
                         dispatcher.OnReady(shellState);
                         shellState.InputManager.SetInput(shellState, commandText);
                         await dispatcher.ExecuteCommandAsync(shellState, cancellationToken).ConfigureAwait(false);
+                        if (shellState.ScriptManager.CancellationFromFailure)
+                        {
+                            break;
+                        }
                     }
                     if(shellState.ScriptManager.IsActive)
                     {
-                        foreach (KeyValuePair<string, IEnumerable<string>> entry in shellState.ScriptManager.Statuses)
-                        {
-                            shellState.ConsoleManager.WriteLine($"Status code {entry.Key} had this many results: {entry.Value.Count()}");                    
-                        }
+                        shellState.ConsoleManager.Write(shellState.ScriptManager.GetStatus());
+                        shellState.ScriptManager.Reset();
                     }
                 }
             }

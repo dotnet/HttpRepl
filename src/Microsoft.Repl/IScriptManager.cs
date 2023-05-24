@@ -9,7 +9,13 @@ namespace Microsoft.Repl
     public interface IScriptManager
     {
         bool IsActive { get; set;  }
-        Dictionary<string, IEnumerable<string>> Statuses { get; set; }
+        bool Verbose { get; set; }
+        bool VerboseFailure { get; set; }
+        bool FirstFailure { get; set; }
+        bool CancellationFromFailure { get; set; }
+        void AddStatus(string status);
+        string GetStatus();
+        void Reset();
         int CurrentRequest { get; set; }
         int NumberOfRequests { get; set; }
     }

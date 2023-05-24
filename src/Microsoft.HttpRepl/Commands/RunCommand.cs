@@ -58,6 +58,12 @@ namespace Microsoft.HttpRepl.Commands
             if (parseResult.Sections.Count == 3)
             {
                 suppressScriptLinesInHistory = !string.Equals(parseResult.Sections[2], "+history", StringComparison.OrdinalIgnoreCase);
+                shellState.ScriptManager.Verbose = string.Equals(parseResult.Sections[2], "-v", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(parseResult.Sections[2], "--verbose", StringComparison.OrdinalIgnoreCase);
+                shellState.ScriptManager.VerboseFailure = string.Equals(parseResult.Sections[2], "-vf", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(parseResult.Sections[2], "--verboseFailure", StringComparison.OrdinalIgnoreCase);
+                shellState.ScriptManager.FirstFailure = string.Equals(parseResult.Sections[2], "-ff", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(parseResult.Sections[2], "--firstFailure", StringComparison.OrdinalIgnoreCase);
             }
 
             string[] lines = _fileSystem.ReadAllLinesFromFile(parseResult.Sections[1]);

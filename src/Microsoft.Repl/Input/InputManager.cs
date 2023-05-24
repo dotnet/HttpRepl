@@ -196,7 +196,7 @@ namespace Microsoft.Repl.Input
 
         private void SetInput(IShellState state, IReadOnlyList<char> input)
         {
-            bool oldCaretVisibility = state.ConsoleManager.IsCaretVisible;
+           bool oldCaretVisibility = state.ConsoleManager.IsCaretVisible;
             state.ConsoleManager.IsCaretVisible = false;
             int lastCommonPosition = 0;
 
@@ -213,7 +213,7 @@ namespace Microsoft.Repl.Input
                 str = str.PadRight(trailing + str.Length);
             }
 
-            if (state.ScriptManager.IsActive)
+            if (state.ScriptManager.IsActive && !string.IsNullOrEmpty(str))
             {
                 var commands = str.Split(' ');
                 state.ConsoleManager.Write($"{state.ScriptManager.CurrentRequest}: {commands[0]} {commands[1]}");

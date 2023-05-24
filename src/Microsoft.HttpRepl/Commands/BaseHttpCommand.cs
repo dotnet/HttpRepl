@@ -367,15 +367,14 @@ namespace Microsoft.HttpRepl.Commands
             string status = ((int)response.StatusCode).ToString().SetColor(responseConfig.StatusCodeColor) + " " + response.ReasonPhrase.SetColor(responseConfig.StatusReasonPhraseColor);
 
             if(scriptManager.IsActive){
-               if(scriptManager.Statuses.TryGetValue(status, out IEnumerable<string> values))
-                {
-                    scriptManager.Statuses[status] = values.Append(status);
-           
-                } else
-                {
-                    scriptManager.Statuses.Add(status, Enumerable.Repeat(status, 1));
-                }
+                scriptManager.AddStatus(status);
                 consoleManager.WriteLine($"Status: {status}");
+                if (scriptManager.FirstFailure)
+                {
+                    if(!response.IsSuccessStatusCode) {
+                        scriptManager.CancellationFromFailure = true;
+                    }
+                } 
             } else
             {
                 consoleManager.WriteLine($"{protocolInfo} {status}");
@@ -402,7 +401,7 @@ namespace Microsoft.HttpRepl.Commands
                 string headerKey = header.Key.SetColor(responseConfig.HeaderKeyColor);
                 string headerSep = ":".SetColor(responseConfig.HeaderSeparatorColor);
                 string headerValue = string.Join(";".SetColor(responseConfig.HeaderValueSeparatorColor), header.Value.Select(x => x.Trim().SetColor(responseConfig.HeaderValueColor)));
-                if(!scriptManager.IsActive){
+                if(!scriptManager.IsActive || scriptManager.Verbose){
                     consoleManager.WriteLine($"{headerKey}{headerSep} {headerValue}");
                 }
                 headerFileOutput?.Add($"{header.Key}: {string.Join(";", header.Value.Select(x => x.Trim()))}");
@@ -417,7 +416,8 @@ namespace Microsoft.HttpRepl.Commands
 
             if (response.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, scriptManager, cancellationToken).ConfigureAwait(false);
+                bool verbose = !scriptManager.IsActive || scriptManager.Verbose || ((scriptManager.VerboseFailure || scriptManager.FirstFailure) && !response.IsSuccessStatusCode);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.Content, bodyFileOutput, _preferences, scriptManager, verbose, cancellationToken).ConfigureAwait(false);
             }
 
             if (headersTargetFile != null && headerFileOutput != null)
@@ -474,11 +474,11 @@ namespace Microsoft.HttpRepl.Commands
 
             if (response.RequestMessage.Content != null)
             {
-                await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, scriptManager, cancellationToken).ConfigureAwait(false);
+                await FormatBodyAsync(commandInput, programState, consoleManager, response.RequestMessage.Content, responseOutput, _preferences, scriptManager, !scriptManager.IsActive, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager, CancellationToken cancellationToken)
+        private static async Task FormatBodyAsync(DefaultCommandInput<ICoreParseResult> commandInput, HttpState programState, IConsoleManager consoleManager, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager, bool verbose, CancellationToken cancellationToken)
         {
             if (commandInput.Options[StreamingOption].Count > 0)
             {
@@ -524,7 +524,7 @@ namespace Microsoft.HttpRepl.Commands
                 return;
             }
 
-            await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, scriptManager, preferences);
+            await FormatResponseContentAsync(commandInput, consoleManager, content, bodyFileOutput, scriptManager, verbose, preferences);
         }
 
         private static async Task FormatResponseContentAsync(DefaultCommandInput<ICoreParseResult> commandInput,
@@ -532,6 +532,7 @@ namespace Microsoft.HttpRepl.Commands
             HttpContent content,
             List<string> bodyFileOutput,
             IScriptManager scriptManager,
+            bool verbose,
             IPreferences preferences)
         {
             string contentType = null;
@@ -551,7 +552,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-JAVASCRIPT", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+JAVASCRIPT", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatJsonAsync(consoleManager, content, bodyFileOutput, preferences, scriptManager))
+                    if (await FormatJsonAsync(consoleManager, content, bodyFileOutput, preferences, scriptManager, verbose))
                     {
                         return;
                     }
@@ -563,7 +564,7 @@ namespace Microsoft.HttpRepl.Commands
                     || contentType.EndsWith("-XML", StringComparison.OrdinalIgnoreCase)
                     || contentType.EndsWith("+XML", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (await FormatXmlAsync(consoleManager, content, bodyFileOutput, scriptManager))
+                    if (await FormatXmlAsync(consoleManager, content, bodyFileOutput, scriptManager,verbose))
                     {
                         return;
                     }
@@ -591,13 +592,13 @@ namespace Microsoft.HttpRepl.Commands
             return readTask.IsCompleted;
         }
 
-        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, List<string> bodyFileOutput, IScriptManager scriptManager)
+        private static async Task<bool> FormatXmlAsync(IWritable consoleManager, HttpContent content, List<string> bodyFileOutput, IScriptManager scriptManager, bool verbose)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
             try
             {
                 XDocument body = XDocument.Parse(responseContent);
-                if (!scriptManager.IsActive)
+                if (verbose)
                 {
                     consoleManager.WriteLine(body.ToString());
                 }          
@@ -611,7 +612,7 @@ namespace Microsoft.HttpRepl.Commands
             return false;
         }
 
-        private static async Task<bool> FormatJsonAsync(IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager)
+        private static async Task<bool> FormatJsonAsync(IWritable outputSink, HttpContent content, List<string> bodyFileOutput, IPreferences preferences, IScriptManager scriptManager, bool verbose)
         {
             string responseContent = await content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -619,7 +620,7 @@ namespace Microsoft.HttpRepl.Commands
             {
                 JsonConfig config = new JsonConfig(preferences);
                 string formatted = JsonVisitor.FormatAndColorize(config, responseContent);
-                if (!scriptManager.IsActive)
+                if (verbose)
                 {
                     outputSink.WriteLine(formatted);
                 }
