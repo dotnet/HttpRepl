@@ -25,7 +25,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer has previous command after the UpArrow key press event
             Assert.Equal(previousCommand, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -46,7 +46,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer has previous command after the UpArrow key press event
             Assert.Equal(previousCommand, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -71,7 +71,7 @@ namespace Microsoft.Repl.Tests
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
             Assert.Equal(0, shell.ShellState.InputManager.CaretPosition);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer has previous command after the UpArrow key press event
             Assert.Equal(previousCommand, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -92,7 +92,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: nextCommand,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer has next command after the DownArrow key press event
             Assert.Equal(nextCommand, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -118,7 +118,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = "ge";
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Delete key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -143,7 +143,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = "gt";
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Backspace key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -166,7 +166,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = string.Empty;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Escape key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -190,7 +190,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = string.Empty;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Ctrl + U key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -209,7 +209,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify IsOverwriteMode flag in input manager is set to false after Insert key press event
             Assert.True(shell.ShellState.InputManager.IsOverwriteMode);
@@ -233,7 +233,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferText = "get";
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after F1 key press event
             Assert.Equal(inputBufferText, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -261,7 +261,7 @@ namespace Microsoft.Repl.Tests
             string clearCommandName = "clear";
             defaultCommandDispatcher.AddCommand(new MockCommand(clearCommandName));
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after tab key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -290,7 +290,7 @@ namespace Microsoft.Repl.Tests
             string clearCommandName = "clear";
             defaultCommandDispatcher.AddCommand(new MockCommand(clearCommandName));
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Shift + Tab key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -313,7 +313,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = "z";
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after tab key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -335,7 +335,7 @@ namespace Microsoft.Repl.Tests
 
             string inputBufferTextAfterKeyPress = "z";
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Verify the input buffer contents after Shift + Tab key press event
             Assert.Equal(inputBufferTextAfterKeyPress, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -353,7 +353,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(string.Empty, shell.ShellState.InputManager.GetCurrentBuffer());
             Assert.Equal(0, shell.ShellState.InputManager.CaretPosition);
@@ -373,7 +373,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(input.Length - 1, shellState.InputManager.CaretPosition);
         }
@@ -392,7 +392,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(9, shellState.InputManager.CaretPosition);
         }
@@ -414,7 +414,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(input.Length - 2, shellState.InputManager.CaretPosition);
         }
@@ -436,7 +436,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(input.Length, shellState.InputManager.CaretPosition);
         }
@@ -455,7 +455,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(0, shellState.InputManager.CaretPosition);
         }
@@ -474,7 +474,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(0, shellState.InputManager.CaretPosition);
         }
@@ -496,7 +496,7 @@ namespace Microsoft.Repl.Tests
 
             IShellState shellState = shell.ShellState;
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(input.Length, shellState.InputManager.CaretPosition);
         }
@@ -516,7 +516,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(input.Length, shell.ShellState.InputManager.CaretPosition);
         }
@@ -532,7 +532,7 @@ namespace Microsoft.Repl.Tests
                 nextCommand: null,
                 out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Empty(shell.ShellState.InputManager.GetCurrentBuffer());
             Assert.Equal(0, shell.ShellState.InputManager.CaretPosition);
@@ -550,7 +550,7 @@ namespace Microsoft.Repl.Tests
 
             Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
 
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             Assert.Equal(commandOne,shell.ShellState.InputManager.GetCurrentBuffer());
             Assert.Equal(commandOne.Length, shell.ShellState.InputManager.CaretPosition);
@@ -567,7 +567,7 @@ namespace Microsoft.Repl.Tests
             Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
 
             // Act
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Assert
             Assert.Equal(expectedCommand, shell.ShellState.InputManager.GetCurrentBuffer());
@@ -588,7 +588,7 @@ namespace Microsoft.Repl.Tests
             Shell shell = CreateShell(keys, out CancellationTokenSource cancellationTokenSource);
 
             // Act
-            await shell.RunAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+            await shell.RunAsync(cancellationTokenSource.Token);
 
             // Assert
             Assert.Equal(expectedCommand, shell.ShellState.InputManager.GetCurrentBuffer());

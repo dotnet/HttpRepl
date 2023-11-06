@@ -116,9 +116,8 @@ namespace Microsoft.HttpRepl.Tests.Preferences
             {
                 // We can't do a one-liner here like the Missing path version above because
                 // the order the second parameter is evaluated regardless of the result of the
-                // evaluation of the first parameter. Also xUnit doesn't have an Assert.Fail,
-                // so we have to use Assert.True(false) per their comparison chart.
-                Assert.True(false, $"Extra path \"{pathsEnumerator.Current}\"");
+                // evaluation of the first parameter.
+                Assert.Fail($"Extra path \"{pathsEnumerator.Current}\"");
             }
         }
     }
