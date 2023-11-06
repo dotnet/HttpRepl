@@ -61,7 +61,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
 
             // Assert
             Assert.True(result.Success);
-            Assert.NotEqual(0, result.ValidationMessages.Count);
+            Assert.NotEmpty(result.ValidationMessages);
         }
 
         private void AssertDefinition(ApiDefinition expected, ApiDefinition actual)
@@ -122,7 +122,7 @@ namespace Microsoft.HttpRepl.Tests.OpenApi
             // 1) The message is being calculated eagerly when it was not before (thus calculating it even when MoveNext returns false)
             // 2) Current now throws if there is no current, whereas before it did not
             // #2 is more likely, but I can't prove it in the sources. We'll break out the Assert.False and do the if check
-            // and message construction separately to avoid it. 
+            // and message construction separately to avoid it.
             //Assert.False(actualDirectoriesEnumerator.MoveNext(), $"Extra subdirectory in {path}: {actualDirectoriesEnumerator.Current}");
 
             if (actualDirectoriesEnumerator.MoveNext())
