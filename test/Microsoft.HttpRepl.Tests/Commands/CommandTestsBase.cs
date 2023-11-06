@@ -122,14 +122,11 @@ namespace Microsoft.HttpRepl.Tests.Commands
             {
                 httpState.BaseAddress = new Uri(baseAddress);
 
-                if (path != null)
-                {
-                    string[] pathParts = path.Split('/');
+                string[] pathParts = path.Split('/');
 
-                    foreach (string pathPart in pathParts)
-                    {
-                        httpState.PathSections.Push(pathPart);
-                    }
+                foreach (string pathPart in pathParts)
+                {
+                    httpState.PathSections.Push(pathPart);
                 }
             }
 
