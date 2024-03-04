@@ -9,22 +9,19 @@ variables:
     value: true
   - name: _HelixType
     value: build/product
-
-  # Variables for public PR builds
-  - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-    - name: _HelixSource
-      value: pr/dotnet/HttpRepl/$(Build.SourceBranch)
-
-  # Variables for internal Official builds
-  - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-    - name: _HelixSource
-      value: official/dotnet/HttpRepl/$(Build.SourceBranch)
+  - name: _HelixSource
+    value: official/dotnet/HttpRepl/$(Build.SourceBranch)
+  - name: _BuildConfig
+    value: Release
+  - name: _SignType
+    value: real
 
 resources:
-  containers:
-  - container: LinuxContainer
-    image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-14.04-cross-0cd4667-20170319080304
-    options: --init # This ensures all the stray defunct processes are reaped.
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
 
 trigger:
   branches:
@@ -39,59 +36,25 @@ trigger:
     - README.md
     - SECURITY.md
 
-pr:
-  branches:
-    include:
-    - "*"
-  paths:
-    include:
-    - /
-    exclude:
-    - CONTRIBUTING.md
-    - README.md
-    - SECURITY.md
-
 stages:
 - stage: build
   displayName: Build
   jobs:
-  - template: /eng/common/templates/jobs/jobs.yml
+  - template: /eng/common/templates-official/jobs/jobs.yml@self
     parameters:
       enablePublishBuildArtifacts: true
       testResultsFormat: xunit
       enableTelemetry: true
       helixRepo: dotnet/HttpRepl
-      # enableMicrobuild can't be read from a user-defined variable (Azure DevOps limitation)
-      ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-        enableMicrobuild: true
+      enableMicrobuild: true
       jobs:
       - job: Windows
         pool:
-          ${{ if eq(variables['System.TeamProject'], 'public') }}:
-            name: NetCore-Public
-            demands: ImageOverride -equals windows.vs2022.amd64.open
-          ${{ if ne(variables['System.TeamProject'], 'public') }}:
-            name: NetCore1ESPool-Internal
-            demands: ImageOverride -equals windows.vs2022.amd64
+          name: $(DncEngInternalBuildPool)
+          image: 1es-windows-2022-pt
+          os: windows
         variables:
-        - name: _HelixBuildConfig
-          value: $(_BuildConfig)
-        strategy:
-          matrix:
-            ${{ if in(variables['Build.Reason'], 'PullRequest') }}:
-              Debug:
-                _BuildConfig: Debug
-                _SignType: test
-                _BuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
-            Release:
-              _BuildConfig: Release
-              # PRs and external builds are not signed.
-              ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-                _SignType: test
-                _BuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
-              ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-                _SignType: real
-                _BuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)
+          _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)
         steps:
         - checkout: self
           clean: true
@@ -105,64 +68,16 @@ stages:
             -configuration $(_BuildConfig)
             -prepareMachine
             -integrationTest
-            $(_BuildArgs)
+            $(_OfficialBuildArgs)
             /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
           name: Build
           displayName: Build
           condition: succeeded()
         - task: PublishBuildArtifacts@1
           displayName: Publish Packages
-          condition: and(eq(variables['system.pullrequest.isfork'], false), eq(variables['_BuildConfig'], 'Release'))
           continueOnError: true
           inputs:
             artifactName: Packages_$(Agent.Os)_$(Agent.JobName)
             parallel: true
             pathtoPublish: '$(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)'
             publishLocation: Container
-
-      - job: macOS
-        pool:
-          vmImage: macOS-latest
-        strategy:
-          matrix:
-            debug:
-              _BuildConfig: Debug
-            release:
-              _BuildConfig: Release
-        variables:
-        - name: _HelixBuildConfig
-          value: $(_BuildConfig)
-        steps:
-        - checkout: self
-          clean: true
-        - script: eng/common/cibuild.sh
-            --configuration $(_BuildConfig)
-            --prepareMachine
-            --integrationTest
-          name: Build
-          displayName: Build
-          condition: succeeded()
-
-      - job: Linux
-        pool:
-          vmImage: ubuntu-20.04
-          container: LinuxContainer
-        strategy:
-          matrix:
-            debug:
-              _BuildConfig: Debug
-            release:
-              _BuildConfig: Release
-        variables:
-        - name: _HelixBuildConfig
-          value: $(_BuildConfig)
-        steps:
-        - checkout: self
-          clean: true
-        - script: eng/common/cibuild.sh
-            --configuration $(_BuildConfig)
-            --prepareMachine
-            --integrationTest
-          name: Build
-          displayName: Build
-          condition: succeeded()
