@@ -1,0 +1,134 @@
+variables:
+  - name: Build.Repository.Clean
+    value: true
+  - name: _TeamName
+    value: AspNetCore
+  - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+    value: true
+  - name: _PublishUsingPipelines
+    value: true
+  - name: _HelixType
+    value: build/product
+  - name: _HelixSource
+    value: pr/dotnet/HttpRepl/$(Build.SourceBranch)
+
+resources:
+  containers:
+  - container: LinuxContainer
+    image: mcr.microsoft.com/dotnet-buildtools/prereqs:ubuntu-14.04-cross-0cd4667-20170319080304
+    options: --init # This ensures all the stray defunct processes are reaped.
+
+pr:
+  branches:
+    include:
+    - "*"
+  paths:
+    include:
+    - /
+    exclude:
+    - CONTRIBUTING.md
+    - README.md
+    - SECURITY.md
+
+stages:
+- stage: build
+  displayName: Build
+  jobs:
+  - template: /eng/common/templates/jobs/jobs.yml
+    parameters:
+      enablePublishBuildArtifacts: true
+      testResultsFormat: xunit
+      enableTelemetry: true
+      helixRepo: dotnet/HttpRepl
+      jobs:
+      - job: Windows
+        pool:
+          name: NetCore-Public
+          demands: ImageOverride -equals windows.vs2022.amd64.open
+        variables:
+        - name: _HelixBuildConfig
+          value: $(_BuildConfig)
+        strategy:
+          matrix:
+            Debug:
+              _BuildConfig: Debug
+              _SignType: test
+              _BuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
+            Release:
+              _BuildConfig: Release
+              _SignType: test
+              _BuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName)
+        steps:
+        - checkout: self
+          clean: true
+        - task: NuGetCommand@2
+          displayName: 'Clear NuGet caches'
+          condition: succeeded()
+          inputs:
+            command: custom
+            arguments: 'locals all -clear'
+        - script: eng\common\cibuild.cmd
+            -configuration $(_BuildConfig)
+            -prepareMachine
+            -integrationTest
+            $(_BuildArgs)
+            /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
+          name: Build
+          displayName: Build
+          condition: succeeded()
+        - task: PublishBuildArtifacts@1
+          displayName: Publish Packages
+          condition: and(eq(variables['system.pullrequest.isfork'], false), eq(variables['_BuildConfig'], 'Release'))
+          continueOnError: true
+          inputs:
+            artifactName: Packages_$(Agent.Os)_$(Agent.JobName)
+            parallel: true
+            pathtoPublish: '$(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)'
+            publishLocation: Container
+
+      - job: macOS
+        pool:
+          vmImage: macOS-latest
+        strategy:
+          matrix:
+            debug:
+              _BuildConfig: Debug
+            release:
+              _BuildConfig: Release
+        variables:
+        - name: _HelixBuildConfig
+          value: $(_BuildConfig)
+        steps:
+        - checkout: self
+          clean: true
+        - script: eng/common/cibuild.sh
+            --configuration $(_BuildConfig)
+            --prepareMachine
+            --integrationTest
+          name: Build
+          displayName: Build
+          condition: succeeded()
+
+      - job: Linux
+        pool:
+          vmImage: ubuntu-20.04
+          container: LinuxContainer
+        strategy:
+          matrix:
+            debug:
+              _BuildConfig: Debug
+            release:
+              _BuildConfig: Release
+        variables:
+        - name: _HelixBuildConfig
+          value: $(_BuildConfig)
+        steps:
+        - checkout: self
+          clean: true
+        - script: eng/common/cibuild.sh
+            --configuration $(_BuildConfig)
+            --prepareMachine
+            --integrationTest
+          name: Build
+          displayName: Build
+          condition: succeeded()
