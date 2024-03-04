@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <!-- The Test Projects all need to use a TargetFramework that matches the .NET SDK specified in global.json -->
-    <TestProjectTargetFramework>net8.0</TestProjectTargetFramework>
+    <TestProjectTargetFramework>net9.0</TestProjectTargetFramework>
   </PropertyGroup>
 
 </Project>
