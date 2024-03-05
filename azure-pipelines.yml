@@ -1,40 +1,33 @@
 variables:
-  - template: /eng/common/templates-official/variables/pool-providers.yml@self
-  - name: Build.Repository.Clean
-    value: true
-  - name: _TeamName
-    value: AspNetCore
-  - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
-    value: true
-  - name: _PublishUsingPipelines
-    value: true
-  - name: _HelixType
-    value: build/product
-  - name: _HelixSource
-    value: official/dotnet/HttpRepl/$(Build.SourceBranch)
-  - name: _BuildConfig
-    value: Release
-  - name: _SignType
-    value: real
-
+- template: /eng/common/templates-official/variables/pool-providers.yml@self
+- name: Build.Repository.Clean
+  value: true
+- name: _TeamName
+  value: AspNetCore
+- name: TeamName
+  value: AspNetCore
+- name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+  value: true
+- name: _PublishUsingPipelines
+  value: true
+- name: _HelixType
+  value: build/product
+- name: _HelixSource
+  value: official/dotnet/HttpRepl/$(Build.SourceBranch)
+- name: _BuildConfig
+  value: Release
+- name: _SignType
+  value: real
+- name: _BuildArgs
+  value: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)                 
+- name: _HelixBuildConfig
+  value: $(_BuildConfig)
 resources:
   repositories:
   - repository: MicroBuildTemplate
     type: git
     name: 1ESPipelineTemplates/MicroBuildTemplate
     ref: refs/tags/release
-
-pr:
-  branches:
-    include:
-    - main
-    - release/*
-  paths:
-    exclude:
-    - CONTRIBUTING.md
-    - README.md
-    - SECURITY.md
-
 trigger:
   branches:
     include:
@@ -47,7 +40,6 @@ trigger:
     - CONTRIBUTING.md
     - README.md
     - SECURITY.md
-
 extends:
   template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
@@ -64,6 +56,9 @@ extends:
       jobs:
       - template: /eng/common/templates-official/jobs/jobs.yml@self
         parameters:
+          artifacts:
+            publish:
+              artifacts: true
           enablePublishBuildArtifacts: true
           testResultsFormat: xunit
           enableTelemetry: true
@@ -75,8 +70,6 @@ extends:
               name: $(DncEngInternalBuildPool)
               image: 1es-windows-2022-pt
               os: windows
-            variables:
-              _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)
             steps:
             - checkout: self
               clean: true
@@ -86,20 +79,7 @@ extends:
               inputs:
                 command: custom
                 arguments: 'locals all -clear'
-            - script: eng\common\cibuild.cmd
-                -configuration $(_BuildConfig)
-                -prepareMachine
-                -integrationTest
-                $(_OfficialBuildArgs)
-                /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
+            - script: eng\common\cibuild.cmd -configuration $(_BuildConfig) -prepareMachine -integrationTest $(_BuildArgs) /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
               name: Build
               displayName: Build
               condition: succeeded()
-            - task: PublishBuildArtifacts@1
-              displayName: Publish Packages
-              continueOnError: true
-              inputs:
-                artifactName: Packages_$(Agent.Os)_$(Agent.JobName)
-                parallel: true
-                pathtoPublish: '$(Build.SourcesDirectory)/artifacts/packages/$(_BuildConfig)'
-                publishLocation: Container
