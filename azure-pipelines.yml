@@ -1,4 +1,5 @@
 variables:
+  - template: /eng/common/templates-official/variables/pool-providers.yml@self
   - name: Build.Repository.Clean
     value: true
   - name: _TeamName
