@@ -41,4 +41,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\NOTICE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>
