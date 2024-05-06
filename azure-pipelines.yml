@@ -19,7 +19,7 @@ variables:
 - name: _SignType
   value: real
 - name: _BuildArgs
-  value: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)                 
+  value: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:OfficialBuildId=$(Build.BuildNumber)
 - name: _HelixBuildConfig
   value: $(_BuildConfig)
 resources:
@@ -46,7 +46,7 @@ extends:
     sdl:
       sourceAnalysisPool:
         name: $(DncEngInternalBuildPool)
-        image: 1es-windows-2022-pt
+        image: 1es-windows-2022
         os: windows
     customBuildTags:
     - ES365AIMigrationTooling
@@ -68,7 +68,7 @@ extends:
           - job: Windows
             pool:
               name: $(DncEngInternalBuildPool)
-              image: 1es-windows-2022-pt
+              image: 1es-windows-2022
               os: windows
             steps:
             - checkout: self
