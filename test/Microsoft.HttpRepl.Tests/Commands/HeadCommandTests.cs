@@ -45,7 +45,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            HeadCommand headCommand = new HeadCommand(fileSystem, preferences, new NullTelemetry());
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
             await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -65,7 +65,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 header: "X-HTTPREPL-TESTHEADER");
 
-            HeadCommand headCommand = new HeadCommand(fileSystem, preferences, new NullTelemetry());
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
             await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for HEAD request with route.";
@@ -90,7 +90,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 header: "X-HTTPREPL-TESTHEADER");
 
-            HeadCommand headCommand = new HeadCommand(fileSystem, preferences, new NullTelemetry());
+            HeadCommand headCommand = new HeadCommand(fileSystem, preferences);
             await headCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root HEAD request.";

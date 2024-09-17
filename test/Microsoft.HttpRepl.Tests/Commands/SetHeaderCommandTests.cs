@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.OpenApi;
-using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -26,7 +25,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             bool? result = setHeaderCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -40,7 +39,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             bool? result = setHeaderCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -54,7 +53,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             bool? result = setHeaderCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -68,7 +67,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             bool? result = setHeaderCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
@@ -82,7 +81,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult _);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             string result = setHeaderCommand.GetHelpSummary(shellState, httpState);
 
             Assert.Equal(SetHeaderCommand.Description, result);
@@ -98,7 +97,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expected = "\u001b[1mUsage: \u001b[39mset header {name} [value]" + Environment.NewLine + Environment.NewLine + "Sets or clears a header. When [value] is empty the header is cleared." + Environment.NewLine;
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             string result = setHeaderCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Equal(expected, result);
@@ -112,7 +111,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             await setHeaderCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
@@ -131,7 +130,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             await setHeaderCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> headers = httpState.Headers;
@@ -157,7 +156,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(suggestions);
@@ -173,7 +172,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 0);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(suggestions);
@@ -189,7 +188,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 3);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(suggestions);
@@ -205,7 +204,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 10);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(suggestions);
@@ -221,7 +220,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out ICoreParseResult parseResult,
                  caretPosition: 12);
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Single(suggestions);
@@ -243,7 +242,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             httpState.ApiDefinition = apiDefinition;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             List<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult).ToList();
 
             Assert.Single(suggestions);
@@ -265,50 +264,10 @@ namespace Microsoft.HttpRepl.Tests.Commands
             httpState.ApiDefinition = apiDefinition;
             httpState.BaseAddress = new Uri("http://localhost:5050/");
 
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(new NullTelemetry());
+            SetHeaderCommand setHeaderCommand = new SetHeaderCommand();
             IEnumerable<string> suggestions = setHeaderCommand.Suggest(shellState, httpState, parseResult);
 
             Assert.Empty(suggestions);
-        }
-
-        [Fact]
-        public async Task ExecuteAsync_WithKnownHeader_SendsTelemetryWithHeaderName()
-        {
-            ArrangeInputs(parseResultSections: "set header Authorization value",
-                 out MockedShellState shellState,
-                 out HttpState httpState,
-                 out ICoreParseResult parseResult);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(telemetry);
-            await setHeaderCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("SetHeader", collectedTelemetry.EventName);
-            Assert.Equal("Authorization", collectedTelemetry.Properties["HeaderName"]);
-            Assert.Equal("False", collectedTelemetry.Properties["IsValueEmpty"]);
-        }
-
-        [Fact]
-        public async Task ExecuteAsync_WithUnknownHeader_SendsTelemetryWithHashedHeaderName()
-        {
-            ArrangeInputs(parseResultSections: "set header name value",
-                 out MockedShellState shellState,
-                 out HttpState httpState,
-                 out ICoreParseResult parseResult);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            SetHeaderCommand setHeaderCommand = new SetHeaderCommand(telemetry);
-            await setHeaderCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("SetHeader", collectedTelemetry.EventName);
-            Assert.Equal(Sha256Hasher.Hash("name"), collectedTelemetry.Properties["HeaderName"]);
-            Assert.Equal("False", collectedTelemetry.Properties["IsValueEmpty"]);
         }
 
         private IDirectoryStructure GetDirectoryStructure(string method, string contentType, string body)

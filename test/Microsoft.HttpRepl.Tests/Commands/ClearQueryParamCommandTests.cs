@@ -25,7 +25,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             bool? result = clearQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -39,7 +39,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             bool? result = clearQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -53,7 +53,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             bool? result = clearQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
@@ -67,7 +67,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult _);
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             string result = clearQueryParamCommand.GetHelpSummary(shellState, httpState);
 
             Assert.Equal(ClearQueryParamCommand.Description, result);
@@ -83,7 +83,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expected = "\u001b[1mUsage: \u001b[39mclear query-param" + Environment.NewLine + Environment.NewLine + "Clears the query string of all key and values" + Environment.NewLine;
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             string result = clearQueryParamCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Equal(expected, result);
@@ -97,13 +97,13 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> queryParamAfterAdd = httpState.QueryParam;
             Assert.True(queryParamAfterAdd.ContainsKey("limit"));
 
-            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand(new NullTelemetry());
+            ClearQueryParamCommand clearQueryParamCommand = new ClearQueryParamCommand();
             await clearQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> queryParamAfterClear = httpState.QueryParam;

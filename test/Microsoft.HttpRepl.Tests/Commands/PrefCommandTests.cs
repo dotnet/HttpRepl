@@ -12,7 +12,6 @@ using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Telemetry;
 using Microsoft.HttpRepl.Tests.Preferences;
 using Microsoft.HttpRepl.UserProfile;
 using Microsoft.Repl.ConsoleHandling;
@@ -83,7 +82,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             HttpClient httpClient = new HttpClient();
             HttpState httpState = new HttpState(preferences, httpClient);
             MockedShellState shellState = new MockedShellState();
-            PrefCommand command = new PrefCommand(preferences, new NullTelemetry());
+            PrefCommand command = new PrefCommand(preferences);
 
             // First, set it to something other than the default and make sure that works.
             string firstCommandExpectedValue = "BoldMagenta";
@@ -192,72 +191,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.Contains("pref set {setting} [{value}]", output);
         }
 
-        [Fact]
-        public async Task ExecuteAsync_WithGet_SendsTelemetry()
-        {
-            Arrange($"pref get {WellKnownPreference.DefaultEditorCommand}",
-                    out HttpState httpState,
-                    out MockedShellState shellState,
-                    out ICoreParseResult parseResult,
-                    out UserFolderPreferences preferences);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            PrefCommand command = new PrefCommand(preferences, telemetry);
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("Preference", collectedTelemetry.EventName);
-            Assert.Equal("Get", collectedTelemetry.Properties["GetOrSet"]);
-            Assert.Equal(WellKnownPreference.DefaultEditorCommand, collectedTelemetry.Properties["PreferenceName"]);
-        }
-
-        [Fact]
-        public async Task ExecuteAsync_WithSet_SendsTelemetry()
-        {
-            Arrange($"pref set {WellKnownPreference.DefaultEditorCommand} value",
-                    out HttpState httpState,
-                    out MockedShellState shellState,
-                    out ICoreParseResult parseResult,
-                    out UserFolderPreferences preferences);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            PrefCommand command = new PrefCommand(preferences, telemetry);
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("Preference", collectedTelemetry.EventName);
-            Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
-            Assert.Equal(WellKnownPreference.DefaultEditorCommand, collectedTelemetry.Properties["PreferenceName"]);
-        }
-
-        [Fact]
-        public async Task ExecuteAsync_WithGetAndUnknownName_SendsTelemetryWithHashedName()
-        {
-            Arrange("pref set preferenceName value",
-                    out HttpState httpState,
-                    out MockedShellState shellState,
-                    out ICoreParseResult parseResult,
-                    out UserFolderPreferences preferences);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            PrefCommand command = new PrefCommand(preferences, telemetry);
-
-            await command.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("Preference", collectedTelemetry.EventName);
-            Assert.Equal("Set", collectedTelemetry.Properties["GetOrSet"]);
-            Assert.Equal(Sha256Hasher.Hash("preferenceName"), collectedTelemetry.Properties["PreferenceName"]);
-        }
-
         [Theory]
         [MemberData(nameof(ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning_Data))]
         public async Task ExecuteAsync_SetDefaultEditorToVSCode_ShowsWarning(string commandText, OSPlatform intendedPlatform)
@@ -269,7 +202,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                     out ICoreParseResult parseResult,
                     out UserFolderPreferences preferences);
 
-            PrefCommand command = new PrefCommand(preferences, new NullTelemetry());
+            PrefCommand command = new PrefCommand(preferences);
 
             string expectedWarning = string.Format(Resources.Strings.PrefCommand_Set_VSCode, WellKnownPreference.DefaultEditorArguments).SetColor(httpState.WarningColor);
 
@@ -327,7 +260,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             httpState = new HttpState(preferences, httpClient);
             shellState = new MockedShellState();
             parseResult = CoreParseResultHelper.Create(commandText);
-            command = new PrefCommand(preferences, new NullTelemetry());
+            command = new PrefCommand(preferences);
         }
 
         private static void Arrange(string commandText, out HttpState httpState, out MockedShellState shellState, out ICoreParseResult parseResult, out UserFolderPreferences preferences)

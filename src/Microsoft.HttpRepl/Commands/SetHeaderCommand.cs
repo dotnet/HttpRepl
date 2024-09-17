@@ -10,8 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -24,15 +22,8 @@ namespace Microsoft.HttpRepl.Commands
         private const string CommandName = "set";
         private const string SubCommand = "header";
 
-        private readonly ITelemetry _telemetry;
-
         public string Name => "setHeader";
         public static string Description => Strings.SetHeaderCommand_HelpSummary;
-
-        public SetHeaderCommand(ITelemetry telemetry)
-        {
-            _telemetry = telemetry;
-        }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult)
         {
@@ -47,19 +38,14 @@ namespace Microsoft.HttpRepl.Commands
 
             programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
-            bool isValueEmpty;
             if (parseResult.Sections.Count == 3)
             {
                 programState.Headers.Remove(parseResult.Sections[2]);
-                isValueEmpty = true;
             }
             else
             {
                 programState.Headers[parseResult.Sections[2]] = parseResult.Sections.Skip(3).ToList();
-                isValueEmpty = false;
             }
-
-            _telemetry.TrackEvent(new SetHeaderEvent(parseResult.Sections[2], isValueEmpty));
 
             return Task.CompletedTask;
         }
