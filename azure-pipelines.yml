@@ -48,6 +48,10 @@ extends:
         name: $(DncEngInternalBuildPool)
         image: 1es-windows-2022
         os: windows
+      codeSignValidation:
+        # We make copies of our pre-signed binaries to the output directory, but we do not ship those. The signed ones
+        # are in the packages folder and pass CSV without issue. We only ship the signed packages, not any individual binaries
+        additionalTargetsGlobPattern: -|**\bin\**
     customBuildTags:
     - ES365AIMigrationTooling
     stages:
