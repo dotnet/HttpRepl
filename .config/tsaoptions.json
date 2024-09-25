@@ -1,10 +1,11 @@
 {  
-    "instanceUrl": "https://devdiv.visualstudio.com/",
+    "instanceUrl": "https://dev.azure.com/devdiv/",
     "template": "TFSDEVDIV",
     "projectName": "DEVDIV",
-    "areaPath": "DevDiv\\NET Developer Experience\\Web\\Http Repl",
+    "areaPath": "DevDiv\\Web Tools\\API\\Http Repl",
     "iterationPath": "DevDiv",
-    "notificationAliases": [ "venusweb@microsoft.com" ],
+    "notificationAliases": [ "webproject@microsoft.com" ],
     "repositoryName":"HttpRepl",
-    "codebaseName": "HttpRepl"
+    "codebaseName": "HttpRepl",
+    "serviceTreeId": "225159cd-5cda-4eaf-9b48-9bc4ff385b23"
 }
