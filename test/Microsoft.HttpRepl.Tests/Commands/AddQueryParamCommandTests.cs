@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Commands;
 using Microsoft.HttpRepl.Fakes;
-using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl.Parsing;
 using Xunit;
 
@@ -25,7 +24,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand= new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand= new AddQueryParamCommand();
             bool? result = addQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -39,7 +38,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             bool? result = addQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -53,7 +52,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             bool? result = addQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.Null(result);
@@ -67,7 +66,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out HttpState httpState,
                 out ICoreParseResult parseResult);
 
-            AddQueryParamCommand setQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand setQueryParamCommand = new AddQueryParamCommand();
             bool? result = setQueryParamCommand.CanHandle(shellState, httpState, parseResult);
 
             Assert.True(result);
@@ -85,7 +84,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 + Environment.NewLine + "Adds a key and value pair to the query string. " +
                 "The key and value will be UrlEncoded. Multiple values may be mapped to the same key." + Environment.NewLine;
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             string result = addQueryParamCommand.GetHelpDetails(shellState, httpState, parseResult);
 
             Assert.Equal(expected, result);
@@ -99,7 +98,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedOutput = "The add query-param command key: test is missing a value. " +
@@ -115,7 +114,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> queryParam = httpState.QueryParam;
@@ -149,7 +148,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                  out HttpState httpState,
                  out ICoreParseResult parseResult);
 
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(new NullTelemetry());
+            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand();
             await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Dictionary<string, IEnumerable<string>> queryParam = httpState.QueryParam;
@@ -157,27 +156,6 @@ namespace Microsoft.HttpRepl.Tests.Commands
             Assert.True(queryParam.ContainsKey("test"));
             queryParam.TryGetValue("test", out IEnumerable<string> nameHeaderValue);
             Assert.Contains("", nameHeaderValue);
-        }
-
-
-        [Fact]
-        public async Task ExecuteAsync__SendsTelemetryWithHashedHeaderName()
-        {
-            ArrangeInputs(parseResultSections: "add query-param name value",
-                out MockedShellState shellState,
-                out HttpState httpState,
-                out ICoreParseResult parseResult);
-
-            TelemetryCollector telemetry = new TelemetryCollector();
-
-            AddQueryParamCommand addQueryParamCommand = new AddQueryParamCommand(telemetry);
-            await addQueryParamCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
-
-            Assert.Single(telemetry.Telemetry);
-            TelemetryCollector.CollectedTelemetry collectedTelemetry = telemetry.Telemetry[0];
-            Assert.Equal("AddQueryParam", collectedTelemetry.EventName);
-            Assert.Equal(Sha256Hasher.Hash("name"), collectedTelemetry.Properties["QueryParamKey"]);
-            Assert.Equal("False", collectedTelemetry.Properties["IsValueEmpty"]);
         }
     }
 }

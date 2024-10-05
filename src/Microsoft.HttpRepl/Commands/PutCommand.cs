@@ -4,13 +4,12 @@
 
 using Microsoft.HttpRepl.FileSystem;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Telemetry;
 
 namespace Microsoft.HttpRepl.Commands
 {
     public class PutCommand : BaseHttpCommand
     {
-        public PutCommand(IFileSystem fileSystem, IPreferences preferences, ITelemetry telemetry) : base(fileSystem, preferences, telemetry) { }
+        public PutCommand(IFileSystem fileSystem, IPreferences preferences) : base(fileSystem, preferences) { }
 
         protected override string Verb => "put";
 

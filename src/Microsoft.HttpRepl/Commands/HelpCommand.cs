@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
-using Microsoft.HttpRepl.Telemetry;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -239,7 +238,6 @@ namespace Microsoft.HttpRepl.Commands
             return rawCommand switch
             {
                 CommandWithStructuredInputBase<HttpState, ICoreParseResult> structuredCommand => structuredCommand,
-                TelemetryCommandWrapper telemetryWrapper when telemetryWrapper.Command is CommandWithStructuredInputBase<HttpState, ICoreParseResult> structuredCommand => structuredCommand,
                 _ => null
             };
         }
@@ -252,8 +250,6 @@ namespace Microsoft.HttpRepl.Commands
                 {
                     case T directMatch:
                         return directMatch;
-                    case TelemetryCommandWrapper telemetryWrapper when telemetryWrapper.Command?.GetType() == typeof(T):
-                        return telemetryWrapper;
                 }
             }
 

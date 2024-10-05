@@ -10,8 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Resources;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -24,14 +22,7 @@ namespace Microsoft.HttpRepl.Commands
         private const string CommandName = "add";
         private const string SubCommand = "query-param";
 
-        private readonly ITelemetry _telemetry;
-
         public string Name => "addQueryParam";
-
-        public AddQueryParamCommand(ITelemetry telemetry)
-        {
-            _telemetry = telemetry;
-        }
 
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult) =>
             parseResult.ContainsAtLeast(minimumLength: 3, CommandName, SubCommand)
@@ -45,7 +36,6 @@ namespace Microsoft.HttpRepl.Commands
             programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             int sectionCount = parseResult.Sections.Count;
-            bool isValueEmpty;
 
             if(sectionCount % 2 == 0)
             {               
@@ -63,13 +53,11 @@ namespace Microsoft.HttpRepl.Commands
                             
                     }             
                 }
-                isValueEmpty = false;
-            } else
+            } 
+            else
             {
-                isValueEmpty = true;
                 shellState.ConsoleManager.WriteLine($"The add query-param command key: {parseResult.Sections[sectionCount - 1]} is missing a value. Please try again with a valid key value pair");           
             }
-            _telemetry.TrackEvent(new AddQueryParamEvent(parseResult.Sections[2], isValueEmpty));      
 
             return Task.CompletedTask;
         }

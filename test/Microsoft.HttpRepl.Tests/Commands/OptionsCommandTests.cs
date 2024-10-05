@@ -45,7 +45,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences, new NullTelemetry());
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
             await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -65,7 +65,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 header: "X-HTTPREPL-TESTHEADER");
 
-            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences, new NullTelemetry());
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
             await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for OPTIONS request with route.";
@@ -90,7 +90,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences,
                 header: "X-HTTPREPL-TESTHEADER");
 
-            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences, new NullTelemetry());
+            OptionsCommand optionsCommand = new OptionsCommand(fileSystem, preferences);
             await optionsCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedHeader = "X-HTTPREPL-TESTHEADER: Header value for root OPTIONS request.";

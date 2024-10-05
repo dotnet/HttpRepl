@@ -18,8 +18,6 @@ using Microsoft.HttpRepl.Formatting;
 using Microsoft.HttpRepl.Preferences;
 using Microsoft.HttpRepl.Resources;
 using Microsoft.HttpRepl.Suggestions;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -52,7 +50,6 @@ namespace Microsoft.HttpRepl.Commands
 
         private readonly IFileSystem _fileSystem;
         private readonly IPreferences _preferences;
-        private readonly ITelemetry _telemetry;
 
         public override string Name => Verb;
 
@@ -60,11 +57,10 @@ namespace Microsoft.HttpRepl.Commands
 
         protected abstract bool RequiresBody { get; }
 
-        protected BaseHttpCommand(IFileSystem fileSystem, IPreferences preferences, ITelemetry telemetry)
+        protected BaseHttpCommand(IFileSystem fileSystem, IPreferences preferences)
         {
             _fileSystem = fileSystem;
             _preferences = preferences;
-            _telemetry = telemetry;
         }
 
         public override CommandInputSpecification InputSpec
@@ -109,8 +105,6 @@ namespace Microsoft.HttpRepl.Commands
                 shellState.ConsoleManager.Error.WriteLine(Strings.Error_NoBasePath.SetColor(programState.ErrorColor));
                 return;
             }
-
-            SendTelemetry(commandInput);
 
             if (programState.SwaggerEndpoint != null)
             {
@@ -756,24 +750,6 @@ namespace Microsoft.HttpRepl.Commands
             string rootRelativePath = effectivePath.LocalPath.Substring(httpState.BaseAddress.LocalPath.Length).TrimStart('/');
             IDirectoryStructure structure = httpState.Structure?.TraverseTo(rootRelativePath);
             return structure?.RequestInfo?.GetRequestBodyForContentType(ref contentType, method);
-        }
-
-        private void SendTelemetry(DefaultCommandInput<ICoreParseResult> commandInput)
-        {
-            HttpCommandEvent httpCommandEvent = new HttpCommandEvent(
-                method:                         Verb.ToUpperInvariant(),
-                isPathSpecified:                commandInput.Arguments.Count > 0,
-                isHeaderSpecified:              commandInput.Options[HeaderOption].Any(),
-                isResponseHeadersFileSpecified: commandInput.Options[ResponseHeadersFileOption].Any(),
-                isResponseBodyFileSpecified:    commandInput.Options[ResponseBodyFileOption].Any(),
-                isNoFormattingSpecified:        commandInput.Options[NoFormattingOption].Any(),
-                isStreamingSpecified:           commandInput.Options[StreamingOption].Any(),
-                isNoBodySpecified:              RequiresBody && commandInput.Options[NoBodyOption].Any(),
-                isRequestBodyFileSpecified:     RequiresBody && commandInput.Options[BodyFileOption].Any(),
-                isRequestBodyContentSpecified:  RequiresBody && commandInput.Options[BodyContentOption].Any()
-            );
-
-            _telemetry.TrackEvent(httpCommandEvent);
         }
     }
 }

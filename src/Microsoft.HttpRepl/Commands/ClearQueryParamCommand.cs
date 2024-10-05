@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Resources;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -26,12 +24,6 @@ namespace Microsoft.HttpRepl.Commands
 
         public static string Description => Strings.ClearQueryParamCommand_HelpDetails;
 
-        private readonly ITelemetry _telemetry;
-
-        public ClearQueryParamCommand(ITelemetry telemetry) {
-            _telemetry = telemetry;
-        }
-
         public bool? CanHandle(IShellState shellState, HttpState programState, ICoreParseResult parseResult) =>
             parseResult.ContainsAtLeast(minimumLength: 2, CommandName, SubCommand)
                 ? (bool?)true
@@ -44,17 +36,11 @@ namespace Microsoft.HttpRepl.Commands
             programState = programState ?? throw new ArgumentNullException(nameof(programState));
 
             int sectionCount = parseResult.Sections.Count;
-            bool isValueEmpty;
             if (sectionCount == 2)
             {
                 programState.QueryParam.Clear();
-                isValueEmpty = true;
-            } else
-            {
-                isValueEmpty = false;
             }
 
-            _telemetry.TrackEvent(new ClearQueryParamEvent(parseResult.Sections[1], isValueEmpty));
             return Task.CompletedTask;
         }
 

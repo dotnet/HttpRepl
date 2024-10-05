@@ -80,7 +80,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out IPreferences preferences);
             httpState.EchoRequest = true;
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;

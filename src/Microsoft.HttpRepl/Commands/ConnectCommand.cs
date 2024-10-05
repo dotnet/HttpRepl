@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -29,12 +27,10 @@ namespace Microsoft.HttpRepl.Commands
         private const string WebApiDefaultPathSuffix = "/swagger/";
 
         private readonly IPreferences _preferences;
-        private readonly ITelemetry _telemetry;
 
-        public ConnectCommand(IPreferences preferences, ITelemetry telemetry)
+        public ConnectCommand(IPreferences preferences)
         {
             _preferences = preferences;
-            _telemetry = telemetry;
         }
 
         public override CommandInputSpecification InputSpec => CommandInputSpecification.Create("connect")
@@ -112,15 +108,12 @@ namespace Microsoft.HttpRepl.Commands
 
             if (connectionInfo is null)
             {
-                _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound: false));
                 return;
             }
 
             await connectionInfo.SetupHttpState(programState, performAutoDetect: true, persistHeaders, persistPath, cancellationToken);
 
             bool openApiFound = connectionInfo?.HasSwaggerDocument == true;
-
-            _telemetry.TrackEvent(new ConnectEvent(baseSpecified, rootSpecified, openApiSpecified, openApiFound));
 
             WriteStatus(shellState, programState);
         }
@@ -184,18 +177,10 @@ namespace Microsoft.HttpRepl.Commands
                 // hatch via the preference if they do put their API under that path.
                 if (rootAddress.EndsWith(WebApiDefaultPathSuffix, StringComparison.OrdinalIgnoreCase))
                 {
-                    WebApiF5FixEvent fixEvent;
-                    if (preferences.GetBoolValue(WellKnownPreference.ConnectCommandSkipRootFix))
-                    {
-                        fixEvent = new WebApiF5FixEvent(skippedByPreference: true);
-                    }
-                    else
+                    if (!preferences.GetBoolValue(WellKnownPreference.ConnectCommandSkipRootFix))
                     {
                         rootAddress = rootAddress.Substring(0, rootAddress.Length - WebApiDefaultPathSuffix.Length);
-                        fixEvent = new WebApiF5FixEvent();
                     }
-
-                    _telemetry.TrackEvent(fixEvent);
                 }
 
                 apiConnection.RootUri = new Uri(rootAddress, UriKind.Absolute);

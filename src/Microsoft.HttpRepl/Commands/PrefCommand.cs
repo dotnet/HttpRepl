@@ -10,8 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.HttpRepl.Preferences;
-using Microsoft.HttpRepl.Telemetry;
-using Microsoft.HttpRepl.Telemetry.Events;
 using Microsoft.Repl;
 using Microsoft.Repl.Commanding;
 using Microsoft.Repl.ConsoleHandling;
@@ -26,14 +24,12 @@ namespace Microsoft.HttpRepl.Commands
         private const string _SetCommandSyntax = "pref set {setting} [{value}]";
         private readonly HashSet<string> _allowedSubcommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {"get", "set"};
         private readonly IPreferences _preferences;
-        private readonly ITelemetry _telemetry;
 
         public override string Name => "pref";
 
-        public PrefCommand(IPreferences preferences, ITelemetry telemetry)
+        public PrefCommand(IPreferences preferences)
         {
             _preferences = preferences;
-            _telemetry = telemetry;
         }
 
         public override string GetHelpSummary(IShellState shellState, HttpState programState)
@@ -173,8 +169,6 @@ namespace Microsoft.HttpRepl.Commands
             string prefName = commandInput.Arguments[1].Text;
             string prefValue = commandInput.Arguments.Count > 2 ? commandInput.Arguments[2]?.Text : null;
 
-            _telemetry.TrackEvent(new PreferenceEvent("Set", prefName));
-
             if (!_preferences.SetValue(prefName, prefValue))
             {
                 shellState.ConsoleManager.Error.WriteLine(Resources.Strings.PrefCommand_Error_Saving.SetColor(programState.ErrorColor));
@@ -197,8 +191,6 @@ namespace Microsoft.HttpRepl.Commands
         private void GetSetting(IShellState shellState, HttpState programState, DefaultCommandInput<ICoreParseResult> commandInput)
         {
             string preferenceName = commandInput.Arguments.Count > 1 ? commandInput.Arguments[1]?.Text : null;
-
-            _telemetry.TrackEvent(new PreferenceEvent("Get", preferenceName));
 
             //If there's a particular setting to get the value of
             if (!string.IsNullOrEmpty(preferenceName))

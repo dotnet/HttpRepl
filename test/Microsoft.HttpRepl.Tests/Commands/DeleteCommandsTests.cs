@@ -45,7 +45,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences, new NullTelemetry());
+            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences);
             await deleteCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -64,7 +64,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences, new NullTelemetry());
+            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences);
             await deleteCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "File path delete received successfully.";
@@ -88,7 +88,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences, new NullTelemetry());
+            DeleteCommand deleteCommand = new DeleteCommand(fileSystem, preferences);
             await deleteCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "Root delete received successfully.";

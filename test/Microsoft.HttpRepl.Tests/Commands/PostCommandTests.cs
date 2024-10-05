@@ -52,7 +52,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             string expectedErrorMessage = Strings.Error_NoBasePath.SetColor(httpState.ErrorColor);
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Equal(expectedErrorMessage, shellState.ErrorMessage);
@@ -71,7 +71,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a POST: \"Test Post Body\"";
@@ -98,7 +98,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             httpState.EchoRequest = true;
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;
@@ -124,7 +124,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             httpState.EchoRequest = true;
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;
@@ -150,7 +150,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             httpState.EchoRequest = true;
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
 
@@ -174,7 +174,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a POST: \"Test Post Body\"";
@@ -198,7 +198,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 out MockedFileSystem fileSystem,
                 out IPreferences preferences);
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             string expectedResponse = "This is a test response from a POST: \"\"";
@@ -229,7 +229,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             fileSystem.AddFile(filePath, "Test Post Body From File");
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             List<string> result = shellState.Output;
@@ -257,7 +257,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
                 readBodyFromFile: true,
                 fileContents: fileContents);
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Empty(shellState.Output);
@@ -279,7 +279,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             preferences.SetValue(WellKnownPreference.DefaultEditorCommand, "");
 
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
             await postCommand.ExecuteAsync(shellState, httpState, parseResult, CancellationToken.None);
 
             Assert.Empty(shellState.Output);
@@ -300,7 +300,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
             ICoreParseResult parseResult = CoreParseResultHelper.Create(commandText);
             HttpClient httpClient = new HttpClient();
             HttpState httpState = new HttpState(preferences, httpClient);
-            PostCommand postCommand = new PostCommand(fileSystem, preferences, new NullTelemetry());
+            PostCommand postCommand = new PostCommand(fileSystem, preferences);
 
             preferences.SetValue(WellKnownPreference.DefaultEditorCommand, editorPath);
 
