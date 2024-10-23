@@ -105,7 +105,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Equal(8, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
+            Assert.Single(result, s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal));
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Equal(9, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
+            Assert.Single(result, s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal));
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Microsoft.HttpRepl.Tests.Commands
 
             Assert.Equal(9, result.Count);
             Assert.Contains("HTTP/1.1 200 OK", result);
-            Assert.Single(result.Where(s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal)));
+            Assert.Single(result, s => string.Equals(s, expectedHeader, System.StringComparison.Ordinal));
         }
 
         [Fact]
