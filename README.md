@@ -1,5 +1,13 @@
 HttpRepl
 =======
+
+# HttpRepl is now deprecated
+
+HttpRepl is now deprecated and will not receive any future updates. See https://github.com/dotnet/HttpRepl/issues/701 for more info.
+
+
+# Build Status
+
 [![Build Status](https://dev.azure.com/dnceng/public/_apis/build/status/aspnet/HttpRepl/aspnet-HttpRepl-CI?branchName=main)](https://dev.azure.com/dnceng/public/_build/latest?definitionId=538&branchName=main)
 
 The HTTP Read-Eval-Print Loop (REPL) is:
